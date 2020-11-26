@@ -14,6 +14,7 @@ export interface FormValueType extends Partial<TableListItem> {
   type?: string;
   time?: string;
   frequency?: string;
+  sort?: string;
 }
 
 export interface UpdateFormProps {
@@ -53,6 +54,7 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => (
         type: props.values.type,
         remarks: props.values.remarks,
         description: props.values.description,
+        sort: props.values.sort,
       }}
       title="基本信息"
     >
@@ -74,6 +76,11 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => (
       <ProFormText
         name="label"
         label="标签名"
+        rules={[{ required: true, message: '请输入标签名！' }]}
+      />
+      <ProFormText
+        name="sort"
+        label="排序"
         rules={[{ required: true, message: '请输入标签名！' }]}
       />
       <ProFormTextArea

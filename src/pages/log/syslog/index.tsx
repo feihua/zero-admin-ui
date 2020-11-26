@@ -120,14 +120,6 @@ const TableList: React.FC<{}> = () => {
     {
       title: '用户名',
       dataIndex: 'user_name',
-      formItemProps: {
-        rules: [
-          {
-            required: true,
-            message: '规则名称为必填项',
-          },
-        ],
-      },
       render: (dom, entity) => {
         return <a onClick={() => setRow(entity)}>{dom}</a>;
       },

@@ -43,6 +43,7 @@ const handleUpdate = async (fields: FormValueType) => {
       id: fields.id,
       type: fields.type,
       remarks: fields.remarks,
+      sort: fields.sort,
     });
     hide();
 
@@ -128,14 +129,6 @@ const TableList: React.FC<{}> = () => {
     {
       title: '数据值',
       dataIndex: 'value',
-      formItemProps: {
-        rules: [
-          {
-            required: true,
-            message: '数据值为必填项',
-          },
-        ],
-      },
       render: (dom, entity) => {
         console.log(entity,1111111111)
         return <a onClick={() => setRow(entity)}>{dom}</a>;
@@ -182,7 +175,6 @@ const TableList: React.FC<{}> = () => {
     {
       title: '排序',
       dataIndex: 'sort',
-      hideInForm: true,
     },
     {
       title: '状态',

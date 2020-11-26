@@ -14,7 +14,8 @@ export interface TableListItem {
   value?: string;
   label?: string;
   type?: string;
-  remarks?: remarks;
+  remarks?: string;
+  sort?: string;
 
 }
 
@@ -42,5 +43,6 @@ export interface TableListParams {
   value?: string;
   label?: string;
   type?: string;
-  remarks?: remarks;
+  remarks?: string;
+  sort?: string;
 }
