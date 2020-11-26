@@ -75,12 +75,12 @@
         path: '/system/dict/list',
         component: './system/dict',
       },
-      {
-        name: '参数管理',
-        icon: 'table',
-        path: '/system/param/list',
-        component: './system/param',
-      },
+      // {
+      //   name: '参数管理',
+      //   icon: 'table',
+      //   path: '/system/param/list',
+      //   component: './system/param',
+      // },
     ],
   },
   {
