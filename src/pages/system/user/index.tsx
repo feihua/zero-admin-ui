@@ -43,7 +43,7 @@ const handleUpdate = async (fields: FormValueType) => {
       email: fields.email,
       id: fields.id,
       mobile: fields.mobile,
-
+      dept_id: fields.dept_id,
     });
     hide();
 
@@ -190,6 +190,18 @@ const TableList: React.FC<{}> = () => {
       },
     },
     {
+      title: '部门',
+      dataIndex: 'dept_id',
+      formItemProps: {
+        rules: [
+          {
+            required: true,
+            message: '部门为必填项',
+          },
+        ],
+      },
+    },
+    {
       title: '创建人',
       dataIndex: 'create_by',
       hideInForm: true,
@@ -218,7 +230,6 @@ const TableList: React.FC<{}> = () => {
     {
       title: '更新时间',
       dataIndex: 'last_update_time',
-      sorter: true,
       valueType: 'dateTime',
       hideInForm: true,
       renderFormItem: (item, { defaultRender, ...rest }, form) => {

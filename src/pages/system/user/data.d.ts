@@ -2,7 +2,6 @@ export interface TableListItem {
   id: number;
   disabled?: boolean;
   href: string;
-  avatar: string;
   name: string;
   owner: string;
   desc: string;
@@ -14,6 +13,7 @@ export interface TableListItem {
   nick_name: string;
   mobile: string;
   email: string;
+  dept_id: number;
 }
 
 export interface TableListPagination {
@@ -39,4 +39,5 @@ export interface TableListParams {
   nick_name?: string;
   mobile?: string;
   email?: string;
+  dept_id?: number;
 }
