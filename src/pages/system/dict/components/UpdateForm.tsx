@@ -1,12 +1,7 @@
 import React from 'react';
-import { Modal } from 'antd';
-import {
-  ProFormText,
-  ProFormTextArea,
-  StepsForm,
-} from '@ant-design/pro-form';
+import ProForm,{ModalForm, ProFormText, ProFormTextArea} from '@ant-design/pro-form';
 
-import { TableListItem } from '../data.d';
+import {TableListItem} from '../data.d';
 
 export interface FormValueType extends Partial<TableListItem> {
   target?: string;
@@ -14,7 +9,6 @@ export interface FormValueType extends Partial<TableListItem> {
   type?: string;
   time?: string;
   frequency?: string;
-  sort?: string;
 }
 
 export interface UpdateFormProps {
@@ -24,28 +18,16 @@ export interface UpdateFormProps {
   values: Partial<TableListItem>;
 }
 
-const UpdateForm: React.FC<UpdateFormProps> = (props) => (
-  <StepsForm
-    stepsProps={{
-      size: 'small',
-    }}
-    stepsFormRender={(dom, submitter) => {
-      return (
-        <Modal
-          width={500}
-          destroyOnClose
-          title="规则配置"
-          visible={props.updateModalVisible}
-          footer={submitter}
-          onCancel={() => props.onCancel()}
-        >
-          {dom}
-        </Modal>
-      );
-    }}
-    onFinish={props.onSubmit}
-  >
-    <StepsForm.StepForm
+const UpdateForm: React.FC<UpdateFormProps> = (props) => {
+  const {onSubmit} = props
+
+  return (
+    <ModalForm
+      title="编辑字典"
+      width={480}
+      visible={props.updateModalVisible}
+      onVisibleChange={() => props.onCancel()}
+      onFinish={onSubmit}
       initialValues={{
         name: props.values.name,
         id: props.values.id,
@@ -56,48 +38,53 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => (
         description: props.values.description,
         sort: props.values.sort,
       }}
-      title="基本信息"
     >
       <ProFormText
         name="id"
         label="id"
-        rules={[{ required: true, message: '请输入id！' }]}
+        width="l"
+        hidden
       />
+      <ProForm.Group>
       <ProFormText
         name="value"
         label="数据值"
         rules={[{ required: true, message: '请输入数据值！' }]}
       />
-      <ProFormText
-        name="type"
-        label="类型"
-        rules={[{ required: true, message: '请输入类型！' }]}
-      />
+        <ProFormText
+          name="type"
+          label="类型"
+          rules={[{ required: true, message: '请输入类型！' }]}
+        />
+      </ProForm.Group>
+      <ProForm.Group>
       <ProFormText
         name="label"
         label="标签名"
         rules={[{ required: true, message: '请输入标签名！' }]}
       />
-      <ProFormText
-        name="sort"
-        label="排序"
-        rules={[{ required: true, message: '请输入标签名！' }]}
-      />
+        <ProFormText
+          name="sort"
+          label="排序"
+          rules={[{ required: true, message: '请输入标签名！' }]}
+        />
+      </ProForm.Group>
       <ProFormTextArea
         name="description"
         label="描述"
+        width={"l"}
         placeholder="请输入至少五个字符"
         rules={[{ required: true, message: '请输入至少五个字符的描述！', min: 4 }]}
       />
       <ProFormTextArea
         name="remarks"
         label="备注"
+        width={"l"}
         placeholder="请输入至少五个字符"
         rules={[{ required: true, message: '请输入至少五个字符的备注！', min: 4 }]}
       />
-    </StepsForm.StepForm>
-
-  </StepsForm>
-);
+    </ModalForm>
+  )
+};
 
 export default UpdateForm;

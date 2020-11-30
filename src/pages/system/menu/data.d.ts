@@ -2,7 +2,7 @@ export interface TableListItem {
   id: number;
   disabled?: boolean;
   href: string;
-  avatar: string;
+  parent_id: number;
   name: string;
   owner: string;
   desc: string;
@@ -11,7 +11,12 @@ export interface TableListItem {
   updatedAt: Date;
   createdAt: Date;
   progress: number;
+  type: number;
+  order_num: number;
   title: string;
+  url: string;
+  icon: string;
+  perms: string;
 }
 
 export interface TableListPagination {
@@ -26,6 +31,7 @@ export interface TableListData {
 }
 
 export interface TableListParams {
+  id?: number;
   status?: string;
   name?: string;
   desc?: string;
@@ -34,4 +40,11 @@ export interface TableListParams {
   currentPage?: number;
   filter?: { [key: string]: any[] };
   sorter?: { [key: string]: any };
+  type?: number;
+  order_num?: number;
+  title?: string;
+  url?: string;
+  icon?: string;
+  perms?: string;
+  parent_id?: number;
 }

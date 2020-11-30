@@ -28,7 +28,7 @@ export async function removeRule(params: { key: number[] }) {
 }
 
 export async function addRule(params: TableListItem) {
-  return request('/api/rule/add', {
+  return request('/api/menu/add', {
     method: 'POST',
     data: {
       ...params,
@@ -38,7 +38,7 @@ export async function addRule(params: TableListItem) {
 }
 
 export async function updateRule(params: TableListParams) {
-  return request('/api/rule/update', {
+  return request('/api/menu/update', {
     method: 'POST',
     data: {
       ...params,

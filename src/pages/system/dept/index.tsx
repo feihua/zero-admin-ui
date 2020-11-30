@@ -38,8 +38,9 @@ const handleUpdate = async (fields: FormValueType) => {
   try {
     await updateRule({
       name: fields.name,
-      desc: fields.desc,
-      key: fields.id,
+      order_num: Number(fields.order_num),
+      parent_id: fields.parent_id,
+      id: fields.id,
     });
     hide();
 
@@ -118,6 +119,10 @@ const TableList: React.FC<{}> = () => {
 
   const columns: ProColumns<TableListItem>[] = [
     {
+      title: '编号',
+      dataIndex: 'id',
+    },
+    {
       title: '机构名称',
       dataIndex: 'name',
       formItemProps: {
@@ -131,6 +136,14 @@ const TableList: React.FC<{}> = () => {
       render: (dom, entity) => {
         return <a onClick={() => setRow(entity)}>{dom}</a>;
       },
+    },
+    {
+      title: '父id',
+      dataIndex: 'parent_id',
+    },
+    {
+      title: '排序',
+      dataIndex: 'order_num',
     },
     {
       title: '创建人',
@@ -285,15 +298,15 @@ const TableList: React.FC<{}> = () => {
         }}
         closable={false}
       >
-        {row?.title && (
+        {row?.name && (
           <ProDescriptions<TableListItem>
             column={2}
-            title={row?.title}
+            title={row?.name}
             request={async () => ({
               data: row || {},
             })}
             params={{
-              id: row?.title,
+              id: row?.name,
             }}
             columns={columns}
           />

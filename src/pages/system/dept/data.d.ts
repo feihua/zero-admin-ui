@@ -12,6 +12,8 @@ export interface TableListItem {
   createdAt: Date;
   progress: number;
   title: string;
+  parent_id: number;
+  order_num: number;
 }
 
 export interface TableListPagination {
@@ -29,9 +31,11 @@ export interface TableListParams {
   status?: string;
   name?: string;
   desc?: string;
-  key?: number;
+  id?: number;
   pageSize?: number;
   currentPage?: number;
   filter?: { [key: string]: any[] };
   sorter?: { [key: string]: any };
+  parent_id?: number;
+  order_num?: number;
 }

@@ -38,8 +38,13 @@ const handleUpdate = async (fields: FormValueType) => {
   try {
     await updateRule({
       name: fields.name,
-      desc: fields.desc,
-      key: fields.id,
+      id: fields.id,
+      parent_id: fields.parent_id,
+      url: fields.url,
+      type: fields.type,
+      order_num: Number(fields.order_num),
+      icon: fields.icon,
+      perms: fields.perms,
     });
     hide();
 
@@ -133,6 +138,31 @@ const TableList: React.FC<{}> = () => {
       },
     },
     {
+      title: '父id',
+      dataIndex: 'parent_id',
+      hideInForm: true,
+    },
+    {
+      title: '路径',
+      dataIndex: 'url',
+    },
+    {
+      title: '类型',
+      dataIndex: 'type',
+    },
+    {
+      title: '排序',
+      dataIndex: 'order_num',
+    },
+    {
+      title: '图标',
+      dataIndex: 'icon',
+    },
+    {
+      title: '权限',
+      dataIndex: 'perms',
+    },
+    {
       title: '创建人',
       dataIndex: 'create_by',
       hideInForm: true,
@@ -140,7 +170,6 @@ const TableList: React.FC<{}> = () => {
     {
       title: '创建时间',
       dataIndex: 'create_time',
-      sorter: true,
       valueType: 'dateTime',
       hideInForm: true,
       renderFormItem: (item, { defaultRender, ...rest }, form) => {
@@ -162,7 +191,6 @@ const TableList: React.FC<{}> = () => {
     {
       title: '更新时间',
       dataIndex: 'last_update_time',
-      sorter: true,
       valueType: 'dateTime',
       hideInForm: true,
       renderFormItem: (item, { defaultRender, ...rest }, form) => {
@@ -285,15 +313,15 @@ const TableList: React.FC<{}> = () => {
         }}
         closable={false}
       >
-        {row?.title && (
+        {row?.name && (
           <ProDescriptions<TableListItem>
             column={2}
-            title={row?.title}
+            title={row?.name}
             request={async () => ({
               data: row || {},
             })}
             params={{
-              id: row?.title,
+              id: row?.name,
             }}
             columns={columns}
           />

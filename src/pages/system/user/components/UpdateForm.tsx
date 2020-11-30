@@ -41,7 +41,7 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
           name="id"
           label="id"
           width="l"
-          disabled
+          hidden
         />
         <ProFormText
           name="name"
