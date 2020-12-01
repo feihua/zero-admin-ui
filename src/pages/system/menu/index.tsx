@@ -228,7 +228,7 @@ const TableList: React.FC<{}> = () => {
   return (
     <PageContainer>
       <ProTable<TableListItem>
-        headerTitle="查询表格"
+        headerTitle="菜单列表"
         actionRef={actionRef}
         rowKey="id"
         search={{
