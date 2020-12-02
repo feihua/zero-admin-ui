@@ -126,7 +126,7 @@
         component: './log/loginlog',
       },
       {
-        name: '等录记录',
+        name: '登录记录',
         icon: 'table',
         path: '/ums/sysLog/list',
         component: './log/sysLog',

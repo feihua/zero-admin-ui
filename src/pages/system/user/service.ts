@@ -2,13 +2,13 @@ import { request } from 'umi';
 import { TableListParams, TableListItem } from './data.d';
 
 export async function queryRule(params?: TableListParams) {
-  return request('/api/user/list', {
+  return request('/api/sys/user/list', {
     params,
   });
 }
 
 export async function removeRuleOne(params: { id: number }) {
-  return request('/api/user/delete', {
+  return request('/api/sys/user/delete', {
     method: 'POST',
     data: {
       ...params,
@@ -18,7 +18,7 @@ export async function removeRuleOne(params: { id: number }) {
 }
 
 export async function removeRule(params: { key: number[] }) {
-  return request('/api/rule/delete', {
+  return request('/api/sys/rule/delete', {
     method: 'POST',
     data: {
       ...params,
@@ -28,7 +28,7 @@ export async function removeRule(params: { key: number[] }) {
 }
 
 export async function addRule(params: TableListItem) {
-  return request('/api/user/add', {
+  return request('/api/sys/user/add', {
     method: 'POST',
     data: {
       ...params,
@@ -38,7 +38,7 @@ export async function addRule(params: TableListItem) {
 }
 
 export async function updateRule(params: TableListParams) {
-  return request('/api/user/update', {
+  return request('/api/sys/user/update', {
     method: 'POST',
     data: {
       ...params,
