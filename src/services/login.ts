@@ -1,7 +1,7 @@
 import { request } from 'umi';
 
 export interface LoginParamsType {
-  username: string;
+  userName: string;
   password: string;
   mobile: string;
   captcha: string;
