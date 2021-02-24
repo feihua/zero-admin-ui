@@ -4,7 +4,7 @@ import { notification } from 'antd';
 import { history, RequestConfig } from 'umi';
 import RightContent from '@/components/RightContent';
 // import Footer from '@/components/Footer';
-import { ResponseError } from 'umi-request';
+import {RequestInterceptor, RequestOptionsInit, ResponseError} from 'umi-request';
 import { queryCurrent } from './services/user';
 import defaultSettings from '../config/defaultSettings';
 
@@ -102,6 +102,22 @@ const errorHandler = (error: ResponseError) => {
   throw error;
 };
 
+const addToken :RequestInterceptor = (
+  url :string,
+  options:RequestOptionsInit
+) => {
+  options.headers = {
+    Authorization : "Bearer " + localStorage.getItem('token')
+  }
+  return {
+    url,
+    options
+  }
+}
+
 export const request: RequestConfig = {
   errorHandler,
+  requestInterceptors:[
+    addToken
+  ]
 };

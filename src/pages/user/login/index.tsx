@@ -41,7 +41,7 @@ const goto = () => {
 
 const Login: React.FC<{}> = () => {
   const [submitting, setSubmitting] = useState(false);
-  const [userLoginState, setUserLoginState] = useState<API.LoginStateType>({});
+  const [userLoginState, setUserLoginState] = useState<API.LoginStateType>({status: "error", token: "", type: ""});
   const [type, setType] = useState<string>('account');
   const intl = useIntl();
 
@@ -51,6 +51,7 @@ const Login: React.FC<{}> = () => {
       // 登录
       const msg = await fakeAccountLogin({ ...values, type });
       if (msg.status === 'ok') {
+        localStorage.setItem("token", msg.token);
         message.success('登录成功！');
         goto();
         return;
