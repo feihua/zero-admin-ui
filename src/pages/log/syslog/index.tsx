@@ -1,5 +1,5 @@
-import {ExclamationCircleOutlined  } from '@ant-design/icons';
-import {Button, message, Input, Drawer, Modal} from 'antd';
+import { ExclamationCircleOutlined } from '@ant-design/icons';
+import { Button, message, Input, Drawer, Modal } from 'antd';
 import React, { useState, useRef } from 'react';
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
@@ -60,7 +60,7 @@ const handleRemoveOne = async (id: number) => {
   const hide = message.loading('正在删除');
   try {
     await removeRuleOne({
-      id:id
+      id: id,
     });
     hide();
     message.success('删除成功，即将刷新');
@@ -101,18 +101,17 @@ const TableList: React.FC<{}> = () => {
   const [row, setRow] = useState<TableListItem>();
   const [selectedRowsState, setSelectedRows] = useState<TableListItem[]>([]);
 
-  const showDeleteConfirm =  (id: number) => {
+  const showDeleteConfirm = (id: number) => {
     confirm({
       title: '是否删除记录?',
-      icon: <ExclamationCircleOutlined/>,
+      icon: <ExclamationCircleOutlined />,
       content: '删除的记录不能恢复,请确认!',
       onOk() {
-        handleRemoveOne(id).then(r => {
+        handleRemoveOne(id).then((r) => {
           actionRef.current?.reloadAndRest?.();
-        })
+        });
       },
-      onCancel() {
-      },
+      onCancel() {},
     });
   };
 
@@ -135,6 +134,7 @@ const TableList: React.FC<{}> = () => {
     {
       title: '执行时间(毫秒)',
       dataIndex: 'time',
+      hideInSearch: true,
     },
     {
       title: 'IP地址',
@@ -146,6 +146,7 @@ const TableList: React.FC<{}> = () => {
       sorter: true,
       valueType: 'dateTime',
       hideInForm: true,
+      hideInSearch: true,
       renderFormItem: (item, { defaultRender, ...rest }, form) => {
         const status = form.getFieldValue('status');
         if (`${status}` === '0') {
@@ -164,9 +165,16 @@ const TableList: React.FC<{}> = () => {
       valueType: 'option',
       render: (_, record) => (
         <>
-          <Button type="primary" danger  size="small" onClick={()=>{
-            showDeleteConfirm(record.id)
-          }}>删除</Button>
+          <Button
+            type="primary"
+            danger
+            size="small"
+            onClick={() => {
+              showDeleteConfirm(record.id);
+            }}
+          >
+            删除
+          </Button>
         </>
       ),
     },
@@ -178,8 +186,9 @@ const TableList: React.FC<{}> = () => {
         headerTitle="查询表格"
         actionRef={actionRef}
         rowKey="id"
-        search={{
-          labelWidth: 120,
+        search={false}
+        options={{
+          search: true,
         }}
         // toolBarRender={() => [
         //   <Button type="primary" onClick={() => handleModalVisible(true)}>

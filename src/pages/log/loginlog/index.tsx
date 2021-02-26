@@ -1,5 +1,5 @@
-import { ExclamationCircleOutlined  } from '@ant-design/icons';
-import {Button, message, Input, Drawer, Modal} from 'antd';
+import { ExclamationCircleOutlined } from '@ant-design/icons';
+import { Button, message, Input, Drawer, Modal } from 'antd';
 import React, { useState, useRef } from 'react';
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
@@ -60,7 +60,7 @@ const handleRemoveOne = async (id: number) => {
   const hide = message.loading('正在删除');
   try {
     await removeRuleOne({
-      id:id
+      id: id,
     });
     hide();
     message.success('删除成功，即将刷新');
@@ -101,18 +101,17 @@ const TableList: React.FC<{}> = () => {
   const [row, setRow] = useState<TableListItem>();
   const [selectedRowsState, setSelectedRows] = useState<TableListItem[]>([]);
 
-  const showDeleteConfirm =  (id: number) => {
+  const showDeleteConfirm = (id: number) => {
     confirm({
       title: '是否删除记录?',
-      icon: <ExclamationCircleOutlined/>,
+      icon: <ExclamationCircleOutlined />,
       content: '删除的记录不能恢复,请确认!',
       onOk() {
-        handleRemoveOne(id).then(r => {
+        handleRemoveOne(id).then((r) => {
           actionRef.current?.reloadAndRest?.();
-        })
+        });
       },
-      onCancel() {
-      },
+      onCancel() {},
     });
   };
 
@@ -127,10 +126,12 @@ const TableList: React.FC<{}> = () => {
     {
       title: 'IP地址',
       dataIndex: 'ip',
+      hideInSearch: true,
     },
     {
       title: '创建人',
       dataIndex: 'create_by',
+      hideInSearch: true,
     },
     {
       title: '创建时间',
@@ -138,37 +139,25 @@ const TableList: React.FC<{}> = () => {
       sorter: true,
       valueType: 'dateTime',
       hideInForm: true,
+      hideInSearch: true,
     },
-    {
-      title: '更新人',
-      dataIndex: 'last_update_by',
-    },
-    {
-      title: '更新时间',
-      dataIndex: 'last_update_time',
-      sorter: true,
-      valueType: 'dateTime',
-      hideInForm: true,
-      renderFormItem: (item, { defaultRender, ...rest }, form) => {
-        const status = form.getFieldValue('status');
-        if (`${status}` === '0') {
-          return false;
-        }
-        if (`${status}` === '3') {
-          return <Input {...rest} placeholder="请输入异常原因！" />;
-        }
-        return defaultRender(item);
-      },
-    },
+
     {
       title: '操作',
       dataIndex: 'option',
       valueType: 'option',
       render: (_, record) => (
         <>
-          <Button type="primary" danger  size="small" onClick={()=>{
-            showDeleteConfirm(record.id)
-          }}>删除</Button>
+          <Button
+            type="primary"
+            danger
+            size="small"
+            onClick={() => {
+              showDeleteConfirm(record.id);
+            }}
+          >
+            删除
+          </Button>
         </>
       ),
     },
@@ -180,8 +169,9 @@ const TableList: React.FC<{}> = () => {
         headerTitle="查询表格"
         actionRef={actionRef}
         rowKey="id"
-        search={{
-          labelWidth: 120,
+        search={false}
+        options={{
+          search: true,
         }}
         // toolBarRender={() => [
         //   <Button type="primary" onClick={() => handleModalVisible(true)}>

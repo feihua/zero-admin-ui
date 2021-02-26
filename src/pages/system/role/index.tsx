@@ -1,5 +1,5 @@
-import { PlusOutlined, ExclamationCircleOutlined  } from '@ant-design/icons';
-import {Button, Divider, message, Input, Drawer, Modal} from 'antd';
+import { PlusOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
+import { Button, Divider, message, Input, Drawer, Modal } from 'antd';
 import React, { useState, useRef } from 'react';
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
@@ -61,7 +61,7 @@ const handleRemoveOne = async (id: number) => {
   const hide = message.loading('正在删除');
   try {
     await removeRuleOne({
-      id:id
+      id: id,
     });
     hide();
     message.success('删除成功，即将刷新');
@@ -104,18 +104,17 @@ const TableList: React.FC<{}> = () => {
   const [row, setRow] = useState<TableListItem>();
   const [selectedRowsState, setSelectedRows] = useState<TableListItem[]>([]);
 
-  const showDeleteConfirm =  (id: number) => {
+  const showDeleteConfirm = (id: number) => {
     confirm({
       title: '是否删除记录?',
-      icon: <ExclamationCircleOutlined/>,
+      icon: <ExclamationCircleOutlined />,
       content: '删除的记录不能恢复,请确认!',
       onOk() {
-        handleRemoveOne(id).then(r => {
+        handleRemoveOne(id).then((r) => {
           actionRef.current?.reloadAndRest?.();
-        })
+        });
       },
-      onCancel() {
-      },
+      onCancel() {},
     });
   };
 
@@ -124,6 +123,7 @@ const TableList: React.FC<{}> = () => {
       title: '编号',
       dataIndex: 'id',
       hideInForm: true,
+      hideInSearch: true,
     },
     {
       title: '角色名称',
@@ -144,6 +144,7 @@ const TableList: React.FC<{}> = () => {
       title: '备注',
       dataIndex: 'remark',
       valueType: 'textarea',
+      hideInSearch: true,
       formItemProps: {
         rules: [
           {
@@ -166,6 +167,7 @@ const TableList: React.FC<{}> = () => {
       title: '创建人',
       dataIndex: 'create_by',
       hideInForm: true,
+      hideInSearch: true,
     },
     {
       title: '创建时间',
@@ -173,6 +175,7 @@ const TableList: React.FC<{}> = () => {
       sorter: true,
       valueType: 'dateTime',
       hideInForm: true,
+      hideInSearch: true,
       renderFormItem: (item, { defaultRender, ...rest }, form) => {
         const status = form.getFieldValue('status');
         if (`${status}` === '0') {
@@ -188,6 +191,7 @@ const TableList: React.FC<{}> = () => {
       title: '更新人',
       dataIndex: 'last_update_by',
       hideInForm: true,
+      hideInSearch: true,
     },
     {
       title: '更新时间',
@@ -195,6 +199,7 @@ const TableList: React.FC<{}> = () => {
       sorter: true,
       valueType: 'dateTime',
       hideInForm: true,
+      hideInSearch: true,
       renderFormItem: (item, { defaultRender, ...rest }, form) => {
         const status = form.getFieldValue('status');
         if (`${status}` === '0') {
@@ -212,20 +217,38 @@ const TableList: React.FC<{}> = () => {
       valueType: 'option',
       render: (_, record) => (
         <>
-          <Button type="primary" size="small" onClick={() => {
-            handleUpdateModalVisible(true);
-            setStepFormValues(record);
-          }}>编辑</Button>
+          <Button
+            type="primary"
+            size="small"
+            onClick={() => {
+              handleUpdateModalVisible(true);
+              setStepFormValues(record);
+            }}
+          >
+            编辑
+          </Button>
           <Divider type="vertical" />
-          <Button type="primary" size="small" onClick={() => {
-            handleUpdateMenuModalVisible(true);
-            setMenuStepFormValues(record);
-          }}
-          >分配菜单</Button>
+          <Button
+            type="primary"
+            size="small"
+            onClick={() => {
+              handleUpdateMenuModalVisible(true);
+              setMenuStepFormValues(record);
+            }}
+          >
+            分配菜单
+          </Button>
           <Divider type="vertical" />
-          <Button type="primary" danger  size="small" onClick={()=>{
-            showDeleteConfirm(record.id)
-          }}>删除</Button>
+          <Button
+            type="primary"
+            danger
+            size="small"
+            onClick={() => {
+              showDeleteConfirm(record.id);
+            }}
+          >
+            删除
+          </Button>
         </>
       ),
     },
