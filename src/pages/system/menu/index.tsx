@@ -8,6 +8,7 @@ import CreateForm from './components/CreateForm';
 import UpdateForm, { FormValueType } from './components/UpdateForm';
 import { TableListItem } from './data.d';
 import { queryRule, updateRule, addRule, removeRule, removeRuleOne } from './service';
+import {tree} from "@/utils/utils";
 
 const { confirm } = Modal;
 
@@ -244,6 +245,8 @@ const TableList: React.FC<{}> = () => {
         rowSelection={{
           onChange: (_, selectedRows) => setSelectedRows(selectedRows),
         }}
+        postData={(data => tree(data,0,"parent_id"))}
+        pagination={false}
       />
       {selectedRowsState?.length > 0 && (
         <FooterToolbar
