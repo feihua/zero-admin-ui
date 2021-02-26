@@ -7,6 +7,10 @@ import RightContent from '@/components/RightContent';
 import {RequestInterceptor, RequestOptionsInit, ResponseError} from 'umi-request';
 import { queryCurrent } from './services/user';
 import defaultSettings from '../config/defaultSettings';
+import {tree} from "@/utils/utils";
+// @ts-ignore
+import { SmileOutlined, HeartOutlined } from '@ant-design/icons';
+
 
 export async function getInitialState(): Promise<{
   settings?: LayoutSettings;
@@ -16,6 +20,9 @@ export async function getInitialState(): Promise<{
   const fetchUserInfo = async () => {
     try {
       const currentUser = await queryCurrent();
+
+      localStorage.setItem("menuTree1", JSON.stringify(tree(currentUser.menuTree,0,"parent_id")));
+      localStorage.setItem("menuTree", JSON.stringify(currentUser.menuTree));
       return currentUser;
     } catch (error) {
       history.push('/user/login');
@@ -46,6 +53,9 @@ export const layout = ({
     rightContentRender: () => <RightContent />,
     disableContentMargin: false,
     // footerRender: () => <Footer />,
+    // menuDataRender: () => tree(JSON.parse(localStorage.getItem('menuTree')),0,"parent_id"),
+    // menuDataRender: () => tree(localStorage.getItem('menuTree'),0,"parent_id"),
+    menuDataRender: () => menuDataRender(),
     onPageChange: () => {
       const { currentUser } = initialState;
       const { location } = history;
@@ -58,6 +68,11 @@ export const layout = ({
     ...initialState?.settings,
   };
 };
+
+const menuDataRender: any = () => {
+  let item = localStorage.getItem("menuTree")+'';
+  return tree(JSON.parse(item), 0, "parent_id");
+}
 
 const codeMessage = {
   200: '服务器成功返回请求的数据。',

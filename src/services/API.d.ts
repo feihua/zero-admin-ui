@@ -12,6 +12,7 @@ declare namespace API {
     userid?: string;
     access?: 'user' | 'guest' | 'admin';
     unreadCount?: number;
+    menuTree?:[];
   }
 
   export interface LoginStateType {

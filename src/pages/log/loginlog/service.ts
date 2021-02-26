@@ -2,13 +2,13 @@ import { request } from 'umi';
 import { TableListParams, TableListItem } from './data.d';
 
 export async function queryRule(params?: TableListParams) {
-  return request('/api/loginLog/list', {
+  return request('/api/sys/loginLog/list', {
     params,
   });
 }
 
 export async function removeRuleOne(params: { id: number }) {
-  return request('/api/loginLog/delete', {
+  return request('/api/sys/loginLog/delete', {
     method: 'POST',
     data: {
       ...params,
@@ -18,7 +18,7 @@ export async function removeRuleOne(params: { id: number }) {
 }
 
 export async function removeRule(params: { key: number[] }) {
-  return request('/api/loginLog/delete', {
+  return request('/api/sys/loginLog/delete', {
     method: 'POST',
     data: {
       ...params,
