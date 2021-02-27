@@ -1,5 +1,5 @@
 import { request } from 'umi';
-import {TableListParams} from './data.d';
+import { TableListParams } from './data.d';
 
 export async function querySysLog(params?: TableListParams) {
   return request('/api/sys/sysLog/list', {
@@ -12,7 +12,6 @@ export async function removeSysLogOne(params: { id: number }) {
     method: 'POST',
     data: {
       ...params,
-      method: 'delete',
     },
   });
 }
@@ -22,7 +21,6 @@ export async function removeSysLog(params: { key: number[] }) {
     method: 'POST',
     data: {
       ...params,
-      method: 'delete',
     },
   });
 }

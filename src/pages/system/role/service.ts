@@ -12,7 +12,6 @@ export async function removeRoleOne(params: { id: number }) {
     method: 'POST',
     data: {
       ...params,
-      method: 'delete',
     },
   });
 }
@@ -22,7 +21,6 @@ export async function removeRole(params: { key: number[] }) {
     method: 'POST',
     data: {
       ...params,
-      method: 'delete',
     },
   });
 }
@@ -32,7 +30,6 @@ export async function addRole(params: TableListItem) {
     method: 'POST',
     data: {
       ...params,
-      method: 'post',
     },
   });
 }
@@ -42,7 +39,6 @@ export async function updateRule(params: TableListParams) {
     method: 'POST',
     data: {
       ...params,
-      method: 'update',
     },
   });
 }
