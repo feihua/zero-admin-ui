@@ -4,11 +4,12 @@ import React, { useState, useRef } from 'react';
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
 import ProDescriptions from '@ant-design/pro-descriptions';
-import CreateForm from './components/CreateForm';
 import EditRoleForm from './components/EditRoleForm';
 import UpdateForm, { FormValueType } from './components/UpdateForm';
 import { TableListItem } from './data.d';
-import { queryRule, updateRule, addRule, removeRule, removeRuleOne } from './service';
+import {queryRule, updateUser, addUser, removeUser, removeUserOne} from './service';
+
+import ProForm, {ModalForm, ProFormText} from '@ant-design/pro-form';
 
 const { confirm } = Modal;
 
@@ -19,7 +20,7 @@ const { confirm } = Modal;
 const handleAdd = async (fields: TableListItem) => {
   const hide = message.loading('正在添加');
   try {
-    await addRule({ ...fields });
+    await addUser({...fields});
     hide();
     message.success('添加成功');
     return true;
@@ -35,9 +36,9 @@ const handleAdd = async (fields: TableListItem) => {
  * @param fields
  */
 const handleUpdate = async (fields: FormValueType) => {
-  const hide = message.loading('正在配置');
+  const hide = message.loading('正在更新');
   try {
-    await updateRule({
+    await updateUser({
       name: fields.name,
       nick_name: fields.nick_name,
       email: fields.email,
@@ -47,11 +48,11 @@ const handleUpdate = async (fields: FormValueType) => {
     });
     hide();
 
-    message.success('配置成功');
+    message.success('更新成功');
     return true;
   } catch (error) {
     hide();
-    message.error('配置失败请重试！');
+    message.error('更新失败请重试！');
     return false;
   }
 };
@@ -63,8 +64,8 @@ const handleUpdate = async (fields: FormValueType) => {
 const handleRemoveOne = async (id: number) => {
   const hide = message.loading('正在删除');
   try {
-    await removeRuleOne({
-      id: id,
+    await removeUserOne({
+      id,
     });
     hide();
     message.success('删除成功，即将刷新');
@@ -84,7 +85,7 @@ const handleRemove = async (selectedRows: TableListItem[]) => {
   const hide = message.loading('正在删除');
   if (!selectedRows) return true;
   try {
-    await removeRule({
+    await removeUser({
       key: selectedRows.map((row) => row.id),
     });
     hide();
@@ -125,20 +126,19 @@ const TableList: React.FC<{}> = () => {
     {
       title: '编号',
       dataIndex: 'id',
-      hideInForm: true,
       hideInSearch: true,
     },
     {
       title: '用户名',
       dataIndex: 'name',
-      formItemProps: {
-        rules: [
-          {
-            required: true,
-            message: '用户名为必填项',
-          },
-        ],
-      },
+      // formItemProps: {
+      //   rules: [
+      //     {
+      //       required: true,
+      //       message: '用户名为必填项',
+      //     },
+      //   ],
+      // },
       render: (dom, entity) => {
         return <a onClick={() => setRow(entity)}>{dom}</a>;
       },
@@ -146,43 +146,42 @@ const TableList: React.FC<{}> = () => {
     {
       title: '昵称',
       dataIndex: 'nick_name',
-      formItemProps: {
-        rules: [
-          {
-            required: true,
-            message: '昵称为必填项',
-          },
-        ],
-      },
+      // formItemProps: {
+      //   rules: [
+      //     {
+      //       required: true,
+      //       message: '昵称为必填项',
+      //     },
+      //   ],
+      // },
     },
     {
       title: '手机号',
       dataIndex: 'mobile',
-      formItemProps: {
-        rules: [
-          {
-            required: true,
-            message: '手机号为必填项',
-          },
-        ],
-      },
+      // formItemProps: {
+      //   rules: [
+      //     {
+      //       required: true,
+      //       message: '手机号为必填项',
+      //     },
+      //   ],
+      // },
     },
     {
       title: '邮箱',
       dataIndex: 'email',
-      formItemProps: {
-        rules: [
-          {
-            required: true,
-            message: '邮箱为必填项',
-          },
-        ],
-      },
+      // formItemProps: {
+      //   rules: [
+      //     {
+      //       required: true,
+      //       message: '邮箱为必填项',
+      //     },
+      //   ],
+      // },
     },
     {
       title: '状态',
       dataIndex: 'status',
-      hideInForm: true,
       valueEnum: {
         0: { text: '禁用', status: 'Error' },
         1: { text: '正常', status: 'Success' },
@@ -191,26 +190,24 @@ const TableList: React.FC<{}> = () => {
     {
       title: '部门',
       dataIndex: 'dept_id',
-      formItemProps: {
-        rules: [
-          {
-            required: true,
-            message: '部门为必填项',
-          },
-        ],
-      },
+      // formItemProps: {
+      //   rules: [
+      //     {
+      //       required: true,
+      //       message: '部门为必填项',
+      //     },
+      //   ],
+      // },
     },
     {
       title: '创建人',
       dataIndex: 'create_by',
-      hideInForm: true,
       hideInSearch: true,
     },
     {
       title: '创建时间',
       dataIndex: 'create_time',
       valueType: 'dateTime',
-      hideInForm: true,
       hideInSearch: true,
       renderFormItem: (item, { defaultRender, ...rest }, form) => {
         const status = form.getFieldValue('status');
@@ -226,14 +223,12 @@ const TableList: React.FC<{}> = () => {
     {
       title: '更新人',
       dataIndex: 'last_update_by',
-      hideInForm: true,
       hideInSearch: true,
     },
     {
       title: '更新时间',
       dataIndex: 'last_update_time',
       valueType: 'dateTime',
-      hideInForm: true,
       hideInSearch: true,
       renderFormItem: (item, { defaultRender, ...rest }, form) => {
         const status = form.getFieldValue('status');
@@ -274,9 +269,6 @@ const TableList: React.FC<{}> = () => {
             分配角色
           </Button>
           <Divider type="vertical" />
-          {/*<Button type="primary" danger  size="small" onClick={async() => {*/}
-          {/*  await handleRemoveOne(record.id)*/}
-          {/*}}>删除</Button>*/}
           <Button
             type="primary"
             danger
@@ -317,9 +309,6 @@ const TableList: React.FC<{}> = () => {
           extra={
             <div>
               已选择 <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a> 项&nbsp;&nbsp;
-              <span>
-                服务调用次数总计 {selectedRowsState.reduce((pre, item) => pre + item.callNo, 0)} 万
-              </span>
             </div>
           }
         >
@@ -332,25 +321,63 @@ const TableList: React.FC<{}> = () => {
           >
             批量删除
           </Button>
-          <Button type="primary">批量审批</Button>
         </FooterToolbar>
       )}
-      <CreateForm onCancel={() => handleModalVisible(false)} modalVisible={createModalVisible}>
-        <ProTable<TableListItem, TableListItem>
-          onSubmit={async (value) => {
-            const success = await handleAdd(value);
-            if (success) {
-              handleModalVisible(false);
-              if (actionRef.current) {
-                actionRef.current.reload();
-              }
+
+      <ModalForm
+        title="新建用户"
+        width="480px"
+        visible={createModalVisible}
+        onVisibleChange={handleModalVisible}
+        onFinish={async (value) => {
+          const success = await handleAdd(value as TableListItem);
+          if (success) {
+            handleModalVisible(false);
+            if (actionRef.current) {
+              actionRef.current.reload();
             }
-          }}
-          rowKey="id"
-          type="form"
-          columns={columns}
+          }
+        }}
+      >
+        <ProForm.Group>
+          <ProFormText
+            name="name"
+            label="用户名"
+            rules={[{required: true, message: '请输入用户名！'}]}
+          />
+          <ProFormText
+            name="nick_name"
+            label="昵称"
+            rules={[{required: true, message: '请输入昵称！'}]}
         />
-      </CreateForm>
+        </ProForm.Group>
+        <ProForm.Group>
+          <ProFormText
+            name="mobile"
+            label="手机号码"
+            rules={[{required: true, message: '请输入手机号码！'}]}
+          />
+
+          <ProFormText
+            name="email"
+            label="邮箱"
+            rules={[{required: true, message: '请输入邮箱！'}]}
+          />
+        </ProForm.Group>
+        <ProForm.Group>
+          <ProFormText
+            name="dept_id"
+            label="部门"
+            rules={[{required: true, message: '请输入部门！'}]}
+          />
+          <ProFormText
+            name="status"
+            label="状态"
+            rules={[{required: true, message: '请输入部门！'}]}
+          />
+        </ProForm.Group>
+      </ModalForm>
+
       {stepFormValues && Object.keys(stepFormValues).length ? (
         <UpdateForm
           onSubmit={async (value) => {

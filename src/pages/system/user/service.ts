@@ -7,7 +7,7 @@ export async function queryRule(params?: TableListParams) {
   });
 }
 
-export async function removeRuleOne(params: { id: number }) {
+export async function removeUserOne(params: { id: number }) {
   return request('/api/sys/user/delete', {
     method: 'POST',
     data: {
@@ -17,8 +17,8 @@ export async function removeRuleOne(params: { id: number }) {
   });
 }
 
-export async function removeRule(params: { key: number[] }) {
-  return request('/api/sys/rule/delete', {
+export async function removeUser(params: { key: number[] }) {
+  return request('/api/sys/user/delete', {
     method: 'POST',
     data: {
       ...params,
@@ -27,7 +27,7 @@ export async function removeRule(params: { key: number[] }) {
   });
 }
 
-export async function addRule(params: TableListItem) {
+export async function addUser(params: TableListItem) {
   return request('/api/sys/user/add', {
     method: 'POST',
     data: {
@@ -37,7 +37,7 @@ export async function addRule(params: TableListItem) {
   });
 }
 
-export async function updateRule(params: TableListParams) {
+export async function updateUser(params: TableListParams) {
   return request('/api/sys/user/update', {
     method: 'POST',
     data: {

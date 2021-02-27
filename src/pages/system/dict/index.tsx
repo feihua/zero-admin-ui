@@ -4,10 +4,11 @@ import React, { useState, useRef } from 'react';
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
 import ProDescriptions from '@ant-design/pro-descriptions';
-import CreateForm from './components/CreateForm';
 import UpdateForm, { FormValueType } from './components/UpdateForm';
 import { TableListItem } from './data.d';
-import { queryRule, updateRule, addRule, removeRule, removeRuleOne } from './service';
+import {queryDict, updateRule, addDict, removeDict, removeDictOne} from './service';
+
+import ProForm, {ModalForm, ProFormText, ProFormTextArea} from '@ant-design/pro-form';
 
 const { confirm } = Modal;
 
@@ -18,7 +19,7 @@ const { confirm } = Modal;
 const handleAdd = async (fields: TableListItem) => {
   const hide = message.loading('正在添加');
   try {
-    await addRule({ ...fields });
+    await addDict({...fields});
     hide();
     message.success('添加成功');
     return true;
@@ -34,7 +35,7 @@ const handleAdd = async (fields: TableListItem) => {
  * @param fields
  */
 const handleUpdate = async (fields: FormValueType) => {
-  const hide = message.loading('正在配置');
+  const hide = message.loading('正在更新');
   try {
     await updateRule({
       value: fields.value,
@@ -47,11 +48,11 @@ const handleUpdate = async (fields: FormValueType) => {
     });
     hide();
 
-    message.success('配置成功');
+    message.success('更新成功');
     return true;
   } catch (error) {
     hide();
-    message.error('配置失败请重试！');
+    message.error('更新失败请重试！');
     return false;
   }
 };
@@ -63,8 +64,8 @@ const handleUpdate = async (fields: FormValueType) => {
 const handleRemoveOne = async (id: number) => {
   const hide = message.loading('正在删除');
   try {
-    await removeRuleOne({
-      id: id,
+    await removeDictOne({
+      id,
     });
     hide();
     message.success('删除成功，即将刷新');
@@ -84,7 +85,7 @@ const handleRemove = async (selectedRows: TableListItem[]) => {
   const hide = message.loading('正在删除');
   if (!selectedRows) return true;
   try {
-    await removeRule({
+    await removeDict({
       key: selectedRows.map((row) => row.id),
     });
     hide();
@@ -123,7 +124,6 @@ const TableList: React.FC<{}> = () => {
     {
       title: '编号',
       dataIndex: 'id',
-      hideInForm: true,
       hideInSearch: true,
     },
     {
@@ -137,40 +137,40 @@ const TableList: React.FC<{}> = () => {
     {
       title: '标签名',
       dataIndex: 'label',
-      formItemProps: {
-        rules: [
-          {
-            required: true,
-            message: '标签名为必填项',
-          },
-        ],
-      },
+      // formItemProps: {
+      //   rules: [
+      //     {
+      //       required: true,
+      //       message: '标签名为必填项',
+      //     },
+      //   ],
+      // },
     },
     {
       title: '类型',
       dataIndex: 'type',
-      formItemProps: {
-        rules: [
-          {
-            required: true,
-            message: '类型为必填项',
-          },
-        ],
-      },
+      // formItemProps: {
+      //   rules: [
+      //     {
+      //       required: true,
+      //       message: '类型为必填项',
+      //     },
+      //   ],
+      // },
     },
     {
       title: '描述',
       dataIndex: 'description',
       valueType: 'textarea',
       hideInSearch: true,
-      formItemProps: {
-        rules: [
-          {
-            required: true,
-            message: '描述为必填项',
-          },
-        ],
-      },
+      // formItemProps: {
+      //   rules: [
+      //     {
+      //       required: true,
+      //       message: '描述为必填项',
+      //     },
+      //   ],
+      // },
     },
     {
       title: '排序',
@@ -203,7 +203,6 @@ const TableList: React.FC<{}> = () => {
     {
       title: '创建人',
       dataIndex: 'create_by',
-      hideInForm: true,
       hideInSearch: true,
     },
     {
@@ -211,7 +210,6 @@ const TableList: React.FC<{}> = () => {
       dataIndex: 'create_time',
       sorter: true,
       valueType: 'dateTime',
-      hideInForm: true,
       hideInSearch: true,
       renderFormItem: (item, { defaultRender, ...rest }, form) => {
         const status = form.getFieldValue('status');
@@ -294,7 +292,7 @@ const TableList: React.FC<{}> = () => {
             <PlusOutlined /> 新建
           </Button>,
         ]}
-        request={(params, sorter, filter) => queryRule({ ...params, sorter, filter })}
+        request={(params, sorter, filter) => queryDict({...params, sorter, filter})}
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows) => setSelectedRows(selectedRows),
@@ -305,9 +303,6 @@ const TableList: React.FC<{}> = () => {
           extra={
             <div>
               已选择 <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a> 项&nbsp;&nbsp;
-              <span>
-                服务调用次数总计 {selectedRowsState.reduce((pre, item) => pre + item.callNo, 0)} 万
-              </span>
             </div>
           }
         >
@@ -320,25 +315,60 @@ const TableList: React.FC<{}> = () => {
           >
             批量删除
           </Button>
-          <Button type="primary">批量审批</Button>
         </FooterToolbar>
       )}
-      <CreateForm onCancel={() => handleModalVisible(false)} modalVisible={createModalVisible}>
-        <ProTable<TableListItem, TableListItem>
-          onSubmit={async (value) => {
-            const success = await handleAdd(value);
-            if (success) {
-              handleModalVisible(false);
-              if (actionRef.current) {
-                actionRef.current.reload();
-              }
+      <ModalForm
+        title="新建字典"
+        width="500px"
+        visible={createModalVisible}
+        onVisibleChange={handleModalVisible}
+        onFinish={async (value) => {
+          const success = await handleAdd(value as TableListItem);
+          if (success) {
+            handleModalVisible(false);
+            if (actionRef.current) {
+              actionRef.current.reload();
             }
-          }}
-          rowKey="id"
-          type="form"
-          columns={columns}
+          }
+        }}
+      >
+        <ProForm.Group>
+          <ProFormText
+            name="value"
+            label="数据值"
+            rules={[{required: true, message: '请输入数据值！'}]}
+          />
+          <ProFormText
+            name="type"
+            label="类型"
+            rules={[{required: true, message: '请输入类型！'}]}
+          />
+        </ProForm.Group>
+        <ProForm.Group>
+          <ProFormText
+            name="label"
+            label="标签名"
+            rules={[{required: true, message: '请输入标签名！'}]}
+          />
+          <ProFormText
+            name="sort"
+            label="排序"
+            rules={[{required: true, message: '请输入标签名！'}]}
+          />
+        </ProForm.Group>
+        <ProFormTextArea
+          name="description"
+          label="描述"
+          placeholder="请输入至少五个字符"
+          rules={[{required: true, message: '请输入至少五个字符的描述！', min: 4}]}
         />
-      </CreateForm>
+        <ProFormTextArea
+          name="remarks"
+          label="备注"
+          placeholder="请输入至少五个字符"
+          rules={[{required: true, message: '请输入至少五个字符的备注！', min: 4}]}
+        />
+      </ModalForm>
       {stepFormValues && Object.keys(stepFormValues).length ? (
         <UpdateForm
           onSubmit={async (value) => {

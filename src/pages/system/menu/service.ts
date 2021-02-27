@@ -1,13 +1,13 @@
 import { request } from 'umi';
 import { TableListParams, TableListItem } from './data.d';
 
-export async function queryRule(params?: TableListParams) {
+export async function queryMenu(params?: TableListParams) {
   return request('/api/sys/menu/list', {
     params,
   });
 }
 
-export async function removeRuleOne(params: { id: number }) {
+export async function removeMenuOne(params: { id: number }) {
   return request('/api/sys/menu/delete', {
     method: 'POST',
     data: {
@@ -17,7 +17,7 @@ export async function removeRuleOne(params: { id: number }) {
   });
 }
 
-export async function removeRule(params: { key: number[] }) {
+export async function removeMenu(params: { key: number[] }) {
   return request('/api/sys/menu/delete', {
     method: 'POST',
     data: {
@@ -27,7 +27,7 @@ export async function removeRule(params: { key: number[] }) {
   });
 }
 
-export async function addRule(params: TableListItem) {
+export async function addMenu(params: TableListItem) {
   return request('/api/sys/menu/add', {
     method: 'POST',
     data: {

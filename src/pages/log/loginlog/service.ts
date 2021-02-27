@@ -1,13 +1,13 @@
 import { request } from 'umi';
-import { TableListParams, TableListItem } from './data.d';
+import {TableListParams} from './data.d';
 
-export async function queryRule(params?: TableListParams) {
+export async function queryLoginLog(params?: TableListParams) {
   return request('/api/sys/loginLog/list', {
     params,
   });
 }
 
-export async function removeRuleOne(params: { id: number }) {
+export async function removeLoginLogOne(params: { id: number }) {
   return request('/api/sys/loginLog/delete', {
     method: 'POST',
     data: {
@@ -17,32 +17,12 @@ export async function removeRuleOne(params: { id: number }) {
   });
 }
 
-export async function removeRule(params: { key: number[] }) {
+export async function removeLoginLog(params: { key: number[] }) {
   return request('/api/sys/loginLog/delete', {
     method: 'POST',
     data: {
       ...params,
       method: 'delete',
-    },
-  });
-}
-
-export async function addRule(params: TableListItem) {
-  return request('/api/rule/add', {
-    method: 'POST',
-    data: {
-      ...params,
-      method: 'post',
-    },
-  });
-}
-
-export async function updateRule(params: TableListParams) {
-  return request('/api/rule/update', {
-    method: 'POST',
-    data: {
-      ...params,
-      method: 'update',
     },
   });
 }
