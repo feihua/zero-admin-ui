@@ -1,7 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Modal, Tree } from 'antd';
 import { FormValueType } from '@/pages/system/user/components/UpdateForm';
 import { TableListItem } from '@/pages/system/user/data';
+
+import { queryMenu } from '../../menu/service';
+import { tree } from '@/utils/utils';
 
 interface CreateFormProps {
   updateMenuModalVisible: boolean;
@@ -10,7 +13,7 @@ interface CreateFormProps {
   values: Partial<TableListItem>;
 }
 
-const treeData = [
+const treeData1 = [
   {
     title: '0-0',
     key: '0-0',
@@ -57,8 +60,9 @@ const treeData = [
 const MenuForm: React.FC<CreateFormProps> = (props) => {
   const { updateMenuModalVisible, onCancel, onSubmit } = props;
 
-  // const [expandedKeys, setExpandedKeys] = useState<React.Key[]>(['0-0-0', '0-0-1']);
-  const [checkedKeys, setCheckedKeys] = useState<React.Key[]>(['0-0-0']);
+  const [treeData, setTreeData] = useState([]);
+  // const [expandedKeys, setExpandedKeys] = useState<React.Key[]>([]);
+  const [checkedKeys, setCheckedKeys] = useState<React.Key[]>([]);
   const [selectedKeys, setSelectedKeys] = useState<React.Key[]>([]);
   // const [autoExpandParent, setAutoExpandParent] = useState<boolean>(true);
 
@@ -70,6 +74,15 @@ const MenuForm: React.FC<CreateFormProps> = (props) => {
   //   // setExpandedKeys(expandedKeys);
   //   setAutoExpandParent(false);
   // };
+
+  useEffect(() => {
+    queryMenu().then((res) => {
+      let tr = tree(res.data, 0, 'parent_id');
+      // @ts-ignore
+      setTreeData(tr);
+      console.log(tr);
+    });
+  }, []);
 
   // eslint-disable-next-line @typescript-eslint/no-shadow
   const onCheck = (checkedKeys: React.Key[]) => {
@@ -97,7 +110,7 @@ const MenuForm: React.FC<CreateFormProps> = (props) => {
     >
       <Tree
         checkable
-        defaultExpandAll
+        defaultExpandAll={true}
         // onExpand={onExpand}
         // expandedKeys={expandedKeys}
         // autoExpandParent={autoExpandParent}
