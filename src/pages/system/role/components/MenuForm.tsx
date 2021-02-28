@@ -1,8 +1,7 @@
-import React from 'react';
-import { Modal,Tree } from 'antd';
-import {FormValueType} from "@/pages/system/user/components/UpdateForm";
-import {TableListItem} from "@/pages/system/user/data";
-
+import React, { useState } from 'react';
+import { Modal, Tree } from 'antd';
+import { FormValueType } from '@/pages/system/user/components/UpdateForm';
+import { TableListItem } from '@/pages/system/user/data';
 
 interface CreateFormProps {
   updateMenuModalVisible: boolean;
@@ -56,8 +55,33 @@ const treeData = [
 ];
 
 const MenuForm: React.FC<CreateFormProps> = (props) => {
-  const { updateMenuModalVisible, onCancel,onSubmit } = props;
+  const { updateMenuModalVisible, onCancel, onSubmit } = props;
 
+  // const [expandedKeys, setExpandedKeys] = useState<React.Key[]>(['0-0-0', '0-0-1']);
+  const [checkedKeys, setCheckedKeys] = useState<React.Key[]>(['0-0-0']);
+  const [selectedKeys, setSelectedKeys] = useState<React.Key[]>([]);
+  // const [autoExpandParent, setAutoExpandParent] = useState<boolean>(true);
+
+  // eslint-disable-next-line @typescript-eslint/no-shadow
+  // const onExpand = (expandedKeys: React.Key[]) => {
+  //   console.log('onExpand', expandedKeys);
+  //   // if not set autoExpandParent to false, if children expanded, parent can not collapse.
+  //   // or, you can remove all expanded children keys.
+  //   // setExpandedKeys(expandedKeys);
+  //   setAutoExpandParent(false);
+  // };
+
+  // eslint-disable-next-line @typescript-eslint/no-shadow
+  const onCheck = (checkedKeys: React.Key[]) => {
+    console.log('onCheck', checkedKeys);
+    setCheckedKeys(checkedKeys);
+  };
+
+  // eslint-disable-next-line @typescript-eslint/no-shadow
+  const onSelect = (selectedKeys: React.Key[], info: any) => {
+    console.log('onSelect', info);
+    setSelectedKeys(selectedKeys);
+  };
 
   // @ts-ignore
   return (
@@ -77,12 +101,13 @@ const MenuForm: React.FC<CreateFormProps> = (props) => {
         // onExpand={onExpand}
         // expandedKeys={expandedKeys}
         // autoExpandParent={autoExpandParent}
-        // onCheck={onCheck}
-        // checkedKeys={checkedKeys}
-        // onSelect={onSelect}
-        // selectedKeys={selectedKeys}
+        onCheck={onCheck}
+        checkedKeys={checkedKeys}
+        onSelect={onSelect}
+        selectedKeys={selectedKeys}
         treeData={treeData}
-      />,
+      />
+      ,
     </Modal>
   );
 };

@@ -1,9 +1,8 @@
 import React from 'react';
-import { Modal,Select } from 'antd';
-import {FormValueType} from "@/pages/system/user/components/UpdateForm";
-import {TableListItem} from "@/pages/system/user/data";
+import { ModalForm, ProFormSelect, ProFormText } from '@ant-design/pro-form';
 
-const { Option } = Select;
+import { FormValueType } from '@/pages/system/user/components/UpdateForm';
+import { TableListItem } from '@/pages/system/user/data';
 
 interface CreateFormProps {
   editModalVisible: boolean;
@@ -12,44 +11,33 @@ interface CreateFormProps {
   values: Partial<TableListItem>;
 }
 
-function onChange(value: any) {
-  console.log(`selected ${value}`);
-}
-
-function onSearch(val: any) {
-  console.log('search:', val);
-}
-
 const EditRoleForm: React.FC<CreateFormProps> = (props) => {
-  const { editModalVisible, onCancel,onSubmit } = props;
-
-
   // @ts-ignore
   return (
-    <Modal
-      destroyOnClose
-      title="分配用户角色"
-      width={300}
-      visible={editModalVisible}
-      onCancel={() => onCancel()}
-      onOk={() => onSubmit}
-
-      // footer={null}
+    <ModalForm
+      title="分配角色"
+      width={480}
+      visible={props.editModalVisible}
+      onVisibleChange={() => props.onCancel()}
+      onFinish={props.onSubmit}
+      initialValues={{
+        id: props.values.id,
+      }}
     >
-      <Select
-        showSearch
-        style={{ width: 200 }}
-        placeholder="请选择角色"
-        optionFilterProp="children"
-        onChange={onChange}
-        onSearch={onSearch}
-
-      >
-        <Option value="jack">Jack</Option>
-        <Option value="lucy">Lucy</Option>
-        <Option value="tom">Tom</Option>
-      </Select>,
-    </Modal>
+      <ProFormText name="id" label="id" width="l" hidden />
+      <ProFormSelect
+        name="role_id"
+        label="角色"
+        request={async () => [
+          { label: '超级管理员', value: '1' },
+          { label: '项目经理', value: '2' },
+          { label: '开发人员', value: '3' },
+          { label: '测试人员', value: '4' },
+        ]}
+        placeholder="Please select a role"
+        rules={[{ required: true, message: 'Please select your role!' }]}
+      />
+    </ModalForm>
   );
 };
 

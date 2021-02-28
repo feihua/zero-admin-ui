@@ -7,9 +7,16 @@ import ProDescriptions from '@ant-design/pro-descriptions';
 import EditRoleForm from './components/EditRoleForm';
 import UpdateForm, { FormValueType } from './components/UpdateForm';
 import { TableListItem } from './data.d';
-import {queryRule, updateUser, addUser, removeUser, removeUserOne} from './service';
+import {
+  queryRule,
+  updateUser,
+  addUser,
+  removeUser,
+  removeUserOne,
+  updateUserRole,
+} from './service';
 
-import ProForm, {ModalForm, ProFormText} from '@ant-design/pro-form';
+import ProForm, { ModalForm, ProFormText } from '@ant-design/pro-form';
 
 const { confirm } = Modal;
 
@@ -20,7 +27,7 @@ const { confirm } = Modal;
 const handleAdd = async (fields: TableListItem) => {
   const hide = message.loading('正在添加');
   try {
-    await addUser({...fields});
+    await addUser({ ...fields });
     hide();
     message.success('添加成功');
     return true;
@@ -45,6 +52,28 @@ const handleUpdate = async (fields: FormValueType) => {
       id: fields.id,
       mobile: fields.mobile,
       dept_id: fields.dept_id,
+    });
+    hide();
+
+    message.success('更新成功');
+    return true;
+  } catch (error) {
+    hide();
+    message.error('更新失败请重试！');
+    return false;
+  }
+};
+
+/**
+ * 更新节点
+ * @param fields
+ */
+const handleUpdateRole = async (fields: FormValueType) => {
+  const hide = message.loading('正在更新');
+  try {
+    await updateUserRole({
+      id: fields.id,
+      role_id: fields.role_id,
     });
     hide();
 
@@ -343,37 +372,37 @@ const TableList: React.FC<{}> = () => {
           <ProFormText
             name="name"
             label="用户名"
-            rules={[{required: true, message: '请输入用户名！'}]}
+            rules={[{ required: true, message: '请输入用户名！' }]}
           />
           <ProFormText
             name="nick_name"
             label="昵称"
-            rules={[{required: true, message: '请输入昵称！'}]}
-        />
+            rules={[{ required: true, message: '请输入昵称！' }]}
+          />
         </ProForm.Group>
         <ProForm.Group>
           <ProFormText
             name="mobile"
             label="手机号码"
-            rules={[{required: true, message: '请输入手机号码！'}]}
+            rules={[{ required: true, message: '请输入手机号码！' }]}
           />
 
           <ProFormText
             name="email"
             label="邮箱"
-            rules={[{required: true, message: '请输入邮箱！'}]}
+            rules={[{ required: true, message: '请输入邮箱！' }]}
           />
         </ProForm.Group>
         <ProForm.Group>
           <ProFormText
             name="dept_id"
             label="部门"
-            rules={[{required: true, message: '请输入部门！'}]}
+            rules={[{ required: true, message: '请输入部门！' }]}
           />
           <ProFormText
             name="status"
             label="状态"
-            rules={[{required: true, message: '请输入部门！'}]}
+            rules={[{ required: true, message: '请输入部门！' }]}
           />
         </ProForm.Group>
       </ModalForm>
@@ -402,7 +431,7 @@ const TableList: React.FC<{}> = () => {
       {stepRoleFormValues && Object.keys(stepRoleFormValues).length ? (
         <EditRoleForm
           onSubmit={async (value) => {
-            const success = await handleUpdate(value);
+            const success = await handleUpdateRole(value);
             if (success) {
               handleEditModalVisible(false);
               setStepRoleFormValues({});

@@ -7,6 +7,12 @@ export async function queryRole(params?: TableListParams) {
   });
 }
 
+export async function queryUserRole(params?: TableListParams) {
+  return request('/api/sys/role/list', {
+    params,
+  });
+}
+
 export async function removeRoleOne(params: { id: number }) {
   return request('/api/sys/role/delete', {
     method: 'POST',

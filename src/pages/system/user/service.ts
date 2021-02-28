@@ -42,3 +42,12 @@ export async function updateUser(params: TableListParams) {
     },
   });
 }
+
+export async function updateUserRole(params: TableListParams) {
+  return request('/api/sys/user/updateUserRole', {
+    method: 'POST',
+    data: {
+      ...params,
+    },
+  });
+}
