@@ -16,7 +16,7 @@ import {
   updateUserRole,
 } from './service';
 
-import ProForm, { ModalForm, ProFormText } from '@ant-design/pro-form';
+import ProForm, { ModalForm, ProFormText,ProFormSelect,ProFormRadio} from '@ant-design/pro-form';
 
 const { confirm } = Modal;
 
@@ -52,6 +52,8 @@ const handleUpdate = async (fields: FormValueType) => {
       id: fields.id,
       mobile: fields.mobile,
       dept_id: fields.dept_id,
+      status: fields.status,
+      role_id: fields.role_id,
     });
     hide();
 
@@ -287,17 +289,17 @@ const TableList: React.FC<{}> = () => {
             编辑
           </Button>
           <Divider type="vertical" />
-          <Button
-            type="primary"
-            size="small"
-            onClick={() => {
-              handleEditModalVisible(true);
-              setStepRoleFormValues(record);
-            }}
-          >
-            分配角色
-          </Button>
-          <Divider type="vertical" />
+          {/*<Button*/}
+          {/*  type="primary"*/}
+          {/*  size="small"*/}
+          {/*  onClick={() => {*/}
+          {/*    handleEditModalVisible(true);*/}
+          {/*    setStepRoleFormValues(record);*/}
+          {/*  }}*/}
+          {/*>*/}
+          {/*  分配角色*/}
+          {/*</Button>*/}
+          {/*<Divider type="vertical" />*/}
           <Button
             type="primary"
             danger
@@ -324,7 +326,7 @@ const TableList: React.FC<{}> = () => {
         }}
         toolBarRender={() => [
           <Button type="primary" onClick={() => handleModalVisible(true)}>
-            <PlusOutlined /> 新建
+            <PlusOutlined /> 新建用户
           </Button>,
         ]}
         request={(params, sorter, filter) => queryRule({ ...params, sorter, filter })}
@@ -366,6 +368,7 @@ const TableList: React.FC<{}> = () => {
               actionRef.current.reload();
             }
           }
+          return true;
         }}
       >
         <ProForm.Group>
@@ -399,12 +402,37 @@ const TableList: React.FC<{}> = () => {
             label="部门"
             rules={[{ required: true, message: '请输入部门！' }]}
           />
-          <ProFormText
+
+          <ProFormRadio.Group
             name="status"
             label="状态"
-            rules={[{ required: true, message: '请输入部门！' }]}
+            width={1}
+            options={[
+              {
+                label: '正常',
+                value: 'a',
+              },
+              {
+                label: '禁用',
+                value: 'b',
+              },
+            ]}
           />
+
         </ProForm.Group>
+        <ProFormSelect
+          name="role_id"
+          label="角色"
+          style={{ width: '100%' }}
+          request={async () => [
+            { label: '超级管理员', value: '1' },
+            { label: '项目经理', value: '2' },
+            { label: '开发人员', value: '3' },
+            { label: '测试人员', value: '4' },
+          ]}
+          placeholder="Please select a role"
+          rules={[{ required: true, message: 'Please select your role!' }]}
+        />
       </ModalForm>
 
       {stepFormValues && Object.keys(stepFormValues).length ? (

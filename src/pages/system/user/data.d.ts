@@ -13,8 +13,8 @@ export interface TableListItem {
   nick_name: string;
   mobile: string;
   email: string;
-  dept_id: number;
-  role_id: number;
+  dept_id: string;
+  role_id: string;
 }
 
 export interface TableListPagination {
@@ -29,7 +29,7 @@ export interface TableListData {
 }
 
 export interface TableListParams {
-  status?: string;
+  status?: number;
   name?: string;
   desc?: string;
   id?: number;
@@ -40,6 +40,6 @@ export interface TableListParams {
   nick_name?: string;
   mobile?: string;
   email?: string;
-  dept_id?: number;
-  role_id?: number;
+  dept_id?: string;
+  role_id?: string;
 }

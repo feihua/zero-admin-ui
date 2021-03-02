@@ -1,5 +1,5 @@
 import React from 'react';
-import {ModalForm, ProFormText} from '@ant-design/pro-form';
+import ProForm, { ModalForm, ProFormText,ProFormSelect,ProFormRadio} from '@ant-design/pro-form';
 
 import {TableListItem} from '../data.d';
 
@@ -35,6 +35,8 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
         email: props.values.email,
         id: props.values.id,
         dept_id: props.values.dept_id,
+        role_id: props.values.role_id,
+        status: props.values.status+'',
       }}
     >
         <ProFormText
@@ -43,39 +45,64 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
           width="l"
           hidden
         />
+      <ProForm.Group>
         <ProFormText
           name="name"
           label="用户名"
-          width="l"
           rules={[{required: true, message: '请输入用户名！'}]}
         />
         <ProFormText
           name="nick_name"
           label="昵称"
-          width="l"
           rules={[{required: true, message: '请输入昵称！'}]}
         />
+      </ProForm.Group>
+      <ProForm.Group>
         <ProFormText
           name="mobile"
           label="手机号码"
-          width="l"
           rules={[{required: true, message: '请输入手机号码！'}]}
         />
 
         <ProFormText
           name="email"
           label="邮箱"
-          width="l"
           rules={[{required: true, message: '请输入邮箱！'}]}
         />
-
+      </ProForm.Group>
+      <ProForm.Group>
       <ProFormText
         name="dept_id"
         label="部门"
-        width="l"
         rules={[{required: true, message: '请输入部门！'}]}
       />
-
+        <ProFormRadio.Group
+          name="status"
+          label="状态"
+          options={[
+            {
+              label: '正常',
+              value: '1',
+            },
+            {
+              label: '禁用',
+              value: '0',
+            },
+          ]}
+        />
+      </ProForm.Group>
+      <ProFormSelect
+        name="role_id"
+        label="角色"
+        request={async () => [
+          { label: '超级管理员', value: '1' },
+          { label: '项目经理', value: '2' },
+          { label: '开发人员', value: '3' },
+          { label: '测试人员', value: '4' },
+        ]}
+        placeholder="Please select a role"
+        rules={[{ required: true, message: 'Please select your role!' }]}
+      />
     </ModalForm>
   )
 };
