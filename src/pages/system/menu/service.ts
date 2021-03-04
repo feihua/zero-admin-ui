@@ -3,7 +3,10 @@ import { TableListParams, TableListItem } from './data.d';
 
 export async function queryMenu(params?: TableListParams) {
   return request('/api/sys/menu/list', {
-    params,
+    method: 'POST',
+    data: {
+      ...params,
+    },
   });
 }
 

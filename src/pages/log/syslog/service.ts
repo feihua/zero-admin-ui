@@ -3,7 +3,10 @@ import { TableListParams } from './data.d';
 
 export async function querySysLog(params?: TableListParams) {
   return request('/api/sys/sysLog/list', {
-    params,
+    method: 'POST',
+    data: {
+      ...params,
+    },
   });
 }
 

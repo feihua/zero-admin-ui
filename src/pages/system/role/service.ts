@@ -3,7 +3,10 @@ import { TableListParams, TableListItem } from './data.d';
 
 export async function queryRole(params?: TableListParams) {
   return request('/api/sys/role/list', {
-    params,
+    method: 'POST',
+    data: {
+      ...params,
+    },
   });
 }
 

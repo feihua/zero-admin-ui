@@ -3,7 +3,10 @@ import { TableListParams } from './data.d';
 
 export async function queryLoginLog(params?: TableListParams) {
   return request('/api/sys/loginLog/list', {
-    params,
+    method: 'POST',
+    data: {
+      ...params,
+    },
   });
 }
 

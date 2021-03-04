@@ -3,7 +3,10 @@ import { TableListParams, TableListItem } from './data.d';
 
 export async function queryDept(params?: TableListParams) {
   return request('/api/sys/dept/list', {
-    params,
+    method: 'POST',
+    data: {
+      ...params,
+    },
   });
 }
 

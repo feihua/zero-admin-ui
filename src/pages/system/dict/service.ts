@@ -3,7 +3,10 @@ import { TableListParams, TableListItem } from './data.d';
 
 export async function queryDict(params?: TableListParams) {
   return request('/api/sys/dict/list', {
-    params,
+    method: 'POST',
+    data: {
+      ...params,
+    },
   });
 }
 
