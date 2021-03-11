@@ -5,6 +5,7 @@ import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
 import ProDescriptions from '@ant-design/pro-descriptions';
 import UpdateForm, { FormValueType } from './components/UpdateForm';
+import CreateChildForm from './components/CreateChildForm';
 import { TableListItem } from './data.d';
 import {queryDept, updateRule, addDept, removeDept, removeDeptOne} from './service';
 import { tree } from '@/utils/utils';
@@ -98,8 +99,9 @@ const handleRemove = async (selectedRows: TableListItem[]) => {
 
 const TableList: React.FC<{}> = () => {
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
+  const [createChildModalVisible, handleChildModalVisible] = useState<boolean>(false);
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
-  const [stepFormValues, setStepFormValues] = useState({});
+  const [stepFormValues, setStepFormValues] = useState<TableListItem>();
   const actionRef = useRef<ActionType>();
   const [row, setRow] = useState<TableListItem>();
   const [selectedRowsState, setSelectedRows] = useState<TableListItem[]>([]);
@@ -211,7 +213,12 @@ const TableList: React.FC<{}> = () => {
             编辑
           </Button>
           <Divider type="vertical" />
-          <Button type="primary" size="small">
+          <Button type="primary" size="small"
+          onClick={() => {
+            handleChildModalVisible(true);
+            setStepFormValues(record);
+          }}
+          >
             添加子机构
           </Button>
           <Divider type="vertical" />
@@ -305,12 +312,12 @@ const TableList: React.FC<{}> = () => {
         />
       </ModalForm>
       {stepFormValues && Object.keys(stepFormValues).length ? (
-        <UpdateForm
+        <CreateChildForm
           onSubmit={async (value) => {
-            const success = await handleUpdate(value);
+            const success = await handleAdd(value as TableListItem);
             if (success) {
-              handleUpdateModalVisible(false);
-              setStepFormValues({});
+              handleChildModalVisible(false);
+              setStepFormValues(undefined);
               if (actionRef.current) {
                 actionRef.current.reload();
               }
@@ -318,7 +325,27 @@ const TableList: React.FC<{}> = () => {
           }}
           onCancel={() => {
             handleUpdateModalVisible(false);
-            setStepFormValues({});
+            setStepFormValues(undefined);
+          }}
+          createChildModalVisible={createChildModalVisible}
+          parent_id={stepFormValues?.id||0}
+        />
+      ) : null}
+      {stepFormValues && Object.keys(stepFormValues).length ? (
+        <UpdateForm
+          onSubmit={async (value) => {
+            const success = await handleUpdate(value);
+            if (success) {
+              handleUpdateModalVisible(false);
+              setStepFormValues(undefined);
+              if (actionRef.current) {
+                actionRef.current.reload();
+              }
+            }
+          }}
+          onCancel={() => {
+            handleUpdateModalVisible(false);
+            setStepFormValues(undefined);
           }}
           updateModalVisible={updateModalVisible}
           values={stepFormValues}

@@ -1,5 +1,5 @@
 import React from 'react';
-import {ModalForm, ProFormText} from '@ant-design/pro-form';
+import ProForm, {ModalForm, ProFormText} from '@ant-design/pro-form';
 
 import {TableListItem} from '../data.d';
 
@@ -50,36 +50,31 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
         width="l"
         hidden
       />
-      <ProFormText
-        name="name"
-        label="菜单名称"
-        width="l"
-        rules={[{required: true, message: '请输入用户名！'}]}
-      />
+      <ProForm.Group>
+        <ProFormText
+          name="name"
+          label="菜单名称"
+          rules={[{required: true, message: '请输入用户名！'}]}
+        />
+        <ProFormText
+          name="type"
+          label="类型"
+        />
+      </ProForm.Group>
+      <ProForm.Group>
+        <ProFormText
+          name="order_num"
+          label="排序"
+        />
+        <ProFormText
+          name="icon"
+          label="图标"
+        />
+      </ProForm.Group>
 
       <ProFormText
         name="url"
         label="url"
-        width="l"
-      />
-      <ProFormText
-        name="perms"
-        label="权限"
-        width="l"
-      />
-      <ProFormText
-        name="type"
-        label="类型"
-        width="l"
-      />
-      <ProFormText
-        name="icon"
-        label="图标"
-        width="l"
-      />
-      <ProFormText
-        name="order_num"
-        label="排序"
         width="l"
       />
     </ModalForm>
