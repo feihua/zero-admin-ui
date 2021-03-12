@@ -7,10 +7,10 @@ import ProDescriptions from '@ant-design/pro-descriptions';
 import UpdateForm, { FormValueType } from './components/UpdateForm';
 import CreateChildForm from './components/CreateChildForm';
 import { TableListItem } from './data.d';
-import {queryDept, updateRule, addDept, removeDept, removeDeptOne} from './service';
+import { queryDept, updateRule, addDept, removeDept, removeDeptOne } from './service';
 import { tree } from '@/utils/utils';
 
-import {ModalForm, ProFormText} from '@ant-design/pro-form';
+import { ModalForm, ProFormText } from '@ant-design/pro-form';
 
 const { confirm } = Modal;
 
@@ -19,9 +19,10 @@ const { confirm } = Modal;
  * @param fields
  */
 const handleAdd = async (fields: TableListItem) => {
+  fields.order_num = Number(fields.order_num);
   const hide = message.loading('正在添加');
   try {
-    await addDept({...fields});
+    await addDept({ ...fields });
     hide();
     message.success('添加成功');
     return true;
@@ -213,11 +214,13 @@ const TableList: React.FC<{}> = () => {
             编辑
           </Button>
           <Divider type="vertical" />
-          <Button type="primary" size="small"
-          onClick={() => {
-            handleChildModalVisible(true);
-            setStepFormValues(record);
-          }}
+          <Button
+            type="primary"
+            size="small"
+            onClick={() => {
+              handleChildModalVisible(true);
+              setStepFormValues(record);
+            }}
           >
             添加子机构
           </Button>
@@ -251,7 +254,7 @@ const TableList: React.FC<{}> = () => {
             <PlusOutlined /> 新建
           </Button>,
         ]}
-        request={(params, sorter, filter) => queryDept({...params, sorter, filter})}
+        request={(params, sorter, filter) => queryDept({ ...params, sorter, filter })}
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows) => setSelectedRows(selectedRows),
@@ -293,23 +296,14 @@ const TableList: React.FC<{}> = () => {
           }
         }}
       >
-        <ProFormText
-          name="parent_id"
-          label="parent_id"
-          width="l"
-          hidden
-        />
+        <ProFormText name="parent_id" label="parent_id" width="l" hidden />
         <ProFormText
           name="name"
           label="机构名称"
           width="l"
-          rules={[{required: true, message: '请输入用户名！'}]}
+          rules={[{ required: true, message: '请输入用户名！' }]}
         />
-        <ProFormText
-          name="order_num"
-          label="排序"
-          width="l"
-        />
+        <ProFormText name="order_num" label="排序" width="l" />
       </ModalForm>
       {stepFormValues && Object.keys(stepFormValues).length ? (
         <CreateChildForm
@@ -328,7 +322,7 @@ const TableList: React.FC<{}> = () => {
             setStepFormValues(undefined);
           }}
           createChildModalVisible={createChildModalVisible}
-          parent_id={stepFormValues?.id||0}
+          parent_id={stepFormValues?.id || 0}
         />
       ) : null}
       {stepFormValues && Object.keys(stepFormValues).length ? (
