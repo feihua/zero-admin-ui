@@ -30,6 +30,8 @@ const MenuForm: React.FC<MenuFormProps> = (props) => {
       // @ts-ignore
       setTreeData(tr);
       setSelectedKeys(res.RoleData)
+      setSelectedKey(res.RoleData)
+
       console.log(tr);
     });
   }, []);
