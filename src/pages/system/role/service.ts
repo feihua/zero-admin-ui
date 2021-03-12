@@ -10,9 +10,21 @@ export async function queryRole(params?: TableListParams) {
   });
 }
 
-export async function queryUserRole(params?: TableListParams) {
-  return request('/api/sys/role/list', {
-    params,
+export async function queryMenuByRoleId(params: { id?: number }) {
+  return request('/api/sys/role/queryMenuByRoleId', {
+    method: 'POST',
+    data: {
+      ...params,
+    },
+  });
+}
+
+export async function updateRoleMenu(params: { role_id: number ,menu_ids:number[]}) {
+  return request('/api/sys/role/updateRoleMenu', {
+    method: 'POST',
+    data: {
+      ...params,
+    },
   });
 }
 

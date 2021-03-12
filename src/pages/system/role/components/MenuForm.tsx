@@ -1,128 +1,78 @@
-import React, { useState, useEffect } from 'react';
-import { Modal, Tree } from 'antd';
-import { FormValueType } from '@/pages/system/user/components/UpdateForm';
-import { TableListItem } from '@/pages/system/user/data';
+import React, {useEffect, useState} from 'react';
+import {ModalForm} from '@ant-design/pro-form';
 
-import { queryMenu } from '../../menu/service';
-import { tree } from '@/utils/utils';
+import {TableListItem} from '../data.d';
+import {Tree} from "antd";
+import {queryMenuByRoleId} from "@/pages/system/role/service";
+import {tree as toTree} from "@/utils/utils";
 
-interface CreateFormProps {
+export interface FormValueType extends Partial<TableListItem> {
+
+}
+
+export interface MenuFormProps {
+  onCancel: (flag?: boolean, formVals?: FormValueType) => void;
+  onSubmit: (values: { role_id: number ,menu_ids:number[]}) => Promise<void>;
   updateMenuModalVisible: boolean;
-  onCancel: () => void;
-  onSubmit: (values: FormValueType) => Promise<void>;
   values: Partial<TableListItem>;
 }
 
-const treeData1 = [
-  {
-    title: '0-0',
-    key: '0-0',
-    children: [
-      {
-        title: '0-0-0',
-        key: '0-0-0',
-        children: [
-          { title: '0-0-0-0', key: '0-0-0-0' },
-          { title: '0-0-0-1', key: '0-0-0-1' },
-          { title: '0-0-0-2', key: '0-0-0-2' },
-        ],
-      },
-      {
-        title: '0-0-1',
-        key: '0-0-1',
-        children: [
-          { title: '0-0-1-0', key: '0-0-1-0' },
-          { title: '0-0-1-1', key: '0-0-1-1' },
-          { title: '0-0-1-2', key: '0-0-1-2' },
-        ],
-      },
-      {
-        title: '0-0-2',
-        key: '0-0-2',
-      },
-    ],
-  },
-  {
-    title: '0-1',
-    key: '0-1',
-    children: [
-      { title: '0-1-0-0', key: '0-1-0-0' },
-      { title: '0-1-0-1', key: '0-1-0-1' },
-      { title: '0-1-0-2', key: '0-1-0-2' },
-    ],
-  },
-  {
-    title: '0-2',
-    key: '0-2',
-  },
-];
-
-const MenuForm: React.FC<CreateFormProps> = (props) => {
-  const { updateMenuModalVisible, onCancel, onSubmit } = props;
+const MenuForm: React.FC<MenuFormProps> = (props) => {
+  const {onSubmit} = props
 
   const [treeData, setTreeData] = useState([]);
-  // const [expandedKeys, setExpandedKeys] = useState<React.Key[]>([]);
-  const [checkedKeys, setCheckedKeys] = useState<React.Key[]>([]);
   const [selectedKeys, setSelectedKeys] = useState<React.Key[]>([]);
-  // const [autoExpandParent, setAutoExpandParent] = useState<boolean>(true);
-
-  // eslint-disable-next-line @typescript-eslint/no-shadow
-  // const onExpand = (expandedKeys: React.Key[]) => {
-  //   console.log('onExpand', expandedKeys);
-  //   // if not set autoExpandParent to false, if children expanded, parent can not collapse.
-  //   // or, you can remove all expanded children keys.
-  //   // setExpandedKeys(expandedKeys);
-  //   setAutoExpandParent(false);
-  // };
+  const [selectedKey, setSelectedKey] = useState<number[]>([]);
 
   useEffect(() => {
-    queryMenu().then((res) => {
-      let tr = tree(res.data, 0, 'parent_id');
+    queryMenuByRoleId({id:props.values.id}).then((res) => {
+      let tr = toTree(res.AllData, 0, 'parent_id');
       // @ts-ignore
       setTreeData(tr);
+      setSelectedKeys(res.RoleData)
       console.log(tr);
     });
   }, []);
 
-  // eslint-disable-next-line @typescript-eslint/no-shadow
-  const onCheck = (checkedKeys: React.Key[]) => {
-    console.log('onCheck', checkedKeys);
-    setCheckedKeys(checkedKeys);
-  };
-
-  // eslint-disable-next-line @typescript-eslint/no-shadow
   const onSelect = (selectedKeys: React.Key[], info: any) => {
     console.log('onSelect', info);
+    setSelectedKey(info)
     setSelectedKeys(selectedKeys);
   };
 
-  // @ts-ignore
   return (
-    <Modal
-      destroyOnClose
+    <ModalForm
       title="分配角色菜单"
-      width={500}
-      visible={updateMenuModalVisible}
-      onCancel={() => onCancel()}
-      onOk={() => onSubmit}
+      width={480}
+      visible={props.updateMenuModalVisible}
+      onVisibleChange={() => props.onCancel()}
+      onFinish={ async () => {
+        const data = {
+          role_id: props.values.id||0,
+          menu_ids:selectedKey,
+        }
+         await onSubmit(data);
 
-      // footer={null}
+        // return true;
+      }}
+      initialValues={{
+        id: props.values.id,
+      }}
     >
-      <Tree
-        checkable
-        defaultExpandAll={true}
-        // onExpand={onExpand}
-        // expandedKeys={expandedKeys}
-        // autoExpandParent={autoExpandParent}
-        onCheck={onCheck}
-        checkedKeys={checkedKeys}
-        onSelect={onSelect}
-        selectedKeys={selectedKeys}
-        treeData={treeData}
-      />
-      ,
-    </Modal>
-  );
+
+    <Tree
+      checkable
+      defaultExpandAll={true}
+      // onExpand={onExpand}
+      // expandedKeys={expandedKeys}
+      // autoExpandParent={autoExpandParent}
+      checkedKeys={selectedKeys}
+      onSelect={onSelect}
+      selectedKeys={selectedKeys}
+      treeData={treeData}
+    />
+    </ModalForm>
+  )
 };
 
 export default MenuForm;

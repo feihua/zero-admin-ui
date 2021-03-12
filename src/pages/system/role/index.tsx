@@ -7,7 +7,7 @@ import ProDescriptions from '@ant-design/pro-descriptions';
 import MenuForm from './components/MenuForm';
 import UpdateForm, { FormValueType } from './components/UpdateForm';
 import { TableListItem } from './data.d';
-import {queryRole, updateRule, addRole, removeRole, removeRoleOne} from './service';
+import {queryRole, updateRule, addRole, removeRole, removeRoleOne,updateRoleMenu} from './service';
 
 import {ModalForm, ProFormText, ProFormTextArea} from '@ant-design/pro-form';
 
@@ -340,7 +340,7 @@ const TableList: React.FC<{}> = () => {
       {stepMenuFormValues && Object.keys(stepMenuFormValues).length ? (
         <MenuForm
           onSubmit={async (value) => {
-            const success = await handleUpdate(value);
+            const success = await updateRoleMenu(value);
             if (success) {
               handleUpdateMenuModalVisible(false);
               setMenuStepFormValues({});
