@@ -7,9 +7,16 @@ import ProDescriptions from '@ant-design/pro-descriptions';
 import MenuForm from './components/MenuForm';
 import UpdateForm, { FormValueType } from './components/UpdateForm';
 import { TableListItem } from './data.d';
-import {queryRole, updateRule, addRole, removeRole, removeRoleOne,updateRoleMenu} from './service';
+import {
+  queryRole,
+  updateRule,
+  addRole,
+  removeRole,
+  removeRoleOne,
+  updateRoleMenu,
+} from './service';
 
-import {ModalForm, ProFormText, ProFormTextArea} from '@ant-design/pro-form';
+import { ModalForm, ProFormText, ProFormTextArea } from '@ant-design/pro-form';
 
 const { confirm } = Modal;
 
@@ -20,7 +27,7 @@ const { confirm } = Modal;
 const handleAdd = async (fields: TableListItem) => {
   const hide = message.loading('正在添加');
   try {
-    await addRole({...fields});
+    await addRole({ ...fields });
     hide();
     message.success('添加成功');
     return true;
@@ -260,11 +267,11 @@ const TableList: React.FC<{}> = () => {
           labelWidth: 120,
         }}
         toolBarRender={() => [
-          <Button type="primary" onClick={() => handleModalVisible(true)}>
+          <Button key={'new'} type="primary" onClick={() => handleModalVisible(true)}>
             <PlusOutlined /> 新建
           </Button>,
         ]}
-        request={(params, sorter, filter) => queryRole({...params, sorter, filter})}
+        request={(params, sorter, filter) => queryRole({ ...params, sorter, filter })}
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows) => setSelectedRows(selectedRows),
@@ -307,13 +314,13 @@ const TableList: React.FC<{}> = () => {
         <ProFormText
           name="name"
           label="角色名称"
-          rules={[{required: true, message: '请输入角色名称！'}]}
+          rules={[{ required: true, message: '请输入角色名称！' }]}
         />
         <ProFormTextArea
           name="remark"
           label="备注"
           placeholder="请输入至少五个字符"
-          rules={[{required: true, message: '请输入至少五个字符的规则描述！', min: 5}]}
+          rules={[{ required: true, message: '请输入至少五个字符的规则描述！', min: 5 }]}
         />
       </ModalForm>
       {stepFormValues && Object.keys(stepFormValues).length ? (
