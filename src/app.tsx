@@ -1,22 +1,34 @@
 import React from 'react';
-import {BasicLayoutProps, MenuDataItem, Settings as LayoutSettings} from '@ant-design/pro-layout';
+import { BasicLayoutProps, MenuDataItem, Settings as LayoutSettings } from '@ant-design/pro-layout';
 import { notification } from 'antd';
 import { history, RequestConfig } from 'umi';
 import RightContent from '@/components/RightContent';
 // import Footer from '@/components/Footer';
-import {RequestInterceptor, RequestOptionsInit, ResponseError} from 'umi-request';
+import { RequestInterceptor, RequestOptionsInit, ResponseError } from 'umi-request';
 import { queryCurrent } from './services/user';
 import defaultSettings from '../config/defaultSettings';
-import {tree} from "@/utils/utils";
-import { SmileOutlined, HeartOutlined,SettingOutlined,DeleteOutlined } from '@ant-design/icons';
+import { tree } from '@/utils/utils';
+import {
+  SmileOutlined,
+  HeartOutlined,
+  SettingOutlined,
+  DeleteOutlined,
+  FrownOutlined,
+  GiftOutlined,
+  DollarCircleOutlined,
+  AlertOutlined,
+} from '@ant-design/icons';
 
 const IconMap = {
   SmileOutlined: <SmileOutlined />,
   HeartOutlined: <HeartOutlined />,
   SettingOutlined: <SettingOutlined />,
   DeleteOutlined: <DeleteOutlined />,
+  FrownOutlined: <FrownOutlined />,
+  GiftOutlined: <GiftOutlined />,
+  DollarCircleOutlined: <DollarCircleOutlined />,
+  AlertOutlined: <AlertOutlined />,
 };
-
 
 export async function getInitialState(): Promise<{
   settings?: LayoutSettings;
@@ -27,8 +39,8 @@ export async function getInitialState(): Promise<{
     try {
       const currentUser = await queryCurrent();
 
-      localStorage.setItem("menuTree1", JSON.stringify(tree(currentUser.menuTree,0,"parent_id")));
-      localStorage.setItem("menuTree", JSON.stringify(currentUser.menuTree));
+      localStorage.setItem('menuTree1', JSON.stringify(tree(currentUser.menuTree, 0, 'parent_id')));
+      localStorage.setItem('menuTree', JSON.stringify(currentUser.menuTree));
       return currentUser;
     } catch (error) {
       history.push('/user/login');
@@ -76,22 +88,21 @@ export const layout = ({
 };
 
 const menuDataRender: any = () => {
-  let item = localStorage.getItem("menuTree")+'';
+  let item = localStorage.getItem('menuTree') + '';
 
-  return loopMenuItem(tree(JSON.parse(item), 0, "parent_id"))
+  return loopMenuItem(tree(JSON.parse(item), 0, 'parent_id'));
 
   // return tree(JSON.parse(item), 0, "parent_id");
-}
+};
 
-const loopMenuItem = (menus: any[]): MenuDataItem[] => (
+const loopMenuItem = (menus: any[]): MenuDataItem[] =>
   menus.map(({ icon, children, ...item }) => {
     return {
       ...item,
       icon: icon && IconMap[icon as string],
       children: children && loopMenuItem(children),
-    }
-  })
-);
+    };
+  });
 
 const codeMessage = {
   200: '服务器成功返回请求的数据。',
@@ -136,22 +147,17 @@ const errorHandler = (error: ResponseError) => {
   throw error;
 };
 
-const addToken :RequestInterceptor = (
-  url :string,
-  options:RequestOptionsInit
-) => {
+const addToken: RequestInterceptor = (url: string, options: RequestOptionsInit) => {
   options.headers = {
-    Authorization : "Bearer " + localStorage.getItem('token')
-  }
+    Authorization: 'Bearer ' + localStorage.getItem('token'),
+  };
   return {
     url,
-    options
-  }
-}
+    options,
+  };
+};
 
 export const request: RequestConfig = {
   errorHandler,
-  requestInterceptors:[
-    addToken
-  ]
+  requestInterceptors: [addToken],
 };
