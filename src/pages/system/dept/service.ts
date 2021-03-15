@@ -19,7 +19,7 @@ export async function removeDeptOne(params: { id: number }) {
   });
 }
 
-export async function removeDept(params: { key: number[] }) {
+export async function removeDept(params: { ids: number[] }) {
   return request('/api/sys/dept/delete', {
     method: 'POST',
     data: {

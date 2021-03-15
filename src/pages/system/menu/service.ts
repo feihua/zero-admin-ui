@@ -19,7 +19,7 @@ export async function removeMenuOne(params: { id: number }) {
   });
 }
 
-export async function removeMenu(params: { key: number[] }) {
+export async function removeMenu(params: { ids: number[] }) {
   return request('/api/sys/menu/delete', {
     method: 'POST',
     data: {

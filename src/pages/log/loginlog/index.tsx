@@ -40,7 +40,7 @@ const handleRemove = async (selectedRows: TableListItem[]) => {
   if (!selectedRows) return true;
   try {
     await removeLoginLog({
-      key: selectedRows.map((row) => row.id),
+      ids: selectedRows.map((row) => row.id),
     });
     hide();
     message.success('删除成功，即将刷新');

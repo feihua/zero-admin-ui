@@ -1,4 +1,4 @@
-export interface TableListItem {
+export interface RecommendSubjectListItem {
   id: number;
   disabled?: boolean;
   href: string;
@@ -17,18 +17,18 @@ export interface TableListItem {
   role_id: string;
 }
 
-export interface TableListPagination {
+export interface RecommendSubjectListPagination {
   total: number;
   pageSize: number;
   current: number;
 }
 
-export interface TableListData {
-  list: TableListItem[];
-  pagination: Partial<TableListPagination>;
+export interface RecommendSubjectListData {
+  list: RecommendSubjectListItem[];
+  pagination: Partial<RecommendSubjectListPagination>;
 }
 
-export interface TableListParams {
+export interface RecommendSubjectListParams {
   status?: number;
   name?: string;
   desc?: string;

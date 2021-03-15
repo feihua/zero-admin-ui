@@ -19,7 +19,7 @@ export async function removeUserOne(params: { id: number }) {
   });
 }
 
-export async function removeUser(params: { key: number[] }) {
+export async function removeUser(params: { ids: number[] }) {
   return request('/api/sys/user/delete', {
     method: 'POST',
     data: {

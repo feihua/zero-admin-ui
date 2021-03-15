@@ -1,4 +1,4 @@
-export interface TableListItem {
+export interface HomeNewProductListItem {
   id: number;
   disabled?: boolean;
   href: string;
@@ -17,18 +17,18 @@ export interface TableListItem {
   role_id: string;
 }
 
-export interface TableListPagination {
+export interface HomeNewProductListPagination {
   total: number;
   pageSize: number;
   current: number;
 }
 
-export interface TableListData {
-  list: TableListItem[];
-  pagination: Partial<TableListPagination>;
+export interface HomeNewProductListData {
+  list: HomeNewProductListItem[];
+  pagination: Partial<HomeNewProductListPagination>;
 }
 
-export interface TableListParams {
+export interface HomeNewProductListParams {
   status?: number;
   name?: string;
   desc?: string;

@@ -1,9 +1,9 @@
 import React from 'react';
 import ProForm, { ModalForm, ProFormText, ProFormSelect, ProFormRadio } from '@ant-design/pro-form';
 
-import { TableListItem } from '../data.d';
+import { HomeAdvertiseListItem } from '../data.d';
 
-export interface FormValueType extends Partial<TableListItem> {
+export interface HomeAdvertiseFormValueType extends Partial<HomeAdvertiseListItem> {
   target?: string;
   template?: string;
   type?: string;
@@ -11,14 +11,14 @@ export interface FormValueType extends Partial<TableListItem> {
   frequency?: string;
 }
 
-export interface UpdateFormProps {
-  onCancel: (flag?: boolean, formVals?: FormValueType) => void;
-  onSubmit: (values: FormValueType) => Promise<void>;
+export interface UpdateHomeAdvertiseFormProps {
+  onCancel: (flag?: boolean, formVals?: HomeAdvertiseFormValueType) => void;
+  onSubmit: (values: HomeAdvertiseFormValueType) => Promise<void>;
   updateModalVisible: boolean;
-  values: Partial<TableListItem>;
+  values: Partial<HomeAdvertiseListItem>;
 }
 
-const UpdateForm: React.FC<UpdateFormProps> = (props) => {
+const UpdateHomeAdvertiseForm: React.FC<UpdateHomeAdvertiseFormProps> = (props) => {
   const { onSubmit } = props;
 
   return (
@@ -102,4 +102,4 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
   );
 };
 
-export default UpdateForm;
+export default UpdateHomeAdvertiseForm;

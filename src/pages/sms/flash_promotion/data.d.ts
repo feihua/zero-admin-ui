@@ -1,4 +1,4 @@
-export interface TableListItem {
+export interface FlashPromotionListItem {
   id: number;
   disabled?: boolean;
   href: string;
@@ -17,18 +17,18 @@ export interface TableListItem {
   role_id: string;
 }
 
-export interface TableListPagination {
+export interface FlashPromotionListPagination {
   total: number;
   pageSize: number;
   current: number;
 }
 
-export interface TableListData {
-  list: TableListItem[];
-  pagination: Partial<TableListPagination>;
+export interface FlashPromotionListData {
+  list: FlashPromotionListItem[];
+  pagination: Partial<FlashPromotionListPagination>;
 }
 
-export interface TableListParams {
+export interface FlashPromotionListParams {
   status?: number;
   name?: string;
   desc?: string;

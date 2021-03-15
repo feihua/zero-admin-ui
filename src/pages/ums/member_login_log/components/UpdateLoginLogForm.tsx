@@ -1,9 +1,9 @@
 import React from 'react';
 import ProForm, { ModalForm, ProFormText, ProFormSelect, ProFormRadio } from '@ant-design/pro-form';
 
-import { TableListItem } from '../data.d';
+import { LoginLogListItem } from '../data.d';
 
-export interface FormValueType extends Partial<TableListItem> {
+export interface LoginLogFormValueType extends Partial<LoginLogListItem> {
   target?: string;
   template?: string;
   type?: string;
@@ -11,14 +11,14 @@ export interface FormValueType extends Partial<TableListItem> {
   frequency?: string;
 }
 
-export interface UpdateFormProps {
-  onCancel: (flag?: boolean, formVals?: FormValueType) => void;
-  onSubmit: (values: FormValueType) => Promise<void>;
+export interface UpdateLoginLogFormProps {
+  onCancel: (flag?: boolean, formVals?: LoginLogFormValueType) => void;
+  onSubmit: (values: LoginLogFormValueType) => Promise<void>;
   updateModalVisible: boolean;
-  values: Partial<TableListItem>;
+  values: Partial<LoginLogListItem>;
 }
 
-const UpdateForm: React.FC<UpdateFormProps> = (props) => {
+const UpdateLoginLogForm: React.FC<UpdateLoginLogFormProps> = (props) => {
   const { onSubmit } = props;
 
   return (
@@ -102,4 +102,4 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
   );
 };
 
-export default UpdateForm;
+export default UpdateLoginLogForm;

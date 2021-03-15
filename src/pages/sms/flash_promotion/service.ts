@@ -1,8 +1,8 @@
 import { request } from 'umi';
-import { TableListParams, TableListItem } from './data.d';
+import { FlashPromotionListParams, FlashPromotionListItem } from './data.d';
 
-export async function queryRule(params?: TableListParams) {
-  return request('/api/sys/user/list', {
+export async function queryFlashPromotion(params?: FlashPromotionListParams) {
+  return request('/api/sms/flashpromotion/list', {
     method: 'POST',
     data: {
       ...params,
@@ -10,8 +10,8 @@ export async function queryRule(params?: TableListParams) {
   });
 }
 
-export async function removeUserOne(params: { id: number }) {
-  return request('/api/sys/user/delete', {
+export async function removeFlashPromotion(params: { ids: number[] }) {
+  return request('/api/sms/flashpromotion/delete', {
     method: 'POST',
     data: {
       ...params,
@@ -19,8 +19,8 @@ export async function removeUserOne(params: { id: number }) {
   });
 }
 
-export async function removeUser(params: { key: number[] }) {
-  return request('/api/sys/user/delete', {
+export async function addFlashPromotion(params: FlashPromotionListItem) {
+  return request('/api/sms/flashpromotion/add', {
     method: 'POST',
     data: {
       ...params,
@@ -28,26 +28,8 @@ export async function removeUser(params: { key: number[] }) {
   });
 }
 
-export async function addUser(params: TableListItem) {
-  return request('/api/sys/user/add', {
-    method: 'POST',
-    data: {
-      ...params,
-    },
-  });
-}
-
-export async function updateUser(params: TableListParams) {
-  return request('/api/sys/user/update', {
-    method: 'POST',
-    data: {
-      ...params,
-    },
-  });
-}
-
-export async function updateUserRole(params: TableListParams) {
-  return request('/api/sys/user/updateUserRole', {
+export async function updateFlashPromotion(params: FlashPromotionListParams) {
+  return request('/api/sms/flashpromotion/update', {
     method: 'POST',
     data: {
       ...params,

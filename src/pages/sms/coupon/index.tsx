@@ -4,16 +4,13 @@ import React, { useState, useRef } from 'react';
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
 import ProDescriptions from '@ant-design/pro-descriptions';
-import EditRoleForm from './components/EditRoleForm';
-import UpdateForm, { FormValueType } from './components/UpdateForm';
-import { TableListItem } from './data.d';
+import UpdateCouponForm, { CouponFormValueType } from './components/UpdateCouponForm';
+import { CouponListItem } from './data.d';
 import {
-  queryRule,
-  updateUser,
-  addUser,
-  removeUser,
-  removeUserOne,
-  updateUserRole,
+  queryCoupon,
+  updateCoupon,
+  addCoupon,
+  removeCoupon,
 } from './service';
 
 import ProForm, { ModalForm, ProFormText, ProFormSelect, ProFormRadio } from '@ant-design/pro-form';
@@ -24,10 +21,10 @@ const { confirm } = Modal;
  * 添加节点
  * @param fields
  */
-const handleAdd = async (fields: TableListItem) => {
+const handleAdd = async (fields: CouponListItem) => {
   const hide = message.loading('正在添加');
   try {
-    await addUser({ ...fields });
+    await addCoupon({ ...fields });
     hide();
     message.success('添加成功');
     return true;
@@ -42,10 +39,10 @@ const handleAdd = async (fields: TableListItem) => {
  * 更新节点
  * @param fields
  */
-const handleUpdate = async (fields: FormValueType) => {
+const handleUpdate = async (fields: CouponFormValueType) => {
   const hide = message.loading('正在更新');
   try {
-    await updateUser({
+    await updateCoupon({
       name: fields.name,
       nick_name: fields.nick_name,
       email: fields.email,
@@ -67,36 +64,14 @@ const handleUpdate = async (fields: FormValueType) => {
 };
 
 /**
- * 更新节点
- * @param fields
- */
-const handleUpdateRole = async (fields: FormValueType) => {
-  const hide = message.loading('正在更新');
-  try {
-    await updateUserRole({
-      id: fields.id,
-      role_id: fields.role_id,
-    });
-    hide();
-
-    message.success('更新成功');
-    return true;
-  } catch (error) {
-    hide();
-    message.error('更新失败请重试！');
-    return false;
-  }
-};
-
-/**
  *  删除节点(单个)
  * @param id
  */
 const handleRemoveOne = async (id: number) => {
   const hide = message.loading('正在删除');
   try {
-    await removeUserOne({
-      id,
+    await removeCoupon({
+      ids:[id],
     });
     hide();
     message.success('删除成功，即将刷新');
@@ -112,12 +87,12 @@ const handleRemoveOne = async (id: number) => {
  *  删除节点
  * @param selectedRows
  */
-const handleRemove = async (selectedRows: TableListItem[]) => {
+const handleRemove = async (selectedRows: CouponListItem[]) => {
   const hide = message.loading('正在删除');
   if (!selectedRows) return true;
   try {
-    await removeUser({
-      key: selectedRows.map((row) => row.id),
+    await removeCoupon({
+      ids: selectedRows.map((row) => row.id),
     });
     hide();
     message.success('删除成功，即将刷新');
@@ -133,11 +108,9 @@ const TableList: React.FC<{}> = () => {
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
   const [stepFormValues, setStepFormValues] = useState({});
-  const [editModalVisible, handleEditModalVisible] = useState<boolean>(false);
-  const [stepRoleFormValues, setStepRoleFormValues] = useState({});
   const actionRef = useRef<ActionType>();
-  const [row, setRow] = useState<TableListItem>();
-  const [selectedRowsState, setSelectedRows] = useState<TableListItem[]>([]);
+  const [row, setRow] = useState<CouponListItem>();
+  const [selectedRowsState, setSelectedRows] = useState<CouponListItem[]>([]);
 
   const showDeleteConfirm = (id: number) => {
     confirm({
@@ -153,7 +126,7 @@ const TableList: React.FC<{}> = () => {
     });
   };
 
-  const columns: ProColumns<TableListItem>[] = [
+  const columns: ProColumns<CouponListItem>[] = [
     {
       title: '编号',
       dataIndex: 'id',
@@ -317,7 +290,7 @@ const TableList: React.FC<{}> = () => {
 
   return (
     <PageContainer>
-      <ProTable<TableListItem>
+      <ProTable<CouponListItem>
         headerTitle="用户列表"
         actionRef={actionRef}
         rowKey="id"
@@ -329,7 +302,7 @@ const TableList: React.FC<{}> = () => {
             <PlusOutlined /> 新建用户
           </Button>,
         ]}
-        request={(params, sorter, filter) => queryRule({ ...params, sorter, filter })}
+        request={(params, sorter, filter) => queryCoupon({ ...params, sorter, filter })}
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows) => setSelectedRows(selectedRows),
@@ -361,7 +334,7 @@ const TableList: React.FC<{}> = () => {
         visible={createModalVisible}
         onVisibleChange={handleModalVisible}
         onFinish={async (value) => {
-          const success = await handleAdd(value as TableListItem);
+          const success = await handleAdd(value as CouponListItem);
           if (success) {
             handleModalVisible(false);
             if (actionRef.current) {
@@ -435,7 +408,7 @@ const TableList: React.FC<{}> = () => {
       </ModalForm>
 
       {stepFormValues && Object.keys(stepFormValues).length ? (
-        <UpdateForm
+        <UpdateCouponForm
           onSubmit={async (value) => {
             const success = await handleUpdate(value);
             if (success) {
@@ -455,26 +428,6 @@ const TableList: React.FC<{}> = () => {
         />
       ) : null}
 
-      {stepRoleFormValues && Object.keys(stepRoleFormValues).length ? (
-        <EditRoleForm
-          onSubmit={async (value) => {
-            const success = await handleUpdateRole(value);
-            if (success) {
-              handleEditModalVisible(false);
-              setStepRoleFormValues({});
-              if (actionRef.current) {
-                actionRef.current.reload();
-              }
-            }
-          }}
-          onCancel={() => {
-            handleEditModalVisible(false);
-            setStepRoleFormValues({});
-          }}
-          editModalVisible={editModalVisible}
-          values={stepRoleFormValues}
-        />
-      ) : null}
 
       <Drawer
         width={600}
@@ -485,7 +438,7 @@ const TableList: React.FC<{}> = () => {
         closable={false}
       >
         {row?.name && (
-          <ProDescriptions<TableListItem>
+          <ProDescriptions<CouponListItem>
             column={2}
             title={row?.name}
             request={async () => ({

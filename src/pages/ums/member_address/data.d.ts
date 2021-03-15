@@ -1,4 +1,4 @@
-export interface TableListItem {
+export interface AddressTableListItem {
   id: number;
   disabled?: boolean;
   href: string;
@@ -17,18 +17,18 @@ export interface TableListItem {
   role_id: string;
 }
 
-export interface TableListPagination {
+export interface AddressTableListPagination {
   total: number;
   pageSize: number;
   current: number;
 }
 
-export interface TableListData {
-  list: TableListItem[];
-  pagination: Partial<TableListPagination>;
+export interface AddressTableListData {
+  list: AddressTableListItem[];
+  pagination: Partial<AddressTableListPagination>;
 }
 
-export interface TableListParams {
+export interface AddressTableListParams {
   status?: number;
   name?: string;
   desc?: string;

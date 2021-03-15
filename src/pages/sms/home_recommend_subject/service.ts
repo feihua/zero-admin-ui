@@ -1,8 +1,8 @@
 import { request } from 'umi';
-import { TableListParams, TableListItem } from './data.d';
+import { RecommendSubjectListParams, RecommendSubjectListItem } from './data.d';
 
-export async function queryRule(params?: TableListParams) {
-  return request('/api/sys/user/list', {
+export async function queryRecommendSubject(params?: RecommendSubjectListParams) {
+  return request('/api/sms/homerecommendsubject/list', {
     method: 'POST',
     data: {
       ...params,
@@ -10,8 +10,8 @@ export async function queryRule(params?: TableListParams) {
   });
 }
 
-export async function removeUserOne(params: { id: number }) {
-  return request('/api/sys/user/delete', {
+export async function removeRecommendSubject(params: { ids: number[] }) {
+  return request('/api/sms/homerecommendsubject/delete', {
     method: 'POST',
     data: {
       ...params,
@@ -19,8 +19,8 @@ export async function removeUserOne(params: { id: number }) {
   });
 }
 
-export async function removeUser(params: { key: number[] }) {
-  return request('/api/sys/user/delete', {
+export async function addRecommendSubject(params: RecommendSubjectListItem) {
+  return request('/api/sms/homerecommendsubject/add', {
     method: 'POST',
     data: {
       ...params,
@@ -28,8 +28,8 @@ export async function removeUser(params: { key: number[] }) {
   });
 }
 
-export async function addUser(params: TableListItem) {
-  return request('/api/sys/user/add', {
+export async function updateRecommendSubject(params: RecommendSubjectListParams) {
+  return request('/api/sms/homerecommendsubject/update', {
     method: 'POST',
     data: {
       ...params,
@@ -37,20 +37,3 @@ export async function addUser(params: TableListItem) {
   });
 }
 
-export async function updateUser(params: TableListParams) {
-  return request('/api/sys/user/update', {
-    method: 'POST',
-    data: {
-      ...params,
-    },
-  });
-}
-
-export async function updateUserRole(params: TableListParams) {
-  return request('/api/sys/user/updateUserRole', {
-    method: 'POST',
-    data: {
-      ...params,
-    },
-  });
-}

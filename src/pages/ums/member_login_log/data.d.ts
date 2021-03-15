@@ -1,4 +1,4 @@
-export interface TableListItem {
+export interface LoginLogListItem {
   id: number;
   disabled?: boolean;
   href: string;
@@ -17,18 +17,18 @@ export interface TableListItem {
   role_id: string;
 }
 
-export interface TableListPagination {
+export interface LoginLogListPagination {
   total: number;
   pageSize: number;
   current: number;
 }
 
-export interface TableListData {
-  list: TableListItem[];
-  pagination: Partial<TableListPagination>;
+export interface LoginLogListData {
+  list: LoginLogListItem[];
+  pagination: Partial<LoginLogListPagination>;
 }
 
-export interface TableListParams {
+export interface LoginLogListParams {
   status?: number;
   name?: string;
   desc?: string;

@@ -1,4 +1,4 @@
-export interface TableListItem {
+export interface CouponListItem {
   id: number;
   disabled?: boolean;
   href: string;
@@ -17,18 +17,18 @@ export interface TableListItem {
   role_id: string;
 }
 
-export interface TableListPagination {
+export interface CouponListPagination {
   total: number;
   pageSize: number;
   current: number;
 }
 
-export interface TableListData {
-  list: TableListItem[];
-  pagination: Partial<TableListPagination>;
+export interface CouponListData {
+  list: CouponListItem[];
+  pagination: Partial<CouponListPagination>;
 }
 
-export interface TableListParams {
+export interface CouponListParams {
   status?: number;
   name?: string;
   desc?: string;

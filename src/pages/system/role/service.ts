@@ -37,7 +37,7 @@ export async function removeRoleOne(params: { id: number }) {
   });
 }
 
-export async function removeRole(params: { key: number[] }) {
+export async function removeRole(params: { ids: number[] }) {
   return request('/api/sys/role/delete', {
     method: 'POST',
     data: {

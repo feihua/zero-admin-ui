@@ -59,7 +59,7 @@ const handleRemove = async (selectedRows: TableListItem[]) => {
   if (!selectedRows) return true;
   try {
     await removeRule({
-      key: selectedRows.map((row) => row.key),
+      ids: selectedRows.map((row) => row.key),
     });
     hide();
     message.success('删除成功，即将刷新');

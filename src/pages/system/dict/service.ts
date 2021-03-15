@@ -19,7 +19,7 @@ export async function removeDictOne(params: { id: number }) {
   });
 }
 
-export async function removeDict(params: { key: number[] }) {
+export async function removeDict(params: { ids: number[] }) {
   return request('/api/sys/dict/delete', {
     method: 'POST',
     data: {

@@ -19,7 +19,7 @@ export async function removeSysLogOne(params: { id: number }) {
   });
 }
 
-export async function removeSysLog(params: { key: number[] }) {
+export async function removeSysLog(params: { ids: number[] }) {
   return request('/api/sys/sysLog/delete', {
     method: 'POST',
     data: {

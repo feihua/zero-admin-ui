@@ -19,7 +19,7 @@ export async function removeLoginLogOne(params: { id: number }) {
   });
 }
 
-export async function removeLoginLog(params: { key: number[] }) {
+export async function removeLoginLog(params: { ids: number[] }) {
   return request('/api/sys/loginLog/delete', {
     method: 'POST',
     data: {
