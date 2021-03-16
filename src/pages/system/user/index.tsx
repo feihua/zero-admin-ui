@@ -5,10 +5,10 @@ import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
 import ProDescriptions from '@ant-design/pro-descriptions';
 import EditRoleForm from './components/EditRoleForm';
-import UpdateForm, { FormValueType } from './components/UpdateForm';
-import { TableListItem } from './data.d';
+import UpdateUserForm, { FormValueType } from './components/UpdateUserForm';
+import { UserListItem } from './data.d';
 import {
-  queryRule,
+  queryUser,
   updateUser,
   addUser,
   removeUser,
@@ -24,7 +24,7 @@ const { confirm } = Modal;
  * 添加节点
  * @param fields
  */
-const handleAdd = async (fields: TableListItem) => {
+const handleAdd = async (fields: UserListItem) => {
   const hide = message.loading('正在添加');
   try {
     await addUser({ ...fields });
@@ -112,7 +112,7 @@ const handleRemoveOne = async (id: number) => {
  *  删除节点
  * @param selectedRows
  */
-const handleRemove = async (selectedRows: TableListItem[]) => {
+const handleRemove = async (selectedRows: UserListItem[]) => {
   const hide = message.loading('正在删除');
   if (!selectedRows) return true;
   try {
@@ -136,8 +136,8 @@ const TableList: React.FC<{}> = () => {
   const [editModalVisible, handleEditModalVisible] = useState<boolean>(false);
   const [stepRoleFormValues, setStepRoleFormValues] = useState({});
   const actionRef = useRef<ActionType>();
-  const [row, setRow] = useState<TableListItem>();
-  const [selectedRowsState, setSelectedRows] = useState<TableListItem[]>([]);
+  const [row, setRow] = useState<UserListItem>();
+  const [selectedRowsState, setSelectedRows] = useState<UserListItem[]>([]);
 
   const showDeleteConfirm = (id: number) => {
     confirm({
@@ -153,7 +153,7 @@ const TableList: React.FC<{}> = () => {
     });
   };
 
-  const columns: ProColumns<TableListItem>[] = [
+  const columns: ProColumns<UserListItem>[] = [
     {
       title: '编号',
       dataIndex: 'id',
@@ -317,7 +317,7 @@ const TableList: React.FC<{}> = () => {
 
   return (
     <PageContainer>
-      <ProTable<TableListItem>
+      <ProTable<UserListItem>
         headerTitle="用户列表"
         actionRef={actionRef}
         rowKey="id"
@@ -329,7 +329,7 @@ const TableList: React.FC<{}> = () => {
             <PlusOutlined /> 新建用户
           </Button>,
         ]}
-        request={(params, sorter, filter) => queryRule({ ...params, sorter, filter })}
+        request={(params, sorter, filter) => queryUser({ ...params, sorter, filter })}
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows) => setSelectedRows(selectedRows),
@@ -361,7 +361,7 @@ const TableList: React.FC<{}> = () => {
         visible={createModalVisible}
         onVisibleChange={handleModalVisible}
         onFinish={async (value) => {
-          const success = await handleAdd(value as TableListItem);
+          const success = await handleAdd(value as UserListItem);
           if (success) {
             handleModalVisible(false);
             if (actionRef.current) {
@@ -436,7 +436,7 @@ const TableList: React.FC<{}> = () => {
       </ModalForm>
 
       {stepFormValues && Object.keys(stepFormValues).length ? (
-        <UpdateForm
+        <UpdateUserForm
           onSubmit={async (value) => {
             const success = await handleUpdate(value);
             if (success) {
@@ -486,7 +486,7 @@ const TableList: React.FC<{}> = () => {
         closable={false}
       >
         {row?.name && (
-          <ProDescriptions<TableListItem>
+          <ProDescriptions<UserListItem>
             column={2}
             title={row?.name}
             request={async () => ({

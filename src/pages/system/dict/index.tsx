@@ -4,8 +4,8 @@ import React, { useState, useRef } from 'react';
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
 import ProDescriptions from '@ant-design/pro-descriptions';
-import UpdateForm, { FormValueType } from './components/UpdateForm';
-import { TableListItem } from './data.d';
+import UpdateDictForm, { DictFormValueType } from './components/UpdateDictForm';
+import { DictListItem } from './data.d';
 import {queryDict, updateRule, addDict, removeDict, removeDictOne} from './service';
 
 import ProForm, {ModalForm, ProFormText, ProFormTextArea} from '@ant-design/pro-form';
@@ -16,7 +16,7 @@ const { confirm } = Modal;
  * 添加节点
  * @param fields
  */
-const handleAdd = async (fields: TableListItem) => {
+const handleAdd = async (fields: DictListItem) => {
   const hide = message.loading('正在添加');
   try {
     await addDict({...fields});
@@ -34,7 +34,7 @@ const handleAdd = async (fields: TableListItem) => {
  * 更新节点
  * @param fields
  */
-const handleUpdate = async (fields: FormValueType) => {
+const handleUpdate = async (fields: DictFormValueType) => {
   const hide = message.loading('正在更新');
   try {
     await updateRule({
@@ -81,7 +81,7 @@ const handleRemoveOne = async (id: number) => {
  *  删除节点
  * @param selectedRows
  */
-const handleRemove = async (selectedRows: TableListItem[]) => {
+const handleRemove = async (selectedRows: DictListItem[]) => {
   const hide = message.loading('正在删除');
   if (!selectedRows) return true;
   try {
@@ -103,8 +103,8 @@ const TableList: React.FC<{}> = () => {
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
   const [stepFormValues, setStepFormValues] = useState({});
   const actionRef = useRef<ActionType>();
-  const [row, setRow] = useState<TableListItem>();
-  const [selectedRowsState, setSelectedRows] = useState<TableListItem[]>([]);
+  const [row, setRow] = useState<DictListItem>();
+  const [selectedRowsState, setSelectedRows] = useState<DictListItem[]>([]);
 
   const showDeleteConfirm = (id: number) => {
     confirm({
@@ -120,7 +120,7 @@ const TableList: React.FC<{}> = () => {
     });
   };
 
-  const columns: ProColumns<TableListItem>[] = [
+  const columns: ProColumns<DictListItem>[] = [
     {
       title: '编号',
       dataIndex: 'id',
@@ -280,7 +280,7 @@ const TableList: React.FC<{}> = () => {
 
   return (
     <PageContainer>
-      <ProTable<TableListItem>
+      <ProTable<DictListItem>
         headerTitle="字典列表"
         actionRef={actionRef}
         rowKey="id"
@@ -323,7 +323,7 @@ const TableList: React.FC<{}> = () => {
         visible={createModalVisible}
         onVisibleChange={handleModalVisible}
         onFinish={async (value) => {
-          const success = await handleAdd(value as TableListItem);
+          const success = await handleAdd(value as DictListItem);
           if (success) {
             handleModalVisible(false);
             if (actionRef.current) {
@@ -370,7 +370,7 @@ const TableList: React.FC<{}> = () => {
         />
       </ModalForm>
       {stepFormValues && Object.keys(stepFormValues).length ? (
-        <UpdateForm
+        <UpdateDictForm
           onSubmit={async (value) => {
             const success = await handleUpdate(value);
             if (success) {
@@ -399,7 +399,7 @@ const TableList: React.FC<{}> = () => {
         closable={false}
       >
         {row?.label && (
-          <ProDescriptions<TableListItem>
+          <ProDescriptions<DictListItem>
             column={2}
             title={row?.label}
             request={async () => ({

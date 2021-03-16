@@ -4,9 +4,9 @@ import React, { useState, useRef } from 'react';
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
 import ProDescriptions from '@ant-design/pro-descriptions';
-import UpdateForm, { FormValueType } from './components/UpdateForm';
-import CreateChildForm from './components/CreateChildForm';
-import { TableListItem } from './data.d';
+import UpdateDeptForm, { DeptFormValueType } from './components/UpdateDeptForm';
+import CreateDeptChildForm from './components/CreateDeptChildForm';
+import { DeptListItem } from './data.d';
 import { queryDept, updateRule, addDept, removeDept, removeDeptOne } from './service';
 import { tree } from '@/utils/utils';
 
@@ -18,7 +18,7 @@ const { confirm } = Modal;
  * 添加节点
  * @param fields
  */
-const handleAdd = async (fields: TableListItem) => {
+const handleAdd = async (fields: DeptListItem) => {
   fields.order_num = Number(fields.order_num);
   const hide = message.loading('正在添加');
   try {
@@ -37,7 +37,7 @@ const handleAdd = async (fields: TableListItem) => {
  * 更新节点
  * @param fields
  */
-const handleUpdate = async (fields: FormValueType) => {
+const handleUpdate = async (fields: DeptFormValueType) => {
   const hide = message.loading('正在更新');
   try {
     await updateRule({
@@ -81,7 +81,7 @@ const handleRemoveOne = async (id: number) => {
  *  删除节点
  * @param selectedRows
  */
-const handleRemove = async (selectedRows: TableListItem[]) => {
+const handleRemove = async (selectedRows: DeptListItem[]) => {
   const hide = message.loading('正在删除');
   if (!selectedRows) return true;
   try {
@@ -102,10 +102,10 @@ const TableList: React.FC<{}> = () => {
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
   const [createChildModalVisible, handleChildModalVisible] = useState<boolean>(false);
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
-  const [stepFormValues, setStepFormValues] = useState<TableListItem>();
+  const [stepFormValues, setStepFormValues] = useState<DeptListItem>();
   const actionRef = useRef<ActionType>();
-  const [row, setRow] = useState<TableListItem>();
-  const [selectedRowsState, setSelectedRows] = useState<TableListItem[]>([]);
+  const [row, setRow] = useState<DeptListItem>();
+  const [selectedRowsState, setSelectedRows] = useState<DeptListItem[]>([]);
 
   const showDeleteConfirm = (id: number) => {
     confirm({
@@ -121,7 +121,7 @@ const TableList: React.FC<{}> = () => {
     });
   };
 
-  const columns: ProColumns<TableListItem>[] = [
+  const columns: ProColumns<DeptListItem>[] = [
     {
       title: '编号',
       dataIndex: 'id',
@@ -242,7 +242,7 @@ const TableList: React.FC<{}> = () => {
 
   return (
     <PageContainer>
-      <ProTable<TableListItem>
+      <ProTable<DeptListItem>
         headerTitle="机构列表"
         actionRef={actionRef}
         rowKey="id"
@@ -287,7 +287,7 @@ const TableList: React.FC<{}> = () => {
         visible={createModalVisible}
         onVisibleChange={handleModalVisible}
         onFinish={async (value) => {
-          const success = await handleAdd(value as TableListItem);
+          const success = await handleAdd(value as DeptListItem);
           if (success) {
             handleModalVisible(false);
             if (actionRef.current) {
@@ -306,9 +306,9 @@ const TableList: React.FC<{}> = () => {
         <ProFormText name="order_num" label="排序" width="l" />
       </ModalForm>
       {stepFormValues && Object.keys(stepFormValues).length ? (
-        <CreateChildForm
+        <CreateDeptChildForm
           onSubmit={async (value) => {
-            const success = await handleAdd(value as TableListItem);
+            const success = await handleAdd(value as DeptListItem);
             if (success) {
               handleChildModalVisible(false);
               setStepFormValues(undefined);
@@ -326,7 +326,7 @@ const TableList: React.FC<{}> = () => {
         />
       ) : null}
       {stepFormValues && Object.keys(stepFormValues).length ? (
-        <UpdateForm
+        <UpdateDeptForm
           onSubmit={async (value) => {
             const success = await handleUpdate(value);
             if (success) {
@@ -355,7 +355,7 @@ const TableList: React.FC<{}> = () => {
         closable={false}
       >
         {row?.name && (
-          <ProDescriptions<TableListItem>
+          <ProDescriptions<DeptListItem>
             column={2}
             title={row?.name}
             request={async () => ({

@@ -1,23 +1,23 @@
 import React from 'react';
 import ProForm, {ModalForm, ProFormText} from '@ant-design/pro-form';
 
-import {TableListItem} from '../data.d';
+import {MenuListItem} from '../data.d';
 
-export interface FormValueType extends Partial<TableListItem> {
+export interface MenuFormValueType extends Partial<MenuListItem> {
   target?: string;
   template?: string;
   time?: string;
   frequency?: string;
 }
 
-export interface UpdateFormProps {
-  onCancel: (flag?: boolean, formVals?: FormValueType) => void;
-  onSubmit: (values: FormValueType) => Promise<void>;
+export interface UpdateMenuFormProps {
+  onCancel: (flag?: boolean, formVals?: MenuFormValueType) => void;
+  onSubmit: (values: MenuFormValueType) => Promise<void>;
   updateModalVisible: boolean;
-  values: Partial<TableListItem>;
+  values: Partial<MenuListItem>;
 }
 
-const UpdateForm: React.FC<UpdateFormProps> = (props) => {
+const UpdateMenuForm: React.FC<UpdateMenuFormProps> = (props) => {
   const {onSubmit} = props
 
   return (
@@ -81,4 +81,4 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
   )
 };
 
-export default UpdateForm;
+export default UpdateMenuForm;

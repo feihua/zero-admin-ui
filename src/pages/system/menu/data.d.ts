@@ -1,4 +1,4 @@
-export interface TableListItem {
+export interface MenuListItem {
   id: number;
   disabled?: boolean;
   href: string;
@@ -19,18 +19,18 @@ export interface TableListItem {
   perms: string;
 }
 
-export interface TableListPagination {
+export interface MenuListPagination {
   total: number;
   pageSize: number;
   current: number;
 }
 
-export interface TableListData {
-  list: TableListItem[];
-  pagination: Partial<TableListPagination>;
+export interface MenuListData {
+  list: MenuListItem[];
+  pagination: Partial<MenuListPagination>;
 }
 
-export interface TableListParams {
+export interface MenuListParams {
   id?: number;
   status?: string;
   name?: string;

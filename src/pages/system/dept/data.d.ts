@@ -1,4 +1,4 @@
-export interface TableListItem {
+export interface DeptListItem {
   id: number;
   disabled?: boolean;
   href: string;
@@ -16,18 +16,18 @@ export interface TableListItem {
   order_num: number;
 }
 
-export interface TableListPagination {
+export interface DeptListPagination {
   total: number;
   pageSize: number;
   current: number;
 }
 
-export interface TableListData {
-  list: TableListItem[];
-  pagination: Partial<TableListPagination>;
+export interface DeptListData {
+  list: DeptListItem[];
+  pagination: Partial<DeptListPagination>;
 }
 
-export interface TableListParams {
+export interface DeptListParams {
   status?: string;
   name?: string;
   desc?: string;

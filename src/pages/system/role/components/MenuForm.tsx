@@ -1,18 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { ModalForm } from '@ant-design/pro-form';
 
-import { TableListItem } from '../data.d';
+import { RoleListItem } from '../data.d';
 import { Tree } from 'antd';
 import { queryMenuByRoleId } from '@/pages/system/role/service';
 import { tree as toTree } from '@/utils/utils';
 
-export interface FormValueType extends Partial<TableListItem> {}
+export interface FormValueType extends Partial<RoleListItem> {}
 
 export interface MenuFormProps {
   onCancel: (flag?: boolean, formVals?: FormValueType) => void;
   onSubmit: (values: { role_id: number; menu_ids: number[] }) => Promise<void>;
   updateMenuModalVisible: boolean;
-  values: Partial<TableListItem>;
+  values: Partial<RoleListItem>;
 }
 
 const MenuForm: React.FC<MenuFormProps> = (props) => {

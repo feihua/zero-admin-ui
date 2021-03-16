@@ -1,7 +1,7 @@
 import { request } from 'umi';
-import { TableListParams, TableListItem } from './data.d';
+import { DeptListParams, DeptListItem } from './data.d';
 
-export async function queryDept(params?: TableListParams) {
+export async function queryDept(params?: DeptListParams) {
   return request('/api/sys/dept/list', {
     method: 'POST',
     data: {
@@ -28,7 +28,7 @@ export async function removeDept(params: { ids: number[] }) {
   });
 }
 
-export async function addDept(params: TableListItem) {
+export async function addDept(params: DeptListItem) {
   return request('/api/sys/dept/add', {
     method: 'POST',
     data: {
@@ -37,7 +37,7 @@ export async function addDept(params: TableListItem) {
   });
 }
 
-export async function updateRule(params: TableListParams) {
+export async function updateRule(params: DeptListParams) {
   return request('/api/sys/dept/update', {
     method: 'POST',
     data: {

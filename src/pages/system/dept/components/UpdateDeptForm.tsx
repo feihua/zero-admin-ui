@@ -1,9 +1,9 @@
 import React from 'react';
 import {ModalForm, ProFormText} from '@ant-design/pro-form';
 
-import {TableListItem} from '../data.d';
+import {DeptListItem} from '../data.d';
 
-export interface FormValueType extends Partial<TableListItem> {
+export interface DeptFormValueType extends Partial<DeptListItem> {
   target?: string;
   template?: string;
   type?: string;
@@ -11,14 +11,14 @@ export interface FormValueType extends Partial<TableListItem> {
   frequency?: string;
 }
 
-export interface UpdateFormProps {
-  onCancel: (flag?: boolean, formVals?: FormValueType) => void;
-  onSubmit: (values: FormValueType) => Promise<void>;
+export interface UpdateDeptFormProps {
+  onCancel: (flag?: boolean, formVals?: DeptFormValueType) => void;
+  onSubmit: (values: DeptFormValueType) => Promise<void>;
   updateModalVisible: boolean;
-  values: Partial<TableListItem>;
+  values: Partial<DeptListItem>;
 }
 
-const UpdateForm: React.FC<UpdateFormProps> = (props) => {
+const UpdateDeptForm: React.FC<UpdateDeptFormProps> = (props) => {
   const {onSubmit} = props
 
   return (
@@ -63,4 +63,4 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
   )
 };
 
-export default UpdateForm;
+export default UpdateDeptForm;

@@ -1,9 +1,9 @@
 import React from 'react';
 import {ModalForm, ProFormText} from '@ant-design/pro-form';
 
-import {TableListItem} from '../data.d';
+import {DeptListItem} from '../data.d';
 
-export interface FormValueType extends Partial<TableListItem> {
+export interface FormValueType extends Partial<DeptListItem> {
 
 }
 
@@ -14,7 +14,7 @@ export interface CreateChildFormProps {
   parent_id: number;
 }
 
-const CreateChildForm: React.FC<CreateChildFormProps> = (props) => {
+const CreateDeptChildForm: React.FC<CreateChildFormProps> = (props) => {
   const {onSubmit,parent_id} = props
 
   return (
@@ -50,4 +50,4 @@ const CreateChildForm: React.FC<CreateChildFormProps> = (props) => {
   )
 };
 
-export default CreateChildForm;
+export default CreateDeptChildForm;

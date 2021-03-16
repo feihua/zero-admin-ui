@@ -4,9 +4,9 @@ import React, { useState, useRef } from 'react';
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
 import ProDescriptions from '@ant-design/pro-descriptions';
-import UpdateForm, { FormValueType } from './components/UpdateForm';
-import CreateChildForm from './components/CreateChildForm';
-import { TableListItem } from './data.d';
+import UpdateMenuForm, { MenuFormValueType } from './components/UpdateMenuForm';
+import CreateMenuChildForm from './components/CreateMenuChildForm';
+import { MenuListItem } from './data.d';
 import { queryMenu, updateRule, addMenu, removeMenu, removeMenuOne } from './service';
 import { tree } from '@/utils/utils';
 
@@ -18,7 +18,7 @@ const { confirm } = Modal;
  * 添加节点
  * @param fields
  */
-const handleAdd = async (fields: TableListItem) => {
+const handleAdd = async (fields: MenuListItem) => {
   fields.order_num = Number(fields.order_num);
   fields.type = Number(fields.type);
   const hide = message.loading('正在添加');
@@ -38,7 +38,7 @@ const handleAdd = async (fields: TableListItem) => {
  * 更新节点
  * @param fields
  */
-const handleUpdate = async (fields: FormValueType) => {
+const handleUpdate = async (fields: MenuFormValueType) => {
   const hide = message.loading('正在更新');
   try {
     await updateRule({
@@ -86,7 +86,7 @@ const handleRemoveOne = async (id: number) => {
  *  删除节点
  * @param selectedRows
  */
-const handleRemove = async (selectedRows: TableListItem[]) => {
+const handleRemove = async (selectedRows: MenuListItem[]) => {
   const hide = message.loading('正在删除');
   if (!selectedRows) return true;
   try {
@@ -107,10 +107,10 @@ const TableList: React.FC<{}> = () => {
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
   const [createChildModalVisible, handleChildModalVisible] = useState<boolean>(false);
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
-  const [stepFormValues, setStepFormValues] = useState<TableListItem>();
+  const [stepFormValues, setStepFormValues] = useState<MenuListItem>();
   const actionRef = useRef<ActionType>();
-  const [row, setRow] = useState<TableListItem>();
-  const [selectedRowsState, setSelectedRows] = useState<TableListItem[]>([]);
+  const [row, setRow] = useState<MenuListItem>();
+  const [selectedRowsState, setSelectedRows] = useState<MenuListItem[]>([]);
 
   const showDeleteConfirm = (id: number) => {
     confirm({
@@ -126,7 +126,7 @@ const TableList: React.FC<{}> = () => {
     });
   };
 
-  const columns: ProColumns<TableListItem>[] = [
+  const columns: ProColumns<MenuListItem>[] = [
     {
       title: '菜单名称',
       dataIndex: 'name',
@@ -260,7 +260,7 @@ const TableList: React.FC<{}> = () => {
 
   return (
     <PageContainer>
-      <ProTable<TableListItem>
+      <ProTable<MenuListItem>
         headerTitle="菜单列表"
         actionRef={actionRef}
         rowKey="id"
@@ -305,7 +305,7 @@ const TableList: React.FC<{}> = () => {
         visible={createModalVisible}
         onVisibleChange={handleModalVisible}
         onFinish={async (value) => {
-          const success = await handleAdd(value as TableListItem);
+          const success = await handleAdd(value as MenuListItem);
           if (success) {
             handleModalVisible(false);
             if (actionRef.current) {
@@ -329,9 +329,9 @@ const TableList: React.FC<{}> = () => {
         <ProFormText name="url" label="路径" width="l" />
       </ModalForm>
       {stepFormValues && Object.keys(stepFormValues).length ? (
-        <CreateChildForm
+        <CreateMenuChildForm
           onSubmit={async (value) => {
-            const success = await handleAdd(value as TableListItem);
+            const success = await handleAdd(value as MenuListItem);
             if (success) {
               handleChildModalVisible(false);
               setStepFormValues(undefined);
@@ -349,7 +349,7 @@ const TableList: React.FC<{}> = () => {
         />
       ) : null}
       {stepFormValues && Object.keys(stepFormValues).length ? (
-        <UpdateForm
+        <UpdateMenuForm
           onSubmit={async (value) => {
             const success = await handleUpdate(value);
             if (success) {
@@ -378,7 +378,7 @@ const TableList: React.FC<{}> = () => {
         closable={false}
       >
         {row?.name && (
-          <ProDescriptions<TableListItem>
+          <ProDescriptions<MenuListItem>
             column={2}
             title={row?.name}
             request={async () => ({

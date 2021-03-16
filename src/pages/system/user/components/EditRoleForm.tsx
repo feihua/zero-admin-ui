@@ -1,14 +1,14 @@
 import React from 'react';
 import { ModalForm, ProFormSelect, ProFormText } from '@ant-design/pro-form';
 
-import { FormValueType } from '@/pages/system/user/components/UpdateForm';
-import { TableListItem } from '@/pages/system/user/data';
+import { FormValueType } from '@/pages/system/user/components/UpdateUserForm';
+import { UserListItem } from '@/pages/system/user/data';
 
 interface CreateFormProps {
   editModalVisible: boolean;
   onCancel: () => void;
   onSubmit: (values: FormValueType) => Promise<void>;
-  values: Partial<TableListItem>;
+  values: Partial<UserListItem>;
 }
 
 const EditRoleForm: React.FC<CreateFormProps> = (props) => {

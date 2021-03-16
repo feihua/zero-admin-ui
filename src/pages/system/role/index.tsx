@@ -5,8 +5,8 @@ import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
 import ProDescriptions from '@ant-design/pro-descriptions';
 import MenuForm from './components/MenuForm';
-import UpdateForm, { FormValueType } from './components/UpdateForm';
-import { TableListItem } from './data.d';
+import UpdateRoleForm, { RoleFormValueType } from './components/UpdateRoleForm';
+import { RoleListItem } from './data.d';
 import {
   queryRole,
   updateRule,
@@ -24,7 +24,7 @@ const { confirm } = Modal;
  * 添加节点
  * @param fields
  */
-const handleAdd = async (fields: TableListItem) => {
+const handleAdd = async (fields: RoleListItem) => {
   const hide = message.loading('正在添加');
   try {
     await addRole({ ...fields });
@@ -42,7 +42,7 @@ const handleAdd = async (fields: TableListItem) => {
  * 更新节点
  * @param fields
  */
-const handleUpdate = async (fields: FormValueType) => {
+const handleUpdate = async (fields: RoleFormValueType) => {
   const hide = message.loading('正在更新');
   try {
     await updateRule({
@@ -85,7 +85,7 @@ const handleRemoveOne = async (id: number) => {
  *  删除节点
  * @param selectedRows
  */
-const handleRemove = async (selectedRows: TableListItem[]) => {
+const handleRemove = async (selectedRows: RoleListItem[]) => {
   const hide = message.loading('正在删除');
   if (!selectedRows) return true;
   try {
@@ -109,8 +109,8 @@ const TableList: React.FC<{}> = () => {
   const [stepFormValues, setStepFormValues] = useState({});
   const [stepMenuFormValues, setMenuStepFormValues] = useState({});
   const actionRef = useRef<ActionType>();
-  const [row, setRow] = useState<TableListItem>();
-  const [selectedRowsState, setSelectedRows] = useState<TableListItem[]>([]);
+  const [row, setRow] = useState<RoleListItem>();
+  const [selectedRowsState, setSelectedRows] = useState<RoleListItem[]>([]);
 
   const showDeleteConfirm = (id: number) => {
     confirm({
@@ -126,7 +126,7 @@ const TableList: React.FC<{}> = () => {
     });
   };
 
-  const columns: ProColumns<TableListItem>[] = [
+  const columns: ProColumns<RoleListItem>[] = [
     {
       title: '编号',
       dataIndex: 'id',
@@ -259,7 +259,7 @@ const TableList: React.FC<{}> = () => {
 
   return (
     <PageContainer>
-      <ProTable<TableListItem>
+      <ProTable<RoleListItem>
         headerTitle="角色列表"
         actionRef={actionRef}
         rowKey="id"
@@ -302,7 +302,7 @@ const TableList: React.FC<{}> = () => {
         visible={createModalVisible}
         onVisibleChange={handleModalVisible}
         onFinish={async (value) => {
-          const success = await handleAdd(value as TableListItem);
+          const success = await handleAdd(value as RoleListItem);
           if (success) {
             handleModalVisible(false);
             if (actionRef.current) {
@@ -324,7 +324,7 @@ const TableList: React.FC<{}> = () => {
         />
       </ModalForm>
       {stepFormValues && Object.keys(stepFormValues).length ? (
-        <UpdateForm
+        <UpdateRoleForm
           onSubmit={async (value) => {
             const success = await handleUpdate(value);
             if (success) {
@@ -374,7 +374,7 @@ const TableList: React.FC<{}> = () => {
         closable={false}
       >
         {row?.name && (
-          <ProDescriptions<TableListItem>
+          <ProDescriptions<RoleListItem>
             column={2}
             title={row?.name}
             request={async () => ({

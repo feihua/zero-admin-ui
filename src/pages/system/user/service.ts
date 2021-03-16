@@ -1,7 +1,7 @@
 import { request } from 'umi';
-import { TableListParams, TableListItem } from './data.d';
+import { UserListParams, UserListItem } from './data.d';
 
-export async function queryRule(params?: TableListParams) {
+export async function queryUser(params?: UserListParams) {
   return request('/api/sys/user/list', {
     method: 'POST',
     data: {
@@ -28,7 +28,7 @@ export async function removeUser(params: { ids: number[] }) {
   });
 }
 
-export async function addUser(params: TableListItem) {
+export async function addUser(params: UserListItem) {
   return request('/api/sys/user/add', {
     method: 'POST',
     data: {
@@ -37,7 +37,7 @@ export async function addUser(params: TableListItem) {
   });
 }
 
-export async function updateUser(params: TableListParams) {
+export async function updateUser(params: UserListParams) {
   return request('/api/sys/user/update', {
     method: 'POST',
     data: {
@@ -46,7 +46,7 @@ export async function updateUser(params: TableListParams) {
   });
 }
 
-export async function updateUserRole(params: TableListParams) {
+export async function updateUserRole(params: UserListParams) {
   return request('/api/sys/user/updateUserRole', {
     method: 'POST',
     data: {

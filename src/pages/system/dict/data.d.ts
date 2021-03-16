@@ -1,4 +1,4 @@
-export interface TableListItem {
+export interface DictListItem {
   id: number;
   disabled?: boolean;
   href: string;
@@ -19,18 +19,18 @@ export interface TableListItem {
 
 }
 
-export interface TableListPagination {
+export interface DictListPagination {
   total: number;
   pageSize: number;
   current: number;
 }
 
-export interface TableListData {
-  list: TableListItem[];
-  pagination: Partial<TableListPagination>;
+export interface DictListData {
+  list: DictListItem[];
+  pagination: Partial<DictListPagination>;
 }
 
-export interface TableListParams {
+export interface DictListParams {
   id?: number;
   status?: string;
   name?: string;

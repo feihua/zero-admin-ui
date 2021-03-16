@@ -1,7 +1,7 @@
 import { request } from 'umi';
-import { TableListParams, TableListItem } from './data.d';
+import { DictListParams, DictListItem } from './data.d';
 
-export async function queryDict(params?: TableListParams) {
+export async function queryDict(params?: DictListParams) {
   return request('/api/sys/dict/list', {
     method: 'POST',
     data: {
@@ -28,7 +28,7 @@ export async function removeDict(params: { ids: number[] }) {
   });
 }
 
-export async function addDict(params: TableListItem) {
+export async function addDict(params: DictListItem) {
   return request('/api/sys/dict/add', {
     method: 'POST',
     data: {
@@ -37,7 +37,7 @@ export async function addDict(params: TableListItem) {
   });
 }
 
-export async function updateRule(params: TableListParams) {
+export async function updateRule(params: DictListParams) {
   return request('/api/sys/dict/update', {
     method: 'POST',
     data: {

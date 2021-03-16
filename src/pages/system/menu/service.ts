@@ -1,7 +1,7 @@
 import { request } from 'umi';
-import { TableListParams, TableListItem } from './data.d';
+import { MenuListParams, MenuListItem } from './data.d';
 
-export async function queryMenu(params?: TableListParams) {
+export async function queryMenu(params?: MenuListParams) {
   return request('/api/sys/menu/list', {
     method: 'POST',
     data: {
@@ -28,7 +28,7 @@ export async function removeMenu(params: { ids: number[] }) {
   });
 }
 
-export async function addMenu(params: TableListItem) {
+export async function addMenu(params: MenuListItem) {
   return request('/api/sys/menu/add', {
     method: 'POST',
     data: {
@@ -37,7 +37,7 @@ export async function addMenu(params: TableListItem) {
   });
 }
 
-export async function updateRule(params: TableListParams) {
+export async function updateRule(params: MenuListParams) {
   return request('/api/sys/menu/update', {
     method: 'POST',
     data: {
