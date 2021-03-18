@@ -1,5 +1,5 @@
 import { PlusOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
-import { Button, Divider, message, Input, Drawer, Modal } from 'antd';
+import { Button, Divider, message, Drawer, Modal } from 'antd';
 import React, { useState, useRef } from 'react';
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
@@ -133,117 +133,50 @@ const TableList: React.FC<{}> = () => {
       hideInSearch: true,
     },
     {
-      title: '用户名',
-      dataIndex: 'name',
-      // formItemProps: {
-      //   rules: [
-      //     {
-      //       required: true,
-      //       message: '用户名为必填项',
-      //     },
-      //   ],
-      // },
+      title: '订单编号',
+      dataIndex: 'order_sn',
       render: (dom, entity) => {
         return <a onClick={() => setRow(entity)}>{dom}</a>;
       },
     },
     {
-      title: '昵称',
-      dataIndex: 'nick_name',
-      // formItemProps: {
-      //   rules: [
-      //     {
-      //       required: true,
-      //       message: '昵称为必填项',
-      //     },
-      //   ],
-      // },
+      title: '会员用户名',
+      dataIndex: 'member_username',
     },
     {
-      title: '手机号',
-      dataIndex: 'mobile',
-      // formItemProps: {
-      //   rules: [
-      //     {
-      //       required: true,
-      //       message: '手机号为必填项',
-      //     },
-      //   ],
-      // },
+      title: '退款金额',
+      dataIndex: 'return_amount',
     },
     {
-      title: '邮箱',
-      dataIndex: 'email',
-      // formItemProps: {
-      //   rules: [
-      //     {
-      //       required: true,
-      //       message: '邮箱为必填项',
-      //     },
-      //   ],
-      // },
+      title: '退货人姓名',
+      dataIndex: 'return_name',
+    },
+    {
+      title: '退货人电话',
+      dataIndex: 'return_phone',
     },
     {
       title: '状态',
       dataIndex: 'status',
       valueEnum: {
-        0: { text: '禁用', status: 'Error' },
-        1: { text: '正常', status: 'Success' },
+        0: { text: '待处理', status: 'Error' },
+        1: { text: '退货中', status: 'Success' },
+        2: { text: '已完成', status: 'Success' },
+        3: { text: '已拒绝', status: 'Success' },
       },
     },
     {
-      title: '部门',
-      dataIndex: 'dept_id',
-      // formItemProps: {
-      //   rules: [
-      //     {
-      //       required: true,
-      //       message: '部门为必填项',
-      //     },
-      //   ],
-      // },
+      title: '退货数量',
+      dataIndex: 'product_count',
     },
     {
-      title: '创建人',
-      dataIndex: 'create_by',
+      title: '商品单价',
+      dataIndex: 'product_price',
       hideInSearch: true,
     },
     {
-      title: '创建时间',
-      dataIndex: 'create_time',
-      valueType: 'dateTime',
-      hideInSearch: true,
-      renderFormItem: (item, { defaultRender, ...rest }, form) => {
-        const status = form.getFieldValue('status');
-        if (`${status}` === '0') {
-          return false;
-        }
-        if (`${status}` === '3') {
-          return <Input {...rest} placeholder="请输入异常原因！" />;
-        }
-        return defaultRender(item);
-      },
-    },
-    {
-      title: '更新人',
-      dataIndex: 'last_update_by',
-      hideInSearch: true,
-    },
-    {
-      title: '更新时间',
-      dataIndex: 'last_update_time',
-      valueType: 'dateTime',
-      hideInSearch: true,
-      renderFormItem: (item, { defaultRender, ...rest }, form) => {
-        const status = form.getFieldValue('status');
-        if (`${status}` === '0') {
-          return false;
-        }
-        if (`${status}` === '3') {
-          return <Input {...rest} placeholder="请输入异常原因！" />;
-        }
-        return defaultRender(item);
-      },
+      title: '原因',
+      dataIndex: 'reason',
     },
     {
       title: '操作',

@@ -1,5 +1,5 @@
 import { PlusOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
-import { Button, Divider, message, Input, Drawer, Modal } from 'antd';
+import { Button, Divider, message, Drawer, Modal } from 'antd';
 import React, { useState, useRef } from 'react';
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
@@ -134,22 +134,22 @@ const TableList: React.FC<{}> = () => {
     },
     {
       title: '用户名',
-      dataIndex: 'name',
+      dataIndex: 'username',
       render: (dom, entity) => {
         return <a onClick={() => setRow(entity)}>{dom}</a>;
       },
     },
     {
       title: '昵称',
-      dataIndex: 'nick_name',
+      dataIndex: 'nickname',
     },
     {
       title: '手机号',
-      dataIndex: 'mobile',
+      dataIndex: 'phone',
     },
     {
-      title: '邮箱',
-      dataIndex: 'email',
+      title: '注册时间',
+      dataIndex: 'create_time',
     },
     {
       title: '状态',
@@ -160,50 +160,40 @@ const TableList: React.FC<{}> = () => {
       },
     },
     {
-      title: '部门',
-      dataIndex: 'dept_id',
+      title: '头像',
+      dataIndex: 'icon',
     },
     {
-      title: '创建人',
-      dataIndex: 'create_by',
-      hideInSearch: true,
-    },
-    {
-      title: '创建时间',
-      dataIndex: 'create_time',
-      valueType: 'dateTime',
-      hideInSearch: true,
-      renderFormItem: (item, { defaultRender, ...rest }, form) => {
-        const status = form.getFieldValue('status');
-        if (`${status}` === '0') {
-          return false;
-        }
-        if (`${status}` === '3') {
-          return <Input {...rest} placeholder="请输入异常原因！" />;
-        }
-        return defaultRender(item);
+      title: '性别',
+      dataIndex: 'gender',
+      valueEnum: {
+        0: { text: '禁用', status: 'Error' },
+        1: { text: '正常', status: 'Success' },
       },
     },
     {
-      title: '更新人',
-      dataIndex: 'last_update_by',
+      title: '生日',
+      dataIndex: 'birthday',
+    },
+    {
+      title: '积分',
+      dataIndex: 'integration',
       hideInSearch: true,
     },
     {
-      title: '更新时间',
-      dataIndex: 'last_update_time',
-      valueType: 'dateTime',
+      title: '成长值',
+      dataIndex: 'growth',
       hideInSearch: true,
-      renderFormItem: (item, { defaultRender, ...rest }, form) => {
-        const status = form.getFieldValue('status');
-        if (`${status}` === '0') {
-          return false;
-        }
-        if (`${status}` === '3') {
-          return <Input {...rest} placeholder="请输入异常原因！" />;
-        }
-        return defaultRender(item);
-      },
+    },
+    {
+      title: '剩余抽奖次数',
+      dataIndex: 'luckey_count',
+      hideInSearch: true,
+    },
+    {
+      title: '历史积分数量',
+      dataIndex: 'history_integration',
+      hideInSearch: true,
     },
     {
       title: '操作',

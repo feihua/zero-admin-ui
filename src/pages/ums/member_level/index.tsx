@@ -1,5 +1,5 @@
 import { PlusOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
-import { Button, Divider, message, Input, Drawer, Modal } from 'antd';
+import { Button, Divider, message, Drawer, Modal } from 'antd';
 import React, { useState, useRef } from 'react';
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
@@ -133,77 +133,47 @@ const TableList: React.FC<{}> = () => {
       hideInSearch: true,
     },
     {
-      title: '用户名',
+      title: '会员名',
       dataIndex: 'name',
       render: (dom, entity) => {
         return <a onClick={() => setRow(entity)}>{dom}</a>;
       },
     },
     {
-      title: '昵称',
-      dataIndex: 'nick_name',
+      title: '成长值',
+      dataIndex: 'growth_point',
     },
     {
-      title: '手机号',
-      dataIndex: 'mobile',
+      title: '是否为默认等级',
+      dataIndex: 'default_status',
     },
     {
-      title: '邮箱',
-      dataIndex: 'email',
+      title: '免运费标准',
+      dataIndex: 'free_freight_point',
     },
     {
-      title: '状态',
-      dataIndex: 'status',
-      valueEnum: {
-        0: { text: '禁用', status: 'Error' },
-        1: { text: '正常', status: 'Success' },
-      },
+      title: '每次评价获取的成长值',
+      dataIndex: 'comment_growth_point',
     },
     {
-      title: '部门',
-      dataIndex: 'dept_id',
+      title: '免邮特权',
+      dataIndex: 'priviledge_free_freight',
     },
     {
-      title: '创建人',
-      dataIndex: 'create_by',
-      hideInSearch: true,
+      title: '签到特权',
+      dataIndex: 'priviledge_sign_in',
     },
     {
-      title: '创建时间',
-      dataIndex: 'create_time',
-      valueType: 'dateTime',
-      hideInSearch: true,
-      renderFormItem: (item, { defaultRender, ...rest }, form) => {
-        const status = form.getFieldValue('status');
-        if (`${status}` === '0') {
-          return false;
-        }
-        if (`${status}` === '3') {
-          return <Input {...rest} placeholder="请输入异常原因！" />;
-        }
-        return defaultRender(item);
-      },
+      title: '评论获奖励特权',
+      dataIndex: 'priviledge_comment',
     },
     {
-      title: '更新人',
-      dataIndex: 'last_update_by',
-      hideInSearch: true,
+      title: '专享活动特权',
+      dataIndex: 'priviledge_promotion',
     },
     {
-      title: '更新时间',
-      dataIndex: 'last_update_time',
-      valueType: 'dateTime',
-      hideInSearch: true,
-      renderFormItem: (item, { defaultRender, ...rest }, form) => {
-        const status = form.getFieldValue('status');
-        if (`${status}` === '0') {
-          return false;
-        }
-        if (`${status}` === '3') {
-          return <Input {...rest} placeholder="请输入异常原因！" />;
-        }
-        return defaultRender(item);
-      },
+      title: '会员价格特权',
+      dataIndex: 'priviledge_member_price',
     },
     {
       title: '操作',
