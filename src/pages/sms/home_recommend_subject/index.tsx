@@ -4,7 +4,9 @@ import React, { useState, useRef } from 'react';
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
 import ProDescriptions from '@ant-design/pro-descriptions';
-import UpdateRecommendSubjectForm, { RecommendSubjectFormValueType } from './components/UpdateRecommendSubjectForm';
+import UpdateRecommendSubjectForm, {
+  RecommendSubjectFormValueType,
+} from './components/UpdateRecommendSubjectForm';
 import { RecommendSubjectListItem } from './data.d';
 import {
   queryRecommendSubject,
@@ -63,7 +65,6 @@ const handleUpdate = async (fields: RecommendSubjectFormValueType) => {
   }
 };
 
-
 /**
  *  删除节点(单个)
  * @param id
@@ -72,7 +73,7 @@ const handleRemoveOne = async (id: number) => {
   const hide = message.loading('正在删除');
   try {
     await removeRecommendSubject({
-      ids:[id],
+      ids: [id],
     });
     hide();
     message.success('删除成功，即将刷新');
@@ -198,7 +199,7 @@ const TableList: React.FC<{}> = () => {
   return (
     <PageContainer>
       <ProTable<RecommendSubjectListItem>
-        headerTitle="用户列表"
+        headerTitle="专题推荐列表"
         actionRef={actionRef}
         rowKey="id"
         search={{

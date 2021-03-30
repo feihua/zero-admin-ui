@@ -23,7 +23,7 @@ const UpdateReturnApplyForm: React.FC<UpdateReturnApplyFormProps> = (props) => {
 
   return (
     <ModalForm
-      title="编辑用户"
+      title="编辑退货"
       width={480}
       visible={props.updateModalVisible}
       onVisibleChange={() => props.onCancel()}

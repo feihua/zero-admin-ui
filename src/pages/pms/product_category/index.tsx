@@ -6,14 +6,10 @@ import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
 import ProDescriptions from '@ant-design/pro-descriptions';
 import UpdateCategoryForm, { CategoryFormValueType } from './components/UpdateCategoryForm';
 import { CategoryListItem } from './data.d';
-import {
-  queryCategory,
-  updateCategory,
-  addCategory,
-  removeCategory,
-} from './service';
+import { queryCategory, updateCategory, addCategory, removeCategory } from './service';
 
 import ProForm, { ModalForm, ProFormText, ProFormSelect, ProFormRadio } from '@ant-design/pro-form';
+import { tree } from '@/utils/utils';
 
 const { confirm } = Modal;
 
@@ -63,7 +59,6 @@ const handleUpdate = async (fields: CategoryFormValueType) => {
   }
 };
 
-
 /**
  *  删除节点(单个)
  * @param id
@@ -72,7 +67,7 @@ const handleRemoveOne = async (id: number) => {
   const hide = message.loading('正在删除');
   try {
     await removeCategory({
-      ids:[id],
+      ids: [id],
     });
     hide();
     message.success('删除成功，即将刷新');
@@ -145,6 +140,30 @@ const TableList: React.FC<{}> = () => {
       dataIndex: 'icon',
     },
     {
+      title: '产品数量',
+      dataIndex: 'product_count',
+    },
+    {
+      title: '产品数量',
+      dataIndex: 'product_unit',
+    },
+    {
+      title: '是否显示在导航栏',
+      dataIndex: 'nav_status',
+      valueEnum: {
+        0: { text: '否', status: 'Success' },
+        1: { text: '是', status: 'Success' },
+      },
+    },
+    {
+      title: '显示状态',
+      dataIndex: 'show_status',
+      valueEnum: {
+        0: { text: '否', status: 'Success' },
+        1: { text: '是', status: 'Success' },
+      },
+    },
+    {
       title: '描述',
       dataIndex: 'description',
     },
@@ -194,7 +213,7 @@ const TableList: React.FC<{}> = () => {
   return (
     <PageContainer>
       <ProTable<CategoryListItem>
-        headerTitle="用户列表"
+        headerTitle="分类列表"
         actionRef={actionRef}
         rowKey="id"
         search={{
@@ -202,7 +221,7 @@ const TableList: React.FC<{}> = () => {
         }}
         toolBarRender={() => [
           <Button type="primary" onClick={() => handleModalVisible(true)}>
-            <PlusOutlined /> 新建用户
+            <PlusOutlined /> 新建分类
           </Button>,
         ]}
         request={(params, sorter, filter) => queryCategory({ ...params, sorter, filter })}
@@ -210,6 +229,8 @@ const TableList: React.FC<{}> = () => {
         rowSelection={{
           onChange: (_, selectedRows) => setSelectedRows(selectedRows),
         }}
+        postData={(data) => tree(data, 0, 'parent_id')}
+        pagination={false}
       />
       {selectedRowsState?.length > 0 && (
         <FooterToolbar
@@ -330,8 +351,6 @@ const TableList: React.FC<{}> = () => {
           values={stepFormValues}
         />
       ) : null}
-
-
 
       <Drawer
         width={600}

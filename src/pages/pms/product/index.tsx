@@ -1,17 +1,12 @@
 import { PlusOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
-import { Button, Divider, message, Input, Drawer, Modal } from 'antd';
+import { Button, Divider, message, Drawer, Modal } from 'antd';
 import React, { useState, useRef } from 'react';
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
 import ProDescriptions from '@ant-design/pro-descriptions';
 import UpdateProductForm, { ProductFormValueType } from './components/UpdateProductForm';
 import { ProductListItem } from './data.d';
-import {
-  queryProduct,
-  updateProduct,
-  addProduct,
-  removeProduct,
-} from './service';
+import { queryProduct, updateProduct, addProduct, removeProduct } from './service';
 
 import ProForm, { ModalForm, ProFormText, ProFormSelect, ProFormRadio } from '@ant-design/pro-form';
 
@@ -63,7 +58,6 @@ const handleUpdate = async (fields: ProductFormValueType) => {
   }
 };
 
-
 /**
  *  删除节点(单个)
  * @param id
@@ -72,7 +66,7 @@ const handleRemoveOne = async (id: number) => {
   const hide = message.loading('正在删除');
   try {
     await removeProduct({
-      ids:[id],
+      ids: [id],
     });
     hide();
     message.success('删除成功，即将刷新');
@@ -187,17 +181,6 @@ const TableList: React.FC<{}> = () => {
             编辑
           </Button>
           <Divider type="vertical" />
-          {/*<Button*/}
-          {/*  type="primary"*/}
-          {/*  size="small"*/}
-          {/*  onClick={() => {*/}
-          {/*    handleEditModalVisible(true);*/}
-          {/*    setStepRoleFormValues(record);*/}
-          {/*  }}*/}
-          {/*>*/}
-          {/*  分配角色*/}
-          {/*</Button>*/}
-          {/*<Divider type="vertical" />*/}
           <Button
             type="primary"
             danger
@@ -216,7 +199,7 @@ const TableList: React.FC<{}> = () => {
   return (
     <PageContainer>
       <ProTable<ProductListItem>
-        headerTitle="用户列表"
+        headerTitle="商品列表"
         actionRef={actionRef}
         rowKey="id"
         search={{
@@ -254,7 +237,7 @@ const TableList: React.FC<{}> = () => {
       )}
 
       <ModalForm
-        title="新建用户"
+        title="新建商品"
         width="480px"
         visible={createModalVisible}
         onVisibleChange={handleModalVisible}
@@ -352,7 +335,6 @@ const TableList: React.FC<{}> = () => {
           values={stepFormValues}
         />
       ) : null}
-
 
       <Drawer
         width={600}
