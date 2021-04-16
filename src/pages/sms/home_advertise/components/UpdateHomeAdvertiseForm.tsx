@@ -23,7 +23,7 @@ const UpdateHomeAdvertiseForm: React.FC<UpdateHomeAdvertiseFormProps> = (props) 
 
   return (
     <ModalForm
-      title="编辑用户"
+      title="编辑广告"
       width={480}
       visible={props.updateModalVisible}
       onVisibleChange={() => props.onCancel()}

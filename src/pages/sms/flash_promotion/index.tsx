@@ -4,7 +4,9 @@ import React, { useState, useRef } from 'react';
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
 import ProDescriptions from '@ant-design/pro-descriptions';
-import UpdateFlashPromotionForm, { FlashPromotionFormValueType } from './components/UpdateFlashPromotionForm';
+import UpdateFlashPromotionForm, {
+  FlashPromotionFormValueType,
+} from './components/UpdateFlashPromotionForm';
 import { FlashPromotionListItem } from './data.d';
 import {
   queryFlashPromotion,
@@ -63,7 +65,6 @@ const handleUpdate = async (fields: FlashPromotionFormValueType) => {
   }
 };
 
-
 /**
  *  删除节点(单个)
  * @param id
@@ -72,7 +73,7 @@ const handleRemoveOne = async (id: number) => {
   const hide = message.loading('正在删除');
   try {
     await removeFlashPromotion({
-      ids:[id],
+      ids: [id],
     });
     hide();
     message.success('删除成功，即将刷新');
@@ -202,7 +203,7 @@ const TableList: React.FC<{}> = () => {
   return (
     <PageContainer>
       <ProTable<FlashPromotionListItem>
-        headerTitle="用户列表"
+        headerTitle="秒杀列表"
         actionRef={actionRef}
         rowKey="id"
         search={{
@@ -338,7 +339,6 @@ const TableList: React.FC<{}> = () => {
           values={stepFormValues}
         />
       ) : null}
-
 
       <Drawer
         width={600}

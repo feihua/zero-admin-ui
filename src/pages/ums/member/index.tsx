@@ -1,4 +1,4 @@
-import { PlusOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
+import { ExclamationCircleOutlined } from '@ant-design/icons';
 import { Button, Divider, message, Drawer, Modal } from 'antd';
 import React, { useState, useRef } from 'react';
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
@@ -6,12 +6,7 @@ import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
 import ProDescriptions from '@ant-design/pro-descriptions';
 import UpdateMemberForm, { FormValueType } from './components/UpdateMemberForm';
 import { MemberTableListItem } from './data.d';
-import {
-  queryMemberList,
-  updateMember,
-  addMember,
-  removeMember,
-} from './service';
+import { queryMemberList, updateMember, addMember, removeMember } from './service';
 
 import ProForm, { ModalForm, ProFormText, ProFormSelect, ProFormRadio } from '@ant-design/pro-form';
 
@@ -71,7 +66,7 @@ const handleRemoveOne = async (id: number) => {
   const hide = message.loading('正在删除');
   try {
     await removeMember({
-      ids:[id],
+      ids: [id],
     });
     hide();
     message.success('删除成功，即将刷新');
@@ -167,8 +162,8 @@ const TableList: React.FC<{}> = () => {
       title: '性别',
       dataIndex: 'gender',
       valueEnum: {
-        0: { text: '禁用', status: 'Error' },
-        1: { text: '正常', status: 'Success' },
+        0: { text: '女', status: 'Success' },
+        1: { text: '男', status: 'Success' },
       },
     },
     {
@@ -230,17 +225,13 @@ const TableList: React.FC<{}> = () => {
   return (
     <PageContainer>
       <ProTable<MemberTableListItem>
-        headerTitle="用户列表"
+        headerTitle="会员列表"
         actionRef={actionRef}
         rowKey="id"
         search={{
           labelWidth: 120,
         }}
-        toolBarRender={() => [
-          <Button type="primary" onClick={() => handleModalVisible(true)}>
-            <PlusOutlined /> 新建用户
-          </Button>,
-        ]}
+        toolBarRender={false}
         request={(params, sorter, filter) => queryMemberList({ ...params, sorter, filter })}
         columns={columns}
         rowSelection={{

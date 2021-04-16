@@ -23,7 +23,7 @@ const UpdateRecommendProductForm: React.FC<UpdateRecommendProductFormProps> = (p
 
   return (
     <ModalForm
-      title="编辑用户"
+      title="编辑推荐商品"
       width={480}
       visible={props.updateModalVisible}
       onVisibleChange={() => props.onCancel()}

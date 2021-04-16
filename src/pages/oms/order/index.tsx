@@ -1,4 +1,4 @@
-import { PlusOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
+import { ExclamationCircleOutlined } from '@ant-design/icons';
 import { Button, Divider, message, Drawer, Modal } from 'antd';
 import React, { useState, useRef } from 'react';
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
@@ -6,12 +6,7 @@ import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
 import ProDescriptions from '@ant-design/pro-descriptions';
 import UpdateOrderForm, { OrderFormValueType } from './components/UpdateOrderForm';
 import { OrderListItem } from './data.d';
-import {
-  queryOrder,
-  updateOrder,
-  addOrder,
-  removeOrder,
-} from './service';
+import { queryOrder, updateOrder, addOrder, removeOrder } from './service';
 
 import ProForm, { ModalForm, ProFormText, ProFormSelect, ProFormRadio } from '@ant-design/pro-form';
 
@@ -71,7 +66,7 @@ const handleRemoveOne = async (id: number) => {
   const hide = message.loading('正在删除');
   try {
     await removeOrder({
-      ids:[id],
+      ids: [id],
     });
     hide();
     message.success('删除成功，即将刷新');
@@ -146,18 +141,22 @@ const TableList: React.FC<{}> = () => {
     {
       title: '订单总金额',
       dataIndex: 'total_amount',
+      hideInSearch: true,
     },
     {
       title: '应付金额',
       dataIndex: 'pay_amount',
+      hideInSearch: true,
     },
     {
       title: '运费金额',
       dataIndex: 'freight_amount',
+      hideInSearch: true,
     },
     {
       title: '促销优化金额',
       dataIndex: 'promotion_amount',
+      hideInSearch: true,
     },
     {
       title: '积分抵扣金额',
@@ -167,18 +166,36 @@ const TableList: React.FC<{}> = () => {
     {
       title: '优惠券抵扣金额',
       dataIndex: 'coupon_amount',
+      hideInSearch: true,
     },
     {
       title: '支付方式',
       dataIndex: 'pay_type',
+      valueEnum: {
+        0: { text: '未支付', status: 'Success' },
+        1: { text: '支付宝', status: 'Success' },
+        2: { text: '微信', status: 'Success' },
+      },
     },
     {
       title: '来源',
       dataIndex: 'source_type',
+      valueEnum: {
+        0: { text: 'PC订单', status: 'Success' },
+        1: { text: 'app订单', status: 'Success' },
+      },
     },
     {
       title: '状态',
       dataIndex: 'status',
+      valueEnum: {
+        0: { text: '待付款', status: 'Success' },
+        1: { text: '待发货', status: 'Success' },
+        2: { text: '已发货', status: 'Success' },
+        3: { text: '已完成', status: 'Success' },
+        4: { text: '已关闭', status: 'Success' },
+        5: { text: '无效订单', status: 'Success' },
+      },
     },
     {
       title: '操作',
@@ -226,17 +243,13 @@ const TableList: React.FC<{}> = () => {
   return (
     <PageContainer>
       <ProTable<OrderListItem>
-        headerTitle="用户列表"
+        headerTitle="订单列表"
         actionRef={actionRef}
         rowKey="id"
         search={{
           labelWidth: 120,
         }}
-        toolBarRender={() => [
-          <Button type="primary" onClick={() => handleModalVisible(true)}>
-            <PlusOutlined /> 新建用户
-          </Button>,
-        ]}
+        toolBarRender={false}
         request={(params, sorter, filter) => queryOrder({ ...params, sorter, filter })}
         columns={columns}
         rowSelection={{
@@ -374,12 +387,12 @@ const TableList: React.FC<{}> = () => {
         {row?.name && (
           <ProDescriptions<OrderListItem>
             column={2}
-            title={row?.name}
+            title={row?.id}
             request={async () => ({
               data: row || {},
             })}
             params={{
-              id: row?.name,
+              id: row?.id,
             }}
             columns={columns}
           />

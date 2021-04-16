@@ -6,12 +6,7 @@ import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
 import ProDescriptions from '@ant-design/pro-descriptions';
 import UpdateLevelForm, { LevelFormValueType } from './components/UpdateLevelForm';
 import { LevelListItem } from './data.d';
-import {
-  queryLevel,
-  updateLevel,
-  addLevel,
-  removeLevel,
-} from './service';
+import { queryLevel, updateLevel, addLevel, removeLevel } from './service';
 
 import ProForm, { ModalForm, ProFormText, ProFormSelect, ProFormRadio } from '@ant-design/pro-form';
 
@@ -71,7 +66,7 @@ const handleRemoveOne = async (id: number) => {
   const hide = message.loading('正在删除');
   try {
     await removeLevel({
-      ids:[id],
+      ids: [id],
     });
     hide();
     message.success('删除成功，即将刷新');
@@ -158,22 +153,42 @@ const TableList: React.FC<{}> = () => {
     {
       title: '免邮特权',
       dataIndex: 'priviledge_free_freight',
+      valueEnum: {
+        0: { text: '否', status: 'Success' },
+        1: { text: '是', status: 'Success' },
+      },
     },
     {
       title: '签到特权',
       dataIndex: 'priviledge_sign_in',
+      valueEnum: {
+        0: { text: '否', status: 'Success' },
+        1: { text: '是', status: 'Success' },
+      },
     },
     {
       title: '评论获奖励特权',
       dataIndex: 'priviledge_comment',
+      valueEnum: {
+        0: { text: '否', status: 'Success' },
+        1: { text: '是', status: 'Success' },
+      },
     },
     {
       title: '专享活动特权',
       dataIndex: 'priviledge_promotion',
+      valueEnum: {
+        0: { text: '否', status: 'Success' },
+        1: { text: '是', status: 'Success' },
+      },
     },
     {
       title: '会员价格特权',
       dataIndex: 'priviledge_member_price',
+      valueEnum: {
+        0: { text: '否', status: 'Success' },
+        1: { text: '是', status: 'Success' },
+      },
     },
     {
       title: '操作',
@@ -221,7 +236,7 @@ const TableList: React.FC<{}> = () => {
   return (
     <PageContainer>
       <ProTable<LevelListItem>
-        headerTitle="用户列表"
+        headerTitle="等级列表"
         actionRef={actionRef}
         rowKey="id"
         search={{
@@ -229,7 +244,7 @@ const TableList: React.FC<{}> = () => {
         }}
         toolBarRender={() => [
           <Button type="primary" onClick={() => handleModalVisible(true)}>
-            <PlusOutlined /> 新建用户
+            <PlusOutlined /> 新建等级
           </Button>,
         ]}
         request={(params, sorter, filter) => queryLevel({ ...params, sorter, filter })}
@@ -357,7 +372,6 @@ const TableList: React.FC<{}> = () => {
           values={stepFormValues}
         />
       ) : null}
-
 
       <Drawer
         width={600}

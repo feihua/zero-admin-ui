@@ -6,12 +6,7 @@ import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
 import ProDescriptions from '@ant-design/pro-descriptions';
 import UpdateSettingForm, { SettingFormValueType } from './components/UpdateSettingForm';
 import { SettingListItem } from './data.d';
-import {
-  querySetting,
-  updateSetting,
-  addSetting,
-  removeSetting,
-} from './service';
+import { querySetting, updateSetting, addSetting, removeSetting } from './service';
 
 import ProForm, { ModalForm, ProFormText, ProFormSelect, ProFormRadio } from '@ant-design/pro-form';
 
@@ -71,7 +66,7 @@ const handleRemoveOne = async (id: number) => {
   const hide = message.loading('正在删除');
   try {
     await removeSetting({
-      ids:[id],
+      ids: [id],
     });
     hide();
     message.success('删除成功，即将刷新');
@@ -172,17 +167,6 @@ const TableList: React.FC<{}> = () => {
             编辑
           </Button>
           <Divider type="vertical" />
-          {/*<Button*/}
-          {/*  type="primary"*/}
-          {/*  size="small"*/}
-          {/*  onClick={() => {*/}
-          {/*    handleEditModalVisible(true);*/}
-          {/*    setStepRoleFormValues(record);*/}
-          {/*  }}*/}
-          {/*>*/}
-          {/*  分配角色*/}
-          {/*</Button>*/}
-          {/*<Divider type="vertical" />*/}
           <Button
             type="primary"
             danger
@@ -201,15 +185,13 @@ const TableList: React.FC<{}> = () => {
   return (
     <PageContainer>
       <ProTable<SettingListItem>
-        headerTitle="用户列表"
+        headerTitle="设置列表"
         actionRef={actionRef}
         rowKey="id"
-        search={{
-          labelWidth: 120,
-        }}
+        search={false}
         toolBarRender={() => [
           <Button type="primary" onClick={() => handleModalVisible(true)}>
-            <PlusOutlined /> 新建用户
+            <PlusOutlined /> 新建设置
           </Button>,
         ]}
         request={(params, sorter, filter) => querySetting({ ...params, sorter, filter })}

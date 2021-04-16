@@ -6,12 +6,7 @@ import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
 import ProDescriptions from '@ant-design/pro-descriptions';
 import UpdateHomeBrandForm, { HomeBrandFormValueType } from './components/UpdateHomeBrandForm';
 import { HomeBrandListItem } from './data.d';
-import {
-  queryHomeBrand,
-  updateHomeBrand,
-  addHomeBrand,
-  removeHomeBrand,
-} from './service';
+import { queryHomeBrand, updateHomeBrand, addHomeBrand, removeHomeBrand } from './service';
 
 import ProForm, { ModalForm, ProFormText, ProFormSelect, ProFormRadio } from '@ant-design/pro-form';
 
@@ -71,7 +66,7 @@ const handleRemoveOne = async (id: number) => {
   const hide = message.loading('正在删除');
   try {
     await removeHomeBrand({
-      ids:[id],
+      ids: [id],
     });
     hide();
     message.success('删除成功，即将刷新');
@@ -134,7 +129,7 @@ const TableList: React.FC<{}> = () => {
     },
     {
       title: '品牌名称',
-      dataIndex: 'name',
+      dataIndex: 'brand_name',
       render: (dom, entity) => {
         return <a onClick={() => setRow(entity)}>{dom}</a>;
       },
@@ -150,6 +145,7 @@ const TableList: React.FC<{}> = () => {
     {
       title: '排序',
       dataIndex: 'sort',
+      hideInSearch: true,
     },
     {
       title: '操作',
@@ -197,7 +193,7 @@ const TableList: React.FC<{}> = () => {
   return (
     <PageContainer>
       <ProTable<HomeBrandListItem>
-        headerTitle="用户列表"
+        headerTitle="品牌推荐列表"
         actionRef={actionRef}
         rowKey="id"
         search={{
@@ -333,7 +329,6 @@ const TableList: React.FC<{}> = () => {
           values={stepFormValues}
         />
       ) : null}
-
 
       <Drawer
         width={600}

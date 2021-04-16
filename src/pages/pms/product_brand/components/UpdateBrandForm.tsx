@@ -23,7 +23,7 @@ const UpdateBrandForm: React.FC<UpdateBrandFormProps> = (props) => {
 
   return (
     <ModalForm
-      title="编辑用户"
+      title="编辑品牌"
       width={480}
       visible={props.updateModalVisible}
       onVisibleChange={() => props.onCancel()}

@@ -6,12 +6,7 @@ import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
 import ProDescriptions from '@ant-design/pro-descriptions';
 import UpdateCouponForm, { CouponFormValueType } from './components/UpdateCouponForm';
 import { CouponListItem } from './data.d';
-import {
-  queryCoupon,
-  updateCoupon,
-  addCoupon,
-  removeCoupon,
-} from './service';
+import { queryCoupon, updateCoupon, addCoupon, removeCoupon } from './service';
 
 import ProForm, { ModalForm, ProFormText, ProFormSelect, ProFormRadio } from '@ant-design/pro-form';
 
@@ -71,7 +66,7 @@ const handleRemoveOne = async (id: number) => {
   const hide = message.loading('正在删除');
   try {
     await removeCoupon({
-      ids:[id],
+      ids: [id],
     });
     hide();
     message.success('删除成功，即将刷新');
@@ -142,18 +137,22 @@ const TableList: React.FC<{}> = () => {
     {
       title: '数量',
       dataIndex: 'count',
+      hideInSearch: true,
     },
     {
       title: '金额',
       dataIndex: 'amount',
+      hideInSearch: true,
     },
     {
       title: '每人限领张数',
       dataIndex: 'per_limit',
+      hideInSearch: true,
     },
     {
       title: '发行数量',
       dataIndex: 'publish_count',
+      hideInSearch: true,
     },
     {
       title: '已使用数量',
@@ -163,6 +162,7 @@ const TableList: React.FC<{}> = () => {
     {
       title: '领取数量',
       dataIndex: 'receive_count',
+      hideInSearch: true,
     },
     {
       title: '操作',
@@ -210,7 +210,7 @@ const TableList: React.FC<{}> = () => {
   return (
     <PageContainer>
       <ProTable<CouponListItem>
-        headerTitle="用户列表"
+        headerTitle="优惠券列表"
         actionRef={actionRef}
         rowKey="id"
         search={{
@@ -218,7 +218,7 @@ const TableList: React.FC<{}> = () => {
         }}
         toolBarRender={() => [
           <Button type="primary" onClick={() => handleModalVisible(true)}>
-            <PlusOutlined /> 新建用户
+            <PlusOutlined /> 新建优惠券
           </Button>,
         ]}
         request={(params, sorter, filter) => queryCoupon({ ...params, sorter, filter })}
@@ -248,7 +248,7 @@ const TableList: React.FC<{}> = () => {
       )}
 
       <ModalForm
-        title="新建用户"
+        title="新建优惠券"
         width="480px"
         visible={createModalVisible}
         onVisibleChange={handleModalVisible}
@@ -346,7 +346,6 @@ const TableList: React.FC<{}> = () => {
           values={stepFormValues}
         />
       ) : null}
-
 
       <Drawer
         width={600}
