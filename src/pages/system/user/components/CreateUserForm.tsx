@@ -1,14 +1,13 @@
 import React, {useEffect, useState} from 'react';
-import { Form, Input, Modal, Select } from 'antd';
+import {Form, Input, Modal, Select} from 'antd';
 import { UserListItem } from '../data.d';
-import {RoleListItem} from "@/pages/system/role/data";
 import {queryRole} from "@/pages/system/role/service";
+import {RoleListItem} from "@/pages/system/role/data";
 
-export interface UpdateFormProps {
+export interface CreateFormProps {
   onCancel: () => void;
-  onSubmit: (values: Partial<UserListItem>) => void;
-  updateModalVisible: boolean;
-  currentData: Partial<UserListItem>;
+  onSubmit: (values: UserListItem) => void;
+  createModalVisible: boolean;
 }
 const FormItem = Form.Item;
 
@@ -17,57 +16,43 @@ const formLayout = {
   wrapperCol: { span: 13 },
 };
 
-const UpdateUserForm: React.FC<UpdateFormProps> = (props) => {
+const CreateUserForm: React.FC<CreateFormProps> = (props) => {
   const [form] = Form.useForm();
   const { Option } = Select;
+
   const [roleConf, setRoleConf] = useState<RoleListItem[]>([]);
 
   const {
     onSubmit,
     onCancel,
-    updateModalVisible,
-    currentData,
+    createModalVisible,
   } = props;
 
   useEffect(() => {
-    if (form && !updateModalVisible) {
+    if (form && !createModalVisible) {
       form.resetFields();
 
       queryRole({pageSize: 100,current: 1 }).then((res) => {
         setRoleConf(res.data)
       });
     }
-  }, [props.updateModalVisible]);
+  }, [props.createModalVisible]);
 
-  useEffect(() => {
-    if (currentData) {
-      form.setFieldsValue({
-        ...currentData,
-      });
-    }
-  }, [props.currentData]);
 
   const handleSubmit = () => {
     if (!form) return;
     form.submit();
   };
 
-  const handleFinish = (values: { [key: string]: any }) => {
+  const handleFinish = (values: UserListItem) => {
     if (onSubmit) {
       onSubmit(values);
     }
   };
 
-  const renderContent = () => {
+  const renderCreateUserContent = () => {
     return (
       <>
-        <FormItem
-          name="id"
-          label="主键"
-          hidden
-        >
-          <Input id="update-id" placeholder="请输入主键" />
-        </FormItem>
         <FormItem
           name="name"
           label="用户名"
@@ -111,10 +96,11 @@ const UpdateUserForm: React.FC<UpdateFormProps> = (props) => {
           label="状态"
         >
           <Select id="status" placeholder={'请输选择状态'}>
-            <Option value={0}>禁用</Option>
+            <Option value={0}>停用</Option>
             <Option value={1}>启用</Option>
           </Select>
         </FormItem>
+
       </>
     );
   };
@@ -126,8 +112,8 @@ const UpdateUserForm: React.FC<UpdateFormProps> = (props) => {
     <Modal
       forceRender
       destroyOnClose
-      title="修改用户"
-      visible={updateModalVisible}
+      title="新建用户"
+      visible={createModalVisible}
       {...modalFooter}
     >
       <Form
@@ -135,10 +121,10 @@ const UpdateUserForm: React.FC<UpdateFormProps> = (props) => {
         form={form}
         onFinish={handleFinish}
       >
-        {renderContent()}
+        {renderCreateUserContent()}
       </Form>
     </Modal>
   );
 };
 
-export default UpdateUserForm;
+export default CreateUserForm;

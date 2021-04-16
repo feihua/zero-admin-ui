@@ -1,16 +1,7 @@
 export interface RoleListItem {
   id: number;
-  disabled?: boolean;
-  href: string;
-  avatar: string;
   name: string;
-  owner: string;
   remark: string;
-  callNo: number;
-  status: number;
-  updatedAt: Date;
-  createdAt: Date;
-  progress: number;
 }
 
 export interface RoleListPagination {
@@ -31,6 +22,7 @@ export interface RoleListParams {
   remark?: string;
   key?: number;
   pageSize?: number;
+  current?: number;
   currentPage?: number;
   filter?: { [key: string]: any[] };
   sorter?: { [key: string]: any };
