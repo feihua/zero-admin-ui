@@ -8,7 +8,7 @@ import CreateUserForm from './components/CreateUserForm';
 import UpdateUserForm from './components/UpdateUserForm';
 import { UserListItem } from './data.d';
 import {
-  queryUser,
+  queryUserList,
   updateUser,
   addUser,
   removeUser,
@@ -23,7 +23,7 @@ const { confirm } = Modal;
 const handleAdd = async (fields: UserListItem) => {
   const hide = message.loading('正在添加');
   try {
-    fields.dept_id=Number(fields.dept_id)
+    fields.deptId=Number(fields.deptId)
     await addUser({ ...fields });
     hide();
     message.success('添加成功');
@@ -42,7 +42,7 @@ const handleAdd = async (fields: UserListItem) => {
 const handleUpdate = async (fields: Partial<UserListItem>) => {
   const hide = message.loading('正在更新');
   try {
-    fields.dept_id=Number(fields.dept_id)
+    fields.deptId=Number(fields.deptId)
     await updateUser(fields as UserListItem);
     hide();
     message.success('更新成功');
@@ -132,7 +132,7 @@ const TableList: React.FC<{}> = () => {
     },
     {
       title: '昵称',
-      dataIndex: 'nick_name',
+      dataIndex: 'nickName',
     },
     {
       title: '手机号',
@@ -152,16 +152,16 @@ const TableList: React.FC<{}> = () => {
     },
     {
       title: '部门',
-      dataIndex: 'dept_id',
+      dataIndex: 'deptId',
     },
     {
       title: '创建人',
-      dataIndex: 'create_by',
+      dataIndex: 'createBy',
       hideInSearch: true,
     },
     {
       title: '创建时间',
-      dataIndex: 'create_time',
+      dataIndex: 'createTime',
       valueType: 'dateTime',
       hideInSearch: true,
       renderFormItem: (item, { defaultRender, ...rest }, form) => {
@@ -177,12 +177,12 @@ const TableList: React.FC<{}> = () => {
     },
     {
       title: '更新人',
-      dataIndex: 'last_update_by',
+      dataIndex: 'lastUpdateBy',
       hideInSearch: true,
     },
     {
       title: '更新时间',
-      dataIndex: 'last_update_time',
+      dataIndex: 'lastUpdateTime',
       valueType: 'dateTime',
       hideInSearch: true,
       renderFormItem: (item, { defaultRender, ...rest }, form) => {
@@ -242,11 +242,12 @@ const TableList: React.FC<{}> = () => {
             <PlusOutlined /> 新建用户
           </Button>,
         ]}
-        request={(params, sorter, filter) => queryUser({ ...params, sorter, filter })}
+        request={(params, sorter, filter) => queryUserList({ ...params, sorter, filter })}
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows) => setSelectedRows(selectedRows),
         }}
+        pagination={{pageSize:10}}
       />
       {selectedRowsState?.length > 0 && (
         <FooterToolbar
@@ -269,6 +270,7 @@ const TableList: React.FC<{}> = () => {
       )}
 
       <CreateUserForm
+        key={'CreateUserForm'}
         onSubmit={async (value) => {
           const success = await handleAdd(value);
           if (success) {
@@ -287,6 +289,7 @@ const TableList: React.FC<{}> = () => {
       />
 
     <UpdateUserForm
+      key={'UpdateUserForm'}
       onSubmit={async (value) => {
         const success = await handleUpdate(value);
         if (success) {

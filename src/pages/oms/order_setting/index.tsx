@@ -129,26 +129,26 @@ const TableList: React.FC<{}> = () => {
     },
     {
       title: '秒杀订单超时关闭时间(分)',
-      dataIndex: 'flash_order_overtime',
+      dataIndex: 'flashOrderOvertime',
       render: (dom, entity) => {
         return <a onClick={() => setRow(entity)}>{dom}</a>;
       },
     },
     {
       title: '正常订单超时时间(分)',
-      dataIndex: 'normal_order_overtime',
+      dataIndex: 'normalOrderOvertime',
     },
     {
       title: '发货后自动确认收货时间（天）',
-      dataIndex: 'confirm_overtime',
+      dataIndex: 'confirmOvertime',
     },
     {
       title: '自动完成交易时间',
-      dataIndex: 'finish_overtime',
+      dataIndex: 'finishOvertime',
     },
     {
       title: '订单完成后自动好评时间（天）',
-      dataIndex: 'comment_overtime',
+      dataIndex: 'commentOvertime',
     },
     {
       title: '操作',

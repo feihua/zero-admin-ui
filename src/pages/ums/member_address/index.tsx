@@ -129,7 +129,7 @@ const TableList: React.FC<{}> = () => {
     },
     {
       title: '会员',
-      dataIndex: 'member_id',
+      dataIndex: 'memberId',
       render: (dom, entity) => {
         return <a onClick={() => setRow(entity)}>{dom}</a>;
       },
@@ -140,11 +140,11 @@ const TableList: React.FC<{}> = () => {
     },
     {
       title: '收货人电话',
-      dataIndex: 'phone_number',
+      dataIndex: 'phoneNumber',
     },
     {
       title: '是否为默认',
-      dataIndex: 'default_status',
+      dataIndex: 'defaultStatus',
       valueEnum: {
         0: { text: '否', status: 'Error' },
         1: { text: '是', status: 'Success' },
@@ -152,7 +152,7 @@ const TableList: React.FC<{}> = () => {
     },
     {
       title: '邮政编码',
-      dataIndex: 'post_code',
+      dataIndex: 'postCode',
     },
     {
       title: '省份/直辖市',
@@ -168,7 +168,7 @@ const TableList: React.FC<{}> = () => {
     },
     {
       title: '详细地址(街道)',
-      dataIndex: 'detail_address',
+      dataIndex: 'detailAddress',
       hideInSearch: true,
     },
 
@@ -189,17 +189,6 @@ const TableList: React.FC<{}> = () => {
             编辑
           </Button>
           <Divider type="vertical" />
-          {/*<Button*/}
-          {/*  type="primary"*/}
-          {/*  size="small"*/}
-          {/*  onClick={() => {*/}
-          {/*    handleEditModalVisible(true);*/}
-          {/*    setStepRoleFormValues(record);*/}
-          {/*  }}*/}
-          {/*>*/}
-          {/*  分配角色*/}
-          {/*</Button>*/}
-          {/*<Divider type="vertical" />*/}
           <Button
             type="primary"
             danger

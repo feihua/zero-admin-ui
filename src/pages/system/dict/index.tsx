@@ -137,40 +137,16 @@ const TableList: React.FC<{}> = () => {
     {
       title: '标签名',
       dataIndex: 'label',
-      // formItemProps: {
-      //   rules: [
-      //     {
-      //       required: true,
-      //       message: '标签名为必填项',
-      //     },
-      //   ],
-      // },
     },
     {
       title: '类型',
       dataIndex: 'type',
-      // formItemProps: {
-      //   rules: [
-      //     {
-      //       required: true,
-      //       message: '类型为必填项',
-      //     },
-      //   ],
-      // },
     },
     {
       title: '描述',
       dataIndex: 'description',
       valueType: 'textarea',
       hideInSearch: true,
-      // formItemProps: {
-      //   rules: [
-      //     {
-      //       required: true,
-      //       message: '描述为必填项',
-      //     },
-      //   ],
-      // },
     },
     {
       title: '排序',
@@ -179,7 +155,7 @@ const TableList: React.FC<{}> = () => {
     },
     {
       title: '状态',
-      dataIndex: 'del_flag',
+      dataIndex: 'delFlag',
       hideInForm: true,
       valueEnum: {
         0: { text: '正常', status: 'Success' },
@@ -202,12 +178,12 @@ const TableList: React.FC<{}> = () => {
     },
     {
       title: '创建人',
-      dataIndex: 'create_by',
+      dataIndex: 'createBy',
       hideInSearch: true,
     },
     {
       title: '创建时间',
-      dataIndex: 'create_time',
+      dataIndex: 'createTime',
       sorter: true,
       valueType: 'dateTime',
       hideInSearch: true,
@@ -224,13 +200,13 @@ const TableList: React.FC<{}> = () => {
     },
     {
       title: '更新人',
-      dataIndex: 'last_update_by',
+      dataIndex: 'lastUpdateBy',
       hideInForm: true,
       hideInSearch: true,
     },
     {
       title: '更新时间',
-      dataIndex: 'last_update_time',
+      dataIndex: 'lastUpdateTime',
       sorter: true,
       valueType: 'dateTime',
       hideInForm: true,

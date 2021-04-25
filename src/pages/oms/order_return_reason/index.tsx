@@ -151,7 +151,7 @@ const TableList: React.FC<{}> = () => {
     },
     {
       title: '创建时间',
-      dataIndex: 'create_time',
+      dataIndex: 'createTime',
       valueType: 'dateTime',
       hideInSearch: true,
       renderFormItem: (item, { defaultRender, ...rest }, form) => {
@@ -182,17 +182,6 @@ const TableList: React.FC<{}> = () => {
             编辑
           </Button>
           <Divider type="vertical" />
-          {/*<Button*/}
-          {/*  type="primary"*/}
-          {/*  size="small"*/}
-          {/*  onClick={() => {*/}
-          {/*    handleEditModalVisible(true);*/}
-          {/*    setStepRoleFormValues(record);*/}
-          {/*  }}*/}
-          {/*>*/}
-          {/*  分配角色*/}
-          {/*</Button>*/}
-          {/*<Divider type="vertical" />*/}
           <Button
             type="primary"
             danger

@@ -25,7 +25,7 @@ const MenuForm: React.FC<MenuFormProps> = (props) => {
 
   useEffect(() => {
     queryMenuByRoleId({ id: props.values.id }).then((res) => {
-      let tr = toTree(res.allData, 0, 'parent_id');
+      let tr = toTree(res.allData, 0, 'parentId');
       // @ts-ignore
       setTreeData(tr);
 

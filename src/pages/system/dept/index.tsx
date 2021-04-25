@@ -130,35 +130,27 @@ const TableList: React.FC<{}> = () => {
     {
       title: '机构名称',
       dataIndex: 'name',
-      // formItemProps: {
-      //   rules: [
-      //     {
-      //       required: true,
-      //       message: '规则名称为必填项',
-      //     },
-      //   ],
-      // },
       render: (dom, entity) => {
         return <a onClick={() => setRow(entity)}>{dom}</a>;
       },
     },
     {
       title: '父id',
-      dataIndex: 'parent_id',
+      dataIndex: 'parentId',
       hideInSearch: true,
     },
     {
       title: '排序',
-      dataIndex: 'order_num',
+      dataIndex: 'orderNum',
       hideInSearch: true,
     },
     {
       title: '创建人',
-      dataIndex: 'create_by',
+      dataIndex: 'createBy',
     },
     {
       title: '创建时间',
-      dataIndex: 'create_time',
+      dataIndex: 'createTime',
       sorter: true,
       valueType: 'dateTime',
       hideInSearch: true,
@@ -175,13 +167,13 @@ const TableList: React.FC<{}> = () => {
     },
     {
       title: '更新人',
-      dataIndex: 'last_update_by',
+      dataIndex: 'lastUpdateBy',
       hideInForm: true,
       hideInSearch: true,
     },
     {
       title: '更新时间',
-      dataIndex: 'last_update_time',
+      dataIndex: 'lastUpdateTime',
       sorter: true,
       valueType: 'dateTime',
       hideInForm: true,
@@ -259,7 +251,7 @@ const TableList: React.FC<{}> = () => {
         rowSelection={{
           onChange: (_, selectedRows) => setSelectedRows(selectedRows),
         }}
-        postData={(data) => tree(data, 0, 'parent_id')}
+        postData={(data) => tree(data, 0, 'parentId')}
         pagination={false}
       />
       {selectedRowsState?.length > 0 && (

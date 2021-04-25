@@ -136,23 +136,23 @@ const TableList: React.FC<{}> = () => {
     },
     {
       title: '成长值',
-      dataIndex: 'growth_point',
+      dataIndex: 'growthPoint',
     },
     {
       title: '是否为默认等级',
-      dataIndex: 'default_status',
+      dataIndex: 'defaultStatus',
     },
     {
       title: '免运费标准',
-      dataIndex: 'free_freight_point',
+      dataIndex: 'freeFreightPoint',
     },
     {
       title: '每次评价获取的成长值',
-      dataIndex: 'comment_growth_point',
+      dataIndex: 'commentGrowthPoint',
     },
     {
       title: '免邮特权',
-      dataIndex: 'priviledge_free_freight',
+      dataIndex: 'priviledgeFreeFreight',
       valueEnum: {
         0: { text: '否', status: 'Success' },
         1: { text: '是', status: 'Success' },
@@ -160,7 +160,7 @@ const TableList: React.FC<{}> = () => {
     },
     {
       title: '签到特权',
-      dataIndex: 'priviledge_sign_in',
+      dataIndex: 'priviledgeSignIn',
       valueEnum: {
         0: { text: '否', status: 'Success' },
         1: { text: '是', status: 'Success' },
@@ -168,7 +168,7 @@ const TableList: React.FC<{}> = () => {
     },
     {
       title: '评论获奖励特权',
-      dataIndex: 'priviledge_comment',
+      dataIndex: 'priviledgeComment',
       valueEnum: {
         0: { text: '否', status: 'Success' },
         1: { text: '是', status: 'Success' },
@@ -176,7 +176,7 @@ const TableList: React.FC<{}> = () => {
     },
     {
       title: '专享活动特权',
-      dataIndex: 'priviledge_promotion',
+      dataIndex: 'priviledgePromotion',
       valueEnum: {
         0: { text: '否', status: 'Success' },
         1: { text: '是', status: 'Success' },
@@ -184,7 +184,7 @@ const TableList: React.FC<{}> = () => {
     },
     {
       title: '会员价格特权',
-      dataIndex: 'priviledge_member_price',
+      dataIndex: 'priviledgeMemberPrice',
       valueEnum: {
         0: { text: '否', status: 'Success' },
         1: { text: '是', status: 'Success' },
@@ -207,17 +207,6 @@ const TableList: React.FC<{}> = () => {
             编辑
           </Button>
           <Divider type="vertical" />
-          {/*<Button*/}
-          {/*  type="primary"*/}
-          {/*  size="small"*/}
-          {/*  onClick={() => {*/}
-          {/*    handleEditModalVisible(true);*/}
-          {/*    setStepRoleFormValues(record);*/}
-          {/*  }}*/}
-          {/*>*/}
-          {/*  分配角色*/}
-          {/*</Button>*/}
-          {/*<Divider type="vertical" />*/}
           <Button
             type="primary"
             danger

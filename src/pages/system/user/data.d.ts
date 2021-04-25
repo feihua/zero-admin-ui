@@ -1,6 +1,6 @@
 export interface UserListItem {
   id: number;
-  dept_id: number;
+  deptId: number;
 }
 
 export interface UserListPagination {

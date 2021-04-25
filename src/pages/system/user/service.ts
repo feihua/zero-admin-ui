@@ -1,7 +1,7 @@
 import { request } from 'umi';
 import { UserListParams, UserListItem } from './data.d';
 
-export async function queryUser(params?: UserListParams) {
+export async function queryUserList(params?: UserListParams) {
   return request('/api/sys/user/list', {
     method: 'POST',
     data: {

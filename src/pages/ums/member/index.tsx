@@ -144,7 +144,7 @@ const TableList: React.FC<{}> = () => {
     },
     {
       title: '注册时间',
-      dataIndex: 'create_time',
+      dataIndex: 'createTime',
     },
     {
       title: '状态',
@@ -182,12 +182,12 @@ const TableList: React.FC<{}> = () => {
     },
     {
       title: '剩余抽奖次数',
-      dataIndex: 'luckey_count',
+      dataIndex: 'luckeyCount',
       hideInSearch: true,
     },
     {
       title: '历史积分数量',
-      dataIndex: 'history_integration',
+      dataIndex: 'historyIntegration',
       hideInSearch: true,
     },
     {

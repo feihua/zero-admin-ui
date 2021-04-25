@@ -135,14 +135,6 @@ const TableList: React.FC<{}> = () => {
     {
       title: '角色名称',
       dataIndex: 'name',
-      // formItemProps: {
-      //   rules: [
-      //     {
-      //       required: true,
-      //       message: '角色名称为必填项',
-      //     },
-      //   ],
-      // },
       render: (dom, entity) => {
         return <a onClick={() => setRow(entity)}>{dom}</a>;
       },
@@ -163,7 +155,7 @@ const TableList: React.FC<{}> = () => {
     },
     {
       title: '状态',
-      dataIndex: 'del_flag',
+      dataIndex: 'delFlag',
       valueEnum: {
         0: { text: '正常', status: 'Success' },
         1: { text: '已删除', status: 'Error' },
@@ -171,12 +163,12 @@ const TableList: React.FC<{}> = () => {
     },
     {
       title: '创建人',
-      dataIndex: 'create_by',
+      dataIndex: 'createBy',
       hideInSearch: true,
     },
     {
       title: '创建时间',
-      dataIndex: 'create_time',
+      dataIndex: 'createTime',
       sorter: true,
       valueType: 'dateTime',
       hideInSearch: true,
@@ -193,13 +185,13 @@ const TableList: React.FC<{}> = () => {
     },
     {
       title: '更新人',
-      dataIndex: 'last_update_by',
+      dataIndex: 'lastUpdateBy',
       hideInForm: true,
       hideInSearch: true,
     },
     {
       title: '更新时间',
-      dataIndex: 'last_update_time',
+      dataIndex: 'lastUpdateTime',
       sorter: true,
       valueType: 'dateTime',
       hideInSearch: true,

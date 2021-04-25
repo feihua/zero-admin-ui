@@ -137,14 +137,6 @@ const TableList: React.FC<{}> = () => {
     {
       title: '用户名',
       dataIndex: 'name',
-      // formItemProps: {
-      //   rules: [
-      //     {
-      //       required: true,
-      //       message: '用户名为必填项',
-      //     },
-      //   ],
-      // },
       render: (dom, entity) => {
         return <a onClick={() => setRow(entity)}>{dom}</a>;
       },
@@ -159,11 +151,11 @@ const TableList: React.FC<{}> = () => {
     },
     {
       title: '开始日期',
-      dataIndex: 'start_date',
+      dataIndex: 'startTime',
     },
     {
       title: '结束日期',
-      dataIndex: 'end_date',
+      dataIndex: 'endTime',
     },
     {
       title: '上下线状态',
@@ -190,17 +182,6 @@ const TableList: React.FC<{}> = () => {
             编辑
           </Button>
           <Divider type="vertical" />
-          {/*<Button*/}
-          {/*  type="primary"*/}
-          {/*  size="small"*/}
-          {/*  onClick={() => {*/}
-          {/*    handleEditModalVisible(true);*/}
-          {/*    setStepRoleFormValues(record);*/}
-          {/*  }}*/}
-          {/*>*/}
-          {/*  分配角色*/}
-          {/*</Button>*/}
-          {/*<Divider type="vertical" />*/}
           <Button
             type="primary"
             danger

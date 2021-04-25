@@ -129,14 +129,14 @@ const TableList: React.FC<{}> = () => {
     },
     {
       title: '品牌名称',
-      dataIndex: 'brand_name',
+      dataIndex: 'brandName',
       render: (dom, entity) => {
         return <a onClick={() => setRow(entity)}>{dom}</a>;
       },
     },
     {
       title: '推荐状态',
-      dataIndex: 'recommend_status',
+      dataIndex: 'recommendStatus',
       valueEnum: {
         0: { text: 'PC首页轮播', status: 'Error' },
         1: { text: 'app首页轮播', status: 'Success' },
@@ -164,17 +164,6 @@ const TableList: React.FC<{}> = () => {
             编辑
           </Button>
           <Divider type="vertical" />
-          {/*<Button*/}
-          {/*  type="primary"*/}
-          {/*  size="small"*/}
-          {/*  onClick={() => {*/}
-          {/*    handleEditModalVisible(true);*/}
-          {/*    setStepRoleFormValues(record);*/}
-          {/*  }}*/}
-          {/*>*/}
-          {/*  分配角色*/}
-          {/*</Button>*/}
-          {/*<Divider type="vertical" />*/}
           <Button
             type="primary"
             danger

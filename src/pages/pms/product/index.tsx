@@ -136,19 +136,19 @@ const TableList: React.FC<{}> = () => {
     },
     {
       title: '促销价格',
-      dataIndex: 'promotion_price',
+      dataIndex: 'promotionPrice',
     },
     {
       title: '赠送的成长值',
-      dataIndex: 'gift_growth',
+      dataIndex: 'giftGrowth',
     },
     {
       title: '赠送的积分',
-      dataIndex: 'gift_point',
+      dataIndex: 'giftPoint',
     },
     {
       title: '市场价',
-      dataIndex: 'original_price',
+      dataIndex: 'originalPrice',
     },
     {
       title: '库存',
@@ -156,12 +156,12 @@ const TableList: React.FC<{}> = () => {
     },
     {
       title: '品牌名称',
-      dataIndex: 'brand_name',
+      dataIndex: 'brandName',
       hideInSearch: true,
     },
     {
       title: '商品分类名称',
-      dataIndex: 'product_category_name',
+      dataIndex: 'productCategoryName',
       hideInSearch: true,
     },
     {

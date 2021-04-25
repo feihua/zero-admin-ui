@@ -39,7 +39,7 @@ export async function getInitialState(): Promise<{
     try {
       const currentUser = await queryCurrent();
 
-      localStorage.setItem('menuTree1', JSON.stringify(tree(currentUser.menuTree, 0, 'parent_id')));
+      localStorage.setItem('menuTree1', JSON.stringify(tree(currentUser.menuTree, 0, 'parentId')));
       localStorage.setItem('menuTree', JSON.stringify(currentUser.menuTree));
       return currentUser;
     } catch (error) {
@@ -90,7 +90,7 @@ export const layout = ({
 const menuDataRender: any = () => {
   let item = localStorage.getItem('menuTree') + '';
 
-  return loopMenuItem(tree(JSON.parse(item), 0, 'parent_id'));
+  return loopMenuItem(tree(JSON.parse(item), 0, 'parentId'));
 
   // return tree(JSON.parse(item), 0, "parent_id");
 };

@@ -1,5 +1,5 @@
 import { ExclamationCircleOutlined } from '@ant-design/icons';
-import { Button, Divider, message, Drawer, Modal } from 'antd';
+import { Button, message, Drawer, Modal } from 'antd';
 import React, { useState, useRef } from 'react';
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
@@ -77,7 +77,7 @@ const TableList: React.FC<{}> = () => {
     },
     {
       title: '用户名',
-      dataIndex: 'member_id',
+      dataIndex: 'memberId',
       render: (dom, entity) => {
         return <a onClick={() => setRow(entity)}>{dom}</a>;
       },
@@ -96,7 +96,7 @@ const TableList: React.FC<{}> = () => {
     },
     {
       title: '登录类型',
-      dataIndex: 'login_type',
+      dataIndex: 'loginType',
       valueEnum: {
         0: { text: 'PC', status: 'Error' },
         1: { text: 'android', status: 'Success' },

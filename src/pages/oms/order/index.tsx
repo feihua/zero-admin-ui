@@ -129,48 +129,48 @@ const TableList: React.FC<{}> = () => {
     },
     {
       title: '订单编号',
-      dataIndex: 'order_sn',
+      dataIndex: 'orderSn',
       render: (dom, entity) => {
         return <a onClick={() => setRow(entity)}>{dom}</a>;
       },
     },
     {
       title: '用户帐号',
-      dataIndex: 'member_username',
+      dataIndex: 'memberUserName',
     },
     {
       title: '订单总金额',
-      dataIndex: 'total_amount',
+      dataIndex: 'totalAmount',
       hideInSearch: true,
     },
     {
       title: '应付金额',
-      dataIndex: 'pay_amount',
+      dataIndex: 'payAmount',
       hideInSearch: true,
     },
     {
       title: '运费金额',
-      dataIndex: 'freight_amount',
+      dataIndex: 'freightAmount',
       hideInSearch: true,
     },
     {
       title: '促销优化金额',
-      dataIndex: 'promotion_amount',
+      dataIndex: 'promotionAmount',
       hideInSearch: true,
     },
     {
       title: '积分抵扣金额',
-      dataIndex: 'integration_amount',
+      dataIndex: 'integrationAmount',
       hideInSearch: true,
     },
     {
       title: '优惠券抵扣金额',
-      dataIndex: 'coupon_amount',
+      dataIndex: 'couponAmount',
       hideInSearch: true,
     },
     {
       title: '支付方式',
-      dataIndex: 'pay_type',
+      dataIndex: 'payType',
       valueEnum: {
         0: { text: '未支付', status: 'Success' },
         1: { text: '支付宝', status: 'Success' },
@@ -179,7 +179,7 @@ const TableList: React.FC<{}> = () => {
     },
     {
       title: '来源',
-      dataIndex: 'source_type',
+      dataIndex: 'sourceType',
       valueEnum: {
         0: { text: 'PC订单', status: 'Success' },
         1: { text: 'app订单', status: 'Success' },
@@ -214,17 +214,6 @@ const TableList: React.FC<{}> = () => {
             编辑
           </Button>
           <Divider type="vertical" />
-          {/*<Button*/}
-          {/*  type="primary"*/}
-          {/*  size="small"*/}
-          {/*  onClick={() => {*/}
-          {/*    handleEditModalVisible(true);*/}
-          {/*    setStepRoleFormValues(record);*/}
-          {/*  }}*/}
-          {/*>*/}
-          {/*  分配角色*/}
-          {/*</Button>*/}
-          {/*<Divider type="vertical" />*/}
           <Button
             type="primary"
             danger

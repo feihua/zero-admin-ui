@@ -146,22 +146,22 @@ const TableList: React.FC<{}> = () => {
     },
     {
       title: '每人限领张数',
-      dataIndex: 'per_limit',
+      dataIndex: 'perLimit',
       hideInSearch: true,
     },
     {
       title: '发行数量',
-      dataIndex: 'publish_count',
+      dataIndex: 'publishCount',
       hideInSearch: true,
     },
     {
       title: '已使用数量',
-      dataIndex: 'use_count',
+      dataIndex: 'useCount',
       hideInSearch: true,
     },
     {
       title: '领取数量',
-      dataIndex: 'receive_count',
+      dataIndex: 'receiveCount',
       hideInSearch: true,
     },
     {
@@ -181,17 +181,6 @@ const TableList: React.FC<{}> = () => {
             编辑
           </Button>
           <Divider type="vertical" />
-          {/*<Button*/}
-          {/*  type="primary"*/}
-          {/*  size="small"*/}
-          {/*  onClick={() => {*/}
-          {/*    handleEditModalVisible(true);*/}
-          {/*    setStepRoleFormValues(record);*/}
-          {/*  }}*/}
-          {/*>*/}
-          {/*  分配角色*/}
-          {/*</Button>*/}
-          {/*<Divider type="vertical" />*/}
           <Button
             type="primary"
             danger

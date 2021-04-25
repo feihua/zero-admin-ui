@@ -131,26 +131,26 @@ const TableList: React.FC<{}> = () => {
     },
     {
       title: '订单编号',
-      dataIndex: 'order_sn',
+      dataIndex: 'orderSn',
       render: (dom, entity) => {
         return <a onClick={() => setRow(entity)}>{dom}</a>;
       },
     },
     {
       title: '会员用户名',
-      dataIndex: 'member_username',
+      dataIndex: 'memberUserName',
     },
     {
       title: '退款金额',
-      dataIndex: 'return_amount',
+      dataIndex: 'returnAmount',
     },
     {
       title: '退货人姓名',
-      dataIndex: 'return_name',
+      dataIndex: 'returnName',
     },
     {
       title: '退货人电话',
-      dataIndex: 'return_phone',
+      dataIndex: 'returnPhone',
     },
     {
       title: '状态',
@@ -164,11 +164,11 @@ const TableList: React.FC<{}> = () => {
     },
     {
       title: '退货数量',
-      dataIndex: 'product_count',
+      dataIndex: 'productCount',
     },
     {
       title: '商品单价',
-      dataIndex: 'product_price',
+      dataIndex: 'productPrice',
       hideInSearch: true,
     },
     {
@@ -192,17 +192,6 @@ const TableList: React.FC<{}> = () => {
             编辑
           </Button>
           <Divider type="vertical" />
-          {/*<Button*/}
-          {/*  type="primary"*/}
-          {/*  size="small"*/}
-          {/*  onClick={() => {*/}
-          {/*    handleEditModalVisible(true);*/}
-          {/*    setStepRoleFormValues(record);*/}
-          {/*  }}*/}
-          {/*>*/}
-          {/*  分配角色*/}
-          {/*</Button>*/}
-          {/*<Divider type="vertical" />*/}
           <Button
             type="primary"
             danger

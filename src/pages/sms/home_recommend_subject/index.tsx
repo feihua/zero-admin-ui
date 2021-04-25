@@ -136,14 +136,14 @@ const TableList: React.FC<{}> = () => {
     },
     {
       title: '专题名称',
-      dataIndex: 'subject_name',
+      dataIndex: 'subjectName',
       render: (dom, entity) => {
         return <a onClick={() => setRow(entity)}>{dom}</a>;
       },
     },
     {
       title: '推荐状态',
-      dataIndex: 'recommend_status',
+      dataIndex: 'recommendStatus',
       valueEnum: {
         0: { text: 'PC首页轮播', status: 'Error' },
         1: { text: 'app首页轮播', status: 'Success' },
@@ -170,17 +170,6 @@ const TableList: React.FC<{}> = () => {
             编辑
           </Button>
           <Divider type="vertical" />
-          {/*<Button*/}
-          {/*  type="primary"*/}
-          {/*  size="small"*/}
-          {/*  onClick={() => {*/}
-          {/*    handleEditModalVisible(true);*/}
-          {/*    setStepRoleFormValues(record);*/}
-          {/*  }}*/}
-          {/*>*/}
-          {/*  分配角色*/}
-          {/*</Button>*/}
-          {/*<Divider type="vertical" />*/}
           <Button
             type="primary"
             danger
@@ -279,7 +268,7 @@ const TableList: React.FC<{}> = () => {
         </ProForm.Group>
         <ProForm.Group>
           <ProFormText
-            name="dept_id"
+            name="deptId"
             label="部门"
             rules={[{ required: true, message: '请输入部门！' }]}
           />

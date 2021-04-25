@@ -143,11 +143,11 @@ const TableList: React.FC<{}> = () => {
     },
     {
       title: '开始日期',
-      dataIndex: 'start_date',
+      dataIndex: 'startDate',
     },
     {
       title: '结束日期',
-      dataIndex: 'end_date',
+      dataIndex: 'endDate',
     },
     {
       title: '上下线状态',
@@ -174,17 +174,6 @@ const TableList: React.FC<{}> = () => {
             编辑
           </Button>
           <Divider type="vertical" />
-          {/*<Button*/}
-          {/*  type="primary"*/}
-          {/*  size="small"*/}
-          {/*  onClick={() => {*/}
-          {/*    handleEditModalVisible(true);*/}
-          {/*    setStepRoleFormValues(record);*/}
-          {/*  }}*/}
-          {/*>*/}
-          {/*  分配角色*/}
-          {/*</Button>*/}
-          {/*<Divider type="vertical" />*/}
           <Button
             type="primary"
             danger

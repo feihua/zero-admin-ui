@@ -141,15 +141,15 @@ const TableList: React.FC<{}> = () => {
     },
     {
       title: '产品数量',
-      dataIndex: 'product_count',
+      dataIndex: 'productCount',
     },
     {
-      title: '产品数量',
-      dataIndex: 'product_unit',
+      title: '产品单位',
+      dataIndex: 'productUnit',
     },
     {
       title: '是否显示在导航栏',
-      dataIndex: 'nav_status',
+      dataIndex: 'navStatus',
       valueEnum: {
         0: { text: '否', status: 'Success' },
         1: { text: '是', status: 'Success' },
@@ -157,7 +157,7 @@ const TableList: React.FC<{}> = () => {
     },
     {
       title: '显示状态',
-      dataIndex: 'show_status',
+      dataIndex: 'showStatus',
       valueEnum: {
         0: { text: '否', status: 'Success' },
         1: { text: '是', status: 'Success' },
@@ -184,17 +184,6 @@ const TableList: React.FC<{}> = () => {
             编辑
           </Button>
           <Divider type="vertical" />
-          {/*<Button*/}
-          {/*  type="primary"*/}
-          {/*  size="small"*/}
-          {/*  onClick={() => {*/}
-          {/*    handleEditModalVisible(true);*/}
-          {/*    setStepRoleFormValues(record);*/}
-          {/*  }}*/}
-          {/*>*/}
-          {/*  分配角色*/}
-          {/*</Button>*/}
-          {/*<Divider type="vertical" />*/}
           <Button
             type="primary"
             danger
@@ -229,7 +218,7 @@ const TableList: React.FC<{}> = () => {
         rowSelection={{
           onChange: (_, selectedRows) => setSelectedRows(selectedRows),
         }}
-        postData={(data) => tree(data, 0, 'parent_id')}
+        postData={(data) => tree(data, 0, 'parentId')}
         pagination={false}
       />
       {selectedRowsState?.length > 0 && (

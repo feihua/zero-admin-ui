@@ -74,7 +74,7 @@ const TableList: React.FC<{}> = () => {
   const columns: ProColumns<TableListItem>[] = [
     {
       title: '用户名',
-      dataIndex: 'user_name',
+      dataIndex: 'userName',
       render: (dom, entity) => {
         return <a onClick={() => setRow(entity)}>{dom}</a>;
       },
@@ -91,12 +91,12 @@ const TableList: React.FC<{}> = () => {
     },
     {
       title: '创建人',
-      dataIndex: 'create_by',
+      dataIndex: 'createBy',
       hideInSearch: true,
     },
     {
       title: '创建时间',
-      dataIndex: 'create_time',
+      dataIndex: 'createTime',
       sorter: true,
       valueType: 'dateTime',
       hideInSearch: true,

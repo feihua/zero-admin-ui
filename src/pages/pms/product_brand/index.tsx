@@ -136,11 +136,11 @@ const TableList: React.FC<{}> = () => {
     },
     {
       title: '产品数量',
-      dataIndex: 'product_count',
+      dataIndex: 'productCount',
     },
     {
       title: '产品评论数量',
-      dataIndex: 'product_comment_count',
+      dataIndex: 'productCommentCount',
     },
     {
       title: '品牌logo',
@@ -148,11 +148,11 @@ const TableList: React.FC<{}> = () => {
     },
     {
       title: '专区大图',
-      dataIndex: 'big_pic',
+      dataIndex: 'bigPic',
     },
     {
       title: '品牌故事',
-      dataIndex: 'brand_story',
+      dataIndex: 'brandStory',
       hideInSearch: true,
     },
     {
