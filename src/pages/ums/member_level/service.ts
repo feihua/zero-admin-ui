@@ -29,7 +29,7 @@ export async function addLevel(params: LevelListItem) {
   });
 }
 
-export async function updateLevel(params: LevelListParams) {
+export async function updateLevel(params: LevelListItem) {
   return request('/api/member/level/update', {
     method: 'POST',
     data: {

@@ -28,7 +28,7 @@ export async function addHomeAdvertise(params: HomeAdvertiseListItem) {
   });
 }
 
-export async function updateHomeAdvertise(params: HomeAdvertiseListParams) {
+export async function updateHomeAdvertise(params: HomeAdvertiseListItem) {
   return request('/api/sms/homeadvertise/update', {
     method: 'POST',
     data: {

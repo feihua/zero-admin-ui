@@ -19,16 +19,8 @@ export async function removeReturnApply(params: { ids: number[] }) {
   });
 }
 
-export async function addReturnApply(params: ReturnApplyListItem) {
-  return request('/api/order/returnapply/add', {
-    method: 'POST',
-    data: {
-      ...params,
-    },
-  });
-}
 
-export async function updateReturnApply(params: ReturnApplyListParams) {
+export async function updateReturnApply(params: ReturnApplyListItem) {
   return request('/api/order/returnapply/update', {
     method: 'POST',
     data: {

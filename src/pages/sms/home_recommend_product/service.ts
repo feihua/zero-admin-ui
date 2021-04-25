@@ -28,7 +28,7 @@ export async function addRecommendProduct(params: RecommendProductListItem) {
   });
 }
 
-export async function updateRecommendProduct(params: RecommendProductListParams) {
+export async function updateRecommendProduct(params: RecommendProductListItem) {
   return request('/api/sms/homerecommendproduct/update', {
     method: 'POST',
     data: {

@@ -28,7 +28,7 @@ export async function addCoupon(params: CouponListItem) {
   });
 }
 
-export async function updateCoupon(params: CouponListParams) {
+export async function updateCoupon(params: CouponListItem) {
   return request('/api/sms/coupon/update', {
     method: 'POST',
     data: {

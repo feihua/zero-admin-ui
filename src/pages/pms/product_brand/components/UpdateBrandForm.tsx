@@ -1,104 +1,143 @@
-import React from 'react';
-import ProForm, { ModalForm, ProFormText, ProFormSelect, ProFormRadio } from '@ant-design/pro-form';
-
+import React, {useEffect, useState} from 'react';
+import { Form, Input, Modal, Select } from 'antd';
 import { BrandListItem } from '../data.d';
+import {RoleListItem} from "@/pages/system/role/data";
+import {queryRole} from "@/pages/system/role/service";
 
-export interface BrandFormValueType extends Partial<BrandListItem> {
-  target?: string;
-  template?: string;
-  type?: string;
-  time?: string;
-  frequency?: string;
-}
-
-export interface UpdateBrandFormProps {
-  onCancel: (flag?: boolean, formVals?: BrandFormValueType) => void;
-  onSubmit: (values: BrandFormValueType) => Promise<void>;
+export interface UpdateFormProps {
+  onCancel: () => void;
+  onSubmit: (values: Partial<BrandListItem>) => void;
   updateModalVisible: boolean;
-  values: Partial<BrandListItem>;
+  currentData: Partial<BrandListItem>;
 }
+const FormItem = Form.Item;
 
-const UpdateBrandForm: React.FC<UpdateBrandFormProps> = (props) => {
-  const { onSubmit } = props;
+const formLayout = {
+  labelCol: { span: 7 },
+  wrapperCol: { span: 13 },
+};
 
-  return (
-    <ModalForm
-      title="编辑品牌"
-      width={480}
-      visible={props.updateModalVisible}
-      onVisibleChange={() => props.onCancel()}
-      onFinish={onSubmit}
-      initialValues={{
-        name: props.values.name,
-        nick_name: props.values.nick_name,
-        mobile: props.values.mobile,
-        email: props.values.email,
-        id: props.values.id,
-        dept_id: props.values.dept_id,
-        role_id: props.values.role_id,
-        status: props.values.status + '',
-      }}
-    >
-      <ProFormText name="id" label="id" width="l" hidden />
-      <ProForm.Group>
-        <ProFormText
+const UpdateBrandForm: React.FC<UpdateFormProps> = (props) => {
+  const [form] = Form.useForm();
+  const { Option } = Select;
+  const [roleConf, setRoleConf] = useState<RoleListItem[]>([]);
+
+  const {
+    onSubmit,
+    onCancel,
+    updateModalVisible,
+    currentData,
+  } = props;
+
+  useEffect(() => {
+    if (form && !updateModalVisible) {
+      form.resetFields();
+
+      queryRole({pageSize: 100,current: 1 }).then((res) => {
+        setRoleConf(res.data)
+      });
+    }
+  }, [props.updateModalVisible]);
+
+  useEffect(() => {
+    if (currentData) {
+      form.setFieldsValue({
+        ...currentData,
+      });
+    }
+  }, [props.currentData]);
+
+  const handleSubmit = () => {
+    if (!form) return;
+    form.submit();
+  };
+
+  const handleFinish = (values: { [key: string]: any }) => {
+    if (onSubmit) {
+      onSubmit(values);
+    }
+  };
+
+  const renderContent = () => {
+    return (
+      <>
+        <FormItem
+          name="id"
+          label="主键"
+          hidden
+        >
+          <Input id="update-id" placeholder="请输入主键" />
+        </FormItem>
+        <FormItem
           name="name"
           label="用户名"
-          rules={[{ required: true, message: '请输入用户名！' }]}
-        />
-        <ProFormText
+        >
+          <Input id="update-name" placeholder={'请输入用户名'}/>
+        </FormItem>
+        <FormItem
           name="nick_name"
           label="昵称"
-          rules={[{ required: true, message: '请输入昵称！' }]}
-        />
-      </ProForm.Group>
-      <ProForm.Group>
-        <ProFormText
+        >
+          <Input id="update-nick_name" placeholder={'请输入昵称'}/>
+        </FormItem>
+        <FormItem
           name="mobile"
-          label="手机号码"
-          rules={[{ required: true, message: '请输入手机号码！' }]}
-        />
-
-        <ProFormText
+          label="手机号"
+        >
+          <Input id="update-mobile" placeholder={'请输入手机号'}/>
+        </FormItem>
+        <FormItem
           name="email"
           label="邮箱"
-          rules={[{ required: true, message: '请输入邮箱！' }]}
-        />
-      </ProForm.Group>
-      <ProForm.Group>
-        <ProFormText
+        >
+          <Input id="update-email" placeholder={'请输入邮箱'}/>
+        </FormItem>
+        <FormItem
           name="dept_id"
           label="部门"
-          rules={[{ required: true, message: '请输入部门！' }]}
-        />
-        <ProFormRadio.Group
+        >
+          <Input id="update-dept_id" placeholder={'请输入部门'}/>
+        </FormItem>
+        <FormItem
+          name="role_id"
+          label="角色"
+        >
+          <Select id="role_id" placeholder={'请选择角色'}>
+            {roleConf.map(r => <Select.Option value={r.id}>{r.name+r.remark}</Select.Option>)}
+          </Select>
+        </FormItem>
+        <FormItem
           name="status"
           label="状态"
-          options={[
-            {
-              label: '正常',
-              value: '1',
-            },
-            {
-              label: '禁用',
-              value: '0',
-            },
-          ]}
-        />
-      </ProForm.Group>
-      <ProFormSelect
-        name="role_id"
-        label="角色"
-        request={async () => [
-          { label: '超级管理员', value: '1' },
-          { label: '项目经理', value: '2' },
-          { label: '开发人员', value: '3' },
-          { label: '测试人员', value: '4' },
-        ]}
-        placeholder="Please select a role"
-        rules={[{ required: true, message: 'Please select your role!' }]}
-      />
-    </ModalForm>
+        >
+          <Select id="status" placeholder={'请输选择状态'}>
+            <Option value={0}>禁用</Option>
+            <Option value={1}>启用</Option>
+          </Select>
+        </FormItem>
+      </>
+    );
+  };
+
+
+  const modalFooter = { okText: '保存', onOk: handleSubmit, onCancel };
+
+  return (
+    <Modal
+      forceRender
+      destroyOnClose
+      title="修改用户"
+      visible={updateModalVisible}
+      {...modalFooter}
+    >
+      <Form
+        {...formLayout}
+        form={form}
+        onFinish={handleFinish}
+      >
+        {renderContent()}
+      </Form>
+    </Modal>
   );
 };
 

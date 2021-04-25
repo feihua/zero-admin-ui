@@ -28,7 +28,7 @@ export async function addFlashPromotion(params: FlashPromotionListItem) {
   });
 }
 
-export async function updateFlashPromotion(params: FlashPromotionListParams) {
+export async function updateFlashPromotion(params: FlashPromotionListItem) {
   return request('/api/sms/flashpromotion/update', {
     method: 'POST',
     data: {

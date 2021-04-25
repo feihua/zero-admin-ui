@@ -37,7 +37,7 @@ export async function addDict(params: DictListItem) {
   });
 }
 
-export async function updateRule(params: DictListParams) {
+export async function updateDict(params: DictListItem) {
   return request('/api/sys/dict/update', {
     method: 'POST',
     data: {

@@ -168,15 +168,15 @@ const TableList: React.FC<{}> = () => {
         }}
         closable={false}
       >
-        {row?.name && (
+        {row?.id && (
           <ProDescriptions<LoginLogListItem>
             column={2}
-            title={row?.name}
+            title={row?.id}
             request={async () => ({
               data: row || {},
             })}
             params={{
-              id: row?.name,
+              id: row?.id,
             }}
             columns={columns}
           />

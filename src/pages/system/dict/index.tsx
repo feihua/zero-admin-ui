@@ -4,11 +4,11 @@ import React, { useState, useRef } from 'react';
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
 import ProDescriptions from '@ant-design/pro-descriptions';
-import UpdateDictForm, { DictFormValueType } from './components/UpdateDictForm';
+import CreateDictForm  from './components/CreateDictForm';
+import UpdateDictForm  from './components/UpdateDictForm';
 import { DictListItem } from './data.d';
-import {queryDict, updateRule, addDict, removeDict, removeDictOne} from './service';
+import {queryDict, updateDict, addDict, removeDict, removeDictOne} from './service';
 
-import ProForm, {ModalForm, ProFormText, ProFormTextArea} from '@ant-design/pro-form';
 
 const { confirm } = Modal;
 
@@ -34,18 +34,10 @@ const handleAdd = async (fields: DictListItem) => {
  * 更新节点
  * @param fields
  */
-const handleUpdate = async (fields: DictFormValueType) => {
+const handleUpdate = async (fields: Partial<DictListItem>) => {
   const hide = message.loading('正在更新');
   try {
-    await updateRule({
-      value: fields.value,
-      description: fields.description,
-      label: fields.label,
-      id: fields.id,
-      type: fields.type,
-      remarks: fields.remarks,
-      sort: fields.sort,
-    });
+    await updateDict(fields as DictListItem);
     hide();
 
     message.success('更新成功');
@@ -294,78 +286,43 @@ const TableList: React.FC<{}> = () => {
           </Button>
         </FooterToolbar>
       )}
-      <ModalForm
-        title="新建字典"
-        width="500px"
-        visible={createModalVisible}
-        onVisibleChange={handleModalVisible}
-        onFinish={async (value) => {
-          const success = await handleAdd(value as DictListItem);
+
+      <CreateDictForm
+        onSubmit={async (value) => {
+          const success = await handleAdd(value);
           if (success) {
             handleModalVisible(false);
+            setStepFormValues({});
             if (actionRef.current) {
               actionRef.current.reload();
             }
           }
         }}
-      >
-        <ProForm.Group>
-          <ProFormText
-            name="value"
-            label="数据值"
-            rules={[{required: true, message: '请输入数据值！'}]}
-          />
-          <ProFormText
-            name="type"
-            label="类型"
-            rules={[{required: true, message: '请输入类型！'}]}
-          />
-        </ProForm.Group>
-        <ProForm.Group>
-          <ProFormText
-            name="label"
-            label="标签名"
-            rules={[{required: true, message: '请输入标签名！'}]}
-          />
-          <ProFormText
-            name="sort"
-            label="排序"
-            rules={[{required: true, message: '请输入标签名！'}]}
-          />
-        </ProForm.Group>
-        <ProFormTextArea
-          name="description"
-          label="描述"
-          placeholder="请输入至少五个字符"
-          rules={[{required: true, message: '请输入至少五个字符的描述！', min: 4}]}
-        />
-        <ProFormTextArea
-          name="remarks"
-          label="备注"
-          placeholder="请输入至少五个字符"
-          rules={[{required: true, message: '请输入至少五个字符的备注！', min: 4}]}
-        />
-      </ModalForm>
-      {stepFormValues && Object.keys(stepFormValues).length ? (
-        <UpdateDictForm
-          onSubmit={async (value) => {
-            const success = await handleUpdate(value);
-            if (success) {
-              handleUpdateModalVisible(false);
-              setStepFormValues({});
-              if (actionRef.current) {
-                actionRef.current.reload();
-              }
-            }
-          }}
-          onCancel={() => {
+        onCancel={() => {
+          handleModalVisible(false);
+          setStepFormValues({});
+        }}
+        createModalVisible={createModalVisible}
+      />
+
+      <UpdateDictForm
+        onSubmit={async (value) => {
+          const success = await handleUpdate(value);
+          if (success) {
             handleUpdateModalVisible(false);
             setStepFormValues({});
-          }}
-          updateModalVisible={updateModalVisible}
-          values={stepFormValues}
-        />
-      ) : null}
+            if (actionRef.current) {
+              actionRef.current.reload();
+            }
+          }
+        }}
+        onCancel={() => {
+          handleUpdateModalVisible(false);
+          setStepFormValues({});
+        }}
+        updateModalVisible={updateModalVisible}
+        currentData={stepFormValues}
+      />
 
       <Drawer
         width={600}
@@ -375,15 +332,15 @@ const TableList: React.FC<{}> = () => {
         }}
         closable={false}
       >
-        {row?.label && (
+        {row?.id && (
           <ProDescriptions<DictListItem>
             column={2}
-            title={row?.label}
+            title={row?.id}
             request={async () => ({
               data: row || {},
             })}
             params={{
-              id: row?.label,
+              id: row?.id,
             }}
             columns={columns}
           />

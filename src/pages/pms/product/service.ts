@@ -28,7 +28,7 @@ export async function addProduct(params: ProductListItem) {
   });
 }
 
-export async function updateProduct(params: ProductListParams) {
+export async function updateProduct(params: ProductListItem) {
   return request('/api/product/product/update', {
     method: 'POST',
     data: {

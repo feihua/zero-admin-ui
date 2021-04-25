@@ -28,7 +28,7 @@ export async function addCategory(params: CategoryListItem) {
   });
 }
 
-export async function updateCategory(params: CategoryListParams) {
+export async function updateCategory(params: CategoryListItem) {
   return request('/api/product/category/update', {
     method: 'POST',
     data: {

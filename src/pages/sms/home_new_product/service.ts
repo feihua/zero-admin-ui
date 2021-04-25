@@ -28,7 +28,7 @@ export async function addHomeNewProduct(params: HomeNewProductListItem) {
   });
 }
 
-export async function updateHomeNewProduct(params: HomeNewProductListParams) {
+export async function updateHomeNewProduct(params: HomeNewProductListItem) {
   return request('/api/sms/homenewproduct/update', {
     method: 'POST',
     data: {

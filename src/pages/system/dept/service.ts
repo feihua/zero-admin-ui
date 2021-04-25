@@ -37,7 +37,7 @@ export async function addDept(params: DeptListItem) {
   });
 }
 
-export async function updateRule(params: DeptListParams) {
+export async function updateDept(params: DeptListItem) {
   return request('/api/sys/dept/update', {
     method: 'POST',
     data: {

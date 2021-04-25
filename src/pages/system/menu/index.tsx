@@ -4,13 +4,12 @@ import React, { useState, useRef } from 'react';
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
 import ProDescriptions from '@ant-design/pro-descriptions';
-import UpdateMenuForm, { MenuFormValueType } from './components/UpdateMenuForm';
+import UpdateMenuForm  from './components/UpdateMenuForm';
 import CreateMenuChildForm from './components/CreateMenuChildForm';
 import { MenuListItem } from './data.d';
 import { queryMenu, updateRule, addMenu, removeMenu, removeMenuOne } from './service';
 import { tree } from '@/utils/utils';
-
-import ProForm, { ModalForm, ProFormText } from '@ant-design/pro-form';
+import CreateMenuForm from "@/pages/system/menu/components/CreateMenuForm";
 
 const { confirm } = Modal;
 
@@ -19,8 +18,7 @@ const { confirm } = Modal;
  * @param fields
  */
 const handleAdd = async (fields: MenuListItem) => {
-  fields.order_num = Number(fields.order_num);
-  fields.type = Number(fields.type);
+
   const hide = message.loading('正在添加');
   try {
     await addMenu({ ...fields });
@@ -38,19 +36,10 @@ const handleAdd = async (fields: MenuListItem) => {
  * 更新节点
  * @param fields
  */
-const handleUpdate = async (fields: MenuFormValueType) => {
+const handleUpdate = async (fields: Partial<MenuListItem>) => {
   const hide = message.loading('正在更新');
   try {
-    await updateRule({
-      name: fields.name,
-      id: fields.id,
-      parent_id: fields.parent_id,
-      url: fields.url,
-      type: fields.type,
-      order_num: Number(fields.order_num),
-      icon: fields.icon,
-      perms: fields.perms,
-    });
+    await updateRule(fields as MenuListItem);
     hide();
 
     message.success('更新成功');
@@ -228,7 +217,7 @@ const TableList: React.FC<{}> = () => {
             type="primary"
             size="small"
             onClick={() => {
-              handleChildModalVisible(true);
+              handleModalVisible(true);
               setStepFormValues(record);
             }}
           >
@@ -269,7 +258,6 @@ const TableList: React.FC<{}> = () => {
         rowSelection={{
           onChange: (_, selectedRows) => setSelectedRows(selectedRows),
         }}
-        pagination={{pageSize:10}}
         postData={(data) => tree(data, 0, 'parentId')}
         pagination={false}
       />
@@ -292,75 +280,63 @@ const TableList: React.FC<{}> = () => {
           </Button>
         </FooterToolbar>
       )}
-      <ModalForm
-        title="新建菜单"
-        width="500px"
-        visible={createModalVisible}
-        onVisibleChange={handleModalVisible}
-        onFinish={async (value) => {
+
+      <CreateMenuChildForm
+        onSubmit={async (value) => {
           const success = await handleAdd(value as MenuListItem);
           if (success) {
-            handleModalVisible(false);
+            handleChildModalVisible(false);
+            setStepFormValues(undefined);
             if (actionRef.current) {
               actionRef.current.reload();
             }
           }
         }}
-      >
-        <ProForm.Group>
-          <ProFormText
-            name="name"
-            label="菜单名称"
-            rules={[{ required: true, message: '请输入用户名！' }]}
-          />
-          <ProFormText name="type" label="类型" />
-        </ProForm.Group>
-        <ProForm.Group>
-          <ProFormText name="icon" label="图标" />
-          <ProFormText name="order_num" label="排序" />
-        </ProForm.Group>
-        <ProFormText name="url" label="路径" width="l" />
-      </ModalForm>
-      {stepFormValues && Object.keys(stepFormValues).length ? (
-        <CreateMenuChildForm
-          onSubmit={async (value) => {
-            const success = await handleAdd(value as MenuListItem);
-            if (success) {
-              handleChildModalVisible(false);
-              setStepFormValues(undefined);
-              if (actionRef.current) {
-                actionRef.current.reload();
-              }
-            }
-          }}
-          onCancel={() => {
-            handleChildModalVisible(false);
+        onCancel={() => {
+          handleChildModalVisible(false);
+          setStepFormValues(undefined);
+        }}
+        createChildModalVisible={createChildModalVisible}
+        parent_id={stepFormValues?.id || 0}
+      />
+
+      <CreateMenuForm
+        onSubmit={async (value) => {
+          const success = await handleAdd(value);
+          if (success) {
+            handleModalVisible(false);
             setStepFormValues(undefined);
-          }}
-          createChildModalVisible={createChildModalVisible}
-          parent_id={stepFormValues?.id || 0}
-        />
-      ) : null}
-      {stepFormValues && Object.keys(stepFormValues).length ? (
-        <UpdateMenuForm
-          onSubmit={async (value) => {
-            const success = await handleUpdate(value);
-            if (success) {
-              handleUpdateModalVisible(false);
-              setStepFormValues(undefined);
-              if (actionRef.current) {
-                actionRef.current.reload();
-              }
+            if (actionRef.current) {
+              actionRef.current.reload();
             }
-          }}
-          onCancel={() => {
+          }
+        }}
+        onCancel={() => {
+          handleModalVisible(false);
+          setStepFormValues(undefined);
+        }}
+        createModalVisible={createModalVisible}
+        parentId={stepFormValues?.id || 0}
+      />
+
+      <UpdateMenuForm
+        onSubmit={async (value) => {
+          const success = await handleUpdate(value);
+          if (success) {
             handleUpdateModalVisible(false);
             setStepFormValues(undefined);
-          }}
-          updateModalVisible={updateModalVisible}
-          values={stepFormValues}
-        />
-      ) : null}
+            if (actionRef.current) {
+              actionRef.current.reload();
+            }
+          }
+        }}
+        onCancel={() => {
+          handleUpdateModalVisible(false);
+          setStepFormValues(undefined);
+        }}
+        updateModalVisible={updateModalVisible}
+        currentData={stepFormValues||{}}
+      />
 
       <Drawer
         width={600}
@@ -370,15 +346,15 @@ const TableList: React.FC<{}> = () => {
         }}
         closable={false}
       >
-        {row?.name && (
+        {row?.id && (
           <ProDescriptions<MenuListItem>
             column={2}
-            title={row?.name}
+            title={row?.id}
             request={async () => ({
               data: row || {},
             })}
             params={{
-              id: row?.name,
+              id: row?.id,
             }}
             columns={columns}
           />

@@ -55,7 +55,7 @@ export async function addRole(params: RoleListItem) {
   });
 }
 
-export async function updateRule(params: RoleListParams) {
+export async function updateRule(params: RoleListItem) {
   return request('/api/sys/role/update', {
     method: 'POST',
     data: {

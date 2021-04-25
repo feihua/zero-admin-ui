@@ -16,11 +16,7 @@ export interface RoleListData {
 }
 
 export interface RoleListParams {
-  id?: number;
-  status?: string;
-  name?: string;
-  remark?: string;
-  key?: number;
+
   pageSize?: number;
   current?: number;
   currentPage?: number;

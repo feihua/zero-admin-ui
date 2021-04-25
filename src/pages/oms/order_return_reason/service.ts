@@ -1,7 +1,7 @@
 import { request } from 'umi';
 import { ReturnReasonListParams, ReturnReasonListItem } from './data.d';
 
-export async function queryReturnReason(params?: ReturnReasonListParams) {
+export async function queryReturnReasonList(params?: ReturnReasonListParams) {
   return request('/api/order/returnreason/list', {
     method: 'POST',
     data: {
@@ -28,7 +28,7 @@ export async function addReturnReason(params: ReturnReasonListItem) {
   });
 }
 
-export async function updateReturnReason(params: ReturnReasonListParams) {
+export async function updateReturnReason(params: ReturnReasonListItem) {
   return request('/api/order/returnreason/update', {
     method: 'POST',
     data: {

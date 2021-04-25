@@ -37,7 +37,7 @@ export async function addMenu(params: MenuListItem) {
   });
 }
 
-export async function updateRule(params: MenuListParams) {
+export async function updateRule(params: MenuListItem) {
   return request('/api/sys/menu/update', {
     method: 'POST',
     data: {

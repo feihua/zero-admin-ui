@@ -28,7 +28,7 @@ export async function addAddress(params: AddressTableListItem) {
   });
 }
 
-export async function updateAddress(params: AddressTableListParams) {
+export async function updateAddress(params: AddressTableListItem) {
   return request('/api/member/address/update', {
     method: 'POST',
     data: {

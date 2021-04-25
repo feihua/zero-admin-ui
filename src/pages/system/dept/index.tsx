@@ -4,13 +4,12 @@ import React, { useState, useRef } from 'react';
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
 import ProDescriptions from '@ant-design/pro-descriptions';
-import UpdateDeptForm, { DeptFormValueType } from './components/UpdateDeptForm';
+import CreateDeptForm  from './components/CreateDeptForm';
+import UpdateDeptForm  from './components/UpdateDeptForm';
 import CreateDeptChildForm from './components/CreateDeptChildForm';
 import { DeptListItem } from './data.d';
-import { queryDept, updateRule, addDept, removeDept, removeDeptOne } from './service';
+import { queryDept, updateDept, addDept, removeDept, removeDeptOne } from './service';
 import { tree } from '@/utils/utils';
-
-import { ModalForm, ProFormText } from '@ant-design/pro-form';
 
 const { confirm } = Modal;
 
@@ -19,7 +18,6 @@ const { confirm } = Modal;
  * @param fields
  */
 const handleAdd = async (fields: DeptListItem) => {
-  fields.order_num = Number(fields.order_num);
   const hide = message.loading('正在添加');
   try {
     await addDept({ ...fields });
@@ -37,15 +35,10 @@ const handleAdd = async (fields: DeptListItem) => {
  * 更新节点
  * @param fields
  */
-const handleUpdate = async (fields: DeptFormValueType) => {
+const handleUpdate = async (fields: Partial<DeptListItem>) => {
   const hide = message.loading('正在更新');
   try {
-    await updateRule({
-      name: fields.name,
-      order_num: Number(fields.order_num),
-      parent_id: fields.parent_id,
-      id: fields.id,
-    });
+    await updateDept(fields as DeptListItem);
     hide();
 
     message.success('更新成功');
@@ -210,7 +203,7 @@ const TableList: React.FC<{}> = () => {
             type="primary"
             size="small"
             onClick={() => {
-              handleChildModalVisible(true);
+              handleModalVisible(true);
               setStepFormValues(record);
             }}
           >
@@ -251,7 +244,6 @@ const TableList: React.FC<{}> = () => {
         rowSelection={{
           onChange: (_, selectedRows) => setSelectedRows(selectedRows),
         }}
-        pagination={{pageSize:10}}
         postData={(data) => tree(data, 0, 'parentId')}
         pagination={false}
       />
@@ -274,31 +266,7 @@ const TableList: React.FC<{}> = () => {
           </Button>
         </FooterToolbar>
       )}
-      <ModalForm
-        title="新建机构"
-        width="500px"
-        visible={createModalVisible}
-        onVisibleChange={handleModalVisible}
-        onFinish={async (value) => {
-          const success = await handleAdd(value as DeptListItem);
-          if (success) {
-            handleModalVisible(false);
-            if (actionRef.current) {
-              actionRef.current.reload();
-            }
-          }
-        }}
-      >
-        <ProFormText name="parent_id" label="parent_id" width="l" hidden />
-        <ProFormText
-          name="name"
-          label="机构名称"
-          width="l"
-          rules={[{ required: true, message: '请输入用户名！' }]}
-        />
-        <ProFormText name="order_num" label="排序" width="l" />
-      </ModalForm>
-      {stepFormValues && Object.keys(stepFormValues).length ? (
+
         <CreateDeptChildForm
           onSubmit={async (value) => {
             const success = await handleAdd(value as DeptListItem);
@@ -317,27 +285,45 @@ const TableList: React.FC<{}> = () => {
           createChildModalVisible={createChildModalVisible}
           parent_id={stepFormValues?.id || 0}
         />
-      ) : null}
-      {stepFormValues && Object.keys(stepFormValues).length ? (
-        <UpdateDeptForm
-          onSubmit={async (value) => {
-            const success = await handleUpdate(value);
-            if (success) {
-              handleUpdateModalVisible(false);
-              setStepFormValues(undefined);
-              if (actionRef.current) {
-                actionRef.current.reload();
-              }
+
+      <CreateDeptForm
+        onSubmit={async (value) => {
+          const success = await handleAdd(value);
+          if (success) {
+            handleModalVisible(false);
+            setStepFormValues(undefined);
+            if (actionRef.current) {
+              actionRef.current.reload();
             }
-          }}
-          onCancel={() => {
+          }
+        }}
+        onCancel={() => {
+          handleModalVisible(false);
+          setStepFormValues(undefined);
+        }}
+        createModalVisible={createModalVisible}
+        parentId={stepFormValues?.id || 0}
+      />
+
+      <UpdateDeptForm
+        onSubmit={async (value) => {
+          const success = await handleUpdate(value);
+          if (success) {
             handleUpdateModalVisible(false);
             setStepFormValues(undefined);
-          }}
-          updateModalVisible={updateModalVisible}
-          values={stepFormValues}
-        />
-      ) : null}
+            if (actionRef.current) {
+              actionRef.current.reload();
+            }
+          }
+        }}
+        onCancel={() => {
+          handleUpdateModalVisible(false);
+          setStepFormValues(undefined);
+        }}
+        updateModalVisible={updateModalVisible}
+        currentData={stepFormValues||{}}
+      />
+
 
       <Drawer
         width={600}
@@ -347,15 +333,15 @@ const TableList: React.FC<{}> = () => {
         }}
         closable={false}
       >
-        {row?.name && (
+        {row?.id && (
           <ProDescriptions<DeptListItem>
             column={2}
-            title={row?.name}
+            title={row?.id}
             request={async () => ({
               data: row || {},
             })}
             params={{
-              id: row?.name,
+              id: row?.id,
             }}
             columns={columns}
           />

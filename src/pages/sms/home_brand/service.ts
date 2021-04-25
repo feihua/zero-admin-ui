@@ -28,7 +28,7 @@ export async function addHomeBrand(params: HomeBrandListItem) {
   });
 }
 
-export async function updateHomeBrand(params: HomeBrandListParams) {
+export async function updateHomeBrand(params: HomeBrandListItem) {
   return request('/api/sms/homebrand/update', {
     method: 'POST',
     data: {

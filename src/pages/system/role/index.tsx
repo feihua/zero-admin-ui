@@ -5,7 +5,8 @@ import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
 import ProDescriptions from '@ant-design/pro-descriptions';
 import MenuForm from './components/MenuForm';
-import UpdateRoleForm, { RoleFormValueType } from './components/UpdateRoleForm';
+import CreateRoleForm  from './components/CreateRoleForm';
+import UpdateRoleForm  from './components/UpdateRoleForm';
 import { RoleListItem } from './data.d';
 import {
   queryRole,
@@ -16,7 +17,6 @@ import {
   updateRoleMenu,
 } from './service';
 
-import { ModalForm, ProFormText, ProFormTextArea } from '@ant-design/pro-form';
 
 const { confirm } = Modal;
 
@@ -42,14 +42,10 @@ const handleAdd = async (fields: RoleListItem) => {
  * 更新节点
  * @param fields
  */
-const handleUpdate = async (fields: RoleFormValueType) => {
+const handleUpdate = async (fields: Partial<RoleListItem>) => {
   const hide = message.loading('正在更新');
   try {
-    await updateRule({
-      name: fields.name,
-      remark: fields.remark,
-      id: fields.id,
-    });
+    await updateRule(fields as RoleListItem);
     hide();
 
     message.success('更新成功');
@@ -289,74 +285,64 @@ const TableList: React.FC<{}> = () => {
           </Button>
         </FooterToolbar>
       )}
-      <ModalForm
-        title="新建角色"
-        width="500px"
-        visible={createModalVisible}
-        onVisibleChange={handleModalVisible}
-        onFinish={async (value) => {
-          const success = await handleAdd(value as RoleListItem);
+
+      <CreateRoleForm
+        onSubmit={async (value) => {
+          const success = await handleAdd(value);
           if (success) {
             handleModalVisible(false);
+            setStepFormValues({});
             if (actionRef.current) {
               actionRef.current.reload();
             }
           }
         }}
-      >
-        <ProFormText
-          name="name"
-          label="角色名称"
-          rules={[{ required: true, message: '请输入角色名称！' }]}
-        />
-        <ProFormTextArea
-          name="remark"
-          label="备注"
-          placeholder="请输入至少五个字符"
-          rules={[{ required: true, message: '请输入至少五个字符的规则描述！', min: 5 }]}
-        />
-      </ModalForm>
-      {stepFormValues && Object.keys(stepFormValues).length ? (
-        <UpdateRoleForm
-          onSubmit={async (value) => {
-            const success = await handleUpdate(value);
-            if (success) {
-              handleUpdateModalVisible(false);
-              setStepFormValues({});
-              if (actionRef.current) {
-                actionRef.current.reload();
-              }
-            }
-          }}
-          onCancel={() => {
+        onCancel={() => {
+          handleModalVisible(false);
+          setStepFormValues({});
+        }}
+        createModalVisible={createModalVisible}
+      />
+
+      <UpdateRoleForm
+        onSubmit={async (value) => {
+          const success = await handleUpdate(value);
+          if (success) {
             handleUpdateModalVisible(false);
             setStepFormValues({});
-          }}
-          updateModalVisible={updateModalVisible}
-          values={stepFormValues}
-        />
-      ) : null}
-
-      {stepMenuFormValues && Object.keys(stepMenuFormValues).length ? (
-        <MenuForm
-          onSubmit={async (value) => {
-            const success = await updateRoleMenu(value);
-            if (success) {
-              handleUpdateMenuModalVisible(false);
-              setMenuStepFormValues({});
-              if (actionRef.current) {
-                actionRef.current.reload();
-              }
+            if (actionRef.current) {
+              actionRef.current.reload();
             }
-          }}
-          onCancel={() => {
+          }
+        }}
+        onCancel={() => {
+          handleUpdateModalVisible(false);
+          setStepFormValues({});
+        }}
+        updateModalVisible={updateModalVisible}
+        currentData={stepFormValues}
+      />
+
+
+      <MenuForm
+        onSubmit={async (value) => {
+          const success = await updateRoleMenu(value);
+          if (success) {
             handleUpdateMenuModalVisible(false);
             setMenuStepFormValues({});
-          }}
-          updateMenuModalVisible={updateMenuModalVisible}
-          values={stepMenuFormValues}
-        />
-      ) : null}
+            if (actionRef.current) {
+              actionRef.current.reload();
+            }
+          }
+        }}
+        onCancel={() => {
+          handleUpdateMenuModalVisible(false);
+          setMenuStepFormValues({});
+        }}
+        updateMenuModalVisible={updateMenuModalVisible}
+        values={stepMenuFormValues}
+      />
+
 
       <Drawer
         width={600}
@@ -366,15 +352,15 @@ const TableList: React.FC<{}> = () => {
         }}
         closable={false}
       >
-        {row?.name && (
+        {row?.id && (
           <ProDescriptions<RoleListItem>
             column={2}
-            title={row?.name}
+            title={row?.id}
             request={async () => ({
               data: row || {},
             })}
             params={{
-              id: row?.name,
+              id: row?.id,
             }}
             columns={columns}
           />

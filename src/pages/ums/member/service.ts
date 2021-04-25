@@ -28,7 +28,7 @@ export async function addMember(params: MemberTableListItem) {
   });
 }
 
-export async function updateMember(params: MemberTableListParams) {
+export async function updateMember(params: MemberTableListItem) {
   return request('/api/member/member/update', {
     method: 'POST',
     data: {

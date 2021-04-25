@@ -28,7 +28,7 @@ export async function addBrand(params: BrandListItem) {
   });
 }
 
-export async function updateBrand(params: BrandListParams) {
+export async function updateBrand(params: BrandListItem) {
   return request('/api/product/brand/update', {
     method: 'POST',
     data: {

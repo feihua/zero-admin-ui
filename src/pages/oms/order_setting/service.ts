@@ -29,7 +29,7 @@ export async function addSetting(params: SettingListItem) {
   });
 }
 
-export async function updateSetting(params: SettingListParams) {
+export async function updateSetting(params: SettingListItem) {
   return request('/api/order/setting/update', {
     method: 'POST',
     data: {
