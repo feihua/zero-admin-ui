@@ -75,6 +75,12 @@
         path: '/system/dict/list',
         component: './system/dict',
       },
+      {
+        name: '职位列表',
+        icon: 'table',
+        path: '/system/job/list',
+        component: './system/job',
+      },
       // {
       //   name: '参数管理',
       //   icon: 'table',
