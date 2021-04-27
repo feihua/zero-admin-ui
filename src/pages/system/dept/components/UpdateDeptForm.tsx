@@ -1,8 +1,6 @@
-import React, {useEffect, useState} from 'react';
-import { Form, Input, Modal, Select } from 'antd';
+import React, {useEffect} from 'react';
+import { Form, Input, Modal } from 'antd';
 import { DeptListItem } from '../data.d';
-import {RoleListItem} from "@/pages/system/role/data";
-import {queryRole} from "@/pages/system/role/service";
 
 export interface UpdateFormProps {
   onCancel: () => void;
@@ -18,9 +16,8 @@ const formLayout = {
 };
 
 const UpdateDeptForm: React.FC<UpdateFormProps> = (props) => {
+
   const [form] = Form.useForm();
-  const { Option } = Select;
-  const [roleConf, setRoleConf] = useState<RoleListItem[]>([]);
 
   const {
     onSubmit,
@@ -32,10 +29,6 @@ const UpdateDeptForm: React.FC<UpdateFormProps> = (props) => {
   useEffect(() => {
     if (form && !updateModalVisible) {
       form.resetFields();
-
-      queryRole({pageSize: 100,current: 1 }).then((res) => {
-        setRoleConf(res.data)
-      });
     }
   }, [props.updateModalVisible]);
 
@@ -69,51 +62,23 @@ const UpdateDeptForm: React.FC<UpdateFormProps> = (props) => {
           <Input id="update-id" placeholder="请输入主键" />
         </FormItem>
         <FormItem
+          name="parentId"
+          label="父id"
+          hidden
+        >
+          <Input id="update-parentId" placeholder={'请输入父id'}/>
+        </FormItem>
+        <FormItem
           name="name"
-          label="用户名"
+          label="机构名称"
         >
-          <Input id="update-name" placeholder={'请输入用户名'}/>
+          <Input id="update-name" placeholder={'请输入机构名称'}/>
         </FormItem>
         <FormItem
-          name="nick_name"
-          label="昵称"
+          name="orderNum"
+          label="排序"
         >
-          <Input id="update-nick_name" placeholder={'请输入昵称'}/>
-        </FormItem>
-        <FormItem
-          name="mobile"
-          label="手机号"
-        >
-          <Input id="update-mobile" placeholder={'请输入手机号'}/>
-        </FormItem>
-        <FormItem
-          name="email"
-          label="邮箱"
-        >
-          <Input id="update-email" placeholder={'请输入邮箱'}/>
-        </FormItem>
-        <FormItem
-          name="dept_id"
-          label="部门"
-        >
-          <Input id="update-dept_id" placeholder={'请输入部门'}/>
-        </FormItem>
-        <FormItem
-          name="role_id"
-          label="角色"
-        >
-          <Select id="role_id" placeholder={'请选择角色'}>
-            {roleConf.map(r => <Select.Option value={r.id}>{r.name+r.remark}</Select.Option>)}
-          </Select>
-        </FormItem>
-        <FormItem
-          name="status"
-          label="状态"
-        >
-          <Select id="status" placeholder={'请输选择状态'}>
-            <Option value={0}>禁用</Option>
-            <Option value={1}>启用</Option>
-          </Select>
+          <Input id="update-orderNum" placeholder={'请输入排序'}/>
         </FormItem>
       </>
     );

@@ -121,8 +121,8 @@ const TableList: React.FC<{}> = () => {
     {
       title: '数据值',
       dataIndex: 'value',
+      hideInSearch: true,
       render: (dom, entity) => {
-        console.log(entity, 1111111111);
         return <a onClick={() => setRow(entity)}>{dom}</a>;
       },
     },

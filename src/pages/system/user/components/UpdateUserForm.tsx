@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from 'react';
-import { Form, Input, Modal, Select } from 'antd';
-import { UserListItem } from '../data.d';
-import {RoleListItem} from "@/pages/system/role/data";
-import {queryRole} from "@/pages/system/role/service";
+import {Form, Input, Modal, Select, TreeSelect} from 'antd';
+import {JobList, RoleList, UserListItem} from '../data.d';
+import {querySelectAllData} from "@/pages/system/user/service";
+import {tree} from "@/utils/utils";
 
 export interface UpdateFormProps {
   onCancel: () => void;
@@ -20,7 +20,9 @@ const formLayout = {
 const UpdateUserForm: React.FC<UpdateFormProps> = (props) => {
   const [form] = Form.useForm();
   const { Option } = Select;
-  const [roleConf, setRoleConf] = useState<RoleListItem[]>([]);
+  const [roleConf, setRoleConf] = useState<RoleList[]>([]);
+  const [jobConf, setJobConf] = useState<JobList[]>([]);
+  const [deptConf, setDeptConf] = useState<JobList[]>([]);
 
   const {
     onSubmit,
@@ -32,9 +34,11 @@ const UpdateUserForm: React.FC<UpdateFormProps> = (props) => {
   useEffect(() => {
     if (form && !updateModalVisible) {
       form.resetFields();
-
-      queryRole({pageSize: 100,current: 1 }).then((res) => {
-        setRoleConf(res.data)
+    }else {
+      querySelectAllData({pageSize: 100,current: 1 }).then((res) => {
+        setRoleConf(res.roleAll)
+        setJobConf(res.jobAll)
+        setDeptConf(tree(res.deptAll, 0, 'parentId'))
       });
     }
   }, [props.updateModalVisible]);
@@ -43,6 +47,7 @@ const UpdateUserForm: React.FC<UpdateFormProps> = (props) => {
     if (currentData) {
       form.setFieldsValue({
         ...currentData,
+        deptId:currentData.deptId+'',
       });
     }
   }, [props.currentData]);
@@ -69,13 +74,43 @@ const UpdateUserForm: React.FC<UpdateFormProps> = (props) => {
           <Input id="update-id" placeholder="请输入主键" />
         </FormItem>
         <FormItem
+          name="deptId"
+          label="部门"
+        >
+          <TreeSelect
+            style={{ width: '100%' }}
+            // value={currentData.deptId+''}
+            // dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
+            treeData={deptConf}
+            placeholder="请选择部门"
+            treeDefaultExpandAll
+            // onChange={onChange}
+          />
+        </FormItem>
+        <FormItem
+          name="jobId"
+          label="职位"
+        >
+          <Select id="jobId" placeholder={'请选择职位'}>
+            {jobConf.map(r => <Select.Option value={r.id}>{r.jobName}</Select.Option>)}
+          </Select>
+        </FormItem>
+        <FormItem
+          name="roleId"
+          label="角色"
+        >
+          <Select id="roleId" placeholder={'请选择角色'}>
+            {roleConf.map(r => <Select.Option value={r.id}>{r.name+r.remark}</Select.Option>)}
+          </Select>
+        </FormItem>
+        <FormItem
           name="name"
           label="用户名"
         >
           <Input id="update-name" placeholder={'请输入用户名'}/>
         </FormItem>
         <FormItem
-          name="nick_name"
+          name="nickName"
           label="昵称"
         >
           <Input id="update-nick_name" placeholder={'请输入昵称'}/>
@@ -91,20 +126,6 @@ const UpdateUserForm: React.FC<UpdateFormProps> = (props) => {
           label="邮箱"
         >
           <Input id="update-email" placeholder={'请输入邮箱'}/>
-        </FormItem>
-        <FormItem
-          name="dept_id"
-          label="部门"
-        >
-          <Input id="update-dept_id" placeholder={'请输入部门'}/>
-        </FormItem>
-        <FormItem
-          name="role_id"
-          label="角色"
-        >
-          <Select id="role_id" placeholder={'请选择角色'}>
-            {roleConf.map(r => <Select.Option value={r.id}>{r.name+r.remark}</Select.Option>)}
-          </Select>
         </FormItem>
         <FormItem
           name="status"

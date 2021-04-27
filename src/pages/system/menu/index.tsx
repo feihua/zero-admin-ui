@@ -1,11 +1,10 @@
 import { PlusOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
-import { Button, Divider, message, Input, Drawer, Modal } from 'antd';
+import { Button, Divider, message, Drawer, Modal } from 'antd';
 import React, { useState, useRef } from 'react';
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
 import ProDescriptions from '@ant-design/pro-descriptions';
 import UpdateMenuForm  from './components/UpdateMenuForm';
-import CreateMenuChildForm from './components/CreateMenuChildForm';
 import { MenuListItem } from './data.d';
 import { queryMenu, updateRule, addMenu, removeMenu, removeMenuOne } from './service';
 import { tree } from '@/utils/utils';
@@ -21,6 +20,8 @@ const handleAdd = async (fields: MenuListItem) => {
 
   const hide = message.loading('正在添加');
   try {
+    fields.orderNum=Number(fields.orderNum)
+    fields.type=Number(fields.type)
     await addMenu({ ...fields });
     hide();
     message.success('添加成功');
@@ -39,6 +40,8 @@ const handleAdd = async (fields: MenuListItem) => {
 const handleUpdate = async (fields: Partial<MenuListItem>) => {
   const hide = message.loading('正在更新');
   try {
+    fields.orderNum=Number(fields.orderNum)
+    fields.type=Number(fields.type)
     await updateRule(fields as MenuListItem);
     hide();
 
@@ -94,7 +97,6 @@ const handleRemove = async (selectedRows: MenuListItem[]) => {
 
 const TableList: React.FC<{}> = () => {
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
-  const [createChildModalVisible, handleChildModalVisible] = useState<boolean>(false);
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
   const [stepFormValues, setStepFormValues] = useState<MenuListItem>();
   const actionRef = useRef<ActionType>();
@@ -164,16 +166,7 @@ const TableList: React.FC<{}> = () => {
       dataIndex: 'createTime',
       valueType: 'dateTime',
       hideInSearch: true,
-      renderFormItem: (item, { defaultRender, ...rest }, form) => {
-        const status = form.getFieldValue('status');
-        if (`${status}` === '0') {
-          return false;
-        }
-        if (`${status}` === '3') {
-          return <Input {...rest} placeholder="请输入异常原因！" />;
-        }
-        return defaultRender(item);
-      },
+
     },
     {
       title: '更新人',
@@ -185,16 +178,6 @@ const TableList: React.FC<{}> = () => {
       dataIndex: 'lastUpdateTime',
       valueType: 'dateTime',
       hideInSearch: true,
-      renderFormItem: (item, { defaultRender, ...rest }, form) => {
-        const status = form.getFieldValue('status');
-        if (`${status}` === '0') {
-          return false;
-        }
-        if (`${status}` === '3') {
-          return <Input {...rest} placeholder="请输入异常原因！" />;
-        }
-        return defaultRender(item);
-      },
     },
     {
       title: '操作',
@@ -281,26 +264,8 @@ const TableList: React.FC<{}> = () => {
         </FooterToolbar>
       )}
 
-      <CreateMenuChildForm
-        onSubmit={async (value) => {
-          const success = await handleAdd(value as MenuListItem);
-          if (success) {
-            handleChildModalVisible(false);
-            setStepFormValues(undefined);
-            if (actionRef.current) {
-              actionRef.current.reload();
-            }
-          }
-        }}
-        onCancel={() => {
-          handleChildModalVisible(false);
-          setStepFormValues(undefined);
-        }}
-        createChildModalVisible={createChildModalVisible}
-        parent_id={stepFormValues?.id || 0}
-      />
-
       <CreateMenuForm
+        key={'CreateMenuForm'}
         onSubmit={async (value) => {
           const success = await handleAdd(value);
           if (success) {
@@ -320,6 +285,7 @@ const TableList: React.FC<{}> = () => {
       />
 
       <UpdateMenuForm
+        key={'UpdateMenuForm'}
         onSubmit={async (value) => {
           const success = await handleUpdate(value);
           if (success) {

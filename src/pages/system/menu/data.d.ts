@@ -1,5 +1,7 @@
 export interface MenuListItem {
   id: number;
+  orderNum: number;
+  type: number;
 
 }
 

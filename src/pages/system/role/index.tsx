@@ -151,10 +151,10 @@ const TableList: React.FC<{}> = () => {
     },
     {
       title: '状态',
-      dataIndex: 'delFlag',
+      dataIndex: 'status',
       valueEnum: {
-        0: { text: '正常', status: 'Success' },
-        1: { text: '已删除', status: 'Error' },
+        1: { text: '启用', status: 'Success' },
+        0: { text: '禁用', status: 'Error' },
       },
     },
     {
@@ -340,7 +340,7 @@ const TableList: React.FC<{}> = () => {
           setMenuStepFormValues({});
         }}
         updateMenuModalVisible={updateMenuModalVisible}
-        values={stepMenuFormValues}
+        currentData={stepMenuFormValues}
       />
 
 

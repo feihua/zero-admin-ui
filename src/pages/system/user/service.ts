@@ -10,6 +10,16 @@ export async function queryUserList(params?: UserListParams) {
   });
 }
 
+export async function querySelectAllData(params?: UserListParams) {
+  return request('/api/sys/user/selectAllData', {
+    method: 'POST',
+    data: {
+      ...params,
+    },
+  });
+}
+
+
 export async function removeUser(params: { ids: number[] }) {
   return request('/api/sys/user/delete', {
     method: 'POST',

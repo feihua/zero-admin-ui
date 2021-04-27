@@ -1,12 +1,11 @@
 import { PlusOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
-import { Button, Divider, message, Input, Drawer, Modal } from 'antd';
+import { Button, Divider, message, Drawer, Modal } from 'antd';
 import React, { useState, useRef } from 'react';
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
 import ProDescriptions from '@ant-design/pro-descriptions';
 import CreateDeptForm  from './components/CreateDeptForm';
 import UpdateDeptForm  from './components/UpdateDeptForm';
-import CreateDeptChildForm from './components/CreateDeptChildForm';
 import { DeptListItem } from './data.d';
 import { queryDept, updateDept, addDept, removeDept, removeDeptOne } from './service';
 import { tree } from '@/utils/utils';
@@ -20,6 +19,7 @@ const { confirm } = Modal;
 const handleAdd = async (fields: DeptListItem) => {
   const hide = message.loading('正在添加');
   try {
+    fields.orderNum=Number(fields.orderNum)
     await addDept({ ...fields });
     hide();
     message.success('添加成功');
@@ -38,6 +38,7 @@ const handleAdd = async (fields: DeptListItem) => {
 const handleUpdate = async (fields: Partial<DeptListItem>) => {
   const hide = message.loading('正在更新');
   try {
+    fields.orderNum=Number(fields.orderNum)
     await updateDept(fields as DeptListItem);
     hide();
 
@@ -93,7 +94,6 @@ const handleRemove = async (selectedRows: DeptListItem[]) => {
 
 const TableList: React.FC<{}> = () => {
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
-  const [createChildModalVisible, handleChildModalVisible] = useState<boolean>(false);
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
   const [stepFormValues, setStepFormValues] = useState<DeptListItem>();
   const actionRef = useRef<ActionType>();
@@ -140,47 +140,24 @@ const TableList: React.FC<{}> = () => {
     {
       title: '创建人',
       dataIndex: 'createBy',
+      hideInSearch: true,
     },
     {
       title: '创建时间',
       dataIndex: 'createTime',
-      sorter: true,
       valueType: 'dateTime',
       hideInSearch: true,
-      renderFormItem: (item, { defaultRender, ...rest }, form) => {
-        const status = form.getFieldValue('status');
-        if (`${status}` === '0') {
-          return false;
-        }
-        if (`${status}` === '3') {
-          return <Input {...rest} placeholder="请输入异常原因！" />;
-        }
-        return defaultRender(item);
-      },
     },
     {
       title: '更新人',
       dataIndex: 'lastUpdateBy',
-      hideInForm: true,
       hideInSearch: true,
     },
     {
       title: '更新时间',
       dataIndex: 'lastUpdateTime',
-      sorter: true,
       valueType: 'dateTime',
-      hideInForm: true,
       hideInSearch: true,
-      renderFormItem: (item, { defaultRender, ...rest }, form) => {
-        const status = form.getFieldValue('status');
-        if (`${status}` === '0') {
-          return false;
-        }
-        if (`${status}` === '3') {
-          return <Input {...rest} placeholder="请输入异常原因！" />;
-        }
-        return defaultRender(item);
-      },
     },
     {
       title: '操作',
@@ -267,26 +244,8 @@ const TableList: React.FC<{}> = () => {
         </FooterToolbar>
       )}
 
-        <CreateDeptChildForm
-          onSubmit={async (value) => {
-            const success = await handleAdd(value as DeptListItem);
-            if (success) {
-              handleChildModalVisible(false);
-              setStepFormValues(undefined);
-              if (actionRef.current) {
-                actionRef.current.reload();
-              }
-            }
-          }}
-          onCancel={() => {
-            handleUpdateModalVisible(false);
-            setStepFormValues(undefined);
-          }}
-          createChildModalVisible={createChildModalVisible}
-          parent_id={stepFormValues?.id || 0}
-        />
-
       <CreateDeptForm
+        key={'CreateDeptForm'}
         onSubmit={async (value) => {
           const success = await handleAdd(value);
           if (success) {
@@ -306,6 +265,7 @@ const TableList: React.FC<{}> = () => {
       />
 
       <UpdateDeptForm
+        key={'UpdateDeptForm'}
         onSubmit={async (value) => {
           const success = await handleUpdate(value);
           if (success) {

@@ -19,7 +19,7 @@ export async function queryMenuByRoleId(params: { id?: number }) {
   });
 }
 
-export async function updateRoleMenu(params: { role_id: number ,menu_ids:number[]}) {
+export async function updateRoleMenu(params: { roleId: number ,menuIds:number[]}) {
   return request('/api/sys/role/updateRoleMenu', {
     method: 'POST',
     data: {

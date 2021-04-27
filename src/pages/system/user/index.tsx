@@ -1,5 +1,5 @@
 import { PlusOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
-import { Button, Divider, message, Input, Drawer, Modal } from 'antd';
+import { Button, Divider, message, Drawer, Modal } from 'antd';
 import React, { useState, useRef } from 'react';
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
@@ -143,6 +143,18 @@ const TableList: React.FC<{}> = () => {
       dataIndex: 'email',
     },
     {
+      title: '部门',
+      dataIndex: 'deptName',
+    },
+    {
+      title: '职位',
+      dataIndex: 'jobName',
+    },
+    {
+      title: '角色',
+      dataIndex: 'roleName',
+    },
+    {
       title: '状态',
       dataIndex: 'status',
       valueEnum: {
@@ -150,51 +162,32 @@ const TableList: React.FC<{}> = () => {
         1: { text: '正常', status: 'Success' },
       },
     },
-    {
-      title: '部门',
-      dataIndex: 'deptId',
-    },
+
     {
       title: '创建人',
       dataIndex: 'createBy',
       hideInSearch: true,
+      hideInTable: true,
     },
     {
       title: '创建时间',
       dataIndex: 'createTime',
       valueType: 'dateTime',
       hideInSearch: true,
-      renderFormItem: (item, { defaultRender, ...rest }, form) => {
-        const status = form.getFieldValue('status');
-        if (`${status}` === '0') {
-          return false;
-        }
-        if (`${status}` === '3') {
-          return <Input {...rest} placeholder="请输入异常原因！" />;
-        }
-        return defaultRender(item);
-      },
+      hideInTable: true,
     },
     {
       title: '更新人',
       dataIndex: 'lastUpdateBy',
       hideInSearch: true,
+      hideInTable: true,
     },
     {
       title: '更新时间',
       dataIndex: 'lastUpdateTime',
       valueType: 'dateTime',
       hideInSearch: true,
-      renderFormItem: (item, { defaultRender, ...rest }, form) => {
-        const status = form.getFieldValue('status');
-        if (`${status}` === '0') {
-          return false;
-        }
-        if (`${status}` === '3') {
-          return <Input {...rest} placeholder="请输入异常原因！" />;
-        }
-        return defaultRender(item);
-      },
+      hideInTable: true,
     },
     {
       title: '操作',

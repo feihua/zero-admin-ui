@@ -1,6 +1,7 @@
 export interface JobListItem {
   id: number;
   orderNum: number;
+  jobName: string;
 
 }
 
@@ -18,6 +19,7 @@ export interface JobListData {
 export interface JobListParams {
 
   pageSize?: number;
+  current?: number;
   currentPage?: number;
   filter?: { [key: string]: any[] };
   sorter?: { [key: string]: any };
