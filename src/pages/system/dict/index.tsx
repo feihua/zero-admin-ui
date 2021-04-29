@@ -288,6 +288,7 @@ const TableList: React.FC<{}> = () => {
       )}
 
       <CreateDictForm
+        key={'CreateDictForm'}
         onSubmit={async (value) => {
           const success = await handleAdd(value);
           if (success) {
@@ -306,6 +307,7 @@ const TableList: React.FC<{}> = () => {
       />
 
       <UpdateDictForm
+        key={'UpdateDictForm'}
         onSubmit={async (value) => {
           const success = await handleUpdate(value);
           if (success) {

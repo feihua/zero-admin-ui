@@ -213,6 +213,7 @@ const TableList: React.FC<{}> = () => {
 
 
       <CreateHomeBrandForm
+        key={'CreateHomeBrandForm'}
         onSubmit={async (value) => {
           const success = await handleAdd(value);
           if (success) {
@@ -231,6 +232,7 @@ const TableList: React.FC<{}> = () => {
       />
 
       <UpdateHomeBrandForm
+        key={'UpdateHomeBrandForm'}
         onSubmit={async (value) => {
           const success = await handleUpdate(value);
           if (success) {

@@ -256,6 +256,7 @@ const TableList: React.FC<{}> = () => {
 
 
       <CreateLevelForm
+        key={'CreateLevelForm'}
         onSubmit={async (value) => {
           const success = await handleAdd(value);
           if (success) {
@@ -274,6 +275,7 @@ const TableList: React.FC<{}> = () => {
       />
 
       <UpdateLevelForm
+        key={'UpdateLevelForm'}
         onSubmit={async (value) => {
           const success = await handleUpdate(value);
           if (success) {

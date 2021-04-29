@@ -267,6 +267,7 @@ const TableList: React.FC<{}> = () => {
       )}
 
       <CreateJobForm
+        key={'CreateJobForm'}
         onSubmit={async (value) => {
           const success = await handleAdd(value);
           if (success) {
@@ -285,6 +286,7 @@ const TableList: React.FC<{}> = () => {
       />
 
       <UpdateJobForm
+        key={'UpdateJobForm'}
         onSubmit={async (value) => {
           const success = await handleUpdate(value);
           if (success) {

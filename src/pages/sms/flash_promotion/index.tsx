@@ -220,6 +220,7 @@ const TableList: React.FC<{}> = () => {
       )}
 
       <CreateFlashForm
+        key={'CreateFlashForm'}
         onSubmit={async (value) => {
           const success = await handleAdd(value);
           if (success) {
@@ -238,6 +239,7 @@ const TableList: React.FC<{}> = () => {
       />
 
       <UpdateFlashPromotionForm
+        key={'UpdateFlashPromotionForm'}
         onSubmit={async (value) => {
           const success = await handleUpdate(value);
           if (success) {

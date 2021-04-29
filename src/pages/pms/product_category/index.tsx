@@ -234,6 +234,7 @@ const TableList: React.FC<{}> = () => {
 
 
       <CreateCategoryForm
+        key={'CreateCategoryForm'}
         onSubmit={async (value) => {
           const success = await handleAdd(value);
           if (success) {
@@ -252,6 +253,7 @@ const TableList: React.FC<{}> = () => {
       />
 
       <UpdateCategoryForm
+        key={'UpdateCategoryForm'}
         onSubmit={async (value) => {
           const success = await handleUpdate(value);
           if (success) {

@@ -218,6 +218,7 @@ const TableList: React.FC<{}> = () => {
 
 
       <CreateRecommendProductForm
+        key={'CreateRecommendProductForm'}
         onSubmit={async (value) => {
           const success = await handleAdd(value);
           if (success) {
@@ -236,6 +237,7 @@ const TableList: React.FC<{}> = () => {
       />
 
       <UpdateRecommendProductForm
+        key={'UpdateRecommendProductForm'}
         onSubmit={async (value) => {
           const success = await handleUpdate(value);
           if (success) {

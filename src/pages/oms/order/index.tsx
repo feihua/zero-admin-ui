@@ -238,6 +238,7 @@ const TableList: React.FC<{}> = () => {
       )}
 
       <UpdateOrderForm
+        key={'UpdateOrderForm'}
         onSubmit={async (value) => {
           const success = await handleUpdate(value);
           if (success) {

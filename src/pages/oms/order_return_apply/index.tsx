@@ -216,6 +216,7 @@ const TableList: React.FC<{}> = () => {
 
 
       <UpdateReturnApplyForm
+        key={'UpdateReturnApplyForm'}
         onSubmit={async (value) => {
           const success = await handleUpdate(value);
           if (success) {

@@ -93,7 +93,7 @@ const UpdateRecommendSubjectForm: React.FC<UpdateFormProps> = (props) => {
     <Modal
       forceRender
       destroyOnClose
-      title="修改用户"
+      title="修改专题推荐"
       visible={updateModalVisible}
       {...modalFooter}
     >
