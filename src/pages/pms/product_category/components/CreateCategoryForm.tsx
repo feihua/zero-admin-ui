@@ -1,8 +1,6 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import {Form, Input, Modal, Select} from 'antd';
 import { CategoryListItem } from '../data.d';
-import {queryRole} from "@/pages/system/role/service";
-import {RoleListItem} from "@/pages/system/role/data";
 
 export interface CreateFormProps {
   onCancel: () => void;
@@ -20,7 +18,6 @@ const CreateCategoryForm: React.FC<CreateFormProps> = (props) => {
   const [form] = Form.useForm();
   const { Option } = Select;
 
-  const [roleConf, setRoleConf] = useState<RoleListItem[]>([]);
 
   const {
     onSubmit,
@@ -32,9 +29,6 @@ const CreateCategoryForm: React.FC<CreateFormProps> = (props) => {
     if (form && !createModalVisible) {
       form.resetFields();
 
-      queryRole({pageSize: 100,current: 1 }).then((res) => {
-        setRoleConf(res.data)
-      });
     }
   }, [props.createModalVisible]);
 
@@ -50,7 +44,7 @@ const CreateCategoryForm: React.FC<CreateFormProps> = (props) => {
     }
   };
 
-  const renderCreateUserContent = () => {
+  const renderContent = () => {
     return (
       <>
         <FormItem
@@ -84,18 +78,10 @@ const CreateCategoryForm: React.FC<CreateFormProps> = (props) => {
           <Input id="update-dept_id" placeholder={'请输入部门'}/>
         </FormItem>
         <FormItem
-          name="role_id"
-          label="角色"
-        >
-          <Select id="role_id" placeholder={'请选择角色'}>
-            {roleConf.map(r => <Select.Option value={r.id}>{r.name+r.remark}</Select.Option>)}
-          </Select>
-        </FormItem>
-        <FormItem
           name="status"
           label="状态"
         >
-          <Select id="status" placeholder={'请输选择状态'}>
+          <Select id="status" placeholder={'请选择状态'}>
             <Option value={0}>停用</Option>
             <Option value={1}>启用</Option>
           </Select>
@@ -121,7 +107,7 @@ const CreateCategoryForm: React.FC<CreateFormProps> = (props) => {
         form={form}
         onFinish={handleFinish}
       >
-        {renderCreateUserContent()}
+        {renderContent()}
       </Form>
     </Modal>
   );

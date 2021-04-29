@@ -8,7 +8,6 @@ import CreateHomeBrandForm  from './components/CreateHomeBrandForm';
 import UpdateHomeBrandForm  from './components/UpdateHomeBrandForm';
 import { HomeBrandListItem } from './data.d';
 import { queryHomeBrand, updateHomeBrand, addHomeBrand, removeHomeBrand } from './service';
-import CreateBrandForm from "@/pages/pms/product_brand/components/CreateBrandForm";
 
 
 const { confirm } = Modal;
@@ -213,7 +212,7 @@ const TableList: React.FC<{}> = () => {
       )}
 
 
-      <CreateBrandForm
+      <CreateHomeBrandForm
         onSubmit={async (value) => {
           const success = await handleAdd(value);
           if (success) {

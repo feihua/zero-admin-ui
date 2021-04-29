@@ -217,7 +217,7 @@ const TableList: React.FC<{}> = () => {
 
 
       <CreateRecommendSubjectForm
-        key={'UpdateRecommendSubjectForm'}
+        key={'CreateRecommendSubjectForm'}
         onSubmit={async (value) => {
           const success = await handleAdd(value);
           if (success) {

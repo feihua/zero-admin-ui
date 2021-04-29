@@ -172,8 +172,8 @@ const TableList: React.FC<{}> = () => {
             type="primary"
             size="small"
             onClick={() => {
-              handleUpdateModalVisible(true);
-              setStepFormValues(record);
+              // handleUpdateModalVisible(true);
+              // setStepFormValues(record);
             }}
           >
             编辑

@@ -1,8 +1,6 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import { Form, Input, Modal, Select } from 'antd';
 import { OrderListItem } from '../data.d';
-import {RoleListItem} from "@/pages/system/role/data";
-import {queryRole} from "@/pages/system/role/service";
 
 export interface UpdateFormProps {
   onCancel: () => void;
@@ -20,7 +18,6 @@ const formLayout = {
 const UpdateOrderForm: React.FC<UpdateFormProps> = (props) => {
   const [form] = Form.useForm();
   const { Option } = Select;
-  const [roleConf, setRoleConf] = useState<RoleListItem[]>([]);
 
   const {
     onSubmit,
@@ -33,9 +30,6 @@ const UpdateOrderForm: React.FC<UpdateFormProps> = (props) => {
     if (form && !updateModalVisible) {
       form.resetFields();
 
-      queryRole({pageSize: 100,current: 1 }).then((res) => {
-        setRoleConf(res.data)
-      });
     }
   }, [props.updateModalVisible]);
 
@@ -58,7 +52,7 @@ const UpdateOrderForm: React.FC<UpdateFormProps> = (props) => {
     }
   };
 
-  const renderOrderContent = () => {
+  const renderContent = () => {
     return (
       <>
         <FormItem
@@ -69,50 +63,71 @@ const UpdateOrderForm: React.FC<UpdateFormProps> = (props) => {
           <Input id="update-id" placeholder="请输入主键" />
         </FormItem>
         <FormItem
-          name="name"
-          label="用户名"
+          name="orderSn"
+          label="订单编号"
         >
-          <Input id="update-name" placeholder={'请输入用户名'}/>
+          <Input id="update-orderSn" bordered={false}/>
         </FormItem>
         <FormItem
-          name="nick_name"
-          label="昵称"
+          name="memberUserName"
+          label="用户帐号"
         >
-          <Input id="update-nick_name" placeholder={'请输入昵称'}/>
+          <Input id="update-memberUserName" bordered={false}/>
         </FormItem>
         <FormItem
-          name="mobile"
-          label="手机号"
+          name="totalAmount"
+          label="订单总金额"
         >
-          <Input id="update-mobile" placeholder={'请输入手机号'}/>
+          <Input id="update-totalAmount" bordered={false}/>
         </FormItem>
         <FormItem
-          name="email"
-          label="邮箱"
+          name="payAmount"
+          label="应付金额"
         >
-          <Input id="update-email" placeholder={'请输入邮箱'}/>
+          <Input id="update-payAmount" placeholder={'请输入应付金额'}/>
         </FormItem>
         <FormItem
-          name="dept_id"
-          label="部门"
+          name="freightAmount"
+          label="运费金额"
         >
-          <Input id="update-dept_id" placeholder={'请输入部门'}/>
+          <Input id="update-freightAmount" placeholder={'请输入运费金额'}/>
+        </FormItem>
+
+        <FormItem
+          name="promotionAmount"
+          label="促销优化金额"
+        >
+          <Input id="update-promotionAmount" placeholder={'请输入促销优化金额'}/>
         </FormItem>
         <FormItem
-          name="role_id"
-          label="角色"
+          name="integrationAmount"
+          label="积分抵扣金额"
         >
-          <Select id="role_id" placeholder={'请选择角色'}>
-            {roleConf.map(r => <Select.Option value={r.id}>{r.name+r.remark}</Select.Option>)}
-          </Select>
+          <Input id="update-integrationAmount" placeholder={'请输入积分抵扣金额'}/>
+        </FormItem>
+        <FormItem
+          name="integrationAmount"
+          label="积分抵扣金额"
+        >
+          <Input id="update-integrationAmount" placeholder={'请输入积分抵扣金额'}/>
+        </FormItem>
+        <FormItem
+          name="couponAmount"
+          label="优惠券抵扣金额"
+        >
+          <Input id="update-couponAmount" placeholder={'请输入优惠券抵扣金额'}/>
         </FormItem>
         <FormItem
           name="status"
           label="状态"
         >
-          <Select id="status" placeholder={'请输选择状态'}>
-            <Option value={0}>禁用</Option>
-            <Option value={1}>启用</Option>
+          <Select id="status" placeholder={'请选择状态'}>
+            <Option value={0}>待付款</Option>
+            <Option value={1}>待发货</Option>
+            <Option value={2}>已发货</Option>
+            <Option value={3}>已完成</Option>
+            <Option value={4}>已关闭</Option>
+            <Option value={5}>无效订单</Option>
           </Select>
         </FormItem>
       </>
@@ -135,7 +150,7 @@ const UpdateOrderForm: React.FC<UpdateFormProps> = (props) => {
         form={form}
         onFinish={handleFinish}
       >
-        {renderOrderContent()}
+        {renderContent()}
       </Form>
     </Modal>
   );

@@ -1,8 +1,6 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import {Form, Input, Modal, Select} from 'antd';
 import { HomeNewProductListItem } from '../data.d';
-import {queryRole} from "@/pages/system/role/service";
-import {RoleListItem} from "@/pages/system/role/data";
 
 export interface CreateFormProps {
   onCancel: () => void;
@@ -20,7 +18,6 @@ const CreateHomeNewProductForm: React.FC<CreateFormProps> = (props) => {
   const [form] = Form.useForm();
   const { Option } = Select;
 
-  const [roleConf, setRoleConf] = useState<RoleListItem[]>([]);
 
   const {
     onSubmit,
@@ -32,9 +29,6 @@ const CreateHomeNewProductForm: React.FC<CreateFormProps> = (props) => {
     if (form && !createModalVisible) {
       form.resetFields();
 
-      queryRole({pageSize: 100,current: 1 }).then((res) => {
-        setRoleConf(res.data)
-      });
     }
   }, [props.createModalVisible]);
 
@@ -50,56 +44,31 @@ const CreateHomeNewProductForm: React.FC<CreateFormProps> = (props) => {
     }
   };
 
-  const renderCreateUserContent = () => {
+  const renderContent = () => {
     return (
       <>
         <FormItem
-          name="name"
-          label="用户名"
+          name="productName"
+          label="商品名称"
         >
-          <Input id="update-name" placeholder={'请输入用户名'}/>
+          <Input id="update-productName" placeholder={'请输入商品名称'}/>
         </FormItem>
         <FormItem
-          name="nick_name"
-          label="昵称"
+          name="recommendStatus"
+          label="推荐状态"
         >
-          <Input id="update-nick_name" placeholder={'请输入昵称'}/>
-        </FormItem>
-        <FormItem
-          name="mobile"
-          label="手机号"
-        >
-          <Input id="update-mobile" placeholder={'请输入手机号'}/>
-        </FormItem>
-        <FormItem
-          name="email"
-          label="邮箱"
-        >
-          <Input id="update-email" placeholder={'请输入邮箱'}/>
-        </FormItem>
-        <FormItem
-          name="dept_id"
-          label="部门"
-        >
-          <Input id="update-dept_id" placeholder={'请输入部门'}/>
-        </FormItem>
-        <FormItem
-          name="role_id"
-          label="角色"
-        >
-          <Select id="role_id" placeholder={'请选择角色'}>
-            {roleConf.map(r => <Select.Option value={r.id}>{r.name+r.remark}</Select.Option>)}
+          <Select id="recommendStatus" placeholder={'请选择推荐状态'}>
+            <Option value={0}>PC首页轮播</Option>
+            <Option value={1}>app首页轮播</Option>
           </Select>
         </FormItem>
         <FormItem
-          name="status"
-          label="状态"
+          name="sort"
+          label="排序"
         >
-          <Select id="status" placeholder={'请输选择状态'}>
-            <Option value={0}>停用</Option>
-            <Option value={1}>启用</Option>
-          </Select>
+          <Input id="update-sort" placeholder={'请输入排序'}/>
         </FormItem>
+
 
       </>
     );
@@ -112,7 +81,7 @@ const CreateHomeNewProductForm: React.FC<CreateFormProps> = (props) => {
     <Modal
       forceRender
       destroyOnClose
-      title="新建用户"
+      title="新建新鲜好物"
       visible={createModalVisible}
       {...modalFooter}
     >
@@ -121,7 +90,7 @@ const CreateHomeNewProductForm: React.FC<CreateFormProps> = (props) => {
         form={form}
         onFinish={handleFinish}
       >
-        {renderCreateUserContent()}
+        {renderContent()}
       </Form>
     </Modal>
   );

@@ -119,7 +119,7 @@ const TableList: React.FC<{}> = () => {
       hideInSearch: true,
     },
     {
-      title: '用户名',
+      title: '会员名',
       dataIndex: 'username',
       render: (dom, entity) => {
         return <a onClick={() => setRow(entity)}>{dom}</a>;
@@ -191,8 +191,8 @@ const TableList: React.FC<{}> = () => {
             type="primary"
             size="small"
             onClick={() => {
-              handleUpdateModalVisible(true);
-              setStepFormValues(record);
+              // handleUpdateModalVisible(true);
+              // setStepFormValues(record);
             }}
           >
             编辑

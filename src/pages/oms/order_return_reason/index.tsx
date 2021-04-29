@@ -1,5 +1,5 @@
 import { PlusOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
-import { Button, Divider, message, Input, Drawer, Modal } from 'antd';
+import { Button, Divider, message, Drawer, Modal } from 'antd';
 import React, { useState, useRef } from 'react';
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
@@ -142,16 +142,6 @@ const TableList: React.FC<{}> = () => {
       dataIndex: 'createTime',
       valueType: 'dateTime',
       hideInSearch: true,
-      renderFormItem: (item, { defaultRender, ...rest }, form) => {
-        const status = form.getFieldValue('status');
-        if (`${status}` === '0') {
-          return false;
-        }
-        if (`${status}` === '3') {
-          return <Input {...rest} placeholder="请输入异常原因！" />;
-        }
-        return defaultRender(item);
-      },
     },
     {
       title: '操作',

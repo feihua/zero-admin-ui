@@ -1,8 +1,6 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import { Form, Input, Modal, Select } from 'antd';
 import { CategoryListItem } from '../data.d';
-import {RoleListItem} from "@/pages/system/role/data";
-import {queryRole} from "@/pages/system/role/service";
 
 export interface UpdateFormProps {
   onCancel: () => void;
@@ -20,7 +18,6 @@ const formLayout = {
 const UpdateCategoryForm: React.FC<UpdateFormProps> = (props) => {
   const [form] = Form.useForm();
   const { Option } = Select;
-  const [roleConf, setRoleConf] = useState<RoleListItem[]>([]);
 
   const {
     onSubmit,
@@ -33,9 +30,6 @@ const UpdateCategoryForm: React.FC<UpdateFormProps> = (props) => {
     if (form && !updateModalVisible) {
       form.resetFields();
 
-      queryRole({pageSize: 100,current: 1 }).then((res) => {
-        setRoleConf(res.data)
-      });
     }
   }, [props.updateModalVisible]);
 
@@ -99,18 +93,10 @@ const UpdateCategoryForm: React.FC<UpdateFormProps> = (props) => {
           <Input id="update-dept_id" placeholder={'请输入部门'}/>
         </FormItem>
         <FormItem
-          name="role_id"
-          label="角色"
-        >
-          <Select id="role_id" placeholder={'请选择角色'}>
-            {roleConf.map(r => <Select.Option value={r.id}>{r.name+r.remark}</Select.Option>)}
-          </Select>
-        </FormItem>
-        <FormItem
           name="status"
           label="状态"
         >
-          <Select id="status" placeholder={'请输选择状态'}>
+          <Select id="status" placeholder={'请选择状态'}>
             <Option value={0}>禁用</Option>
             <Option value={1}>启用</Option>
           </Select>

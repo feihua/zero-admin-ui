@@ -1,8 +1,6 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import {Form, Input, Modal, Select} from 'antd';
 import { LevelListItem } from '../data.d';
-import {queryRole} from "@/pages/system/role/service";
-import {RoleListItem} from "@/pages/system/role/data";
 
 export interface CreateFormProps {
   onCancel: () => void;
@@ -20,7 +18,6 @@ const CreateLevelForm: React.FC<CreateFormProps> = (props) => {
   const [form] = Form.useForm();
   const { Option } = Select;
 
-  const [roleConf, setRoleConf] = useState<RoleListItem[]>([]);
 
   const {
     onSubmit,
@@ -32,9 +29,6 @@ const CreateLevelForm: React.FC<CreateFormProps> = (props) => {
     if (form && !createModalVisible) {
       form.resetFields();
 
-      queryRole({pageSize: 100,current: 1 }).then((res) => {
-        setRoleConf(res.data)
-      });
     }
   }, [props.createModalVisible]);
 
@@ -50,54 +44,87 @@ const CreateLevelForm: React.FC<CreateFormProps> = (props) => {
     }
   };
 
-  const renderCreateUserContent = () => {
+  const renderContent = () => {
     return (
       <>
         <FormItem
           name="name"
-          label="用户名"
+          label="会员名"
         >
-          <Input id="update-name" placeholder={'请输入用户名'}/>
+          <Input id="update-name" placeholder={'请输入会员名'}/>
         </FormItem>
         <FormItem
-          name="nick_name"
-          label="昵称"
+          name="growthPoint"
+          label="成长值"
         >
-          <Input id="update-nick_name" placeholder={'请输入昵称'}/>
+          <Input id="update-growthPoint" placeholder={'请输入成长值'}/>
         </FormItem>
         <FormItem
-          name="mobile"
-          label="手机号"
+          name="defaultStatus"
+          label="是否为默认等级"
         >
-          <Input id="update-mobile" placeholder={'请输入手机号'}/>
+          <Input id="update-defaultStatus" placeholder={'请输入是否为默认等级'}/>
         </FormItem>
         <FormItem
-          name="email"
-          label="邮箱"
+          name="freeFreightPoint"
+          label="免运费标准"
         >
-          <Input id="update-email" placeholder={'请输入邮箱'}/>
+          <Input id="update-freeFreightPoint" placeholder={'请输入免运费标准'}/>
         </FormItem>
         <FormItem
-          name="dept_id"
-          label="部门"
+          name="commentGrowthPoint"
+          label="每次评价获取的成长值"
         >
-          <Input id="update-dept_id" placeholder={'请输入部门'}/>
+          <Input id="update-commentGrowthPoint" placeholder={'请输入每次评价获取的成长值'}/>
         </FormItem>
-        <FormItem
-          name="role_id"
-          label="角色"
-        >
-          <Select id="role_id" placeholder={'请选择角色'}>
-            {roleConf.map(r => <Select.Option value={r.id}>{r.name+r.remark}</Select.Option>)}
-          </Select>
-        </FormItem>
+
         <FormItem
           name="status"
-          label="状态"
+          label="免邮特权"
         >
-          <Select id="status" placeholder={'请输选择状态'}>
-            <Option value={0}>停用</Option>
-            <Option value={1}>启用</Option>
+          <Select id="status" placeholder={'请选择免邮特权'}>
+            <Option value={0}>否</Option>
+            <Option value={1}>是</Option>
+          </Select>
+        </FormItem>
+
+        <FormItem
+          name="priviledgeSignIn"
+          label="签到特权"
+        >
+          <Select id="priviledgeSignIn" placeholder={'请选择签到特权'}>
+            <Option value={0}>否</Option>
+            <Option value={1}>是</Option>
+          </Select>
+        </FormItem>
+
+        <FormItem
+          name="priviledgeComment"
+          label="评论获奖励特权"
+        >
+          <Select id="priviledgeComment" placeholder={'请选择评论获奖励特权'}>
+            <Option value={0}>否</Option>
+            <Option value={1}>是</Option>
+          </Select>
+        </FormItem>
+
+        <FormItem
+          name="priviledgePromotion"
+          label="专享活动特权"
+        >
+          <Select id="priviledgePromotion" placeholder={'请选择专享活动特权'}>
+            <Option value={0}>否</Option>
+            <Option value={1}>是</Option>
+          </Select>
+        </FormItem>
+
+        <FormItem
+          name="priviledgeMemberPrice"
+          label="会员价格特权"
+        >
+          <Select id="priviledgeMemberPrice" placeholder={'请选择会员价格特权'}>
+            <Option value={0}>否</Option>
+            <Option value={1}>是</Option>
           </Select>
         </FormItem>
 
@@ -112,7 +139,7 @@ const CreateLevelForm: React.FC<CreateFormProps> = (props) => {
     <Modal
       forceRender
       destroyOnClose
-      title="新建用户"
+      title="新建会员等级"
       visible={createModalVisible}
       {...modalFooter}
     >
@@ -121,7 +148,7 @@ const CreateLevelForm: React.FC<CreateFormProps> = (props) => {
         form={form}
         onFinish={handleFinish}
       >
-        {renderCreateUserContent()}
+        {renderContent()}
       </Form>
     </Modal>
   );

@@ -56,7 +56,7 @@ const CreateUserForm: React.FC<CreateFormProps> = (props) => {
     }
   };
 
-  const renderCreateUserContent = () => {
+  const renderContent = () => {
     return (
       <>
         <FormItem
@@ -136,7 +136,7 @@ const CreateUserForm: React.FC<CreateFormProps> = (props) => {
         form={form}
         onFinish={handleFinish}
       >
-        {renderCreateUserContent()}
+        {renderContent()}
       </Form>
     </Modal>
   );

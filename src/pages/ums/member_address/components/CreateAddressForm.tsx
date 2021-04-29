@@ -50,7 +50,7 @@ const CreateAddressForm: React.FC<CreateFormProps> = (props) => {
     }
   };
 
-  const renderCreateUserContent = () => {
+  const renderContent = () => {
     return (
       <>
         <FormItem
@@ -95,7 +95,7 @@ const CreateAddressForm: React.FC<CreateFormProps> = (props) => {
           name="status"
           label="状态"
         >
-          <Select id="status" placeholder={'请输选择状态'}>
+          <Select id="status" placeholder={'请选择状态'}>
             <Option value={0}>停用</Option>
             <Option value={1}>启用</Option>
           </Select>
@@ -112,7 +112,7 @@ const CreateAddressForm: React.FC<CreateFormProps> = (props) => {
     <Modal
       forceRender
       destroyOnClose
-      title="新建用户"
+      title="新建会员地址"
       visible={createModalVisible}
       {...modalFooter}
     >
@@ -121,7 +121,7 @@ const CreateAddressForm: React.FC<CreateFormProps> = (props) => {
         form={form}
         onFinish={handleFinish}
       >
-        {renderCreateUserContent()}
+        {renderContent()}
       </Form>
     </Modal>
   );

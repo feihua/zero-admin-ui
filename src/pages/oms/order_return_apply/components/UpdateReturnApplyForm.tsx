@@ -1,8 +1,6 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import { Form, Input, Modal, Select } from 'antd';
 import { ReturnApplyListItem } from '../data.d';
-import {RoleListItem} from "@/pages/system/role/data";
-import {queryRole} from "@/pages/system/role/service";
 
 export interface UpdateFormProps {
   onCancel: () => void;
@@ -20,7 +18,6 @@ const formLayout = {
 const UpdateReturnForm: React.FC<UpdateFormProps> = (props) => {
   const [form] = Form.useForm();
   const { Option } = Select;
-  const [roleConf, setRoleConf] = useState<RoleListItem[]>([]);
 
   const {
     onSubmit,
@@ -33,9 +30,6 @@ const UpdateReturnForm: React.FC<UpdateFormProps> = (props) => {
     if (form && !updateModalVisible) {
       form.resetFields();
 
-      queryRole({pageSize: 100,current: 1 }).then((res) => {
-        setRoleConf(res.data)
-      });
     }
   }, [props.updateModalVisible]);
 
@@ -58,7 +52,7 @@ const UpdateReturnForm: React.FC<UpdateFormProps> = (props) => {
     }
   };
 
-  const renderReturnContent = () => {
+  const renderContent = () => {
     return (
       <>
         <FormItem
@@ -69,50 +63,51 @@ const UpdateReturnForm: React.FC<UpdateFormProps> = (props) => {
           <Input id="update-id" placeholder="请输入主键" />
         </FormItem>
         <FormItem
-          name="name"
-          label="用户名"
+          name="orderSn"
+          label="订单编号"
         >
-          <Input id="update-name" placeholder={'请输入用户名'}/>
+          <Input id="update-orderSn" bordered={false}/>
         </FormItem>
         <FormItem
-          name="nick_name"
-          label="昵称"
+          name="returnAmount"
+          label="退款金额"
         >
-          <Input id="update-nick_name" placeholder={'请输入昵称'}/>
+          <Input id="update-returnAmount" bordered={false}/>
         </FormItem>
         <FormItem
-          name="mobile"
-          label="手机号"
+          name="returnName"
+          label="退货人姓名"
         >
-          <Input id="update-mobile" placeholder={'请输入手机号'}/>
+          <Input id="update-returnName" placeholder={'请输入退货人姓名'}/>
         </FormItem>
         <FormItem
-          name="email"
-          label="邮箱"
+          name="returnPhone"
+          label="退货人电话"
         >
-          <Input id="update-email" placeholder={'请输入邮箱'}/>
+          <Input id="update-returnPhone" placeholder={'请输入退货人电话'}/>
         </FormItem>
         <FormItem
-          name="dept_id"
-          label="部门"
+          name="productCount"
+          label="退货数量"
         >
-          <Input id="update-dept_id" placeholder={'请输入部门'}/>
+          <Input id="update-productCount" placeholder={'请输入退货数量'}/>
         </FormItem>
         <FormItem
-          name="role_id"
-          label="角色"
+          name="productPrice"
+          label="商品单价"
         >
-          <Select id="role_id" placeholder={'请选择角色'}>
-            {roleConf.map(r => <Select.Option value={r.id}>{r.name+r.remark}</Select.Option>)}
-          </Select>
+          <Input id="update-productPrice" placeholder={'请输入商品单价'}/>
         </FormItem>
+
         <FormItem
           name="status"
           label="状态"
         >
-          <Select id="status" placeholder={'请输选择状态'}>
-            <Option value={0}>禁用</Option>
-            <Option value={1}>启用</Option>
+          <Select id="status" placeholder={'请选择状态'}>
+            <Option value={0}>待处理</Option>
+            <Option value={1}>退货中</Option>
+            <Option value={2}>已完成</Option>
+            <Option value={3}>已拒绝</Option>
           </Select>
         </FormItem>
       </>
@@ -135,7 +130,7 @@ const UpdateReturnForm: React.FC<UpdateFormProps> = (props) => {
         form={form}
         onFinish={handleFinish}
       >
-        {renderReturnContent()}
+        {renderContent()}
       </Form>
     </Modal>
   );

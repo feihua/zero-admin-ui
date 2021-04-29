@@ -124,7 +124,7 @@ const TableList: React.FC<{}> = () => {
       hideInSearch: true,
     },
     {
-      title: '用户名',
+      title: '广告名',
       dataIndex: 'name',
       render: (dom, entity) => {
         return <a onClick={() => setRow(entity)}>{dom}</a>;

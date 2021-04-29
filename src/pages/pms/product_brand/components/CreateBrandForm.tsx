@@ -50,7 +50,7 @@ const CreateBrandForm: React.FC<CreateFormProps> = (props) => {
     }
   };
 
-  const renderCreateUserContent = () => {
+  const renderContent = () => {
     return (
       <>
         <FormItem
@@ -95,7 +95,7 @@ const CreateBrandForm: React.FC<CreateFormProps> = (props) => {
           name="status"
           label="状态"
         >
-          <Select id="status" placeholder={'请输选择状态'}>
+          <Select id="status" placeholder={'请选择状态'}>
             <Option value={0}>停用</Option>
             <Option value={1}>启用</Option>
           </Select>
@@ -121,7 +121,7 @@ const CreateBrandForm: React.FC<CreateFormProps> = (props) => {
         form={form}
         onFinish={handleFinish}
       >
-        {renderCreateUserContent()}
+        {renderContent()}
       </Form>
     </Modal>
   );

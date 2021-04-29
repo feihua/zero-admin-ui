@@ -1,8 +1,6 @@
-import React, {useEffect, useState} from 'react';
-import { Form, Input, Modal, Select } from 'antd';
+import React, {useEffect} from 'react';
+import { Form, Input, Modal } from 'antd';
 import { CouponListItem } from '../data.d';
-import {RoleListItem} from "@/pages/system/role/data";
-import {queryRole} from "@/pages/system/role/service";
 
 export interface UpdateFormProps {
   onCancel: () => void;
@@ -19,8 +17,6 @@ const formLayout = {
 
 const UpdateCouponForm: React.FC<UpdateFormProps> = (props) => {
   const [form] = Form.useForm();
-  const { Option } = Select;
-  const [roleConf, setRoleConf] = useState<RoleListItem[]>([]);
 
   const {
     onSubmit,
@@ -33,9 +29,6 @@ const UpdateCouponForm: React.FC<UpdateFormProps> = (props) => {
     if (form && !updateModalVisible) {
       form.resetFields();
 
-      queryRole({pageSize: 100,current: 1 }).then((res) => {
-        setRoleConf(res.data)
-      });
     }
   }, [props.updateModalVisible]);
 
@@ -70,50 +63,47 @@ const UpdateCouponForm: React.FC<UpdateFormProps> = (props) => {
         </FormItem>
         <FormItem
           name="name"
-          label="用户名"
+          label="优惠券名"
         >
-          <Input id="update-name" placeholder={'请输入用户名'}/>
+          <Input id="update-name" placeholder={'请输入优惠券名'}/>
         </FormItem>
         <FormItem
-          name="nick_name"
-          label="昵称"
+          name="count"
+          label="数量"
         >
-          <Input id="update-nick_name" placeholder={'请输入昵称'}/>
+          <Input id="update-count" placeholder={'请输入数量'}/>
         </FormItem>
         <FormItem
-          name="mobile"
-          label="手机号"
+          name="amount"
+          label="金额"
         >
-          <Input id="update-mobile" placeholder={'请输入手机号'}/>
+          <Input id="update-amount" placeholder={'请输入金额'}/>
         </FormItem>
         <FormItem
-          name="email"
-          label="邮箱"
+          name="perLimit"
+          label="每人限领张数"
         >
-          <Input id="update-email" placeholder={'请输入邮箱'}/>
+          <Input id="update-perLimit" placeholder={'请输入每人限领张数'}/>
         </FormItem>
         <FormItem
-          name="dept_id"
-          label="部门"
+          name="publishCount"
+          label="发行数量"
         >
-          <Input id="update-dept_id" placeholder={'请输入部门'}/>
+          <Input id="update-publishCount" placeholder={'请输入发行数量'}/>
         </FormItem>
+
         <FormItem
-          name="role_id"
-          label="角色"
+          name="useCount"
+          label="已使用数量"
         >
-          <Select id="role_id" placeholder={'请选择角色'}>
-            {roleConf.map(r => <Select.Option value={r.id}>{r.name+r.remark}</Select.Option>)}
-          </Select>
+          <Input id="update-useCount" placeholder={'请输入已使用数量'}/>
         </FormItem>
+
         <FormItem
-          name="status"
-          label="状态"
+          name="receiveCount"
+          label="领取数量"
         >
-          <Select id="status" placeholder={'请输选择状态'}>
-            <Option value={0}>禁用</Option>
-            <Option value={1}>启用</Option>
-          </Select>
+          <Input id="update-receiveCount" placeholder={'请输入领取数量'}/>
         </FormItem>
       </>
     );
@@ -126,7 +116,7 @@ const UpdateCouponForm: React.FC<UpdateFormProps> = (props) => {
     <Modal
       forceRender
       destroyOnClose
-      title="修改用户"
+      title="修改优惠券信息"
       visible={updateModalVisible}
       {...modalFooter}
     >

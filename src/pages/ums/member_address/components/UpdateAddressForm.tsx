@@ -110,7 +110,7 @@ const UpdateMemberAddressForm: React.FC<UpdateFormProps> = (props) => {
           name="status"
           label="状态"
         >
-          <Select id="status" placeholder={'请输选择状态'}>
+          <Select id="status" placeholder={'请选择状态'}>
             <Option value={0}>禁用</Option>
             <Option value={1}>启用</Option>
           </Select>

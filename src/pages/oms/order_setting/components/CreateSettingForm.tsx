@@ -1,8 +1,6 @@
-import React, {useEffect, useState} from 'react';
-import {Form, Input, Modal, Select} from 'antd';
+import React, {useEffect} from 'react';
+import {Form, Input, Modal} from 'antd';
 import { SettingListItem } from '../data.d';
-import {queryRole} from "@/pages/system/role/service";
-import {RoleListItem} from "@/pages/system/role/data";
 
 export interface CreateFormProps {
   onCancel: () => void;
@@ -12,15 +10,12 @@ export interface CreateFormProps {
 const FormItem = Form.Item;
 
 const formLayout = {
-  labelCol: { span: 7 },
-  wrapperCol: { span: 13 },
+  labelCol: { span: 10 },
+  wrapperCol: { span: 10 },
 };
 
 const CreateSettingForm: React.FC<CreateFormProps> = (props) => {
   const [form] = Form.useForm();
-  const { Option } = Select;
-
-  const [roleConf, setRoleConf] = useState<RoleListItem[]>([]);
 
   const {
     onSubmit,
@@ -31,10 +26,6 @@ const CreateSettingForm: React.FC<CreateFormProps> = (props) => {
   useEffect(() => {
     if (form && !createModalVisible) {
       form.resetFields();
-
-      queryRole({pageSize: 100,current: 1 }).then((res) => {
-        setRoleConf(res.data)
-      });
     }
   }, [props.createModalVisible]);
 
@@ -50,55 +41,38 @@ const CreateSettingForm: React.FC<CreateFormProps> = (props) => {
     }
   };
 
-  const renderCreateUserContent = () => {
+  const renderContent = () => {
     return (
       <>
         <FormItem
-          name="name"
-          label="用户名"
+          name="flashOrderOvertime"
+          label="秒杀订单超时关闭时间(分)"
         >
-          <Input id="update-name" placeholder={'请输入用户名'}/>
+          <Input id="update-flashOrderOvertime" placeholder={'请输入秒杀订单超时关闭时间(分)'}/>
         </FormItem>
         <FormItem
-          name="nick_name"
-          label="昵称"
+          name="normalOrderOvertime"
+          label="正常订单超时时间(分)"
         >
-          <Input id="update-nick_name" placeholder={'请输入昵称'}/>
+          <Input id="update-normalOrderOvertime" placeholder={'请输入正常订单超时时间(分)'}/>
         </FormItem>
         <FormItem
-          name="mobile"
-          label="手机号"
+          name="confirmOvertime"
+          label="发货后自动确认收货时间（天）"
         >
-          <Input id="update-mobile" placeholder={'请输入手机号'}/>
+          <Input id="update-confirmOvertime" placeholder={'请输入发货后自动确认收货时间（天）'}/>
         </FormItem>
         <FormItem
-          name="email"
-          label="邮箱"
+          name="finishOvertime"
+          label="自动完成交易时间（天）"
         >
-          <Input id="update-email" placeholder={'请输入邮箱'}/>
+          <Input id="update-finishOvertime" placeholder={'请输入自动完成交易时间（天）'}/>
         </FormItem>
         <FormItem
-          name="dept_id"
-          label="部门"
+          name="commentOvertime"
+          label="订单完成后自动好评时间（天）"
         >
-          <Input id="update-dept_id" placeholder={'请输入部门'}/>
-        </FormItem>
-        <FormItem
-          name="role_id"
-          label="角色"
-        >
-          <Select id="role_id" placeholder={'请选择角色'}>
-            {roleConf.map(r => <Select.Option value={r.id}>{r.name+r.remark}</Select.Option>)}
-          </Select>
-        </FormItem>
-        <FormItem
-          name="status"
-          label="状态"
-        >
-          <Select id="status" placeholder={'请输选择状态'}>
-            <Option value={0}>停用</Option>
-            <Option value={1}>启用</Option>
-          </Select>
+          <Input id="update-commentOvertime" placeholder={'请输入订单完成后自动好评时间（天）'}/>
         </FormItem>
 
       </>
@@ -112,7 +86,7 @@ const CreateSettingForm: React.FC<CreateFormProps> = (props) => {
     <Modal
       forceRender
       destroyOnClose
-      title="新建用户"
+      title="新建订单设置"
       visible={createModalVisible}
       {...modalFooter}
     >
@@ -121,7 +95,7 @@ const CreateSettingForm: React.FC<CreateFormProps> = (props) => {
         form={form}
         onFinish={handleFinish}
       >
-        {renderCreateUserContent()}
+        {renderContent()}
       </Form>
     </Modal>
   );
