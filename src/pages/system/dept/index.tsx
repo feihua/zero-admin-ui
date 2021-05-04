@@ -4,8 +4,8 @@ import React, { useState, useRef } from 'react';
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
 import ProDescriptions from '@ant-design/pro-descriptions';
-import CreateDeptForm  from './components/CreateDeptForm';
-import UpdateDeptForm  from './components/UpdateDeptForm';
+import CreateDeptForm from './components/CreateDeptForm';
+import UpdateDeptForm from './components/UpdateDeptForm';
 import { DeptListItem } from './data.d';
 import { queryDept, updateDept, addDept, removeDept, removeDeptOne } from './service';
 import { tree } from '@/utils/utils';
@@ -19,7 +19,7 @@ const { confirm } = Modal;
 const handleAdd = async (fields: DeptListItem) => {
   const hide = message.loading('正在添加');
   try {
-    fields.orderNum=Number(fields.orderNum)
+    fields.orderNum = Number(fields.orderNum);
     await addDept({ ...fields });
     hide();
     message.success('添加成功');
@@ -38,7 +38,7 @@ const handleAdd = async (fields: DeptListItem) => {
 const handleUpdate = async (fields: Partial<DeptListItem>) => {
   const hide = message.loading('正在更新');
   try {
-    fields.orderNum=Number(fields.orderNum)
+    fields.orderNum = Number(fields.orderNum);
     await updateDept(fields as DeptListItem);
     hide();
 
@@ -213,7 +213,7 @@ const TableList: React.FC<{}> = () => {
         }}
         toolBarRender={() => [
           <Button type="primary" onClick={() => handleModalVisible(true)}>
-            <PlusOutlined /> 新建
+            <PlusOutlined /> 新建机构
           </Button>,
         ]}
         request={(params, sorter, filter) => queryDept({ ...params, sorter, filter })}
@@ -281,9 +281,8 @@ const TableList: React.FC<{}> = () => {
           setStepFormValues(undefined);
         }}
         updateModalVisible={updateModalVisible}
-        currentData={stepFormValues||{}}
+        currentData={stepFormValues || {}}
       />
-
 
       <Drawer
         width={600}

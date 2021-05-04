@@ -14,7 +14,6 @@ import {
   removeHomeAdvertise,
 } from './service';
 
-
 const { confirm } = Modal;
 
 /**
@@ -197,7 +196,7 @@ const TableList: React.FC<{}> = () => {
         }}
         toolBarRender={() => [
           <Button type="primary" onClick={() => handleModalVisible(true)}>
-            <PlusOutlined /> 新建用户
+            <PlusOutlined /> 新建广告
           </Button>,
         ]}
         request={(params, sorter, filter) => queryHomeAdvertise({ ...params, sorter, filter })}
@@ -205,7 +204,7 @@ const TableList: React.FC<{}> = () => {
         rowSelection={{
           onChange: (_, selectedRows) => setSelectedRows(selectedRows),
         }}
-        pagination={{pageSize:10}}
+        pagination={{ pageSize: 10 }}
       />
       {selectedRowsState?.length > 0 && (
         <FooterToolbar
@@ -227,7 +226,6 @@ const TableList: React.FC<{}> = () => {
         </FooterToolbar>
       )}
 
-
       <CreateHomeAdvertiseForm
         key={'CreateHomeAdvertiseForm'}
         onSubmit={async (value) => {
@@ -246,7 +244,6 @@ const TableList: React.FC<{}> = () => {
         }}
         createModalVisible={createModalVisible}
       />
-
 
       <UpdateHomeAdvertiseForm
         key={'UpdateHomeAdvertiseForm'}

@@ -1,8 +1,6 @@
-import React, {useEffect, useState} from 'react';
-import { Form, Input, Modal, Select } from 'antd';
+import React, { useEffect } from 'react';
+import { Form, Input, Modal } from 'antd';
 import { ProductListItem } from '../data.d';
-import {RoleListItem} from "@/pages/system/role/data";
-import {queryRole} from "@/pages/system/role/service";
 
 export interface UpdateFormProps {
   onCancel: () => void;
@@ -19,23 +17,12 @@ const formLayout = {
 
 const UpdateProductForm: React.FC<UpdateFormProps> = (props) => {
   const [form] = Form.useForm();
-  const { Option } = Select;
-  const [roleConf, setRoleConf] = useState<RoleListItem[]>([]);
 
-  const {
-    onSubmit,
-    onCancel,
-    updateModalVisible,
-    currentData,
-  } = props;
+  const { onSubmit, onCancel, updateModalVisible, currentData } = props;
 
   useEffect(() => {
     if (form && !updateModalVisible) {
       form.resetFields();
-
-      queryRole({pageSize: 100,current: 1 }).then((res) => {
-        setRoleConf(res.data)
-      });
     }
   }, [props.updateModalVisible]);
 
@@ -61,64 +48,36 @@ const UpdateProductForm: React.FC<UpdateFormProps> = (props) => {
   const renderContent = () => {
     return (
       <>
-        <FormItem
-          name="id"
-          label="主键"
-          hidden
-        >
+        <FormItem name="id" label="主键" hidden>
           <Input id="update-id" placeholder="请输入主键" />
         </FormItem>
-        <FormItem
-          name="name"
-          label="用户名"
-        >
-          <Input id="update-name" placeholder={'请输入用户名'}/>
+        <FormItem name="name" label="商品名">
+          <Input id="update-name" placeholder={'请输入商品名'} />
         </FormItem>
-        <FormItem
-          name="nick_name"
-          label="昵称"
-        >
-          <Input id="update-nick_name" placeholder={'请输入昵称'}/>
+        <FormItem name="promotionPrice" label="促销价格">
+          <Input id="update-promotionPrice" placeholder={'请输入促销价格'} />
         </FormItem>
-        <FormItem
-          name="mobile"
-          label="手机号"
-        >
-          <Input id="update-mobile" placeholder={'请输入手机号'}/>
+        <FormItem name="giftGrowth" label="赠送的成长值">
+          <Input id="update-mobile" placeholder={'请输入赠送的成长值'} />
         </FormItem>
-        <FormItem
-          name="email"
-          label="邮箱"
-        >
-          <Input id="update-email" placeholder={'请输入邮箱'}/>
+        <FormItem name="giftPoint" label="赠送的积分">
+          <Input id="update-giftPoint" placeholder={'请输入赠送的积分'} />
         </FormItem>
-        <FormItem
-          name="dept_id"
-          label="部门"
-        >
-          <Input id="update-dept_id" placeholder={'请输入部门'}/>
+        <FormItem name="originalPrice" label="市场价">
+          <Input id="update-originalPrice" placeholder={'请输入市场价'} />
         </FormItem>
-        <FormItem
-          name="role_id"
-          label="角色"
-        >
-          <Select id="role_id" placeholder={'请选择角色'}>
-            {roleConf.map(r => <Select.Option value={r.id}>{r.name+r.remark}</Select.Option>)}
-          </Select>
+        <FormItem name="stock" label="库存">
+          <Input id="update-stock" placeholder={'请输入库存'} />
         </FormItem>
-        <FormItem
-          name="status"
-          label="状态"
-        >
-          <Select id="status" placeholder={'请选择状态'}>
-            <Option value={0}>禁用</Option>
-            <Option value={1}>启用</Option>
-          </Select>
+        <FormItem name="brandName" label="品牌名称">
+          <Input id="update-brandName" placeholder={'请输入品牌名称'} />
+        </FormItem>
+        <FormItem name="productCategoryName" label="商品分类名称">
+          <Input id="update-productCategoryName" placeholder={'请输入商品分类名称'} />
         </FormItem>
       </>
     );
   };
-
 
   const modalFooter = { okText: '保存', onOk: handleSubmit, onCancel };
 
@@ -126,15 +85,11 @@ const UpdateProductForm: React.FC<UpdateFormProps> = (props) => {
     <Modal
       forceRender
       destroyOnClose
-      title="修改用户"
+      title="修改商品"
       visible={updateModalVisible}
       {...modalFooter}
     >
-      <Form
-        {...formLayout}
-        form={form}
-        onFinish={handleFinish}
-      >
+      <Form {...formLayout} form={form} onFinish={handleFinish}>
         {renderContent()}
       </Form>
     </Modal>

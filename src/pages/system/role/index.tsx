@@ -5,8 +5,8 @@ import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
 import ProDescriptions from '@ant-design/pro-descriptions';
 import MenuForm from './components/MenuForm';
-import CreateRoleForm  from './components/CreateRoleForm';
-import UpdateRoleForm  from './components/UpdateRoleForm';
+import CreateRoleForm from './components/CreateRoleForm';
+import UpdateRoleForm from './components/UpdateRoleForm';
 import { RoleListItem } from './data.d';
 import {
   queryRole,
@@ -16,7 +16,6 @@ import {
   removeRoleOne,
   updateRoleMenu,
 } from './service';
-
 
 const { confirm } = Modal;
 
@@ -256,7 +255,7 @@ const TableList: React.FC<{}> = () => {
         }}
         toolBarRender={() => [
           <Button key={'new'} type="primary" onClick={() => handleModalVisible(true)}>
-            <PlusOutlined /> 新建
+            <PlusOutlined /> 新建角色
           </Button>,
         ]}
         request={(params, sorter, filter) => queryRole({ ...params, sorter, filter })}
@@ -264,7 +263,7 @@ const TableList: React.FC<{}> = () => {
         rowSelection={{
           onChange: (_, selectedRows) => setSelectedRows(selectedRows),
         }}
-        pagination={{pageSize:10}}
+        pagination={{ pageSize: 10 }}
       />
       {selectedRowsState?.length > 0 && (
         <FooterToolbar
@@ -325,7 +324,6 @@ const TableList: React.FC<{}> = () => {
         currentData={stepFormValues}
       />
 
-
       <MenuForm
         onSubmit={async (value) => {
           const success = await updateRoleMenu(value);
@@ -344,7 +342,6 @@ const TableList: React.FC<{}> = () => {
         updateMenuModalVisible={updateMenuModalVisible}
         currentData={stepMenuFormValues}
       />
-
 
       <Drawer
         width={600}

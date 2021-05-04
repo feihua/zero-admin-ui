@@ -4,11 +4,10 @@ import React, { useState, useRef } from 'react';
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
 import ProDescriptions from '@ant-design/pro-descriptions';
-import CreateJobForm  from './components/CreateJobForm';
-import UpdateJobForm  from './components/UpdateJobForm';
+import CreateJobForm from './components/CreateJobForm';
+import UpdateJobForm from './components/UpdateJobForm';
 import { JobListItem } from './data.d';
-import {queryJob, updateJob, addJob, removeJob, removeJobOne} from './service';
-
+import { queryJob, updateJob, addJob, removeJob, removeJobOne } from './service';
 
 const { confirm } = Modal;
 
@@ -19,8 +18,8 @@ const { confirm } = Modal;
 const handleAdd = async (fields: JobListItem) => {
   const hide = message.loading('正在添加');
   try {
-    fields.orderNum=Number(fields.orderNum)
-    await addJob({...fields});
+    fields.orderNum = Number(fields.orderNum);
+    await addJob({ ...fields });
     hide();
     message.success('添加成功');
     return true;
@@ -38,7 +37,7 @@ const handleAdd = async (fields: JobListItem) => {
 const handleUpdate = async (fields: Partial<JobListItem>) => {
   const hide = message.loading('正在更新');
   try {
-    fields.orderNum=Number(fields.orderNum)
+    fields.orderNum = Number(fields.orderNum);
     await updateJob(fields as JobListItem);
     hide();
 
@@ -236,15 +235,15 @@ const TableList: React.FC<{}> = () => {
         }}
         toolBarRender={() => [
           <Button type="primary" onClick={() => handleModalVisible(true)}>
-            <PlusOutlined /> 新建
+            <PlusOutlined /> 新建职位
           </Button>,
         ]}
-        request={(params, sorter, filter) => queryJob({...params, sorter, filter})}
+        request={(params, sorter, filter) => queryJob({ ...params, sorter, filter })}
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows) => setSelectedRows(selectedRows),
         }}
-        pagination={{pageSize:10}}
+        pagination={{ pageSize: 10 }}
       />
       {selectedRowsState?.length > 0 && (
         <FooterToolbar

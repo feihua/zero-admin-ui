@@ -4,11 +4,10 @@ import React, { useState, useRef } from 'react';
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
 import ProDescriptions from '@ant-design/pro-descriptions';
-import CreateDictForm  from './components/CreateDictForm';
-import UpdateDictForm  from './components/UpdateDictForm';
+import CreateDictForm from './components/CreateDictForm';
+import UpdateDictForm from './components/UpdateDictForm';
 import { DictListItem } from './data.d';
-import {queryDict, updateDict, addDict, removeDict, removeDictOne} from './service';
-
+import { queryDict, updateDict, addDict, removeDict, removeDictOne } from './service';
 
 const { confirm } = Modal;
 
@@ -19,7 +18,7 @@ const { confirm } = Modal;
 const handleAdd = async (fields: DictListItem) => {
   const hide = message.loading('正在添加');
   try {
-    await addDict({...fields});
+    await addDict({ ...fields });
     hide();
     message.success('添加成功');
     return true;
@@ -257,15 +256,15 @@ const TableList: React.FC<{}> = () => {
         }}
         toolBarRender={() => [
           <Button type="primary" onClick={() => handleModalVisible(true)}>
-            <PlusOutlined /> 新建
+            <PlusOutlined /> 新建字典
           </Button>,
         ]}
-        request={(params, sorter, filter) => queryDict({...params, sorter, filter})}
+        request={(params, sorter, filter) => queryDict({ ...params, sorter, filter })}
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows) => setSelectedRows(selectedRows),
         }}
-        pagination={{pageSize:10}}
+        pagination={{ pageSize: 10 }}
       />
       {selectedRowsState?.length > 0 && (
         <FooterToolbar

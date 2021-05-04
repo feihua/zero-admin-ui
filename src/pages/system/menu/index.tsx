@@ -4,11 +4,11 @@ import React, { useState, useRef } from 'react';
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
 import ProDescriptions from '@ant-design/pro-descriptions';
-import UpdateMenuForm  from './components/UpdateMenuForm';
+import UpdateMenuForm from './components/UpdateMenuForm';
 import { MenuListItem } from './data.d';
 import { queryMenu, updateRule, addMenu, removeMenu, removeMenuOne } from './service';
 import { tree } from '@/utils/utils';
-import CreateMenuForm from "@/pages/system/menu/components/CreateMenuForm";
+import CreateMenuForm from '@/pages/system/menu/components/CreateMenuForm';
 
 const { confirm } = Modal;
 
@@ -17,11 +17,10 @@ const { confirm } = Modal;
  * @param fields
  */
 const handleAdd = async (fields: MenuListItem) => {
-
   const hide = message.loading('正在添加');
   try {
-    fields.orderNum=Number(fields.orderNum)
-    fields.type=Number(fields.type)
+    fields.orderNum = Number(fields.orderNum);
+    fields.type = Number(fields.type);
     await addMenu({ ...fields });
     hide();
     message.success('添加成功');
@@ -40,8 +39,8 @@ const handleAdd = async (fields: MenuListItem) => {
 const handleUpdate = async (fields: Partial<MenuListItem>) => {
   const hide = message.loading('正在更新');
   try {
-    fields.orderNum=Number(fields.orderNum)
-    fields.type=Number(fields.type)
+    fields.orderNum = Number(fields.orderNum);
+    fields.type = Number(fields.type);
     await updateRule(fields as MenuListItem);
     hide();
 
@@ -166,7 +165,6 @@ const TableList: React.FC<{}> = () => {
       dataIndex: 'createTime',
       valueType: 'dateTime',
       hideInSearch: true,
-
     },
     {
       title: '更新人',
@@ -233,7 +231,7 @@ const TableList: React.FC<{}> = () => {
         }}
         toolBarRender={() => [
           <Button type="primary" onClick={() => handleModalVisible(true)}>
-            <PlusOutlined /> 新建
+            <PlusOutlined /> 新建菜单
           </Button>,
         ]}
         request={(params, sorter, filter) => queryMenu({ ...params, sorter, filter })}
@@ -301,7 +299,7 @@ const TableList: React.FC<{}> = () => {
           setStepFormValues(undefined);
         }}
         updateModalVisible={updateModalVisible}
-        currentData={stepFormValues||{}}
+        currentData={stepFormValues || {}}
       />
 
       <Drawer
