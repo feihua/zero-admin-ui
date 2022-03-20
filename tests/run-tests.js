@@ -1,8 +1,5 @@
-/* eslint-disable eslint-comments/disable-enable-pair */
 /* eslint-disable @typescript-eslint/no-var-requires */
-/* eslint-disable eslint-comments/no-unlimited-disable */
 const { spawn } = require('child_process');
-// eslint-disable-next-line import/no-extraneous-dependencies
 const { kill } = require('cross-port-killer');
 
 const env = Object.create(process.env);
@@ -13,7 +10,7 @@ env.PROGRESS = 'none';
 // flag to prevent multiple test
 let once = false;
 
-const startServer = spawn(/^win/.test(process.platform) ? 'npm.cmd' : 'npm', ['start'], {
+const startServer = spawn(/^win/.test(process.platform) ? 'npm.cmd' : 'npm', ['run', 'serve'], {
   env,
 });
 
@@ -30,21 +27,19 @@ console.log('Starting development server for e2e tests...');
 startServer.stdout.on('data', (data) => {
   console.log(data.toString());
   // hack code , wait umi
-  if (
-    (!once && data.toString().indexOf('Compiled successfully') >= 0) ||
-    data.toString().indexOf('Theme generated successfully') >= 0
-  ) {
+  if (!once && data.toString().indexOf('Serving your umi project!') >= 0) {
     // eslint-disable-next-line
     once = true;
     console.log('Development server is started, ready to run tests.');
     const testCmd = spawn(
       /^win/.test(process.platform) ? 'npm.cmd' : 'npm',
-      ['test', '--', '--maxWorkers=1', '--runInBand'],
+      ['run', 'playwright'],
       {
         stdio: 'inherit',
       },
     );
     testCmd.on('exit', (code) => {
+      console.log(code);
       startServer.kill();
       process.exit(code);
     });

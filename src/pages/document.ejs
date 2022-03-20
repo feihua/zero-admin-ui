@@ -2,10 +2,11 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <meta name="theme-color" content="#1890ff" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta
       name="keywords"
-      content="antd,umi,umijs,ant design,脚手架,布局, Ant Design,项目,Pro,admin,控制台,主页,开箱即用,中后台,解决方案,组件库"
+      content="antd,umi,umijs,ant design,Scaffolding, layout, Ant Design, project, Pro, admin, console, homepage, out-of-the-box, middle and back office, solution, component library"
     />
     <meta
       name="description"
@@ -15,7 +16,7 @@
     <meta
       name="description"
       content="
-      开箱即用的中台前端/设计解决方案。"
+      Out-of-the-box mid-stage front-end/design solution."
     />
     <meta
       name="viewport"
@@ -25,7 +26,17 @@
     <link rel="icon" href="<%= context.config.publicPath +'favicon.ico'%>" type="image/x-icon" />
   </head>
   <body>
-    <noscript>Out-of-the-box mid-stage front/design solution!</noscript>
+    <noscript>
+      <div class="noscript-container">
+        Hi there! Please
+        <div class="noscript-enableJS">
+          <a href="https://www.enablejavascript.io/en" target="_blank" rel="noopener noreferrer">
+            <b>enable Javascript</b>
+          </a>
+        </div>
+        in your browser to use Ant Design, Out-of-the-box mid-stage front/design solution!
+      </div>
+    </noscript>
     <div id="root">
       <style>
         html,
@@ -36,9 +47,21 @@
           padding: 0;
         }
         #root {
-          background-image: url('<%= context.config.publicPath +"home_bg.png"%>');
           background-repeat: no-repeat;
           background-size: 100% auto;
+        }
+        .noscript-container {
+          display: flex;
+          align-content: center;
+          justify-content: center;
+          margin-top: 90px;
+          font-size: 20px;
+          font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode',
+            Geneva, Verdana, sans-serif;
+        }
+        .noscript-enableJS {
+          padding-right: 3px;
+          padding-left: 3px;
         }
         .page-loading-warp {
           display: flex;

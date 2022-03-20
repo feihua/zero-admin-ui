@@ -1,13 +1,12 @@
-import React from 'react';
-import { BasicLayoutProps, MenuDataItem, Settings as LayoutSettings } from '@ant-design/pro-layout';
-import { notification } from 'antd';
-import { history, RequestConfig } from 'umi';
+import {Settings as LayoutSettings, MenuDataItem} from '@ant-design/pro-layout';
+import {SettingDrawer} from '@ant-design/pro-layout';
+import {PageLoading} from '@ant-design/pro-layout';
+import {RunTimeLayoutConfig} from 'umi';
+import {history} from 'umi';
 import RightContent from '@/components/RightContent';
-// import Footer from '@/components/Footer';
-import { RequestInterceptor, RequestOptionsInit, ResponseError } from 'umi-request';
-import { queryCurrent } from './services/user';
+import {currentUser as queryCurrentUser} from './services/ant-design-pro/api';
 import defaultSettings from '../config/defaultSettings';
-import { tree } from '@/utils/utils';
+import {tree} from "@/utils/utils";
 import {
   SmileOutlined,
   HeartOutlined,
@@ -18,37 +17,50 @@ import {
   DollarCircleOutlined,
   AlertOutlined,
 } from '@ant-design/icons';
+import {RequestConfig,} from "@@/plugin-request/request";
+import {RequestInterceptor, RequestOptionsInit} from 'umi-request';
+import {notification} from "antd";
 
 const IconMap = {
-  SmileOutlined: <SmileOutlined />,
-  HeartOutlined: <HeartOutlined />,
-  SettingOutlined: <SettingOutlined />,
-  DeleteOutlined: <DeleteOutlined />,
-  FrownOutlined: <FrownOutlined />,
-  GiftOutlined: <GiftOutlined />,
-  DollarCircleOutlined: <DollarCircleOutlined />,
-  AlertOutlined: <AlertOutlined />,
+  SmileOutlined: <SmileOutlined/>,
+  HeartOutlined: <HeartOutlined/>,
+  SettingOutlined: <SettingOutlined/>,
+  DeleteOutlined: <DeleteOutlined/>,
+  FrownOutlined: <FrownOutlined/>,
+  GiftOutlined: <GiftOutlined/>,
+  DollarCircleOutlined: <DollarCircleOutlined/>,
+  AlertOutlined: <AlertOutlined/>,
 };
 
+
+const loginPath = '/user/login';
+
+/** 获取用户信息比较慢的时候会展示一个 loading */
+export const initialStateConfig = {
+  loading: <PageLoading/>,
+};
+
+/**
+ * @see  https://umijs.org/zh-CN/plugins/plugin-initial-state
+ * */
 export async function getInitialState(): Promise<{
-  settings?: LayoutSettings;
+  settings?: Partial<LayoutSettings>;
   currentUser?: API.CurrentUser;
+  loading?: boolean;
   fetchUserInfo?: () => Promise<API.CurrentUser | undefined>;
 }> {
   const fetchUserInfo = async () => {
     try {
-      const currentUser = await queryCurrent();
-
-      localStorage.setItem('menuTree1', JSON.stringify(tree(currentUser.menuTree, 0, 'parentId')));
-      localStorage.setItem('menuTree', JSON.stringify(currentUser.menuTree));
-      return currentUser;
+      const msg = await queryCurrentUser();
+      localStorage.setItem('menuTree', JSON.stringify(msg.menuTree));
+      return msg;
     } catch (error) {
-      history.push('/user/login');
+      history.push(loginPath);
     }
     return undefined;
   };
   // 如果是登录页面，不执行
-  if (history.location.pathname !== '/user/login') {
+  if (history.location.pathname !== loginPath) {
     const currentUser = await fetchUserInfo();
     return {
       fetchUserInfo,
@@ -62,27 +74,46 @@ export async function getInitialState(): Promise<{
   };
 }
 
-export const layout = ({
-  initialState,
-}: {
-  initialState: { settings?: LayoutSettings; currentUser?: API.CurrentUser };
-}): BasicLayoutProps => {
+// ProLayout 支持的api https://procomponents.ant.design/components/layout
+export const layout: RunTimeLayoutConfig = ({initialState, setInitialState}) => {
   return {
-    rightContentRender: () => <RightContent />,
+    rightContentRender: () => <RightContent/>,
     disableContentMargin: false,
-    // footerRender: () => <Footer />,
-    // menuDataRender: () => tree(JSON.parse(localStorage.getItem('menuTree')),0,"parent_id"),
-    // menuDataRender: () => tree(localStorage.getItem('menuTree'),0,"parent_id"),
+    waterMarkProps: {
+      content: initialState?.currentUser?.name,
+    },
     menuDataRender: () => menuDataRender(),
     onPageChange: () => {
-      const { currentUser } = initialState;
-      const { location } = history;
+      const {location} = history;
       // 如果没有登录，重定向到 login
-      if (!currentUser && location.pathname !== '/user/login') {
-        history.push('/user/login');
+      if (!initialState?.currentUser && location.pathname !== loginPath) {
+        history.push(loginPath);
       }
     },
     menuHeaderRender: undefined,
+    // 自定义 403 页面
+    // unAccessible: <div>unAccessible</div>,
+    // 增加一个 loading 的状态
+    childrenRender: (children, props) => {
+      // if (initialState?.loading) return <PageLoading />;
+      return (
+        <>
+          {children}
+          {!props.location?.pathname?.includes('/login') && (
+            <SettingDrawer
+              enableDarkTheme
+              settings={initialState?.settings}
+              onSettingChange={(settings) => {
+                setInitialState((preInitialState) => ({
+                  ...preInitialState,
+                  settings,
+                }));
+              }}
+            />
+          )}
+        </>
+      );
+    },
     ...initialState?.settings,
   };
 };
@@ -90,13 +121,15 @@ export const layout = ({
 const menuDataRender: any = () => {
   let item = localStorage.getItem('menuTree') + '';
 
+  console.log(loopMenuItem(tree(JSON.parse(item), 0, 'parentId')));
+
   return loopMenuItem(tree(JSON.parse(item), 0, 'parentId'));
 
   // return tree(JSON.parse(item), 0, "parent_id");
 };
 
 const loopMenuItem = (menus: any[]): MenuDataItem[] =>
-  menus.map(({ icon, children, ...item }) => {
+  menus.map(({icon, children, ...item}) => {
     return {
       ...item,
       icon: icon && IconMap[icon as string],
@@ -126,11 +159,11 @@ const codeMessage = {
 /**
  * 异常处理程序
  */
-const errorHandler = (error: ResponseError) => {
-  const { response } = error;
+const errorHandler = (error: any) => {
+  const {response} = error;
   if (response && response.status) {
     const errorText = codeMessage[response.status] || response.statusText;
-    const { status, url } = response;
+    const {status, url} = response;
 
     notification.error({
       message: `请求错误 ${status}: ${url}`,
@@ -146,6 +179,7 @@ const errorHandler = (error: ResponseError) => {
   }
   throw error;
 };
+
 
 const addToken: RequestInterceptor = (url: string, options: RequestOptionsInit) => {
   options.headers = {

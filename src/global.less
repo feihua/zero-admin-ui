@@ -1,4 +1,4 @@
-@import '~antd/es/style/themes/default.less';
+@import '~antd/es/style/variable.less';
 
 html,
 body,
@@ -12,6 +12,9 @@ body,
 
 .ant-layout {
   min-height: 100vh;
+}
+.ant-pro-sider.ant-layout-sider.ant-pro-sider-fixed {
+  left: unset;
 }
 
 canvas {
@@ -46,7 +49,7 @@ ol {
   }
 }
 
-// 兼容IE11
+// Compatible with IE11
 @media screen and(-ms-high-contrast: active), (-ms-high-contrast: none) {
   body .ant-design-pro > .ant-layout {
     min-height: 100vh;
