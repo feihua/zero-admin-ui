@@ -1,5 +1,6 @@
 export interface UserListItem {
   id: number;
+  name: string;
   deptId: number;
 }
 

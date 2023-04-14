@@ -6,9 +6,9 @@ import {tree} from "@/utils/utils";
 
 export interface UpdateFormProps {
   onCancel: () => void;
-  onSubmit: (values: Partial<UserListItem>) => void;
+  onSubmit: (values: UserListItem) => Promise<void>;
   updateModalVisible: boolean;
-  currentData: Partial<UserListItem>;
+  values: Partial<UserListItem>;
 }
 const FormItem = Form.Item;
 
@@ -28,7 +28,7 @@ const UpdateUserForm: React.FC<UpdateFormProps> = (props) => {
     onSubmit,
     onCancel,
     updateModalVisible,
-    currentData,
+    values,
   } = props;
 
   useEffect(() => {
@@ -44,22 +44,22 @@ const UpdateUserForm: React.FC<UpdateFormProps> = (props) => {
   }, [props.updateModalVisible]);
 
   useEffect(() => {
-    if (currentData) {
+    if (values) {
       form.setFieldsValue({
-        ...currentData,
-        deptId:currentData.deptId+'',
+        ...values,
+        deptId:values.deptId+'',
       });
     }
-  }, [props.currentData]);
+  }, [props.values]);
 
   const handleSubmit = () => {
     if (!form) return;
     form.submit();
   };
 
-  const handleFinish = (values: { [key: string]: any }) => {
+  const handleFinish = (item: { [key: string]: any }) => {
     if (onSubmit) {
-      onSubmit(values);
+      onSubmit(item as UserListItem);
     }
   };
 
@@ -148,7 +148,7 @@ const UpdateUserForm: React.FC<UpdateFormProps> = (props) => {
       forceRender
       destroyOnClose
       title="修改用户"
-      visible={updateModalVisible}
+      open={updateModalVisible}
       {...modalFooter}
     >
       <Form

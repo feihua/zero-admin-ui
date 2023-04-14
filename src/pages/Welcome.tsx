@@ -1,15 +1,17 @@
 import {Col, Row, Statistic} from "antd";
 import Card from "antd/lib/card/Card";
 import ReactEcharts from "echarts-for-react";
-import { useState } from "react";
+// import { useState } from "react";
 import {ArrowUpOutlined,ArrowDownOutlined} from "@ant-design/icons";
 import {PageContainer} from "@ant-design/pro-layout";
 
 
 
 const Welcome: React.FC = () => {
-  const [sales, setSales] = useState<number[]>([5, 20, 36, 10, 10, 20]);
-  const [inventorys, setInventorys] = useState<number[]>([15, 30, 46, 20, 20, 40]);
+  // const [sales, setSales] = useState<number[]>([5, 20, 36, 10, 10, 20]);
+  // const [inventorys, setInventorys] = useState<number[]>([15, 30, 46, 20, 20, 40]);
+  const sales= [5, 20, 36, 10, 10, 20];
+  const inventorys = [15, 30, 46, 20, 20, 40];
 
   const getOption = () => {
     return {
