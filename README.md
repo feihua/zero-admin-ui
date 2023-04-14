@@ -16,40 +16,31 @@ npm run dev
 
 # 3.项目预览
 
-**预览地址**http://129.204.22.242/ <span  style="color: red;"> 账号：admin 密码: 123456</span>
+**预览地址**
 
 ## 3.1 用户
 
-![image-20210427204637691](https://gitee.com/liufeihua/images/raw/master/images/image-20210427204637691.png)
+![image-20210427204637691](./images/user.png)
 
-### 3.1.1 新增用户
-
-![image-20210427204434301](https://gitee.com/liufeihua/images/raw/master/images/image-20210427204434301.png)
 
 ## 3.2 角色
 
-![图片](https://uploader.shimo.im/f/5k8DqDJY7ZlCpg9t.png!thumbnail)
+![图片](./images/role.png)
 
-### 3.2.1 分配权限
-
-![image-20210427204555834](https://gitee.com/liufeihua/images/raw/master/images/image-20210427204555834.png)
 
 ## 3.3 菜单
 
-![图片](https://uploader.shimo.im/f/rdfMRADldvEb0Ny0.png!thumbnail)
+![图片](./images/menu.png)
 
 ## 3.4 机构
 
-![图片](https://uploader.shimo.im/f/jM5mUyjETIQ2tL42.png!thumbnail)
+![图片](./images/dept.png)
 
 ## 3.5 字典
 
-![image-20210427204811263](https://gitee.com/liufeihua/images/raw/master/images/image-20210427204811263.png)
+![image-20210427204811263](./images/dict.png)
 
 ## 3.6 日志
 
-![image-20210427204848192](https://gitee.com/liufeihua/images/raw/master/images/image-20210427204848192.png)
+![image-20210427204848192](./images/log.png)
 
-## 3.7 职位列表
-
-![image-20210427204732978](https://gitee.com/liufeihua/images/raw/master/images/image-20210427204732978.png)
