@@ -9,7 +9,7 @@
           {
             name: 'login',
             path: '/user/login',
-            component: './user/Login',
+            component: './user/login',
           },
         ],
       },
@@ -116,7 +116,7 @@
         name: '操作日志',
         icon: 'table',
         path: '/log/sysLog/list',
-        component: './log/sysLog',
+        component: './log/syslog',
       },
     ],
   },
