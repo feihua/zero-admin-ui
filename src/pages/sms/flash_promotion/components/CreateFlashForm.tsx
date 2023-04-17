@@ -1,6 +1,6 @@
 import React, {useEffect} from 'react';
 import {Form, Input, Modal, Select} from 'antd';
-import { FlashPromotionListItem } from '../data.d';
+import type { FlashPromotionListItem } from '../data.d';
 
 export interface CreateFormProps {
   onCancel: () => void;
@@ -48,9 +48,9 @@ const CreateFlashForm: React.FC<CreateFormProps> = (props) => {
       <>
         <FormItem
           name="title"
-          label="秒杀活动"
+          label="活动标题"
         >
-          <Input id="update-title" placeholder={'请输入秒杀活动'}/>
+          <Input id="update-title" placeholder={'请输入活动标题'}/>
         </FormItem>
         <FormItem
           name="startDate"

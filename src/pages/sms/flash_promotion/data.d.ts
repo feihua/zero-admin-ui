@@ -1,6 +1,6 @@
 export interface FlashPromotionListItem {
   id: number;
-
+  title: string;
 }
 
 export interface FlashPromotionListPagination {
@@ -15,7 +15,8 @@ export interface FlashPromotionListData {
 }
 
 export interface FlashPromotionListParams {
-
+  title?: string;
+  status?: number;
   pageSize?: number;
   currentPage?: number;
   filter?: { [key: string]: any[] };

@@ -4,9 +4,9 @@ import { FlashPromotionListItem } from '../data.d';
 
 export interface UpdateFormProps {
   onCancel: () => void;
-  onSubmit: (values: Partial<FlashPromotionListItem>) => void;
+  onSubmit: (values: FlashPromotionListItem) => void;
   updateModalVisible: boolean;
-  currentData: Partial<FlashPromotionListItem>;
+  values: Partial<FlashPromotionListItem>;
 }
 const FormItem = Form.Item;
 
@@ -23,7 +23,7 @@ const UpdateFlashPromotionForm: React.FC<UpdateFormProps> = (props) => {
     onSubmit,
     onCancel,
     updateModalVisible,
-    currentData,
+    values,
   } = props;
 
   useEffect(() => {
@@ -34,21 +34,21 @@ const UpdateFlashPromotionForm: React.FC<UpdateFormProps> = (props) => {
   }, [props.updateModalVisible]);
 
   useEffect(() => {
-    if (currentData) {
+    if (values) {
       form.setFieldsValue({
-        ...currentData,
+        ...values,
       });
     }
-  }, [props.currentData]);
+  }, [props.values]);
 
   const handleSubmit = () => {
     if (!form) return;
     form.submit();
   };
 
-  const handleFinish = (values: { [key: string]: any }) => {
+  const handleFinish = (item: { [key: string]: any }) => {
     if (onSubmit) {
-      onSubmit(values);
+      onSubmit(item as FlashPromotionListItem);
     }
   };
 
@@ -64,9 +64,9 @@ const UpdateFlashPromotionForm: React.FC<UpdateFormProps> = (props) => {
         </FormItem>
         <FormItem
           name="title"
-          label="秒杀活动"
+          label="活动标题"
         >
-          <Input id="update-title" placeholder={'请输入秒杀活动'}/>
+          <Input id="update-title" placeholder={'请输入活动标题'}/>
         </FormItem>
         <FormItem
           name="startDate"
