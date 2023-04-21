@@ -7,8 +7,8 @@ import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import ProDescriptions from '@ant-design/pro-descriptions';
 import type {ProDescriptionsItemProps} from '@ant-design/pro-descriptions';
 import CreateFlashForm from './components/CreateFlashForm';
-import UpdateFlashPromotionForm from './components/UpdateFlashPromotionForm';
-import type { FlashPromotionListItem } from './data.d';
+import UpdateFlashForm from './components/UpdateFlashForm';
+import type {FlashPromotionListItem} from './data.d';
 import {
   queryFlashPromotion,
   updateFlashPromotion,
@@ -127,9 +127,14 @@ const FlashPromotionList: React.FC = () => {
       title: '上下线状态',
       dataIndex: 'status',
       valueEnum: {
-        0: { text: '禁用', status: 'Error' },
-        1: { text: '正常', status: 'Success' },
+        0: {text: '禁用', status: 'Error'},
+        1: {text: '正常', status: 'Success'},
       },
+    },
+    {
+      title: '创建时间',
+      dataIndex: 'createTime',
+      hideInSearch: true,
     },
     {
       title: '操作',
@@ -218,15 +223,15 @@ const FlashPromotionList: React.FC = () => {
         }}
         onCancel={() => {
           handleModalVisible(false);
-          if (!showDetail){
+          if (!showDetail) {
             setCurrentRow(undefined);
           }
         }}
         createModalVisible={createModalVisible}
       />
 
-      <UpdateFlashPromotionForm
-        key={'UpdateFlashPromotionForm'}
+      <UpdateFlashForm
+        key={'UpdateFlashForm'}
         onSubmit={async (value) => {
           const success = await handleUpdate(value);
           if (success) {

@@ -1,23 +1,28 @@
-import React, {useEffect} from 'react';
-import {Form, Input, Modal, Select} from 'antd';
-import type { FlashPromotionListItem } from '../data.d';
+import React, {useEffect, useState} from 'react';
+import {Form, Input, Modal, Select, DatePicker} from 'antd';
+import type {FlashPromotionListItem} from '../data.d';
 
 export interface CreateFormProps {
   onCancel: () => void;
   onSubmit: (values: FlashPromotionListItem) => void;
   createModalVisible: boolean;
 }
+
 const FormItem = Form.Item;
 
+const {RangePicker} = DatePicker;
+
 const formLayout = {
-  labelCol: { span: 7 },
-  wrapperCol: { span: 13 },
+  labelCol: {span: 7},
+  wrapperCol: {span: 13},
 };
 
 const CreateFlashForm: React.FC<CreateFormProps> = (props) => {
   const [form] = Form.useForm();
-  const { Option } = Select;
+  const {Option} = Select;
 
+  const [startDate, setStartDate] = useState<string>("");
+  const [endDate, setEndDate] = useState<string>("");
 
   const {
     onSubmit,
@@ -39,9 +44,15 @@ const CreateFlashForm: React.FC<CreateFormProps> = (props) => {
 
   const handleFinish = (values: FlashPromotionListItem) => {
     if (onSubmit) {
-      onSubmit(values);
+      onSubmit({...values, startDate, endDate});
     }
   };
+
+  const onChange = (date: any, dateString: string[]) => {
+    setStartDate(dateString[0])
+    setEndDate(dateString[1])
+  }
+  //
 
   const renderContent = () => {
     return (
@@ -53,18 +64,12 @@ const CreateFlashForm: React.FC<CreateFormProps> = (props) => {
           <Input id="update-title" placeholder={'请输入活动标题'}/>
         </FormItem>
         <FormItem
-          name="startDate"
-          label="开始日期"
-        >
-          <Input id="update-startDate" placeholder={'请输入开始日期'}/>
+          name="rangeDate"
+          label="活动日期">
+          <RangePicker
+            onChange={onChange}
+          />
         </FormItem>
-        <FormItem
-          name="endDate"
-          label="结束日期"
-        >
-          <Input id="update-endDate" placeholder={'请输入结束日期'}/>
-        </FormItem>
-
         <FormItem
           name="status"
           label="上下线状态"
@@ -80,14 +85,14 @@ const CreateFlashForm: React.FC<CreateFormProps> = (props) => {
   };
 
 
-  const modalFooter = { okText: '保存', onOk: handleSubmit, onCancel };
+  const modalFooter = {okText: '保存', onOk: handleSubmit, onCancel};
 
   return (
     <Modal
       forceRender
       destroyOnClose
       title="新建秒杀信息"
-      visible={createModalVisible}
+      open={createModalVisible}
       {...modalFooter}
     >
       <Form

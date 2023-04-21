@@ -1,6 +1,7 @@
-import React, {useEffect} from 'react';
-import { Form, Input, Modal, Select } from 'antd';
-import { FlashPromotionListItem } from '../data.d';
+import React, {useEffect, useState} from 'react';
+import {DatePicker, DatePickerProps, Form, Input, Modal, Select} from 'antd';
+import {FlashPromotionListItem} from '../data.d';
+import moment from "moment";
 
 export interface UpdateFormProps {
   onCancel: () => void;
@@ -8,16 +9,20 @@ export interface UpdateFormProps {
   updateModalVisible: boolean;
   values: Partial<FlashPromotionListItem>;
 }
+
 const FormItem = Form.Item;
 
 const formLayout = {
-  labelCol: { span: 7 },
-  wrapperCol: { span: 13 },
+  labelCol: {span: 7},
+  wrapperCol: {span: 13},
 };
 
-const UpdateFlashPromotionForm: React.FC<UpdateFormProps> = (props) => {
+const UpdateFlashForm: React.FC<UpdateFormProps> = (props) => {
   const [form] = Form.useForm();
-  const { Option } = Select;
+  const {Option} = Select;
+
+  const [startDate, setStartDate] = useState<string>("");
+  const [endDate, setEndDate] = useState<string>("");
 
   const {
     onSubmit,
@@ -38,6 +43,8 @@ const UpdateFlashPromotionForm: React.FC<UpdateFormProps> = (props) => {
       form.setFieldsValue({
         ...values,
       });
+      setStartDate(values.startDate || "")
+      setEndDate(values.endDate || "")
     }
   }, [props.values]);
 
@@ -48,8 +55,16 @@ const UpdateFlashPromotionForm: React.FC<UpdateFormProps> = (props) => {
 
   const handleFinish = (item: { [key: string]: any }) => {
     if (onSubmit) {
-      onSubmit(item as FlashPromotionListItem);
+      onSubmit({...item as FlashPromotionListItem, startDate, endDate});
     }
+  };
+
+
+  const onChangeStartDate: DatePickerProps['onChange'] = (date, dateString) => {
+    setStartDate(dateString)
+  };
+  const onChangeEndDate: DatePickerProps['onChange'] = (date, dateString) => {
+    setEndDate(dateString)
   };
 
   const renderContent = () => {
@@ -60,7 +75,7 @@ const UpdateFlashPromotionForm: React.FC<UpdateFormProps> = (props) => {
           label="主键"
           hidden
         >
-          <Input id="update-id" placeholder="请输入主键" />
+          <Input id="update-id" placeholder="请输入主键"/>
         </FormItem>
         <FormItem
           name="title"
@@ -69,16 +84,16 @@ const UpdateFlashPromotionForm: React.FC<UpdateFormProps> = (props) => {
           <Input id="update-title" placeholder={'请输入活动标题'}/>
         </FormItem>
         <FormItem
-          name="startDate"
+          // name="startDate"
           label="开始日期"
         >
-          <Input id="update-startDate" placeholder={'请输入开始日期'}/>
+          <DatePicker value={moment(startDate, 'YYYY-MM-DD')} onChange={onChangeStartDate} placeholder={'请输入开始日期'}/>
         </FormItem>
         <FormItem
-          name="endDate"
+          // name="endDate"
           label="结束日期"
         >
-          <Input id="update-endDate" placeholder={'请输入结束日期'}/>
+          <DatePicker value={moment(endDate, 'YYYY-MM-DD')} onChange={onChangeEndDate} placeholder={'请输入结束日期'}/>
         </FormItem>
 
         <FormItem
@@ -95,14 +110,14 @@ const UpdateFlashPromotionForm: React.FC<UpdateFormProps> = (props) => {
   };
 
 
-  const modalFooter = { okText: '保存', onOk: handleSubmit, onCancel };
+  const modalFooter = {okText: '保存', onOk: handleSubmit, onCancel};
 
   return (
     <Modal
       forceRender
       destroyOnClose
       title="修改秒杀信息"
-      visible={updateModalVisible}
+      open={updateModalVisible}
       {...modalFooter}
     >
       <Form
@@ -116,4 +131,4 @@ const UpdateFlashPromotionForm: React.FC<UpdateFormProps> = (props) => {
   );
 };
 
-export default UpdateFlashPromotionForm;
+export default UpdateFlashForm;
