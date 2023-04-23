@@ -90,6 +90,9 @@ export const layout: RunTimeLayoutConfig = ({initialState, setInitialState}) => 
         history.push(loginPath);
       }
     },
+    menu: {
+      locale: false
+    },
     menuHeaderRender: undefined,
     // 自定义 403 页面
     // unAccessible: <div>unAccessible</div>,
