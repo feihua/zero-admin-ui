@@ -1,5 +1,11 @@
 export interface CouponListItem {
   id: number;
+  name: string;
+  enableTime: string;
+  startTime: string;
+  endTime: string;
+  amount: number;
+  minPoint: number;
 
 }
 
@@ -15,7 +21,9 @@ export interface CouponListData {
 }
 
 export interface CouponListParams {
-
+  type?: number;
+  platform?: number;
+  useType?: number;
   pageSize?: number;
   currentPage?: number;
   filter?: { [key: string]: any[] };

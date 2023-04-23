@@ -1,16 +1,17 @@
-import { PlusOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
-import { Button, Divider, message, Drawer, Modal } from 'antd';
-import React, { useState, useRef } from 'react';
-import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
-import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
-import ProDescriptions from '@ant-design/pro-descriptions';
+import {PlusOutlined, ExclamationCircleOutlined, DeleteOutlined, EditOutlined} from '@ant-design/icons';
+import {Button, Divider, message, Drawer, Modal} from 'antd';
+import React, {useState, useRef} from 'react';
+import {PageContainer, FooterToolbar} from '@ant-design/pro-layout';
+import ProTable from '@ant-design/pro-table';
+import type {ProColumns, ActionType} from '@ant-design/pro-table';
+import ProDescriptions, {ProDescriptionsItemProps} from '@ant-design/pro-descriptions';
 import CreateCouponForm from './components/CreateCouponForm';
 import UpdateCouponForm from './components/UpdateCouponForm';
-import { CouponListItem } from './data.d';
-import { queryCoupon, updateCoupon, addCoupon, removeCoupon } from './service';
+import type {CouponListItem} from './data.d';
+import {queryCoupon, updateCoupon, addCoupon, removeCoupon} from './service';
 
 
-const { confirm } = Modal;
+const {confirm} = Modal;
 
 /**
  * 添加节点
@@ -34,10 +35,10 @@ const handleAdd = async (fields: CouponListItem) => {
  * 更新节点
  * @param fields
  */
-const handleUpdate = async (fields: Partial<CouponListItem>) => {
+const handleUpdate = async (fields: CouponListItem) => {
   const hide = message.loading('正在更新');
   try {
-    await updateCoupon(fields as CouponListItem);
+    await updateCoupon(fields);
     hide();
 
     message.success('更新成功');
@@ -45,26 +46,6 @@ const handleUpdate = async (fields: Partial<CouponListItem>) => {
   } catch (error) {
     hide();
     message.error('更新失败请重试！');
-    return false;
-  }
-};
-
-/**
- *  删除节点(单个)
- * @param id
- */
-const handleRemoveOne = async (id: number) => {
-  const hide = message.loading('正在删除');
-  try {
-    await removeCoupon({
-      ids: [id],
-    });
-    hide();
-    message.success('删除成功，即将刷新');
-    return true;
-  } catch (error) {
-    hide();
-    message.error('删除失败，请重试');
     return false;
   }
 };
@@ -90,25 +71,26 @@ const handleRemove = async (selectedRows: CouponListItem[]) => {
   }
 };
 
-const TableList: React.FC<{}> = () => {
+const CouponTableList: React.FC = () => {
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
-  const [stepFormValues, setStepFormValues] = useState({});
+  const [showDetail, setShowDetail] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
-  const [row, setRow] = useState<CouponListItem>();
+  const [currentRow, setCurrentRow] = useState<CouponListItem>();
   const [selectedRowsState, setSelectedRows] = useState<CouponListItem[]>([]);
 
-  const showDeleteConfirm = (id: number) => {
+  const showDeleteConfirm = (item: CouponListItem) => {
     confirm({
       title: '是否删除记录?',
-      icon: <ExclamationCircleOutlined />,
+      icon: <ExclamationCircleOutlined/>,
       content: '删除的记录不能恢复,请确认!',
       onOk() {
-        handleRemoveOne(id).then((r) => {
+        handleRemove([item]).then((r) => {
           actionRef.current?.reloadAndRest?.();
         });
       },
-      onCancel() {},
+      onCancel() {
+      },
     });
   };
 
@@ -122,7 +104,38 @@ const TableList: React.FC<{}> = () => {
       title: '优惠券名',
       dataIndex: 'name',
       render: (dom, entity) => {
-        return <a onClick={() => setRow(entity)}>{dom}</a>;
+        return <a onClick={() => {
+          setCurrentRow(entity);
+          setShowDetail(true);
+        }}>{dom}</a>;
+      },
+    },
+    {
+      title: '优惠券类型',
+      dataIndex: 'type',
+      valueEnum: {
+        0: {text: '全场赠券', status: 'Error'},
+        1: {text: '会员赠券', status: 'Success'},
+        2: {text: '购物赠券', status: 'Success'},
+        3: {text: '注册赠券', status: 'Success'},
+      },
+    },
+    {
+      title: '使用平台',
+      dataIndex: 'platform',
+      valueEnum: {
+        0: {text: '全部', status: 'Error'},
+        1: {text: '移动', status: 'Success'},
+        2: {text: 'PC', status: 'Success'},
+      },
+    },
+    {
+      title: '使用类型',
+      dataIndex: 'useType',
+      valueEnum: {
+        0: {text: '全场通用', status: 'Error'},
+        1: {text: '指定分类', status: 'Success'},
+        2: {text: '指定商品', status: 'Success'},
       },
     },
     {
@@ -141,19 +154,45 @@ const TableList: React.FC<{}> = () => {
       hideInSearch: true,
     },
     {
+      title: '开始时间',
+      valueType: "dateTime",
+      dataIndex: 'startTime',
+    },
+    {
+      title: '结束时间',
+      valueType: "dateTime",
+      dataIndex: 'endTime',
+    },
+
+    {
+      title: '备注',
+      dataIndex: 'note',
+      hideInSearch: true,
+      hideInTable: true
+    },
+    {
       title: '发行数量',
       dataIndex: 'publishCount',
       hideInSearch: true,
+      hideInTable: true
     },
     {
       title: '已使用数量',
       dataIndex: 'useCount',
       hideInSearch: true,
+      hideInTable: true
     },
     {
       title: '领取数量',
       dataIndex: 'receiveCount',
       hideInSearch: true,
+      hideInTable: true
+    },
+    {
+      title: '会员类型',
+      dataIndex: 'memberLevel',
+      hideInSearch: true,
+      hideInTable: true
     },
     {
       title: '操作',
@@ -163,10 +202,10 @@ const TableList: React.FC<{}> = () => {
         <>
           <Button
             type="primary"
-            size="small"
+            icon={<EditOutlined/>}
             onClick={() => {
               handleUpdateModalVisible(true);
-              setStepFormValues(record);
+              setCurrentRow(record);
             }}
           >
             编辑
@@ -175,9 +214,9 @@ const TableList: React.FC<{}> = () => {
           <Button
             type="primary"
             danger
-            size="small"
+            icon={<DeleteOutlined/>}
             onClick={() => {
-              showDeleteConfirm(record.id);
+              showDeleteConfirm(record);
             }}
           >
             删除
@@ -198,10 +237,10 @@ const TableList: React.FC<{}> = () => {
         }}
         toolBarRender={() => [
           <Button type="primary" onClick={() => handleModalVisible(true)}>
-            <PlusOutlined /> 新建优惠券
+            <PlusOutlined/> 新建优惠券
           </Button>,
         ]}
-        request={(params, sorter, filter) => queryCoupon({ ...params, sorter, filter })}
+        request={queryCoupon}
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows) => setSelectedRows(selectedRows),
@@ -235,7 +274,7 @@ const TableList: React.FC<{}> = () => {
           const success = await handleAdd(value);
           if (success) {
             handleModalVisible(false);
-            setStepFormValues({});
+            setCurrentRow(undefined);
             if (actionRef.current) {
               actionRef.current.reload();
             }
@@ -243,7 +282,9 @@ const TableList: React.FC<{}> = () => {
         }}
         onCancel={() => {
           handleModalVisible(false);
-          setStepFormValues({});
+          if (!showDetail) {
+            setCurrentRow(undefined);
+          }
         }}
         createModalVisible={createModalVisible}
       />
@@ -254,7 +295,7 @@ const TableList: React.FC<{}> = () => {
           const success = await handleUpdate(value);
           if (success) {
             handleUpdateModalVisible(false);
-            setStepFormValues({});
+            setCurrentRow(undefined);
             if (actionRef.current) {
               actionRef.current.reload();
             }
@@ -262,31 +303,34 @@ const TableList: React.FC<{}> = () => {
         }}
         onCancel={() => {
           handleUpdateModalVisible(false);
-          setStepFormValues({});
+          if (!showDetail) {
+            setCurrentRow(undefined);
+          }
         }}
         updateModalVisible={updateModalVisible}
-        currentData={stepFormValues}
+        values={currentRow || {}}
       />
 
       <Drawer
         width={600}
-        visible={!!row}
+        visible={showDetail}
         onClose={() => {
-          setRow(undefined);
+          setCurrentRow(undefined);
+          setShowDetail(false)
         }}
         closable={false}
       >
-        {row?.id && (
+        {currentRow?.id && (
           <ProDescriptions<CouponListItem>
             column={2}
-            title={row?.id}
+            title={currentRow?.name}
             request={async () => ({
-              data: row || {},
+              data: currentRow || {},
             })}
             params={{
-              id: row?.id,
+              id: currentRow?.id,
             }}
-            columns={columns}
+            columns={columns as ProDescriptionsItemProps<CouponListItem>[]}
           />
         )}
       </Drawer>
@@ -294,4 +338,4 @@ const TableList: React.FC<{}> = () => {
   );
 };
 
-export default TableList;
+export default CouponTableList;

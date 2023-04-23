@@ -60,6 +60,7 @@ const CreateFlashForm: React.FC<CreateFormProps> = (props) => {
         <FormItem
           name="title"
           label="活动标题"
+          rules={[{required: true, message: '请输入活动标题!'}]}
         >
           <Input id="update-title" placeholder={'请输入活动标题'}/>
         </FormItem>
@@ -73,6 +74,7 @@ const CreateFlashForm: React.FC<CreateFormProps> = (props) => {
         <FormItem
           name="status"
           label="上下线状态"
+          initialValue={1}
         >
           <Select id="status" placeholder={'请选择状态'}>
             <Option value={0}>停用</Option>
