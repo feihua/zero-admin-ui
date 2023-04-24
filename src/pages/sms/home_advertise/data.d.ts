@@ -1,6 +1,6 @@
 export interface HomeAdvertiseListItem {
   id: number;
-
+  name: string;
 }
 
 export interface HomeAdvertiseListPagination {
@@ -15,10 +15,8 @@ export interface HomeAdvertiseListData {
 }
 
 export interface HomeAdvertiseListParams {
-
   pageSize?: number;
   currentPage?: number;
   filter?: { [key: string]: any[] };
   sorter?: { [key: string]: any };
-
 }

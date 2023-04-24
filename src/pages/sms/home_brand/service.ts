@@ -1,7 +1,11 @@
-import { request } from 'umi';
-import { HomeBrandListParams, HomeBrandListItem } from './data.d';
+import {request} from 'umi';
+import type {HomeBrandListParams, HomeBrandListItem} from './data.d';
+import {BrandListParams} from '@/pages/pms/product_brand/data';
 
-export async function queryHomeBrand(params?: HomeBrandListParams) {
+export async function queryHomeBrand(params: HomeBrandListParams) {
+  if (params.recommendStatus != null) {
+    params.recommendStatus = Number(params.recommendStatus);
+  }
   return request('/api/sms/homebrand/list', {
     method: 'POST',
     data: {
@@ -19,7 +23,7 @@ export async function removeHomeBrand(params: { ids: number[] }) {
   });
 }
 
-export async function addHomeBrand(params: HomeBrandListItem) {
+export async function addHomeBrand(params: { brandIds: number[] }) {
   return request('/api/sms/homebrand/add', {
     method: 'POST',
     data: {
@@ -30,6 +34,15 @@ export async function addHomeBrand(params: HomeBrandListItem) {
 
 export async function updateHomeBrand(params: HomeBrandListItem) {
   return request('/api/sms/homebrand/update', {
+    method: 'POST',
+    data: {
+      ...params,
+    },
+  });
+}
+
+export async function queryBrand(params?: BrandListParams) {
+  return request('/api/product/brand/list', {
     method: 'POST',
     data: {
       ...params,

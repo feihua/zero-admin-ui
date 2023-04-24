@@ -1,12 +1,12 @@
 import React, {useEffect} from 'react';
-import { Form, Input, Modal, Select } from 'antd';
-import { RecommendSubjectListItem } from '../data.d';
+import {Form, Input, Modal, Select} from 'antd';
+import type {RecommendSubjectListItem} from '../data.d';
 
 export interface UpdateFormProps {
   onCancel: () => void;
-  onSubmit: (values: Partial<RecommendSubjectListItem>) => void;
+  onSubmit: (values: RecommendSubjectListItem) => void;
   updateModalVisible: boolean;
-  currentData: Partial<RecommendSubjectListItem>;
+  values: Partial<RecommendSubjectListItem>;
 }
 const FormItem = Form.Item;
 
@@ -19,12 +19,7 @@ const UpdateRecommendSubjectForm: React.FC<UpdateFormProps> = (props) => {
   const [form] = Form.useForm();
   const { Option } = Select;
 
-  const {
-    onSubmit,
-    onCancel,
-    updateModalVisible,
-    currentData,
-  } = props;
+  const {onSubmit, onCancel, updateModalVisible, values} = props;
 
   useEffect(() => {
     if (form && !updateModalVisible) {
@@ -33,59 +28,45 @@ const UpdateRecommendSubjectForm: React.FC<UpdateFormProps> = (props) => {
   }, [props.updateModalVisible]);
 
   useEffect(() => {
-    if (currentData) {
+    if (values) {
       form.setFieldsValue({
-        ...currentData,
+        ...values,
       });
     }
-  }, [props.currentData]);
+  }, [props.values]);
 
   const handleSubmit = () => {
     if (!form) return;
     form.submit();
   };
 
-  const handleFinish = (values: { [key: string]: any }) => {
+  const handleFinish = (item: { [key: string]: any }) => {
     if (onSubmit) {
-      onSubmit(values);
+      onSubmit(item as RecommendSubjectListItem);
     }
   };
 
   const renderContent = () => {
     return (
       <>
-        <FormItem
-          name="id"
-          label="主键"
-          hidden
-        >
-          <Input id="update-id" placeholder="请输入主键" />
+        <FormItem name="id" label="主键" hidden>
+          <Input id="update-id" placeholder="请输入主键"/>
         </FormItem>
-        <FormItem
-          name="productName"
-          label="商品名称"
-        >
+        <FormItem name="productName" label="商品名称">
           <Input id="update-productName" placeholder={'请输入商品名称'}/>
         </FormItem>
-        <FormItem
-          name="recommendStatus"
-          label="推荐状态"
-        >
+        <FormItem name="recommendStatus" label="推荐状态">
           <Select id="recommendStatus" placeholder={'请选择推荐状态'}>
             <Option value={0}>PC首页轮播</Option>
             <Option value={1}>app首页轮播</Option>
           </Select>
         </FormItem>
-        <FormItem
-          name="sort"
-          label="排序"
-        >
+        <FormItem name="sort" label="排序">
           <Input id="update-sort" placeholder={'请输入排序'}/>
         </FormItem>
       </>
     );
   };
-
 
   const modalFooter = { okText: '保存', onOk: handleSubmit, onCancel };
 
@@ -94,14 +75,10 @@ const UpdateRecommendSubjectForm: React.FC<UpdateFormProps> = (props) => {
       forceRender
       destroyOnClose
       title="修改专题推荐"
-      visible={updateModalVisible}
+      open={updateModalVisible}
       {...modalFooter}
     >
-      <Form
-        {...formLayout}
-        form={form}
-        onFinish={handleFinish}
-      >
+      <Form {...formLayout} form={form} onFinish={handleFinish}>
         {renderContent()}
       </Form>
     </Modal>

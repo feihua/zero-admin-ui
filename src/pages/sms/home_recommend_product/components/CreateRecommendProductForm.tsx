@@ -1,16 +1,17 @@
 import React, {useEffect} from 'react';
 import {Form, Input, Modal, Select} from 'antd';
-import { RecommendProductListItem } from '../data.d';
+import type {RecommendProductListItem} from '../data.d';
 
 export interface CreateFormProps {
   onCancel: () => void;
   onSubmit: (values: RecommendProductListItem) => void;
   createModalVisible: boolean;
 }
+
 const FormItem = Form.Item;
 
 const formLayout = {
-  labelCol: { span: 7 },
+  labelCol: {span: 7},
   wrapperCol: { span: 13 },
 };
 
@@ -18,20 +19,13 @@ const CreateRecommendProductForm: React.FC<CreateFormProps> = (props) => {
   const [form] = Form.useForm();
   const { Option } = Select;
 
-
-  const {
-    onSubmit,
-    onCancel,
-    createModalVisible,
-  } = props;
+  const {onSubmit, onCancel, createModalVisible} = props;
 
   useEffect(() => {
     if (form && !createModalVisible) {
       form.resetFields();
-
     }
   }, [props.createModalVisible]);
-
 
   const handleSubmit = () => {
     if (!form) return;
@@ -47,32 +41,21 @@ const CreateRecommendProductForm: React.FC<CreateFormProps> = (props) => {
   const renderContent = () => {
     return (
       <>
-        <FormItem
-          name="productName"
-          label="商品名称"
-        >
+        <FormItem name="productName" label="商品名称">
           <Input id="update-productName" placeholder={'请输入商品名称'}/>
         </FormItem>
-        <FormItem
-          name="recommendStatus"
-          label="推荐状态"
-        >
+        <FormItem name="recommendStatus" label="推荐状态">
           <Select id="recommendStatus" placeholder={'请选择推荐状态'}>
             <Option value={0}>PC首页轮播</Option>
             <Option value={1}>app首页轮播</Option>
           </Select>
         </FormItem>
-        <FormItem
-          name="sort"
-          label="排序"
-        >
+        <FormItem name="sort" label="排序">
           <Input id="update-sort" placeholder={'请输入排序'}/>
         </FormItem>
-
       </>
     );
   };
-
 
   const modalFooter = { okText: '保存', onOk: handleSubmit, onCancel };
 
@@ -81,14 +64,10 @@ const CreateRecommendProductForm: React.FC<CreateFormProps> = (props) => {
       forceRender
       destroyOnClose
       title="新建商品推荐"
-      visible={createModalVisible}
+      open={createModalVisible}
       {...modalFooter}
     >
-      <Form
-        {...formLayout}
-        form={form}
-        onFinish={handleFinish}
-      >
+      <Form {...formLayout} form={form} onFinish={handleFinish}>
         {renderContent()}
       </Form>
     </Modal>

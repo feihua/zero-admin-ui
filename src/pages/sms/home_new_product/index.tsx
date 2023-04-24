@@ -1,12 +1,13 @@
-import { PlusOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
-import { Button, Divider, message, Drawer, Modal } from 'antd';
-import React, { useState, useRef } from 'react';
-import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
-import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
-import ProDescriptions from '@ant-design/pro-descriptions';
+import {PlusOutlined, ExclamationCircleOutlined} from '@ant-design/icons';
+import {Button, Divider, message, Drawer, Modal} from 'antd';
+import React, {useState, useRef} from 'react';
+import {PageContainer, FooterToolbar} from '@ant-design/pro-layout';
+import ProTable from '@ant-design/pro-table';
+import type {ProColumns, ActionType} from '@ant-design/pro-table';
+import ProDescriptions, {ProDescriptionsItemProps} from '@ant-design/pro-descriptions';
 import CreateHomeNewProductForm from './components/CreateHomeNewProductForm';
 import UpdateHomeNewProductForm from './components/UpdateHomeNewProductForm';
-import { HomeNewProductListItem } from './data.d';
+import type {HomeNewProductListItem} from './data.d';
 import {
   queryHomeNewProduct,
   updateHomeNewProduct,
@@ -38,10 +39,10 @@ const handleAdd = async (fields: HomeNewProductListItem) => {
  * 更新节点
  * @param fields
  */
-const handleUpdate = async (fields: Partial<HomeNewProductListItem>) => {
+const handleUpdate = async (fields: HomeNewProductListItem) => {
   const hide = message.loading('正在更新');
   try {
-    await updateHomeNewProduct(fields as HomeNewProductListItem);
+    await updateHomeNewProduct(fields);
     hide();
 
     message.success('更新成功');
@@ -49,26 +50,6 @@ const handleUpdate = async (fields: Partial<HomeNewProductListItem>) => {
   } catch (error) {
     hide();
     message.error('更新失败请重试！');
-    return false;
-  }
-};
-
-/**
- *  删除节点(单个)
- * @param id
- */
-const handleRemoveOne = async (id: number) => {
-  const hide = message.loading('正在删除');
-  try {
-    await removeHomeNewProduct({
-      ids: [id],
-    });
-    hide();
-    message.success('删除成功，即将刷新');
-    return true;
-  } catch (error) {
-    hide();
-    message.error('删除失败，请重试');
     return false;
   }
 };
@@ -94,25 +75,26 @@ const handleRemove = async (selectedRows: HomeNewProductListItem[]) => {
   }
 };
 
-const TableList: React.FC<{}> = () => {
+const TableList: React.FC = () => {
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
-  const [stepFormValues, setStepFormValues] = useState({});
+  const [showDetail, setShowDetail] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
-  const [row, setRow] = useState<HomeNewProductListItem>();
+  const [currentRow, setCurrentRow] = useState<HomeNewProductListItem>();
   const [selectedRowsState, setSelectedRows] = useState<HomeNewProductListItem[]>([]);
 
-  const showDeleteConfirm = (id: number) => {
+  const showDeleteConfirm = (item: HomeNewProductListItem) => {
     confirm({
       title: '是否删除记录?',
-      icon: <ExclamationCircleOutlined />,
+      icon: <ExclamationCircleOutlined/>,
       content: '删除的记录不能恢复,请确认!',
       onOk() {
-        handleRemoveOne(id).then((r) => {
+        handleRemove([item]).then((r) => {
           actionRef.current?.reloadAndRest?.();
         });
       },
-      onCancel() {},
+      onCancel() {
+      },
     });
   };
 
@@ -126,7 +108,16 @@ const TableList: React.FC<{}> = () => {
       title: '商品名称',
       dataIndex: 'productName',
       render: (dom, entity) => {
-        return <a onClick={() => setRow(entity)}>{dom}</a>;
+        return (
+          <a
+            onClick={() => {
+              setCurrentRow(entity);
+              setShowDetail(true);
+            }}
+          >
+            {dom}
+          </a>
+        );
       },
     },
     {
@@ -153,7 +144,7 @@ const TableList: React.FC<{}> = () => {
             size="small"
             onClick={() => {
               handleUpdateModalVisible(true);
-              setStepFormValues(record);
+              setCurrentRow(record);
             }}
           >
             编辑
@@ -164,7 +155,7 @@ const TableList: React.FC<{}> = () => {
             danger
             size="small"
             onClick={() => {
-              showDeleteConfirm(record.id);
+              showDeleteConfirm(record);
             }}
           >
             删除
@@ -185,10 +176,10 @@ const TableList: React.FC<{}> = () => {
         }}
         toolBarRender={() => [
           <Button type="primary" onClick={() => handleModalVisible(true)}>
-            <PlusOutlined /> 新建好物
+            <PlusOutlined/> 新建好物
           </Button>,
         ]}
-        request={(params, sorter, filter) => queryHomeNewProduct({ ...params, sorter, filter })}
+        request={queryHomeNewProduct}
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows) => setSelectedRows(selectedRows),
@@ -221,7 +212,7 @@ const TableList: React.FC<{}> = () => {
           const success = await handleAdd(value);
           if (success) {
             handleModalVisible(false);
-            setStepFormValues({});
+            setCurrentRow(undefined);
             if (actionRef.current) {
               actionRef.current.reload();
             }
@@ -229,7 +220,9 @@ const TableList: React.FC<{}> = () => {
         }}
         onCancel={() => {
           handleModalVisible(false);
-          setStepFormValues({});
+          if (!showDetail) {
+            setCurrentRow(undefined);
+          }
         }}
         createModalVisible={createModalVisible}
       />
@@ -240,7 +233,7 @@ const TableList: React.FC<{}> = () => {
           const success = await handleUpdate(value);
           if (success) {
             handleUpdateModalVisible(false);
-            setStepFormValues({});
+            setCurrentRow(undefined);
             if (actionRef.current) {
               actionRef.current.reload();
             }
@@ -248,31 +241,34 @@ const TableList: React.FC<{}> = () => {
         }}
         onCancel={() => {
           handleUpdateModalVisible(false);
-          setStepFormValues({});
+          if (!showDetail) {
+            setCurrentRow(undefined);
+          }
         }}
         updateModalVisible={updateModalVisible}
-        currentData={stepFormValues}
+        values={currentRow || {}}
       />
 
       <Drawer
         width={600}
-        visible={!!row}
+        visible={showDetail}
         onClose={() => {
-          setRow(undefined);
+          setCurrentRow(undefined);
+          setShowDetail(false);
         }}
         closable={false}
       >
-        {row?.id && (
+        {currentRow?.id && (
           <ProDescriptions<HomeNewProductListItem>
             column={2}
-            title={row?.id}
+            title={currentRow?.productName}
             request={async () => ({
-              data: row || {},
+              data: currentRow || {},
             })}
             params={{
-              id: row?.id,
+              id: currentRow?.id,
             }}
-            columns={columns}
+            columns={columns as ProDescriptionsItemProps<HomeNewProductListItem>[]}
           />
         )}
       </Drawer>

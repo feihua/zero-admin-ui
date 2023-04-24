@@ -1,15 +1,20 @@
-import {PlusOutlined, ExclamationCircleOutlined, DeleteOutlined, EditOutlined} from '@ant-design/icons';
+import {
+  PlusOutlined,
+  ExclamationCircleOutlined,
+  DeleteOutlined,
+  EditOutlined,
+} from '@ant-design/icons';
 import {Button, Divider, message, Drawer, Modal} from 'antd';
 import React, {useState, useRef} from 'react';
 import {PageContainer, FooterToolbar} from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
 import type {ProColumns, ActionType} from '@ant-design/pro-table';
-import ProDescriptions, {ProDescriptionsItemProps} from '@ant-design/pro-descriptions';
+import ProDescriptions from '@ant-design/pro-descriptions';
+import type {ProDescriptionsItemProps} from '@ant-design/pro-descriptions';
 import CreateCouponForm from './components/CreateCouponForm';
 import UpdateCouponForm from './components/UpdateCouponForm';
 import type {CouponListItem} from './data.d';
 import {queryCoupon, updateCoupon, addCoupon, removeCoupon} from './service';
-
 
 const {confirm} = Modal;
 
@@ -104,10 +109,16 @@ const CouponTableList: React.FC = () => {
       title: '优惠券名',
       dataIndex: 'name',
       render: (dom, entity) => {
-        return <a onClick={() => {
-          setCurrentRow(entity);
-          setShowDetail(true);
-        }}>{dom}</a>;
+        return (
+          <a
+            onClick={() => {
+              setCurrentRow(entity);
+              setShowDetail(true);
+            }}
+          >
+            {dom}
+          </a>
+        );
       },
     },
     {
@@ -155,12 +166,12 @@ const CouponTableList: React.FC = () => {
     },
     {
       title: '开始时间',
-      valueType: "dateTime",
+      valueType: 'dateTime',
       dataIndex: 'startTime',
     },
     {
       title: '结束时间',
-      valueType: "dateTime",
+      valueType: 'dateTime',
       dataIndex: 'endTime',
     },
 
@@ -168,31 +179,31 @@ const CouponTableList: React.FC = () => {
       title: '备注',
       dataIndex: 'note',
       hideInSearch: true,
-      hideInTable: true
+      hideInTable: true,
     },
     {
       title: '发行数量',
       dataIndex: 'publishCount',
       hideInSearch: true,
-      hideInTable: true
+      hideInTable: true,
     },
     {
       title: '已使用数量',
       dataIndex: 'useCount',
       hideInSearch: true,
-      hideInTable: true
+      hideInTable: true,
     },
     {
       title: '领取数量',
       dataIndex: 'receiveCount',
       hideInSearch: true,
-      hideInTable: true
+      hideInTable: true,
     },
     {
       title: '会员类型',
       dataIndex: 'memberLevel',
       hideInSearch: true,
-      hideInTable: true
+      hideInTable: true,
     },
     {
       title: '操作',
@@ -245,7 +256,7 @@ const CouponTableList: React.FC = () => {
         rowSelection={{
           onChange: (_, selectedRows) => setSelectedRows(selectedRows),
         }}
-        pagination={{pageSize:10}}
+        pagination={{pageSize: 10}}
       />
       {selectedRowsState?.length > 0 && (
         <FooterToolbar
@@ -266,7 +277,6 @@ const CouponTableList: React.FC = () => {
           </Button>
         </FooterToolbar>
       )}
-
 
       <CreateCouponForm
         key={'CreateCouponForm'}
@@ -316,7 +326,7 @@ const CouponTableList: React.FC = () => {
         visible={showDetail}
         onClose={() => {
           setCurrentRow(undefined);
-          setShowDetail(false)
+          setShowDetail(false);
         }}
         closable={false}
       >

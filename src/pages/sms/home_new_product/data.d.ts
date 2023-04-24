@@ -1,6 +1,6 @@
 export interface HomeNewProductListItem {
   id: number;
-
+  productName: string;
 }
 
 export interface HomeNewProductListPagination {
@@ -15,10 +15,8 @@ export interface HomeNewProductListData {
 }
 
 export interface HomeNewProductListParams {
-
   pageSize?: number;
   currentPage?: number;
   filter?: { [key: string]: any[] };
   sorter?: { [key: string]: any };
-
 }

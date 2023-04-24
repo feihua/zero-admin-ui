@@ -1,6 +1,6 @@
 export interface RecommendSubjectListItem {
   id: number;
-
+  subjectName: string;
 }
 
 export interface RecommendSubjectListPagination {
@@ -15,10 +15,8 @@ export interface RecommendSubjectListData {
 }
 
 export interface RecommendSubjectListParams {
-
   pageSize?: number;
   currentPage?: number;
   filter?: { [key: string]: any[] };
   sorter?: { [key: string]: any };
-
 }
