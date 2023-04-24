@@ -50,15 +50,18 @@ const UpdateRecommendProductForm: React.FC<UpdateFormProps> = (props) => {
     return (
       <>
         <FormItem name="id" label="主键" hidden>
-          <Input id="update-id" placeholder="请输入主键"/>
+          <Input id="update-id"/>
         </FormItem>
-        <FormItem name="productName" label="商品名称">
-          <Input id="update-productName" placeholder={'请输入商品名称'}/>
+        <FormItem name="productId" hidden>
+          <Input id="update-productId"/>
+        </FormItem>
+        <FormItem name="productName" label="商品名称" hidden>
+          <Input id="update-productName"/>
         </FormItem>
         <FormItem name="recommendStatus" label="推荐状态">
           <Select id="recommendStatus" placeholder={'请选择推荐状态'}>
-            <Option value={0}>PC首页轮播</Option>
-            <Option value={1}>app首页轮播</Option>
+            <Option value={0}>不推荐</Option>
+            <Option value={1}>推荐</Option>
           </Select>
         </FormItem>
         <FormItem name="sort" label="排序">

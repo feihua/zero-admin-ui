@@ -3,6 +3,11 @@ export interface RecommendProductListItem {
   productName: string;
 }
 
+export interface ProductListItem {
+  id: number;
+
+}
+
 export interface RecommendProductListPagination {
   total: number;
   pageSize: number;
@@ -15,6 +20,7 @@ export interface RecommendProductListData {
 }
 
 export interface RecommendProductListParams {
+  recommendStatus?: number;
   pageSize?: number;
   currentPage?: number;
   filter?: { [key: string]: any[] };

@@ -1,6 +1,6 @@
 import React, {useEffect} from 'react';
 import {Form, Input, Modal, Select} from 'antd';
-import { HomeNewProductListItem } from '../data.d';
+import type {HomeNewProductListItem} from '../data.d';
 
 export interface UpdateFormProps {
   onCancel: () => void;
@@ -8,16 +8,17 @@ export interface UpdateFormProps {
   updateModalVisible: boolean;
   values: Partial<HomeNewProductListItem>;
 }
+
 const FormItem = Form.Item;
 
 const formLayout = {
-  labelCol: { span: 7 },
-  wrapperCol: { span: 13 },
+  labelCol: {span: 7},
+  wrapperCol: {span: 13},
 };
 
 const UpdateHomeNewProductForm: React.FC<UpdateFormProps> = (props) => {
   const [form] = Form.useForm();
-  const { Option } = Select;
+  const {Option} = Select;
 
   const {onSubmit, onCancel, updateModalVisible, values} = props;
 
@@ -50,15 +51,18 @@ const UpdateHomeNewProductForm: React.FC<UpdateFormProps> = (props) => {
     return (
       <>
         <FormItem name="id" label="主键" hidden>
-          <Input id="update-id" placeholder="请输入主键"/>
+          <Input id="update-id"/>
         </FormItem>
-        <FormItem name="productName" label="商品名称">
-          <Input id="update-productName" placeholder={'请输入商品名称'}/>
+        <FormItem name="productId" label="商品名称" hidden>
+          <Input id="update-productId"/>
+        </FormItem>
+        <FormItem name="productName" label="商品名称" hidden>
+          <Input id="update-productName"/>
         </FormItem>
         <FormItem name="recommendStatus" label="推荐状态">
           <Select id="recommendStatus" placeholder={'请选择推荐状态'}>
-            <Option value={0}>PC首页轮播</Option>
-            <Option value={1}>app首页轮播</Option>
+            <Option value={0}>不推荐</Option>
+            <Option value={1}>推荐</Option>
           </Select>
         </FormItem>
         <FormItem name="sort" label="排序">
@@ -68,7 +72,7 @@ const UpdateHomeNewProductForm: React.FC<UpdateFormProps> = (props) => {
     );
   };
 
-  const modalFooter = { okText: '保存', onOk: handleSubmit, onCancel };
+  const modalFooter = {okText: '保存', onOk: handleSubmit, onCancel};
 
   return (
     <Modal

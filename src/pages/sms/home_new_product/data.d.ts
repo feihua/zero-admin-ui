@@ -3,6 +3,11 @@ export interface HomeNewProductListItem {
   productName: string;
 }
 
+export interface ProductListItem {
+  id: number;
+
+}
+
 export interface HomeNewProductListPagination {
   total: number;
   pageSize: number;
@@ -15,6 +20,7 @@ export interface HomeNewProductListData {
 }
 
 export interface HomeNewProductListParams {
+  recommendStatus?: number;
   pageSize?: number;
   currentPage?: number;
   filter?: { [key: string]: any[] };

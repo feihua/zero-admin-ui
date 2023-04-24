@@ -19,7 +19,7 @@ const {confirm} = Modal;
 
 /**
  * 添加节点
- * @param fields
+ * @param brandIds
  */
 const handleAdd = async (brandIds: number[]) => {
   const hide = message.loading('正在添加');
@@ -28,7 +28,7 @@ const handleAdd = async (brandIds: number[]) => {
     return true;
   }
   try {
-    await addHomeBrand({brandIds: brandIds});
+    await addHomeBrand(brandIds);
     hide();
     message.success('添加成功');
     return true;
@@ -79,7 +79,7 @@ const handleRemove = async (selectedRows: HomeBrandListItem[]) => {
   }
 };
 
-const TableList: React.FC = () => {
+const HomeBrandTableList: React.FC = () => {
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
   const [showDetail, setShowDetail] = useState<boolean>(false);
@@ -180,7 +180,7 @@ const TableList: React.FC = () => {
         }}
         toolBarRender={() => [
           <Button type="primary" onClick={() => handleModalVisible(true)}>
-            <PlusOutlined/> 新建品牌推荐
+            <PlusOutlined/> 选择品牌
           </Button>,
         ]}
         request={queryHomeBrand}
@@ -280,4 +280,4 @@ const TableList: React.FC = () => {
   );
 };
 
-export default TableList;
+export default HomeBrandTableList;

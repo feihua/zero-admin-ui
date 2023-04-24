@@ -23,11 +23,11 @@ export async function removeHomeBrand(params: { ids: number[] }) {
   });
 }
 
-export async function addHomeBrand(params: { brandIds: number[] }) {
+export async function addHomeBrand(params: number[]) {
   return request('/api/sms/homebrand/add', {
     method: 'POST',
     data: {
-      ...params,
+      brandIds: params,
     },
   });
 }

@@ -1,7 +1,11 @@
 import { request } from 'umi';
-import { RecommendProductListParams, RecommendProductListItem } from './data.d';
+import {RecommendProductListParams, RecommendProductListItem} from './data.d';
+import {ProductListParams} from "@/pages/pms/product/data";
 
-export async function queryRecommendProduct(params?: RecommendProductListParams) {
+export async function queryRecommendProduct(params: RecommendProductListParams) {
+  if (params.recommendStatus != null) {
+    params.recommendStatus = Number(params.recommendStatus);
+  }
   return request('/api/sms/homerecommendproduct/list', {
     method: 'POST',
     data: {
@@ -19,11 +23,11 @@ export async function removeRecommendProduct(params: { ids: number[] }) {
   });
 }
 
-export async function addRecommendProduct(params: RecommendProductListItem) {
+export async function addRecommendProduct(params: number[]) {
   return request('/api/sms/homerecommendproduct/add', {
     method: 'POST',
     data: {
-      ...params,
+      productIds: params,
     },
   });
 }
@@ -37,3 +41,11 @@ export async function updateRecommendProduct(params: RecommendProductListItem) {
   });
 }
 
+export async function queryProduct(params?: ProductListParams) {
+  return request('/api/product/product/list', {
+    method: 'POST',
+    data: {
+      ...params,
+    },
+  });
+}
