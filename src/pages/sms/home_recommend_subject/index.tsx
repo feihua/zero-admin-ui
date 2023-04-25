@@ -1,10 +1,11 @@
-import {PlusOutlined, ExclamationCircleOutlined} from '@ant-design/icons';
+import {PlusOutlined, ExclamationCircleOutlined, DeleteOutlined, EditOutlined} from '@ant-design/icons';
 import {Button, Divider, message, Drawer, Modal} from 'antd';
 import React, {useState, useRef} from 'react';
 import {PageContainer, FooterToolbar} from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
 import type {ProColumns, ActionType} from '@ant-design/pro-table';
-import ProDescriptions, {ProDescriptionsItemProps} from '@ant-design/pro-descriptions';
+import ProDescriptions from '@ant-design/pro-descriptions';
+import type {ProDescriptionsItemProps} from '@ant-design/pro-descriptions';
 import CreateRecommendSubjectForm from './components/CreateRecommendSubjectForm';
 import UpdateRecommendSubjectForm from './components/UpdateRecommendSubjectForm';
 import type {RecommendSubjectListItem} from './data.d';
@@ -19,12 +20,16 @@ const { confirm } = Modal;
 
 /**
  * 添加节点
- * @param fields
+ * @param subjectIds
  */
-const handleAdd = async (fields: RecommendSubjectListItem) => {
+const handleAdd = async (subjectIds: number[]) => {
   const hide = message.loading('正在添加');
+  if (subjectIds.length <= 0) {
+    hide();
+    return true;
+  }
   try {
-    await addRecommendSubject({ ...fields });
+    await addRecommendSubject(subjectIds);
     hide();
     message.success('添加成功');
     return true;
@@ -124,13 +129,14 @@ const TableList: React.FC = () => {
       title: '推荐状态',
       dataIndex: 'recommendStatus',
       valueEnum: {
-        0: { text: 'PC首页轮播', status: 'Error' },
-        1: { text: 'app首页轮播', status: 'Success' },
+        0: {text: '不推荐', status: 'Error'},
+        1: {text: '推荐', status: 'Success'},
       },
     },
     {
       title: '排序',
       dataIndex: 'sort',
+      hideInSearch: true,
     },
     {
       title: '操作',
@@ -140,7 +146,7 @@ const TableList: React.FC = () => {
         <>
           <Button
             type="primary"
-            size="small"
+            icon={<EditOutlined/>}
             onClick={() => {
               handleUpdateModalVisible(true);
               setCurrentRow(record);
@@ -152,7 +158,7 @@ const TableList: React.FC = () => {
           <Button
             type="primary"
             danger
-            size="small"
+            icon={<DeleteOutlined/>}
             onClick={() => {
               showDeleteConfirm(record);
             }}
@@ -175,7 +181,7 @@ const TableList: React.FC = () => {
         }}
         toolBarRender={() => [
           <Button type="primary" onClick={() => handleModalVisible(true)}>
-            <PlusOutlined/> 新建专题推荐
+            <PlusOutlined/> 选择专题
           </Button>,
         ]}
         request={queryRecommendSubject}

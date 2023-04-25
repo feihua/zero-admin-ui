@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react';
-import {Form, Input, Modal, Select} from 'antd';
+import {Form, Input, InputNumber, Modal, Select} from 'antd';
 import type {RecommendProductListItem} from '../data.d';
 
 export interface UpdateFormProps {
@@ -65,7 +65,7 @@ const UpdateRecommendProductForm: React.FC<UpdateFormProps> = (props) => {
           </Select>
         </FormItem>
         <FormItem name="sort" label="排序">
-          <Input id="update-sort" placeholder={'请输入排序'}/>
+          <InputNumber/>
         </FormItem>
       </>
     );

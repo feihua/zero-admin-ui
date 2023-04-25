@@ -1,75 +1,82 @@
-import React, {useEffect} from 'react';
-import {Form, Input, Modal, Select} from 'antd';
-import type {RecommendSubjectListItem} from '../data.d';
+import React, {useEffect, useRef, useState} from 'react';
+import {Modal} from 'antd';
+import type {SubjectListItem} from '../data.d';
+import {querySubject} from '@/pages/sms/home_recommend_subject/service';
+import type {ActionType, ProColumns} from '@ant-design/pro-table';
+import ProTable from '@ant-design/pro-table';
 
 export interface CreateFormProps {
   onCancel: () => void;
-  onSubmit: (values: RecommendSubjectListItem) => void;
+  onSubmit: (values: number[]) => void;
   createModalVisible: boolean;
 }
 
-const FormItem = Form.Item;
-
-const formLayout = {
-  labelCol: {span: 7},
-  wrapperCol: { span: 13 },
-};
-
 const CreateRecommendSubjectForm: React.FC<CreateFormProps> = (props) => {
-  const [form] = Form.useForm();
-  const { Option } = Select;
+  const actionRef = useRef<ActionType>();
+  const [selectedRowsState, setSelectedRows] = useState<SubjectListItem[]>([]);
 
   const {onSubmit, onCancel, createModalVisible} = props;
 
   useEffect(() => {
-    if (form && !createModalVisible) {
-      form.resetFields();
+    if (!createModalVisible) {
+      setSelectedRows([]);
     }
-  }, [props.createModalVisible]);
+  }, [createModalVisible]);
 
   const handleSubmit = () => {
-    if (!form) return;
-    form.submit();
+    onSubmit(selectedRowsState.map((row) => row.id));
+    setSelectedRows([]);
   };
 
-  const handleFinish = (values: RecommendSubjectListItem) => {
-    if (onSubmit) {
-      onSubmit(values);
-    }
-  };
+  const columns: ProColumns<SubjectListItem>[] = [
+    {
+      title: '编号',
+      dataIndex: 'id',
+      hideInSearch: true,
+    },
+    {
+      title: '专题名称',
+      dataIndex: 'title',
+    },
+    {
+      title: '所属分类',
+      dataIndex: 'categoryName',
+      hideInSearch: true,
+    },
+    {
+      title: '创建时间',
+      dataIndex: 'createTime',
+      hideInSearch: true,
+    },
 
-  const renderContent = () => {
-    return (
-      <>
-        <FormItem name="productName" label="商品名称">
-          <Input id="update-productName" placeholder={'请输入商品名称'}/>
-        </FormItem>
-        <FormItem name="recommendStatus" label="推荐状态">
-          <Select id="recommendStatus" placeholder={'请选择推荐状态'}>
-            <Option value={0}>PC首页轮播</Option>
-            <Option value={1}>app首页轮播</Option>
-          </Select>
-        </FormItem>
-        <FormItem name="sort" label="排序">
-          <Input id="update-sort" placeholder={'请输入排序'}/>
-        </FormItem>
-      </>
-    );
-  };
+  ];
 
-  const modalFooter = { okText: '保存', onOk: handleSubmit, onCancel };
+  const modalFooter = {okText: '保存', onOk: handleSubmit, onCancel};
 
   return (
     <Modal
       forceRender
       destroyOnClose
-      title="新建专题推荐"
+      title="选择专题"
       open={createModalVisible}
       {...modalFooter}
+      width={800}
     >
-      <Form {...formLayout} form={form} onFinish={handleFinish}>
-        {renderContent()}
-      </Form>
+      <ProTable<SubjectListItem>
+        toolBarRender={false}
+        actionRef={actionRef}
+        rowKey="id"
+        search={{
+          labelWidth: 65,
+        }}
+        request={querySubject}
+        columns={columns}
+        rowSelection={{
+          onChange: (_, selectedRows) => setSelectedRows(selectedRows),
+        }}
+        pagination={{pageSize: 6}}
+      />
+
     </Modal>
   );
 };

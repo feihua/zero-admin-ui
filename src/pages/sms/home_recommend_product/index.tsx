@@ -24,6 +24,10 @@ const { confirm } = Modal;
  */
 const handleAdd = async (productIds: number[]) => {
   const hide = message.loading('正在添加');
+  if (productIds.length <= 0) {
+    hide();
+    return true;
+  }
   try {
     await addRecommendProduct(productIds);
     hide();

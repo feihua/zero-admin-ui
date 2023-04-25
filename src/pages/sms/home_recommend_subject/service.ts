@@ -1,7 +1,10 @@
-import { request } from 'umi';
-import { RecommendSubjectListParams, RecommendSubjectListItem } from './data.d';
+import {request} from 'umi';
+import {RecommendSubjectListParams, RecommendSubjectListItem, SubjectListParams} from './data.d';
 
-export async function queryRecommendSubject(params?: RecommendSubjectListParams) {
+export async function queryRecommendSubject(params: RecommendSubjectListParams) {
+  if (params.recommendStatus != null) {
+    params.recommendStatus = Number(params.recommendStatus);
+  }
   return request('/api/sms/homerecommendsubject/list', {
     method: 'POST',
     data: {
@@ -19,11 +22,11 @@ export async function removeRecommendSubject(params: { ids: number[] }) {
   });
 }
 
-export async function addRecommendSubject(params: RecommendSubjectListItem) {
+export async function addRecommendSubject(params: number[]) {
   return request('/api/sms/homerecommendsubject/add', {
     method: 'POST',
     data: {
-      ...params,
+      subjectIds: params
     },
   });
 }
@@ -37,3 +40,11 @@ export async function updateRecommendSubject(params: RecommendSubjectListItem) {
   });
 }
 
+export async function querySubject(params: SubjectListParams) {
+  return request('/api/cms/subject/list', {
+    method: 'POST',
+    data: {
+      ...params,
+    },
+  });
+}
