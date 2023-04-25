@@ -67,31 +67,29 @@ const UpdateHomeAdvertiseForm: React.FC<UpdateFormProps> = (props) => {
         <FormItem name="id" label="主键" hidden>
           <Input id="update-id" placeholder="请输入主键"/>
         </FormItem>
-        <FormItem name="name" label="广告名">
+        <FormItem name="name" label="广告名" rules={[{required: true, message: '请输入广告名!'}]}>
           <Input id="update-name" placeholder={'请输入广告名'}/>
         </FormItem>
-        <FormItem name="type" label="轮播位置">
+        <FormItem name="type" label="轮播位置" rules={[{required: true, message: '请选择轮播位置!'}]}>
           <Select id="type" placeholder={'请选择轮播位置'}>
             <Option value={0}>PC首页轮播</Option>
             <Option value={1}>app首页轮播</Option>
           </Select>
         </FormItem>
         <FormItem
-          // name="startTime"
           label="开始时间"
           rules={[{required: true, message: '请输入开始时间!'}]}
         >
           <DatePicker value={moment(startTime, 'YYYY-MM-DD HH:mm:ss')} onChange={onChangeStartDate} showTime placeholder={'请输入开始时间'}/>
         </FormItem>
         <FormItem
-          // name="endTime"
           label="结束时间"
           rules={[{required: true, message: '请输入结束时间!'}]}
         >
           <DatePicker value={moment(endTime, 'YYYY-MM-DD HH:mm:ss')} onChange={onChangeEndDate} showTime placeholder={'请输入结束时间'}/>
         </FormItem>
 
-        <FormItem name="status" label="上下线状态">
+        <FormItem name="status" label="上下线状态" rules={[{required: true, message: '请选择状态!'}]}>
           <Select id="status" placeholder={'请选择状态'}>
             <Option value={0}>停用</Option>
             <Option value={1}>启用</Option>
@@ -100,10 +98,11 @@ const UpdateHomeAdvertiseForm: React.FC<UpdateFormProps> = (props) => {
         <FormItem
           name="sort"
           label="排序"
+          rules={[{required: true, message: '请输入排序!'}]}
         >
           <InputNumber/>
         </FormItem>
-        <FormItem name="url" label="链接">
+        <FormItem name="url" label="链接" rules={[{required: true, message: '请输入链接!'}]}>
           <Input id="update-url" placeholder={'请输入链接'}/>
         </FormItem>
         <FormItem
