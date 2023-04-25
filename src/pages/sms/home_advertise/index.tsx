@@ -9,7 +9,8 @@ import React, {useState, useRef} from 'react';
 import {PageContainer, FooterToolbar} from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
 import type {ProColumns, ActionType} from '@ant-design/pro-table';
-import ProDescriptions, {ProDescriptionsItemProps} from '@ant-design/pro-descriptions';
+import ProDescriptions from '@ant-design/pro-descriptions';
+import type {ProDescriptionsItemProps} from '@ant-design/pro-descriptions';
 import CreateHomeAdvertiseForm from './components/CreateHomeAdvertiseForm';
 import UpdateHomeAdvertiseForm from './components/UpdateHomeAdvertiseForm';
 import type {HomeAdvertiseListItem} from './data.d';
@@ -20,7 +21,7 @@ import {
   removeHomeAdvertise,
 } from './service';
 
-const { confirm } = Modal;
+const {confirm} = Modal;
 
 /**
  * 添加节点
@@ -29,7 +30,7 @@ const { confirm } = Modal;
 const handleAdd = async (fields: HomeAdvertiseListItem) => {
   const hide = message.loading('正在添加');
   try {
-    await addHomeAdvertise({ ...fields });
+    await addHomeAdvertise({...fields});
     hide();
     message.success('添加成功');
     return true;
@@ -129,25 +130,70 @@ const HomeAdvertiseTableList: React.FC = () => {
       title: '轮播位置',
       dataIndex: 'type',
       valueEnum: {
-        0: { text: 'PC首页轮播', status: 'Error' },
-        1: { text: 'app首页轮播', status: 'Success' },
+        0: {text: 'PC首页轮播', status: 'Error'},
+        1: {text: 'app首页轮播', status: 'Success'},
       },
     },
     {
-      title: '开始日期',
-      dataIndex: 'startTime',
+      title: '广告图片',
+      dataIndex: 'pic',
+      hideInSearch: true,
+      valueType: 'image',
+      fieldProps: {width: 100, height: 80},
     },
     {
-      title: '结束日期',
+      title: '点击数',
+      dataIndex: 'clickCount',
+      hideInSearch: true,
+    },
+    {
+      title: '下单数',
+      dataIndex: 'orderCount',
+      hideInSearch: true,
+    },
+    {
+      title: '时间',
+      dataIndex: 'startAndEndTime',
+      hideInSearch: true,
+      render: (dom, entity) => {
+        return (
+          <div
+          >
+            开始时间：{entity.startTime}<br/>
+            结束时间：{entity.endTime}
+          </div>
+        );
+      },
+    },
+    {
+      title: '结束时间',
       dataIndex: 'endTime',
+      hideInTable: true,
+      valueType: "dateTime"
+    },
+    {
+      title: '链接地址',
+      dataIndex: 'url',
+      hideInSearch: true,
+    },
+    {
+      title: '备注',
+      dataIndex: 'note',
+      hideInSearch: true,
+    },
+    {
+      title: '排序',
+      dataIndex: 'sort',
+      hideInSearch: true,
     },
     {
       title: '上下线状态',
       dataIndex: 'status',
       valueEnum: {
-        0: { text: '禁用', status: 'Error' },
-        1: { text: '正常', status: 'Success' },
+        0: {text: '禁用', status: 'Error'},
+        1: {text: '正常', status: 'Success'},
       },
+      hideInSearch: true,
     },
     {
       title: '操作',
@@ -166,7 +212,7 @@ const HomeAdvertiseTableList: React.FC = () => {
           >
             编辑
           </Button>
-          <Divider type="vertical" />
+          <Divider type="vertical"/>
           <Button
             type="primary"
             danger
@@ -201,13 +247,13 @@ const HomeAdvertiseTableList: React.FC = () => {
         rowSelection={{
           onChange: (_, selectedRows) => setSelectedRows(selectedRows),
         }}
-        pagination={{ pageSize: 10 }}
+        pagination={{pageSize: 10}}
       />
       {selectedRowsState?.length > 0 && (
         <FooterToolbar
           extra={
             <div>
-              已选择 <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a> 项&nbsp;&nbsp;
+              已选择 <a style={{fontWeight: 600}}>{selectedRowsState.length}</a> 项&nbsp;&nbsp;
             </div>
           }
         >

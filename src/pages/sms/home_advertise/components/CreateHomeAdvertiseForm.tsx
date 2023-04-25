@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react';
-import {Form, Input, Modal, Select} from 'antd';
+import {DatePicker, Form, Input, InputNumber, Modal, Select} from 'antd';
 import type {HomeAdvertiseListItem} from '../data.d';
 
 export interface CreateFormProps {
@@ -12,12 +12,12 @@ const FormItem = Form.Item;
 
 const formLayout = {
   labelCol: {span: 7},
-  wrapperCol: { span: 13 },
+  wrapperCol: {span: 13},
 };
 
 const CreateHomeAdvertiseForm: React.FC<CreateFormProps> = (props) => {
   const [form] = Form.useForm();
-  const { Option } = Select;
+  const {Option} = Select;
 
   const {onSubmit, onCancel, createModalVisible} = props;
 
@@ -50,11 +50,11 @@ const CreateHomeAdvertiseForm: React.FC<CreateFormProps> = (props) => {
             <Option value={1}>app首页轮播</Option>
           </Select>
         </FormItem>
-        <FormItem name="startDate" label="开始日期">
-          <Input id="update-startDate" placeholder={'请输入开始日期'}/>
+        <FormItem name="startTime" label="开始日期">
+          <DatePicker showTime placeholder={'请输入开始日期'}/>
         </FormItem>
-        <FormItem name="endDate" label="结束日期">
-          <Input id="update-endDate" placeholder={'请输入结束日期'}/>
+        <FormItem name="endTime" label="结束日期">
+          <DatePicker showTime placeholder={'请输入结束日期'}/>
         </FormItem>
 
         <FormItem name="status" label="上下线状态">
@@ -63,11 +63,26 @@ const CreateHomeAdvertiseForm: React.FC<CreateFormProps> = (props) => {
             <Option value={1}>启用</Option>
           </Select>
         </FormItem>
+        <FormItem
+          name="sort"
+          label="排序"
+        >
+          <InputNumber/>
+        </FormItem>
+        <FormItem name="url" label="链接">
+          <Input id="update-url" placeholder={'请输入链接'}/>
+        </FormItem>
+        <FormItem
+          name="note"
+          label="备注"
+        >
+          <Input.TextArea rows={2}/>
+        </FormItem>
       </>
     );
   };
 
-  const modalFooter = { okText: '保存', onOk: handleSubmit, onCancel };
+  const modalFooter = {okText: '保存', onOk: handleSubmit, onCancel};
 
   return (
     <Modal

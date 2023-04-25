@@ -1,5 +1,6 @@
 import { request } from 'umi';
-import { CouponListParams, CouponListItem } from './data.d';
+import {CouponListParams, CouponListItem} from './data.d';
+import moment from "moment/moment";
 
 export async function queryCoupon(params: CouponListParams) {
   if (params.type != null) {
@@ -31,6 +32,9 @@ export async function removeCoupon(params: { ids: number[] }) {
 export async function addCoupon(params: CouponListItem) {
   params.amount = Number(params.amount)
   params.minPoint = Number(params.minPoint)
+  params.startTime = moment(params.startTime).format('YYYY-MM-DD HH:mm:ss');
+  params.endTime = moment(params.endTime).format('YYYY-MM-DD HH:mm:ss');
+  params.enableTime = moment(params.enableTime).format('YYYY-MM-DD HH:mm:ss');
   return request('/api/sms/coupon/add', {
     method: 'POST',
     data: {

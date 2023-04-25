@@ -1,6 +1,7 @@
-import React, {useEffect} from 'react';
-import {Form, Input, Modal, Select} from 'antd';
+import React, {useEffect, useState} from 'react';
+import {DatePicker, DatePickerProps, Form, Input, InputNumber, Modal, Select} from 'antd';
 import type {HomeAdvertiseListItem} from '../data.d';
+import moment from "moment/moment";
 
 export interface UpdateFormProps {
   onCancel: () => void;
@@ -8,6 +9,7 @@ export interface UpdateFormProps {
   updateModalVisible: boolean;
   values: Partial<HomeAdvertiseListItem>;
 }
+
 const FormItem = Form.Item;
 
 const formLayout = {
@@ -17,7 +19,9 @@ const formLayout = {
 
 const UpdateHomeAdvertiseForm: React.FC<UpdateFormProps> = (props) => {
   const [form] = Form.useForm();
-  const { Option } = Select;
+  const {Option} = Select;
+  const [startTime, setStartTime] = useState<string>("");
+  const [endTime, setEndTime] = useState<string>("");
 
   const {onSubmit, onCancel, updateModalVisible, values} = props;
 
@@ -32,6 +36,8 @@ const UpdateHomeAdvertiseForm: React.FC<UpdateFormProps> = (props) => {
       form.setFieldsValue({
         ...values,
       });
+      setStartTime(values.startTime || "")
+      setEndTime(values.endTime || "")
     }
   }, [props.values]);
 
@@ -42,8 +48,17 @@ const UpdateHomeAdvertiseForm: React.FC<UpdateFormProps> = (props) => {
 
   const handleFinish = (item: { [key: string]: any }) => {
     if (onSubmit) {
-      onSubmit(item as HomeAdvertiseListItem);
+      onSubmit({...item as HomeAdvertiseListItem, startTime, endTime});
     }
+  };
+
+  const onChangeStartDate: DatePickerProps['onChange'] = (date, dateString) => {
+    console.log(dateString)
+    setStartTime(dateString)
+  };
+  const onChangeEndDate: DatePickerProps['onChange'] = (date, dateString) => {
+    console.log(dateString)
+    setEndTime(dateString)
   };
 
   const renderContent = () => {
@@ -61,11 +76,19 @@ const UpdateHomeAdvertiseForm: React.FC<UpdateFormProps> = (props) => {
             <Option value={1}>app首页轮播</Option>
           </Select>
         </FormItem>
-        <FormItem name="startDate" label="开始日期">
-          <Input id="update-startDate" placeholder={'请输入开始日期'}/>
+        <FormItem
+          // name="startTime"
+          label="开始时间"
+          rules={[{required: true, message: '请输入开始时间!'}]}
+        >
+          <DatePicker value={moment(startTime, 'YYYY-MM-DD HH:mm:ss')} onChange={onChangeStartDate} showTime placeholder={'请输入开始时间'}/>
         </FormItem>
-        <FormItem name="endDate" label="结束日期">
-          <Input id="update-endDate" placeholder={'请输入结束日期'}/>
+        <FormItem
+          // name="endTime"
+          label="结束时间"
+          rules={[{required: true, message: '请输入结束时间!'}]}
+        >
+          <DatePicker value={moment(endTime, 'YYYY-MM-DD HH:mm:ss')} onChange={onChangeEndDate} showTime placeholder={'请输入结束时间'}/>
         </FormItem>
 
         <FormItem name="status" label="上下线状态">
@@ -73,6 +96,21 @@ const UpdateHomeAdvertiseForm: React.FC<UpdateFormProps> = (props) => {
             <Option value={0}>停用</Option>
             <Option value={1}>启用</Option>
           </Select>
+        </FormItem>
+        <FormItem
+          name="sort"
+          label="排序"
+        >
+          <InputNumber/>
+        </FormItem>
+        <FormItem name="url" label="链接">
+          <Input id="update-url" placeholder={'请输入链接'}/>
+        </FormItem>
+        <FormItem
+          name="note"
+          label="备注"
+        >
+          <Input.TextArea rows={2}/>
         </FormItem>
       </>
     );

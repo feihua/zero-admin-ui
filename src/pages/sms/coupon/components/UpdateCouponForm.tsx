@@ -130,14 +130,14 @@ const UpdateCouponForm: React.FC<UpdateFormProps> = (props) => {
               label="开始时间"
               rules={[{required: true, message: '请输入开始时间!'}]}
             >
-              <DatePicker value={moment(props.values.startTime, 'YYYY-MM-DD HH:mm:ss')} onChange={onChangeStartDate} showTime placeholder={'请输入开始时间'}/>
+              <DatePicker value={moment(startTime, 'YYYY-MM-DD HH:mm:ss')} onChange={onChangeStartDate} showTime placeholder={'请输入开始时间'}/>
             </FormItem>
             <FormItem
               // name="endTime"
               label="结束时间"
               rules={[{required: true, message: '请输入结束时间!'}]}
             >
-              <DatePicker value={moment(props.values.startTime, 'YYYY-MM-DD HH:mm:ss')} onChange={onChangeEndDate} showTime placeholder={'请输入结束时间'}/>
+              <DatePicker value={moment(endTime, 'YYYY-MM-DD HH:mm:ss')} onChange={onChangeEndDate} showTime placeholder={'请输入结束时间'}/>
             </FormItem>
 
           </Col>
@@ -196,7 +196,7 @@ const UpdateCouponForm: React.FC<UpdateFormProps> = (props) => {
               label="领取的日期"
               rules={[{required: true, message: '请输入可以领取的日期!'}]}
             >
-              <DatePicker value={moment(props.values.enableTime, 'YYYY-MM-DD HH:mm:ss')} onChange={onChangeEnableTime} showTime placeholder={'请输入可以领取的日期'}/>
+              <DatePicker value={moment(enableTime, 'YYYY-MM-DD HH:mm:ss')} onChange={onChangeEnableTime} showTime placeholder={'请输入可以领取的日期'}/>
             </FormItem>
             <FormItem
               name="code"
