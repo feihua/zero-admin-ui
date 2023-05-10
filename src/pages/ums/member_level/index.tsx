@@ -108,7 +108,16 @@ const MemberLevelList: React.FC<{}> = () => {
       title: '会员名',
       dataIndex: 'name',
       render: (dom, entity) => {
-        return <a onClick={() => setCurrentRow(entity)}>{dom}</a>;
+        return (
+          <a
+            onClick={() => {
+              setCurrentRow(entity);
+              setShowDetail(true);
+            }}
+          >
+            {dom}
+          </a>
+        );
       },
     },
     {
@@ -179,6 +188,21 @@ const MemberLevelList: React.FC<{}> = () => {
         0: {text: '否', status: 'Error'},
         1: {text: '是', status: 'Success'},
       },
+    },
+    {
+      title: '会员生日特权',
+      dataIndex: 'priviledgeBirthday',
+      hideInSearch: true,
+      valueEnum: {
+        0: {text: '否', status: 'Error'},
+        1: {text: '是', status: 'Success'},
+      },
+    },
+    {
+      title: '备注',
+      dataIndex: 'note',
+      hideInSearch: true,
+      hideInTable: true,
     },
     {
       title: '操作',

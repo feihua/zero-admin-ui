@@ -152,7 +152,7 @@ const UpdateMemberForm: React.FC<UpdateFormProps> = (props) => {
       forceRender
       destroyOnClose
       title="修改会员信息"
-      visible={updateModalVisible}
+      open={updateModalVisible}
       {...modalFooter}
     >
       <Form
