@@ -169,6 +169,12 @@
         component: './pms/product_category',
       },
       {
+        name: '属性分类',
+        icon: 'table',
+        path: '/pms/attributecategory/list',
+        component: './pms/product_attribute',
+      },
+      {
         name: '品牌管理',
         icon: 'table',
         path: '/pms/productBrand/list',
