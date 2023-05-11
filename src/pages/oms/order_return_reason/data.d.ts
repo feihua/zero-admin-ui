@@ -15,7 +15,7 @@ export interface TableListData {
 }
 
 export interface ReturnReasonListParams {
-
+  status?: number;
   pageSize?: number;
   currentPage?: number;
   filter?: { [key: string]: any[] };

@@ -1,13 +1,14 @@
 import React, {useEffect} from 'react';
-import { Form, Input, Modal, Select } from 'antd';
-import { ReturnReasonListItem } from '../data.d';
+import {Form, Input, InputNumber, Modal, Select} from 'antd';
+import type {ReturnReasonListItem} from '../data.d';
 
 export interface UpdateFormProps {
   onCancel: () => void;
-  onSubmit: (values: Partial<ReturnReasonListItem>) => void;
+  onSubmit: (values: ReturnReasonListItem) => void;
   updateModalVisible: boolean;
-  currentData: Partial<ReturnReasonListItem>;
+  values: Partial<ReturnReasonListItem>;
 }
+
 const FormItem = Form.Item;
 
 const formLayout = {
@@ -23,7 +24,7 @@ const UpdateReasonForm: React.FC<UpdateFormProps> = (props) => {
     onSubmit,
     onCancel,
     updateModalVisible,
-    currentData,
+    values,
   } = props;
 
   useEffect(() => {
@@ -34,21 +35,21 @@ const UpdateReasonForm: React.FC<UpdateFormProps> = (props) => {
   }, [props.updateModalVisible]);
 
   useEffect(() => {
-    if (currentData) {
+    if (values) {
       form.setFieldsValue({
-        ...currentData,
+        ...values,
       });
     }
-  }, [props.currentData]);
+  }, [props.values]);
 
   const handleSubmit = () => {
     if (!form) return;
     form.submit();
   };
 
-  const handleFinish = (values: { [key: string]: any }) => {
+  const handleFinish = (item: { [key: string]: any }) => {
     if (onSubmit) {
-      onSubmit(values);
+      onSubmit(item as ReturnReasonListItem);
     }
   };
 
@@ -60,7 +61,7 @@ const UpdateReasonForm: React.FC<UpdateFormProps> = (props) => {
           label="主键"
           hidden
         >
-          <Input id="update-id" placeholder="请输入主键" />
+          <Input id="update-id" placeholder="请输入主键"/>
         </FormItem>
         <FormItem
           name="name"
@@ -68,7 +69,12 @@ const UpdateReasonForm: React.FC<UpdateFormProps> = (props) => {
         >
           <Input id="update-name" placeholder={'请输入退货类型'}/>
         </FormItem>
-
+        <FormItem
+          name="sort"
+          label="排序"
+        >
+          <InputNumber/>
+        </FormItem>
         <FormItem
           name="status"
           label="状态"
@@ -91,7 +97,7 @@ const UpdateReasonForm: React.FC<UpdateFormProps> = (props) => {
       forceRender
       destroyOnClose
       title="修改退货原因"
-      visible={updateModalVisible}
+      open={updateModalVisible}
       {...modalFooter}
     >
       <Form

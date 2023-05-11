@@ -1,12 +1,12 @@
 import React, { useEffect } from 'react';
-import { Form, Input, Modal } from 'antd';
-import { BrandListItem } from '../data.d';
+import {Form, Input, Modal} from 'antd';
+import type {BrandListItem} from '../data.d';
 
 export interface UpdateFormProps {
   onCancel: () => void;
-  onSubmit: (values: Partial<BrandListItem>) => void;
+  onSubmit: (values: BrandListItem) => void;
   updateModalVisible: boolean;
-  currentData: Partial<BrandListItem>;
+  values: Partial<BrandListItem>;
 }
 const FormItem = Form.Item;
 
@@ -18,7 +18,7 @@ const formLayout = {
 const UpdateBrandForm: React.FC<UpdateFormProps> = (props) => {
   const [form] = Form.useForm();
 
-  const { onSubmit, onCancel, updateModalVisible, currentData } = props;
+  const {onSubmit, onCancel, updateModalVisible, values} = props;
 
   useEffect(() => {
     if (form && !updateModalVisible) {
@@ -27,21 +27,21 @@ const UpdateBrandForm: React.FC<UpdateFormProps> = (props) => {
   }, [props.updateModalVisible]);
 
   useEffect(() => {
-    if (currentData) {
+    if (values) {
       form.setFieldsValue({
-        ...currentData,
+        ...values,
       });
     }
-  }, [props.currentData]);
+  }, [props.values]);
 
   const handleSubmit = () => {
     if (!form) return;
     form.submit();
   };
 
-  const handleFinish = (values: { [key: string]: any }) => {
+  const handleFinish = (item: { [key: string]: any }) => {
     if (onSubmit) {
-      onSubmit(values);
+      onSubmit(item as BrandListItem);
     }
   };
 
@@ -77,7 +77,7 @@ const UpdateBrandForm: React.FC<UpdateFormProps> = (props) => {
       forceRender
       destroyOnClose
       title="修改品牌"
-      visible={updateModalVisible}
+      open={updateModalVisible}
       {...modalFooter}
     >
       <Form {...formLayout} form={form} onFinish={handleFinish}>

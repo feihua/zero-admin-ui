@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
-import { Form, Input, Modal } from 'antd';
-import { BrandListItem } from '../data.d';
+import {Form, Input, Modal} from 'antd';
+import type {BrandListItem} from '../data.d';
 
 export interface CreateFormProps {
   onCancel: () => void;
@@ -64,8 +64,8 @@ const CreateBrandForm: React.FC<CreateFormProps> = (props) => {
     <Modal
       forceRender
       destroyOnClose
-      title="新建用户"
-      visible={createModalVisible}
+      title="新建品牌"
+      open={createModalVisible}
       {...modalFooter}
     >
       <Form {...formLayout} form={form} onFinish={handleFinish}>

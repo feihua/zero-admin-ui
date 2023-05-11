@@ -1,7 +1,10 @@
 import { request } from 'umi';
 import { ReturnReasonListParams, ReturnReasonListItem } from './data.d';
 
-export async function queryReturnReasonList(params?: ReturnReasonListParams) {
+export async function queryReturnReasonList(params: ReturnReasonListParams) {
+  if (params.status != null) {
+    params.status = Number(params.status)
+  }
   return request('/api/order/returnreason/list', {
     method: 'POST',
     data: {

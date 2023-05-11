@@ -1,16 +1,17 @@
 import React, {useEffect} from 'react';
-import {Form, Input, Modal, Select} from 'antd';
-import { ReturnReasonListItem } from '../data.d';
+import {Form, Input, InputNumber, Modal, Select} from 'antd';
+import type {ReturnReasonListItem} from '../data.d';
 
 export interface CreateFormProps {
   onCancel: () => void;
   onSubmit: (values: ReturnReasonListItem) => void;
   createModalVisible: boolean;
 }
+
 const FormItem = Form.Item;
 
 const formLayout = {
-  labelCol: { span: 7 },
+  labelCol: {span: 7},
   wrapperCol: { span: 13 },
 };
 
@@ -51,10 +52,17 @@ const CreateReasonForm: React.FC<CreateFormProps> = (props) => {
         >
           <Input id="update-name" placeholder={'请输入退货类型'}/>
         </FormItem>
-
+        <FormItem
+          name="sort"
+          label="排序"
+          initialValue={1}
+        >
+          <InputNumber/>
+        </FormItem>
         <FormItem
           name="status"
           label="状态"
+          initialValue={1}
         >
           <Select id="status" placeholder={'请选择状态'}>
             <Option value={0}>禁用</Option>
@@ -74,7 +82,7 @@ const CreateReasonForm: React.FC<CreateFormProps> = (props) => {
       forceRender
       destroyOnClose
       title="新建退货原因"
-      visible={createModalVisible}
+      open={createModalVisible}
       {...modalFooter}
     >
       <Form

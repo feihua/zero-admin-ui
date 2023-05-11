@@ -15,7 +15,8 @@ export interface BrandListData {
 }
 
 export interface BrandListParams {
-
+  factoryStatus?: number;
+  showStatus?: number;
   pageSize?: number;
   currentPage?: number;
   filter?: { [key: string]: any[] };

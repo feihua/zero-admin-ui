@@ -1,24 +1,25 @@
-import React, { useEffect } from 'react';
+import React, {useEffect} from 'react';
 import {Form, Input, Modal, Select} from 'antd';
-import type {CategoryListItem} from '../data.d';
+import type {AttributeListItem} from '../data.d';
 
 export interface CreateFormProps {
   onCancel: () => void;
-  onSubmit: (values: CategoryListItem) => void;
+  onSubmit: (values: AttributeListItem) => void;
   createModalVisible: boolean;
 }
+
 const FormItem = Form.Item;
 
 const formLayout = {
-  labelCol: { span: 7 },
-  wrapperCol: { span: 13 },
+  labelCol: {span: 7},
+  wrapperCol: {span: 13},
 };
 
-const CreateCategoryForm: React.FC<CreateFormProps> = (props) => {
+const CreateAttributeForm: React.FC<CreateFormProps> = (props) => {
   const [form] = Form.useForm();
-  const { Option } = Select;
+  const {Option} = Select;
 
-  const { onSubmit, onCancel, createModalVisible } = props;
+  const {onSubmit, onCancel, createModalVisible} = props;
 
   useEffect(() => {
     if (form && !createModalVisible) {
@@ -31,7 +32,7 @@ const CreateCategoryForm: React.FC<CreateFormProps> = (props) => {
     form.submit();
   };
 
-  const handleFinish = (values: CategoryListItem) => {
+  const handleFinish = (values: AttributeListItem) => {
     if (onSubmit) {
       onSubmit(values);
     }
@@ -41,16 +42,16 @@ const CreateCategoryForm: React.FC<CreateFormProps> = (props) => {
     return (
       <>
         <FormItem name="name" label="分类名称">
-          <Input id="update-name" placeholder={'请输入分类名称'} />
+          <Input id="update-name" placeholder={'请输入分类名称'}/>
         </FormItem>
         <FormItem name="icon" label="图标">
-          <Input id="update-icon" placeholder={'请输入图标'} />
+          <Input id="update-icon" placeholder={'请输入图标'}/>
         </FormItem>
         <FormItem name="productCount" label="产品数量">
-          <Input id="update-productCount" placeholder={'请输入产品数量'} />
+          <Input id="update-productCount" placeholder={'请输入产品数量'}/>
         </FormItem>
         <FormItem name="productUnit" label="产品单位">
-          <Input id="update-productUnit" placeholder={'请输入产品单位'} />
+          <Input id="update-productUnit" placeholder={'请输入产品单位'}/>
         </FormItem>
         <FormItem name="navStatus" label="是否显示在导航栏">
           <Select id="navStatus" placeholder={'请选择是否显示在导航栏'}>
@@ -65,19 +66,19 @@ const CreateCategoryForm: React.FC<CreateFormProps> = (props) => {
           </Select>
         </FormItem>
         <FormItem name="description" label="描述">
-          <Input id="update-description" placeholder={'请输入描述'} />
+          <Input id="update-description" placeholder={'请输入描述'}/>
         </FormItem>
       </>
     );
   };
 
-  const modalFooter = { okText: '保存', onOk: handleSubmit, onCancel };
+  const modalFooter = {okText: '保存', onOk: handleSubmit, onCancel};
 
   return (
     <Modal
       forceRender
       destroyOnClose
-      title="新建商品分类"
+      title="属性分类"
       open={createModalVisible}
       {...modalFooter}
     >
@@ -88,4 +89,4 @@ const CreateCategoryForm: React.FC<CreateFormProps> = (props) => {
   );
 };
 
-export default CreateCategoryForm;
+export default CreateAttributeForm;

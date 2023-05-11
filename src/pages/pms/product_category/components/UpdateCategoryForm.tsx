@@ -4,9 +4,9 @@ import { CategoryListItem } from '../data.d';
 
 export interface UpdateFormProps {
   onCancel: () => void;
-  onSubmit: (values: Partial<CategoryListItem>) => void;
+  onSubmit: (values: CategoryListItem) => void;
   updateModalVisible: boolean;
-  currentData: Partial<CategoryListItem>;
+  values: Partial<CategoryListItem>;
 }
 const FormItem = Form.Item;
 
@@ -19,7 +19,7 @@ const UpdateCategoryForm: React.FC<UpdateFormProps> = (props) => {
   const [form] = Form.useForm();
   const { Option } = Select;
 
-  const { onSubmit, onCancel, updateModalVisible, currentData } = props;
+  const {onSubmit, onCancel, updateModalVisible, values} = props;
 
   useEffect(() => {
     if (form && !updateModalVisible) {
@@ -28,21 +28,21 @@ const UpdateCategoryForm: React.FC<UpdateFormProps> = (props) => {
   }, [props.updateModalVisible]);
 
   useEffect(() => {
-    if (currentData) {
+    if (values) {
       form.setFieldsValue({
-        ...currentData,
+        ...values,
       });
     }
-  }, [props.currentData]);
+  }, [props.values]);
 
   const handleSubmit = () => {
     if (!form) return;
     form.submit();
   };
 
-  const handleFinish = (values: { [key: string]: any }) => {
+  const handleFinish = (item: { [key: string]: any }) => {
     if (onSubmit) {
-      onSubmit(values);
+      onSubmit(item as CategoryListItem);
     }
   };
 
@@ -89,8 +89,8 @@ const UpdateCategoryForm: React.FC<UpdateFormProps> = (props) => {
     <Modal
       forceRender
       destroyOnClose
-      title="修改商品类别"
-      visible={updateModalVisible}
+      title="修改商品分类"
+      open={updateModalVisible}
       {...modalFooter}
     >
       <Form {...formLayout} form={form} onFinish={handleFinish}>

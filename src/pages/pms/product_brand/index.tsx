@@ -1,16 +1,17 @@
-import { PlusOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
-import { Button, Divider, message, Drawer, Modal } from 'antd';
-import React, { useState, useRef } from 'react';
-import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
-import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
-import ProDescriptions from '@ant-design/pro-descriptions';
+import {PlusOutlined, ExclamationCircleOutlined, EditOutlined, DeleteOutlined} from '@ant-design/icons';
+import {Button, Divider, message, Drawer, Modal} from 'antd';
+import React, {useState, useRef} from 'react';
+import {PageContainer, FooterToolbar} from '@ant-design/pro-layout';
+import ProTable from '@ant-design/pro-table';
+import type {ProColumns, ActionType} from '@ant-design/pro-table';
+import ProDescriptions, {ProDescriptionsItemProps} from '@ant-design/pro-descriptions';
 import CreateBrandForm from './components/CreateBrandForm';
 import UpdateBrandForm from './components/UpdateBrandForm';
-import { BrandListItem } from './data.d';
-import { queryBrand, updateBrand, addBrand, removeBrand } from './service';
+import type {BrandListItem} from './data.d';
+import {queryBrand, updateBrand, addBrand, removeBrand} from './service';
 
 
-const { confirm } = Modal;
+const {confirm} = Modal;
 
 /**
  * 添加节点
@@ -34,10 +35,10 @@ const handleAdd = async (fields: BrandListItem) => {
  * 更新节点
  * @param fields
  */
-const handleUpdate = async (fields: Partial<BrandListItem>) => {
+const handleUpdate = async (fields: BrandListItem) => {
   const hide = message.loading('正在更新');
   try {
-    await updateBrand(fields as BrandListItem);
+    await updateBrand(fields);
     hide();
 
     message.success('更新成功');
@@ -49,25 +50,6 @@ const handleUpdate = async (fields: Partial<BrandListItem>) => {
   }
 };
 
-/**
- *  删除节点(单个)
- * @param id
- */
-const handleRemoveOne = async (id: number) => {
-  const hide = message.loading('正在删除');
-  try {
-    await removeBrand({
-      ids: [id],
-    });
-    hide();
-    message.success('删除成功，即将刷新');
-    return true;
-  } catch (error) {
-    hide();
-    message.error('删除失败，请重试');
-    return false;
-  }
-};
 
 /**
  *  删除节点
@@ -90,25 +72,26 @@ const handleRemove = async (selectedRows: BrandListItem[]) => {
   }
 };
 
-const TableList: React.FC<{}> = () => {
+const TableList: React.FC = () => {
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
-  const [stepFormValues, setStepFormValues] = useState({});
+  const [showDetail, setShowDetail] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
-  const [row, setRow] = useState<BrandListItem>();
+  const [currentRow, setCurrentRow] = useState<BrandListItem>();
   const [selectedRowsState, setSelectedRows] = useState<BrandListItem[]>([]);
 
-  const showDeleteConfirm = (id: number) => {
+  const showDeleteConfirm = (item: BrandListItem) => {
     confirm({
       title: '是否删除记录?',
-      icon: <ExclamationCircleOutlined />,
+      icon: <ExclamationCircleOutlined/>,
       content: '删除的记录不能恢复,请确认!',
       onOk() {
-        handleRemoveOne(id).then((r) => {
+        handleRemove([item]).then((r) => {
           actionRef.current?.reloadAndRest?.();
         });
       },
-      onCancel() {},
+      onCancel() {
+      },
     });
   };
 
@@ -122,24 +105,62 @@ const TableList: React.FC<{}> = () => {
       title: '品牌名',
       dataIndex: 'name',
       render: (dom, entity) => {
-        return <a onClick={() => setRow(entity)}>{dom}</a>;
+        return <a onClick={() => {
+          setCurrentRow(entity);
+          setShowDetail(true);
+        }}>{dom}</a>;
+      },
+    },
+    {
+      title: '首字母',
+      dataIndex: 'firstLetter',
+      hideInSearch: true,
+    },
+    {
+      title: '排序',
+      dataIndex: 'sort',
+      hideInSearch: true,
+    },
+    {
+      title: '是否为品牌制造商',
+      dataIndex: 'factoryStatus',
+      valueEnum: {
+        0: {text: '否', status: 'Error'},
+        1: {text: '是', status: 'Success'},
+      },
+    },
+    {
+      title: '是否显示',
+      dataIndex: 'showStatus',
+      valueEnum: {
+        0: {text: '否', status: 'Error'},
+        1: {text: '是', status: 'Success'},
       },
     },
     {
       title: '产品数量',
       dataIndex: 'productCount',
+      hideInSearch: true,
     },
     {
       title: '产品评论数量',
       dataIndex: 'productCommentCount',
+      hideInSearch: true,
     },
     {
       title: '品牌logo',
       dataIndex: 'logo',
+      valueType: 'image',
+      fieldProps: {width: 100, height: 80},
+      hideInSearch: true,
     },
     {
       title: '专区大图',
       dataIndex: 'bigPic',
+      valueType: 'image',
+      hideInSearch: true,
+      fieldProps: {width: 100, height: 80}
+
     },
     {
       title: '品牌故事',
@@ -154,10 +175,10 @@ const TableList: React.FC<{}> = () => {
         <>
           <Button
             type="primary"
-            size="small"
+            icon={<EditOutlined/>}
             onClick={() => {
               handleUpdateModalVisible(true);
-              setStepFormValues(record);
+              setCurrentRow(record);
             }}
           >
             编辑
@@ -166,9 +187,9 @@ const TableList: React.FC<{}> = () => {
           <Button
             type="primary"
             danger
-            size="small"
+            icon={<DeleteOutlined/>}
             onClick={() => {
-              showDeleteConfirm(record.id);
+              showDeleteConfirm(record);
             }}
           >
             删除
@@ -189,10 +210,10 @@ const TableList: React.FC<{}> = () => {
         }}
         toolBarRender={() => [
           <Button type="primary" onClick={() => handleModalVisible(true)}>
-            <PlusOutlined /> 新建品牌
+            <PlusOutlined/> 新建品牌
           </Button>,
         ]}
-        request={(params, sorter, filter) => queryBrand({ ...params, sorter, filter })}
+        request={queryBrand}
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows) => setSelectedRows(selectedRows),
@@ -226,7 +247,7 @@ const TableList: React.FC<{}> = () => {
           const success = await handleAdd(value);
           if (success) {
             handleModalVisible(false);
-            setStepFormValues({});
+            setCurrentRow(undefined);
             if (actionRef.current) {
               actionRef.current.reload();
             }
@@ -234,7 +255,9 @@ const TableList: React.FC<{}> = () => {
         }}
         onCancel={() => {
           handleModalVisible(false);
-          setStepFormValues({});
+          if (!showDetail) {
+            setCurrentRow(undefined);
+          }
         }}
         createModalVisible={createModalVisible}
       />
@@ -245,7 +268,7 @@ const TableList: React.FC<{}> = () => {
           const success = await handleUpdate(value);
           if (success) {
             handleUpdateModalVisible(false);
-            setStepFormValues({});
+            handleUpdateModalVisible(false);
             if (actionRef.current) {
               actionRef.current.reload();
             }
@@ -253,30 +276,33 @@ const TableList: React.FC<{}> = () => {
         }}
         onCancel={() => {
           handleUpdateModalVisible(false);
-          setStepFormValues({});
+          if (!showDetail) {
+            setCurrentRow(undefined);
+          }
         }}
         updateModalVisible={updateModalVisible}
-        currentData={stepFormValues}
+        values={currentRow || {}}
       />
       <Drawer
         width={600}
-        visible={!!row}
+        visible={showDetail}
         onClose={() => {
-          setRow(undefined);
+          setCurrentRow(undefined);
+          setShowDetail(false)
         }}
         closable={false}
       >
-        {row?.id && (
+        {currentRow?.id && (
           <ProDescriptions<BrandListItem>
             column={2}
-            title={row?.id}
+            title={currentRow?.id}
             request={async () => ({
-              data: row || {},
+              data: currentRow || {},
             })}
             params={{
-              id: row?.id,
+              id: currentRow?.id,
             }}
-            columns={columns}
+            columns={columns as ProDescriptionsItemProps<BrandListItem>[]}
           />
         )}
       </Drawer>

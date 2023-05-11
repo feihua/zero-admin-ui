@@ -86,7 +86,7 @@ const UpdateProductForm: React.FC<UpdateFormProps> = (props) => {
       forceRender
       destroyOnClose
       title="修改商品"
-      visible={updateModalVisible}
+      open={updateModalVisible}
       {...modalFooter}
     >
       <Form {...formLayout} form={form} onFinish={handleFinish}>

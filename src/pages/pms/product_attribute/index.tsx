@@ -1,30 +1,26 @@
-import {PlusOutlined, ExclamationCircleOutlined, DeleteOutlined, EditOutlined} from '@ant-design/icons';
+import {PlusOutlined, ExclamationCircleOutlined, EditOutlined, DeleteOutlined} from '@ant-design/icons';
 import {Button, Divider, message, Drawer, Modal} from 'antd';
 import React, {useState, useRef} from 'react';
 import {PageContainer, FooterToolbar} from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
 import type {ProColumns, ActionType} from '@ant-design/pro-table';
 import ProDescriptions, {ProDescriptionsItemProps} from '@ant-design/pro-descriptions';
-import CreateReasonForm from './components/CreateReasonForm';
-import UpdateReasonForm from './components/UpdateReasonForm';
-import type {ReturnReasonListItem} from './data.d';
-import {
-  queryReturnReasonList,
-  updateReturnReason,
-  addReturnReason,
-  removeReturnReason,
-} from './service';
+import CreateAttributeForm from './components/CreateAttributeForm';
+import UpdateAttributeForm from './components/UpdateAttributeForm';
+import type {AttributeListItem} from './data.d';
+import {queryAttribute, updateAttribute, addAttribute, removeAttribute} from './service';
 
-const { confirm } = Modal;
+
+const {confirm} = Modal;
 
 /**
  * 添加节点
  * @param fields
  */
-const handleAdd = async (fields: ReturnReasonListItem) => {
+const handleAdd = async (fields: AttributeListItem) => {
   const hide = message.loading('正在添加');
   try {
-    await addReturnReason({ ...fields });
+    await addAttribute({...fields});
     hide();
     message.success('添加成功');
     return true;
@@ -39,10 +35,10 @@ const handleAdd = async (fields: ReturnReasonListItem) => {
  * 更新节点
  * @param fields
  */
-const handleUpdate = async (fields: ReturnReasonListItem) => {
+const handleUpdate = async (fields: AttributeListItem) => {
   const hide = message.loading('正在更新');
   try {
-    await updateReturnReason(fields);
+    await updateAttribute(fields);
     hide();
 
     message.success('更新成功');
@@ -59,11 +55,11 @@ const handleUpdate = async (fields: ReturnReasonListItem) => {
  *  删除节点
  * @param selectedRows
  */
-const handleRemove = async (selectedRows: ReturnReasonListItem[]) => {
+const handleRemove = async (selectedRows: AttributeListItem[]) => {
   const hide = message.loading('正在删除');
   if (!selectedRows) return true;
   try {
-    await removeReturnReason({
+    await removeAttribute({
       ids: selectedRows.map((row) => row.id),
     });
     hide();
@@ -76,15 +72,15 @@ const handleRemove = async (selectedRows: ReturnReasonListItem[]) => {
   }
 };
 
-const ReasonTableList: React.FC = () => {
+const TableList: React.FC = () => {
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
   const [showDetail, setShowDetail] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
-  const [currentRow, setCurrentRow] = useState<ReturnReasonListItem>();
-  const [selectedRowsState, setSelectedRows] = useState<ReturnReasonListItem[]>([]);
+  const [currentRow, setCurrentRow] = useState<AttributeListItem>();
+  const [selectedRowsState, setSelectedRows] = useState<AttributeListItem[]>([]);
 
-  const showDeleteConfirm = (item: ReturnReasonListItem) => {
+  const showDeleteConfirm = (item: AttributeListItem) => {
     confirm({
       title: '是否删除记录?',
       icon: <ExclamationCircleOutlined/>,
@@ -99,14 +95,14 @@ const ReasonTableList: React.FC = () => {
     });
   };
 
-  const columns: ProColumns<ReturnReasonListItem>[] = [
+  const columns: ProColumns<AttributeListItem>[] = [
     {
       title: '编号',
       dataIndex: 'id',
       hideInSearch: true,
     },
     {
-      title: '退货类型',
+      title: '分类名称',
       dataIndex: 'name',
       render: (dom, entity) => {
         return <a onClick={() => {
@@ -116,24 +112,16 @@ const ReasonTableList: React.FC = () => {
       },
     },
     {
-      title: '排序',
-      dataIndex: 'sort',
+      title: '属性数量',
+      dataIndex: 'attributeCount',
       hideInSearch: true,
     },
     {
-      title: '状态',
-      dataIndex: 'status',
-      valueEnum: {
-        0: {text: '禁用', status: 'Error'},
-        1: {text: '正常', status: 'Success'},
-      },
-    },
-    {
-      title: '创建时间',
-      dataIndex: 'createTime',
-      valueType: 'dateTime',
+      title: '参数数量',
+      dataIndex: 'paramCount',
       hideInSearch: true,
     },
+
     {
       title: '操作',
       dataIndex: 'option',
@@ -150,7 +138,7 @@ const ReasonTableList: React.FC = () => {
           >
             编辑
           </Button>
-          <Divider type="vertical" />
+          <Divider type="vertical"/>
           <Button
             type="primary"
             danger
@@ -168,8 +156,8 @@ const ReasonTableList: React.FC = () => {
 
   return (
     <PageContainer>
-      <ProTable<ReturnReasonListItem>
-        headerTitle="原因列表"
+      <ProTable<AttributeListItem>
+        headerTitle="分类列表"
         actionRef={actionRef}
         rowKey="id"
         search={{
@@ -177,21 +165,21 @@ const ReasonTableList: React.FC = () => {
         }}
         toolBarRender={() => [
           <Button type="primary" onClick={() => handleModalVisible(true)}>
-            <PlusOutlined/> 新建原因
+            <PlusOutlined/> 新建分类
           </Button>,
         ]}
-        request={queryReturnReasonList}
+        request={queryAttribute}
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows) => setSelectedRows(selectedRows),
         }}
-        pagination={{pageSize:10}}
+        pagination={{pageSize: 10}}
       />
       {selectedRowsState?.length > 0 && (
         <FooterToolbar
           extra={
             <div>
-              已选择 <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a> 项&nbsp;&nbsp;
+              已选择 <a style={{fontWeight: 600}}>{selectedRowsState.length}</a> 项&nbsp;&nbsp;
             </div>
           }
         >
@@ -207,8 +195,9 @@ const ReasonTableList: React.FC = () => {
         </FooterToolbar>
       )}
 
-      <CreateReasonForm
-        key={'CreateReasonForm'}
+
+      <CreateAttributeForm
+        key={'CreateAttributeForm'}
         onSubmit={async (value) => {
           const success = await handleAdd(value);
           if (success) {
@@ -228,13 +217,13 @@ const ReasonTableList: React.FC = () => {
         createModalVisible={createModalVisible}
       />
 
-      <UpdateReasonForm
-        key={'UpdateReasonForm'}
+      <UpdateAttributeForm
+        key={'UpdateAttributeForm'}
         onSubmit={async (value) => {
           const success = await handleUpdate(value);
           if (success) {
             handleUpdateModalVisible(false);
-            setCurrentRow(undefined);
+            handleUpdateModalVisible(false);
             if (actionRef.current) {
               actionRef.current.reload();
             }
@@ -250,7 +239,6 @@ const ReasonTableList: React.FC = () => {
         values={currentRow || {}}
       />
 
-
       <Drawer
         width={600}
         visible={showDetail}
@@ -261,7 +249,7 @@ const ReasonTableList: React.FC = () => {
         closable={false}
       >
         {currentRow?.id && (
-          <ProDescriptions<ReturnReasonListItem>
+          <ProDescriptions<AttributeListItem>
             column={2}
             title={currentRow?.id}
             request={async () => ({
@@ -270,7 +258,7 @@ const ReasonTableList: React.FC = () => {
             params={{
               id: currentRow?.id,
             }}
-            columns={columns as ProDescriptionsItemProps<ReturnReasonListItem>[]}
+            columns={columns as ProDescriptionsItemProps<AttributeListItem>[]}
           />
         )}
       </Drawer>
@@ -278,4 +266,4 @@ const ReasonTableList: React.FC = () => {
   );
 };
 
-export default ReasonTableList;
+export default TableList;

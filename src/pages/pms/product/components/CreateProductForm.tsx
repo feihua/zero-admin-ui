@@ -74,7 +74,7 @@ const CreateProductForm: React.FC<CreateFormProps> = (props) => {
       forceRender
       destroyOnClose
       title="新建用户"
-      visible={createModalVisible}
+      open={createModalVisible}
       {...modalFooter}
     >
       <Form {...formLayout} form={form} onFinish={handleFinish}>

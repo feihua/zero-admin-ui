@@ -1,7 +1,13 @@
 import { request } from 'umi';
 import { BrandListParams, BrandListItem } from './data.d';
 
-export async function queryBrand(params?: BrandListParams) {
+export async function queryBrand(params: BrandListParams) {
+  if (params.factoryStatus != null) {
+    params.factoryStatus = Number(params.factoryStatus)
+  }
+  if (params.showStatus != null) {
+    params.showStatus = Number(params.showStatus)
+  }
   return request('/api/product/brand/list', {
     method: 'POST',
     data: {
