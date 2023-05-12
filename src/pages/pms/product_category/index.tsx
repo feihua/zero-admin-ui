@@ -1,4 +1,4 @@
-import {PlusOutlined, ExclamationCircleOutlined} from '@ant-design/icons';
+import {PlusOutlined, ExclamationCircleOutlined, EditOutlined, DeleteOutlined} from '@ant-design/icons';
 import {Button, Divider, message, Drawer, Modal} from 'antd';
 import React, {useState, useRef} from 'react';
 import {PageContainer, FooterToolbar} from '@ant-design/pro-layout';
@@ -118,6 +118,14 @@ const TableList: React.FC = () => {
       fieldProps: {width: 100, height: 80}
     },
     {
+      title: '分类级别',
+      dataIndex: 'level',
+      valueEnum: {
+        0: {text: '一级', status: 'Success'},
+        1: {text: '二级', status: 'Success'},
+      },
+    },
+    {
       title: '产品数量',
       dataIndex: 'productCount',
     },
@@ -137,9 +145,17 @@ const TableList: React.FC = () => {
       title: '显示状态',
       dataIndex: 'showStatus',
       valueEnum: {
-        0: { text: '否', status: 'Success' },
-        1: { text: '是', status: 'Success' },
+        0: {text: '否', status: 'Success'},
+        1: {text: '是', status: 'Success'},
       },
+    },
+    {
+      title: '排序',
+      dataIndex: 'sort',
+    },
+    {
+      title: '关键字',
+      dataIndex: 'keywords',
     },
     {
       title: '描述',
@@ -153,7 +169,7 @@ const TableList: React.FC = () => {
         <>
           <Button
             type="primary"
-            size="small"
+            icon={<EditOutlined/>}
             onClick={() => {
               handleUpdateModalVisible(true);
               setCurrentRow(record);
@@ -165,7 +181,7 @@ const TableList: React.FC = () => {
           <Button
             type="primary"
             danger
-            size="small"
+            icon={<DeleteOutlined/>}
             onClick={() => {
               showDeleteConfirm(record);
             }}
@@ -183,9 +199,7 @@ const TableList: React.FC = () => {
         headerTitle="分类列表"
         actionRef={actionRef}
         rowKey="id"
-        search={{
-          labelWidth: 120,
-        }}
+        search={false}
         toolBarRender={() => [
           <Button type="primary" onClick={() => handleModalVisible(true)}>
             <PlusOutlined/> 新建分类

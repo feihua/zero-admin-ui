@@ -16,6 +16,7 @@ export interface CategoryListData {
 
 export interface CategoryListParams {
 
+  parentId?: number;
   pageSize?: number;
   currentPage?: number;
   filter?: { [key: string]: any[] };

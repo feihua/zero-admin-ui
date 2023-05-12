@@ -1,7 +1,7 @@
 import { request } from 'umi';
 import { CategoryListParams, CategoryListItem } from './data.d';
 
-export async function queryCategory(params?: CategoryListParams) {
+export async function queryCategory(params: CategoryListParams) {
   return request('/api/product/category/list', {
     method: 'POST',
     data: {
