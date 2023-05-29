@@ -180,6 +180,12 @@
         path: '/pms/productBrand/list',
         component: './pms/product_brand',
       },
+      {
+        name: '商品属性',
+        icon: 'table',
+        path: '/pms/attribute/list',
+        component: './pms/product_attribute',
+      },
     ],
   },
   {
