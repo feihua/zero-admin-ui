@@ -4,7 +4,8 @@ import React, {useState, useRef} from 'react';
 import {PageContainer, FooterToolbar} from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
 import type {ProColumns, ActionType} from '@ant-design/pro-table';
-import ProDescriptions, {ProDescriptionsItemProps} from '@ant-design/pro-descriptions';
+import ProDescriptions from '@ant-design/pro-descriptions';
+import type {ProDescriptionsItemProps} from '@ant-design/pro-descriptions';
 import CreateAttributeForm from './components/CreateAttributeForm';
 import UpdateAttributeForm from './components/UpdateAttributeForm';
 import type {AttributeListItem} from './data.d';
@@ -123,6 +124,37 @@ const TableList: React.FC = () => {
     },
 
     {
+      title: '设置',
+      dataIndex: 'option',
+      valueType: 'option',
+      render: (_, record) => (
+        <>
+          <Button
+            type="primary"
+            icon={<EditOutlined/>}
+            onClick={() => {
+              handleUpdateModalVisible(true);
+              setCurrentRow(record);
+            }}
+          >
+            属性列表
+          </Button>
+          <Divider type="vertical"/>
+          <Button
+            type="primary"
+            icon={<EditOutlined/>}
+            onClick={() => {
+              handleUpdateModalVisible(true);
+              setCurrentRow(record);
+            }}
+          >
+            参数列表
+          </Button>
+
+        </>
+      ),
+    },
+    {
       title: '操作',
       dataIndex: 'option',
       valueType: 'option',
@@ -159,6 +191,7 @@ const TableList: React.FC = () => {
       <ProTable<AttributeListItem>
         headerTitle="分类列表"
         actionRef={actionRef}
+        tableLayout={"fixed"}
         rowKey="id"
         search={{
           labelWidth: 120,
