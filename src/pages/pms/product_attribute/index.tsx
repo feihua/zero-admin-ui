@@ -8,9 +8,9 @@ import ProDescriptions from '@ant-design/pro-descriptions';
 import type {ProDescriptionsItemProps} from '@ant-design/pro-descriptions';
 import CreateAttributeForm from './components/CreateAttributeForm';
 import UpdateAttributeForm from './components/UpdateAttributeForm';
-import type {AttributeCategoryListItem} from './data.d';
-import {queryCategoryAttribute, updateAttributeCategory, addAttributeCategory, removeAttributeCategory} from './service';
-import {history} from 'umi';
+import type {AttributeListItem} from './data.d';
+import {queryAttribute, updateAttribute, addAttribute, removeAttribute} from './service';
+import {useLocation} from 'umi';
 
 const {confirm} = Modal;
 
@@ -18,10 +18,10 @@ const {confirm} = Modal;
  * 添加节点
  * @param fields
  */
-const handleAdd = async (fields: AttributeCategoryListItem) => {
+const handleAdd = async (fields: AttributeListItem) => {
   const hide = message.loading('正在添加');
   try {
-    await addAttributeCategory({...fields});
+    await addAttribute({...fields});
     hide();
     message.success('添加成功');
     return true;
@@ -36,10 +36,10 @@ const handleAdd = async (fields: AttributeCategoryListItem) => {
  * 更新节点
  * @param fields
  */
-const handleUpdate = async (fields: AttributeCategoryListItem) => {
+const handleUpdate = async (fields: AttributeListItem) => {
   const hide = message.loading('正在更新');
   try {
-    await updateAttributeCategory(fields);
+    await updateAttribute(fields);
     hide();
 
     message.success('更新成功');
@@ -56,11 +56,11 @@ const handleUpdate = async (fields: AttributeCategoryListItem) => {
  *  删除节点
  * @param selectedRows
  */
-const handleRemove = async (selectedRows: AttributeCategoryListItem[]) => {
+const handleRemove = async (selectedRows: AttributeListItem[]) => {
   const hide = message.loading('正在删除');
   if (!selectedRows) return true;
   try {
-    await removeAttributeCategory({
+    await removeAttribute({
       ids: selectedRows.map((row) => row.id),
     });
     hide();
@@ -78,10 +78,17 @@ const TableList: React.FC = () => {
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
   const [showDetail, setShowDetail] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
-  const [currentRow, setCurrentRow] = useState<AttributeCategoryListItem>();
-  const [selectedRowsState, setSelectedRows] = useState<AttributeCategoryListItem[]>([]);
+  const [currentRow, setCurrentRow] = useState<AttributeListItem>();
+  const [selectedRowsState, setSelectedRows] = useState<AttributeListItem[]>([]);
+  // const [productAttributeCategoryId, setProductAttributeCategoryId] = useState<number>(0);
 
-  const showDeleteConfirm = (item: AttributeCategoryListItem) => {
+  const location = useLocation();
+  // @ts-ignore
+  console.log(location.query.productAttributeCategoryId)
+  // @ts-ignore
+  // setProductAttributeCategoryId(location.query.productAttributeCategoryId)
+
+  const showDeleteConfirm = (item: AttributeListItem) => {
     confirm({
       title: '是否删除记录?',
       icon: <ExclamationCircleOutlined/>,
@@ -96,14 +103,14 @@ const TableList: React.FC = () => {
     });
   };
 
-  const columns: ProColumns<AttributeCategoryListItem>[] = [
+  const columns: ProColumns<AttributeListItem>[] = [
     {
       title: '编号',
       dataIndex: 'id',
       hideInSearch: true,
     },
     {
-      title: '分类名称',
+      title: '属性/参数名称',
       dataIndex: 'name',
       render: (dom, entity) => {
         return <a onClick={() => {
@@ -113,36 +120,82 @@ const TableList: React.FC = () => {
       },
     },
     {
-      title: '属性数量',
-      dataIndex: 'attributeCount',
+      title: '属性是否可选',
+      dataIndex: 'selectType',
+      hideInSearch: true,
+      valueEnum: {
+        0: {text: '唯一', status: 'Error'},
+        1: {text: '单选', status: 'Success'},
+        2: {text: '多选', status: 'Success'},
+      },
+    },
+    {
+      title: '属性值的录入方式',
+      dataIndex: 'inputType',
+      hideInSearch: true,
+      valueEnum: {
+        0: {text: '手工录入', status: 'Error'},
+        1: {text: '从列表中选取', status: 'Success'},
+      },
+    },
+    {
+      title: '可选值列表',
+      dataIndex: 'inputList',
       hideInSearch: true,
     },
     {
-      title: '参数数量',
-      dataIndex: 'paramCount',
+      title: '分类筛选样式',
+      dataIndex: 'filterType',
       hideInSearch: true,
+      hideInTable: true,
+      valueEnum: {
+        0: {text: '普通', status: 'Error'},
+        1: {text: '颜色', status: 'Success'},
+      },
     },
-
     {
-      title: '设置',
-      dataIndex: 'option',
-      valueType: 'option',
-      render: (_, record) => (
-        <>
-          <Button
-            type="primary"
-            icon={<EditOutlined/>}
-            onClick={() => {
-              // handleUpdateModalVisible(true);
-              // setCurrentRow(record);
-              history.push(`/pms/attribute/list?productAttributeCategoryId=` + record.id);
-            }}
-          >
-            属性列表/参数列表
-          </Button>
-
-        </>
-      ),
+      title: '检索类型',
+      dataIndex: 'searchType',
+      hideInSearch: true,
+      hideInTable: true,
+      valueEnum: {
+        0: {text: '不需要进行检索', status: 'Error'},
+        1: {text: '关键字检索', status: 'Success'},
+        2: {text: '范围检索', status: 'Success'},
+      },
+    },
+    {
+      title: '相同属性产品是否关联',
+      dataIndex: 'relatedStatus',
+      hideInSearch: true,
+      hideInTable: true,
+      valueEnum: {
+        0: {text: '不关联', status: 'Error'},
+        1: {text: '关联', status: 'Success'},
+      },
+    },
+    {
+      title: '是否支持手动新增',
+      dataIndex: 'handAddStatus',
+      hideInSearch: true,
+      hideInTable: true,
+      valueEnum: {
+        0: {text: '不支持', status: 'Error'},
+        1: {text: '支持', status: 'Success'},
+      },
+    },
+    {
+      title: '属性的类型',
+      dataIndex: 'type',
+      valueEnum: {
+        0: {text: '规格', status: 'Error'},
+        1: {text: '参数', status: 'Success'},
+      },
+    },
+    {
+      title: '排序',
+      dataIndex: 'sort',
+      hideInSearch: true,
     },
     {
       title: '操作',
@@ -178,20 +231,37 @@ const TableList: React.FC = () => {
 
   return (
     <PageContainer>
-      <ProTable<AttributeCategoryListItem>
-        headerTitle="分类列表"
+      <ProTable<AttributeListItem>
+        headerTitle="属性详情"
         actionRef={actionRef}
-        tableLayout={"fixed"}
         rowKey="id"
         search={{
           labelWidth: 120,
         }}
         toolBarRender={() => [
           <Button type="primary" onClick={() => handleModalVisible(true)}>
-            <PlusOutlined/> 新建分类
+            <PlusOutlined/> 新建
           </Button>,
         ]}
-        request={queryCategoryAttribute}
+        request={(params) => {
+          return queryAttribute({
+            ...params,
+            // @ts-ignore
+            productAttributeCategoryId: location.query.productAttributeCategoryId,
+          }).then((res) => {
+            console.log(res)
+            if (res.code === '000000') {
+              return {
+                data: res.data,
+                total: res.total,
+                pageSize: res.pageSize,
+                current: res.current,
+              };
+            } else {
+              return message.error(res.msg);
+            }
+          });
+        }}
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows) => setSelectedRows(selectedRows),
@@ -272,7 +342,7 @@ const TableList: React.FC = () => {
         closable={false}
       >
         {currentRow?.id && (
-          <ProDescriptions<AttributeCategoryListItem>
+          <ProDescriptions<AttributeListItem>
             column={2}
             title={currentRow?.id}
             request={async () => ({
@@ -281,7 +351,7 @@ const TableList: React.FC = () => {
             params={{
               id: currentRow?.id,
             }}
-            columns={columns as ProDescriptionsItemProps<AttributeCategoryListItem>[]}
+            columns={columns as ProDescriptionsItemProps<AttributeListItem>[]}
           />
         )}
       </Drawer>

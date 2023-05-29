@@ -1,7 +1,7 @@
 import {request} from 'umi';
-import {AttributeListParams, AttributeListItem} from './data.d';
+import {AttributeCategoryListParams, AttributeCategoryListItem} from './data.d';
 
-export async function queryAttribute(params: AttributeListParams) {
+export async function queryCategoryAttribute(params: AttributeCategoryListParams) {
 
   return request('/api/product/attributecategory/list', {
     method: 'POST',
@@ -11,7 +11,7 @@ export async function queryAttribute(params: AttributeListParams) {
   });
 }
 
-export async function removeAttribute(params: { ids: number[] }) {
+export async function removeAttributeCategory(params: { ids: number[] }) {
   return request('/api/product/attributecategory/delete', {
     method: 'POST',
     data: {
@@ -20,7 +20,7 @@ export async function removeAttribute(params: { ids: number[] }) {
   });
 }
 
-export async function addAttribute(params: AttributeListItem) {
+export async function addAttributeCategory(params: AttributeCategoryListItem) {
   return request('/api/product/attributecategory/add', {
     method: 'POST',
     data: {
@@ -29,7 +29,7 @@ export async function addAttribute(params: AttributeListItem) {
   });
 }
 
-export async function updateAttribute(params: AttributeListItem) {
+export async function updateAttributeCategory(params: AttributeCategoryListItem) {
   return request('/api/product/attributecategory/update', {
     method: 'POST',
     data: {
