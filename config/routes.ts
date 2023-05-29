@@ -172,7 +172,7 @@
         name: '属性分类',
         icon: 'table',
         path: '/pms/attributecategory/list',
-        component: './pms/product_attribute',
+        component: './pms/product_attribute_category',
       },
       {
         name: '品牌管理',
