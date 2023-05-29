@@ -70,7 +70,10 @@ const MemberList: React.FC<{}> = () => {
       title: '会员名',
       dataIndex: 'username',
       render: (dom, entity) => {
-        return <a onClick={() => setCurrentRow(entity)}>{dom}</a>;
+        return <a onClick={() => {
+          setCurrentRow(entity);
+          setShowDetail(true);
+        }}>{dom}</a>;
       },
     },
     {
