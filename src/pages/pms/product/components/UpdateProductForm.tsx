@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react';
-import { Form, Input, Modal } from 'antd';
-import { ProductListItem } from '../data.d';
+import {Form, Input, Modal} from 'antd';
+import type {ProductListItem} from '../data.d';
 
 export interface UpdateFormProps {
   onCancel: () => void;
-  onSubmit: (values: Partial<ProductListItem>) => void;
+  onSubmit: (values: ProductListItem) => void;
   updateModalVisible: boolean;
   currentData: Partial<ProductListItem>;
 }
@@ -41,7 +41,7 @@ const UpdateProductForm: React.FC<UpdateFormProps> = (props) => {
 
   const handleFinish = (values: { [key: string]: any }) => {
     if (onSubmit) {
-      onSubmit(values);
+      onSubmit(values as ProductListItem);
     }
   };
 

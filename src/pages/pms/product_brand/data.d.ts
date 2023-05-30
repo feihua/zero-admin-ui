@@ -1,6 +1,6 @@
 export interface BrandListItem {
   id: number;
-
+  name: string;
 }
 
 export interface BrandListPagination {
@@ -18,7 +18,7 @@ export interface BrandListParams {
   factoryStatus?: number;
   showStatus?: number;
   pageSize?: number;
-  currentPage?: number;
+  current?: number;
   filter?: { [key: string]: any[] };
   sorter?: { [key: string]: any };
 
