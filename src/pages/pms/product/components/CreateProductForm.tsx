@@ -1,11 +1,17 @@
 import React, {useEffect, useState} from 'react';
-import {Button, Form, Modal, Input, Steps, Select, InputNumber, TreeSelect, message} from 'antd';
+import {
+  Button, Form, Modal, Input, Steps, Select, InputNumber, TreeSelect, message, Cascader,
+  Switch, Radio, Checkbox, RadioChangeEvent, DatePicker, Transfer
+} from 'antd';
 import type {ProductListItem} from '../data.d';
 import {queryBrand} from "@/pages/pms/product_brand/service";
 import type {BrandListItem} from "@/pages/pms/product_brand/data";
 import {queryCategory} from "@/pages/pms/product_category/service";
-import {CategoryListItem} from "@/pages/pms/product_category/data";
+import type {CategoryListItem} from "@/pages/pms/product_category/data";
 import {tree} from "@/utils/utils";
+import {queryCategoryAttribute} from "@/pages/pms/product_attribute_category/service";
+import {AttributeCategoryListItem} from "@/pages/pms/product_attribute_category/data";
+import type {TransferDirection} from "antd/es/transfer";
 
 export interface CreateFormProps {
   onCancel: () => void;
@@ -43,6 +49,7 @@ const steps = [
 
 const CreateProductForm: React.FC<CreateFormProps> = (props) => {
   const [current, setCurrent] = useState(0);
+  const [promotionTypes, setPromotionTypes] = useState(0);
 
   const next = () => {
     setCurrent(current + 1);
@@ -66,6 +73,7 @@ const CreateProductForm: React.FC<CreateFormProps> = (props) => {
 
   const [brandListItem, setBrandListItem] = useState<BrandListItem[]>([]);
   const [categoryListItem, setCategoryListItem] = useState<CategoryListItem[]>([]);
+  const [attributeCategoryListItem, setAttributeCategoryListItem] = useState<AttributeCategoryListItem[]>([]);
 
   useEffect(() => {
     if (form && !createModalVisible) {
@@ -95,6 +103,22 @@ const CreateProductForm: React.FC<CreateFormProps> = (props) => {
           message.error(res.msg);
         }
       });
+
+      queryCategoryAttribute({}).then((res) => {
+        if (res.code === '000000') {
+          const map = res.data.map((item: { id: any; name: any; title: any; parentId: any }) => ({
+            value: item.id,
+            id: item.id,
+            label: item.name,
+            title: item.name,
+            parentId: item.parentId,
+          }));
+
+          setAttributeCategoryListItem(map);
+        } else {
+          message.error(res.msg);
+        }
+      });
     }
   }, [props.createModalVisible]);
 
@@ -110,6 +134,53 @@ const CreateProductForm: React.FC<CreateFormProps> = (props) => {
     }
   };
 
+  const options = [
+    {label: '无忧退货', value: '1'},
+    {label: '快速退款', value: '2'},
+    {label: '免费包邮', value: '3'},
+  ];
+
+  const onChange = (e: RadioChangeEvent) => {
+    console.log('radio checked', e.target.value);
+    setPromotionTypes(e.target.value);
+    console.log('radio checked', promotionTypes);
+  };
+
+  interface RecordType {
+    key: string;
+    title: string;
+    description: string;
+  }
+
+  const mockData: RecordType[] = Array.from({length: 20}).map((_, i) => ({
+    key: i.toString(),
+    title: `content${i + 1}`,
+    description: `description of content${i + 1}`,
+  }));
+
+  const initialTargetKeys = mockData.filter((item) => Number(item.key) > 10).map((item) => item.key);
+
+  const [targetKeys, setTargetKeys] = useState(initialTargetKeys);
+  const [selectedKeys, setSelectedKeys] = useState<string[]>([]);
+
+  const onChange1 = (nextTargetKeys: string[], direction: TransferDirection, moveKeys: string[]) => {
+    console.log('targetKeys:', nextTargetKeys);
+    console.log('direction:', direction);
+    console.log('moveKeys:', moveKeys);
+    setTargetKeys(nextTargetKeys);
+  };
+
+  const onSelectChange = (sourceSelectedKeys: string[], targetSelectedKeys: string[]) => {
+    console.log('sourceSelectedKeys:', sourceSelectedKeys);
+    console.log('targetSelectedKeys:', targetSelectedKeys);
+    setSelectedKeys([...sourceSelectedKeys, ...targetSelectedKeys]);
+  };
+
+  const onScroll = (direction: TransferDirection, e: React.SyntheticEvent<HTMLUListElement>) => {
+    console.log('direction:', direction);
+    console.log('target:', e.target);
+  };
+
   const renderContent = () => {
     return (
       <>
@@ -118,13 +189,17 @@ const CreateProductForm: React.FC<CreateFormProps> = (props) => {
           {current === 0 && (
             <div>
               <FormItem name="productCategoryId" label="商品分类">
-                <TreeSelect
-                  style={{width: '100%'}}
-                  dropdownStyle={{maxHeight: 400, overflow: 'auto'}}
-                  treeData={categoryListItem}
+                {/*<TreeSelect*/}
+                {/*  style={{width: '100%'}}*/}
+                {/*  dropdownStyle={{maxHeight: 400, overflow: 'auto'}}*/}
+                {/*  treeData={categoryListItem}*/}
+                {/*  placeholder="请选择商品分类"*/}
+                {/*  treeDefaultExpandAll*/}
+                {/*/>*/}
+                <Cascader
+                  options={categoryListItem}
                   placeholder="请选择商品分类"
-                  treeDefaultExpandAll
-                />
+                ></Cascader>
               </FormItem>
               <FormItem name="name" label="商品名">
                 <Input id="update-name" placeholder={'请输入商品名'}/>
@@ -166,42 +241,115 @@ const CreateProductForm: React.FC<CreateFormProps> = (props) => {
           <div style={contentStyle}>
             {current === 1 && (
               <div>
-                <FormItem name="name" label="赠送积分">
-                  <Input id="update-name" placeholder={'请输入商品名'}/>
+                <FormItem name="giftPoint" label="赠送积分" initialValue={0}>
+                  <InputNumber style={{width: 407}}/>
                 </FormItem>
-                <FormItem name="name" label="赠送成长值">
-                  <Input id="update-name" placeholder={'请输入商品名'}/>
+                <FormItem name="giftGrowth" label="赠送成长值" initialValue={0}>
+                  <InputNumber style={{width: 407}}/>
                 </FormItem>
-                <FormItem name="name" label="积分购买限制">
-                  <Input id="update-name" placeholder={'请输入商品名'}/>
+                <FormItem name="usePointLimit" label="积分购买限制" initialValue={0}>
+                  <InputNumber style={{width: 407}}/>
                 </FormItem>
-                <FormItem name="name" label="预告商品">
-                  <Input id="update-name" placeholder={'请输入商品名'}/>
+                <FormItem name="previewStatus" label="预告商品" style={{textAlign: "left"}}>
+                  <Switch/>
                 </FormItem>
-                <FormItem name="name" label="商品上架">
-                  <Input id="update-name" placeholder={'请输入商品名'}/>
+                <FormItem name="publishStatus" label="商品上架" style={{textAlign: "left"}}>
+                  <Switch/>
                 </FormItem>
-                <FormItem name="name" label="商品推荐">
-                  <Input id="update-name" placeholder={'请输入商品名'}/>
+                <FormItem name="recommandStatus" label="商品推荐" style={{textAlign: "left"}}>
+                  <Switch/>
                 </FormItem>
-                <FormItem name="name" label="服务保证">
-                  <Input id="update-name" placeholder={'请输入商品名'}/>
+                <FormItem name="serviceIds" label="服务保证" style={{textAlign: "left"}}>
+                  <Checkbox.Group options={options}/>
                 </FormItem>
-                <FormItem name="name" label="详细页标题">
-                  <Input id="update-name" placeholder={'请输入商品名'}/>
+                <FormItem name="detailTitle" label="详细页标题">
+                  <Input id="update-detailTitle" placeholder={'请输入详细页标题'}/>
                 </FormItem>
-                <FormItem name="name" label="详细页描述">
-                  <Input id="update-name" placeholder={'请输入商品名'}/>
+                <FormItem name="detailDesc" label="详细页描述">
+                  <Input id="update-detailDesc" placeholder={'请输入详细页描述'}/>
                 </FormItem>
-                <FormItem name="name" label="关键字">
-                  <Input id="update-name" placeholder={'请输入商品名'}/>
+                <FormItem name="keywords" label="关键字">
+                  <Input id="update-keywords" placeholder={'请输入关键字'}/>
                 </FormItem>
-                <FormItem name="name" label="备注">
-                  <Input id="update-name" placeholder={'请输入商品名'}/>
+                <FormItem name="note" label="备注">
+                  <Input.TextArea rows={2} placeholder={'请输入备注'}/>
                 </FormItem>
-                <FormItem name="name" label="选择优惠方式">
-                  <Input id="update-name" placeholder={'请输入商品名'}/>
+                <FormItem name="promotionType" label="选择优惠方式">
+                  <Radio.Group defaultValue={0} size="small" buttonStyle="solid" onChange={onChange}>
+                    <Radio.Button value={0}>无优惠</Radio.Button>
+                    <Radio.Button value={1}>特惠促销</Radio.Button>
+                    <Radio.Button value={2}>会员价格</Radio.Button>
+                    <Radio.Button value={3}>阶梯价格</Radio.Button>
+                    <Radio.Button value={4}>满减价格</Radio.Button>
+                    {/*<Radio.Button value={5}>限时购</Radio.Button>*/}
+                  </Radio.Group>
                 </FormItem>
+
+                {promotionTypes === 1 && (
+                  <div>
+                    <FormItem name="startTime" label="开始时间" style={{textAlign: "left"}}>
+                      <DatePicker showTime placeholder={'请输入开始时间'}/>
+                    </FormItem>
+                    <FormItem name="endTIme" label="结束时间" style={{textAlign: "left"}}>
+                      <DatePicker showTime placeholder={'请输入结束时间'}/>
+                    </FormItem>
+                    <FormItem name="keywords" label="促销价格" style={{textAlign: "left"}}>
+                      <InputNumber addonAfter={'元'}/>
+                    </FormItem>
+                  </div>
+                )}
+                {promotionTypes === 2 && (
+                  <div>
+                    <FormItem name="keywords" label="黄金会员" initialValue={100} style={{textAlign: "left"}}>
+                      <InputNumber addonAfter={'元'}/>
+                    </FormItem>
+                    <FormItem name="keywords" label="白金会员" initialValue={200} style={{textAlign: "left"}}>
+                      <InputNumber addonAfter={'元'}/>
+                    </FormItem>
+                    <FormItem name="keywords" label="钻石会员" initialValue={300} style={{textAlign: "left"}}>
+                      <InputNumber addonAfter={'元'}/>
+                    </FormItem>
+                  </div>
+                )}
+                {promotionTypes === 3 && (
+                  <>
+                    <FormItem name="keywords" label="满减">
+                      <Input id="update-keywords" placeholder={'100-10'}/>
+                    </FormItem>
+                    <FormItem name="keywords" label="满减">
+                      <Input id="update-keywords" placeholder={'500-60'}/>
+                    </FormItem>
+                    <FormItem name="keywords" label="满减">
+                      <Input id="update-keywords" placeholder={'1000-150'}/>
+                    </FormItem>
+                  </>
+                )}
+                {promotionTypes === 4 && (
+                  <div>
+                    <FormItem name="keywords" label="满减">
+                      <Input id="update-keywords" placeholder={'100-10'}/>
+                    </FormItem>
+                    <FormItem name="keywords" label="满减">
+                      <Input id="update-keywords" placeholder={'500-60'}/>
+                    </FormItem>
+                    <FormItem name="keywords" label="满减">
+                      <Input id="update-keywords" placeholder={'1000-150'}/>
+                    </FormItem>
+                  </div>
+                )}
+                {promotionTypes === 5 && (
+                  <div>
+                    <FormItem name="keywords" label="开始时间">
+                      <Input id="update-keywords" placeholder={'请输入关键字'}/>
+                    </FormItem>
+                    <FormItem name="keywords" label="结束时间">
+                      <Input id="update-keywords" placeholder={'请输入关键字'}/>
+                    </FormItem>
+                    <FormItem name="keywords" label="促销价格">
+                      <Input id="update-keywords" placeholder={'请输入关键字'}/>
+                    </FormItem>
+                  </div>
+                )}
               </div>
             )}
           </div>
@@ -209,12 +357,15 @@ const CreateProductForm: React.FC<CreateFormProps> = (props) => {
             {current === 2 && (
               <div>
                 <FormItem name="name" label="属性类型">
-                  <Input id="update-name" placeholder={'请输入商品名'}/>
+                  <TreeSelect
+                    style={{width: '100%'}}
+                    dropdownStyle={{maxHeight: 400, overflow: 'auto'}}
+                    treeData={attributeCategoryListItem}
+                    placeholder="请选择属性类型"
+                    treeDefaultExpandAll
+                  />
                 </FormItem>
                 <FormItem name="name" label="商品规格">
-                  <Input id="update-name" placeholder={'请输入商品名'}/>
-                </FormItem>
-                <FormItem name="name" label="属性图片">
                   <Input id="update-name" placeholder={'请输入商品名'}/>
                 </FormItem>
                 <FormItem name="name" label="商品参数">
@@ -233,42 +384,26 @@ const CreateProductForm: React.FC<CreateFormProps> = (props) => {
           <div style={contentStyle}>
             {current === 3 && (
               <div>
-                <FormItem name="name" label="商品分类">
-                  <Input id="update-name" placeholder={'请输入商品名'}/>
-                </FormItem>
-                <FormItem name="name" label="商品名">
-                  <Input id="update-name" placeholder={'请输入商品名'}/>
-                </FormItem>
-                <FormItem name="name" label="副标题">
-                  <Input id="update-name" placeholder={'请输入商品名'}/>
-                </FormItem>
-                <FormItem name="name" label="商品品牌">
-                  <Input id="update-name" placeholder={'请输入商品名'}/>
-                </FormItem>
-                <FormItem name="name" label="商品介绍">
-                  <Input id="update-name" placeholder={'请输入商品名'}/>
-                </FormItem>
-                <FormItem name="name" label="商品货号">
-                  <Input id="update-name" placeholder={'请输入商品名'}/>
-                </FormItem>
-                <FormItem name="name" label="商品售价">
-                  <Input id="update-name" placeholder={'请输入商品名'}/>
-                </FormItem>
-                <FormItem name="name" label="市场价">
-                  <Input id="update-name" placeholder={'请输入商品名'}/>
-                </FormItem>
-                <FormItem name="name" label="商品库存">
-                  <Input id="update-name" placeholder={'请输入商品名'}/>
-                </FormItem>
-                <FormItem name="name" label="计量单位">
-                  <Input id="update-name" placeholder={'请输入商品名'}/>
-                </FormItem>
-                <FormItem name="name" label="商品重量">
-                  <Input id="update-name" placeholder={'请输入商品名'}/>
-                </FormItem>
-                <FormItem name="name" label="商品排序">
-                  <Input id="update-name" placeholder={'请输入商品名'}/>
-                </FormItem>
+                <Transfer
+                  dataSource={mockData}
+                  titles={['Source', 'Target']}
+                  targetKeys={targetKeys}
+                  selectedKeys={selectedKeys}
+                  onChange={onChange1}
+                  onSelectChange={onSelectChange}
+                  onScroll={onScroll}
+                  render={(item) => item.title}
+                />
+                <Transfer
+                  dataSource={mockData}
+                  titles={['Source', 'Target']}
+                  targetKeys={targetKeys}
+                  selectedKeys={selectedKeys}
+                  onChange={onChange1}
+                  onSelectChange={onSelectChange}
+                  onScroll={onScroll}
+                  render={(item) => item.title}
+                />
               </div>
             )}
           </div>
