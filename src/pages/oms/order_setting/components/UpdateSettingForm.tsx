@@ -1,18 +1,19 @@
 import React, {useEffect} from 'react';
-import { Form, Input, Modal } from 'antd';
-import { SettingListItem } from '../data.d';
+import {Form, Input, InputNumber, Modal, Space, Tooltip} from 'antd';
+import type {SettingListItem} from '../data.d';
 
 export interface UpdateFormProps {
   onCancel: () => void;
-  onSubmit: (values: Partial<SettingListItem>) => void;
+  onSubmit: (values: SettingListItem) => void;
   updateModalVisible: boolean;
   currentData: Partial<SettingListItem>;
 }
+
 const FormItem = Form.Item;
 
 const formLayout = {
-  labelCol: { span: 10 },
-  wrapperCol: { span: 10 },
+  labelCol: {span: 7},
+  wrapperCol: {span: 17},
 };
 
 const UpdateSettingForm: React.FC<UpdateFormProps> = (props) => {
@@ -26,15 +27,9 @@ const UpdateSettingForm: React.FC<UpdateFormProps> = (props) => {
   } = props;
 
   useEffect(() => {
-    if (form && !updateModalVisible) {
-      form.resetFields();
-    }
-  }, [props.updateModalVisible]);
-
-  useEffect(() => {
     if (currentData) {
       form.setFieldsValue({
-        ...currentData,
+        ...props.currentData,
       });
     }
   }, [props.currentData]);
@@ -46,7 +41,7 @@ const UpdateSettingForm: React.FC<UpdateFormProps> = (props) => {
 
   const handleFinish = (values: { [key: string]: any }) => {
     if (onSubmit) {
-      onSubmit(values);
+      onSubmit(values as SettingListItem);
     }
   };
 
@@ -58,37 +53,77 @@ const UpdateSettingForm: React.FC<UpdateFormProps> = (props) => {
           label="主键"
           hidden
         >
-          <Input id="update-id" placeholder="请输入主键" />
+          <Input id="update-id" placeholder="请输入主键"/>
         </FormItem>
-        <FormItem
-          name="flashOrderOvertime"
-          label="秒杀订单超时关闭时间(分)"
-        >
-          <Input id="update-flashOrderOvertime" placeholder={'请输入秒杀订单超时关闭时间(分)'}/>
+        <FormItem label="秒杀订单超过">
+          <Space>
+            <FormItem
+              name="flashOrderOvertime"
+              noStyle
+              rules={[{required: true, message: '请输入秒杀订单超时关闭时间(分)!'}]}
+            >
+              <InputNumber addonAfter={'分'}/>
+            </FormItem>
+            <Tooltip>
+              未付款，订单自动关闭
+            </Tooltip>
+          </Space>
         </FormItem>
-        <FormItem
-          name="normalOrderOvertime"
-          label="正常订单超时时间(分)"
-        >
-          <Input id="update-normalOrderOvertime" placeholder={'请输入正常订单超时时间(分)'}/>
+        <FormItem label="正常订单超过">
+          <Space>
+            <FormItem
+              name="normalOrderOvertime"
+              noStyle
+              rules={[{required: true, message: '请输入正常订单超时时间(分)!'}]}
+            >
+              <InputNumber addonAfter={'分'}/>
+            </FormItem>
+            <Tooltip>
+              未付款，订单自动关闭
+            </Tooltip>
+          </Space>
         </FormItem>
-        <FormItem
-          name="confirmOvertime"
-          label="发货后自动确认收货时间（天）"
-        >
-          <Input id="update-confirmOvertime" placeholder={'请输入发货后自动确认收货时间（天）'}/>
+        <FormItem label="发货时间超过">
+          <Space>
+            <FormItem
+              name="confirmOvertime"
+              noStyle
+              rules={[{required: true, message: '请输入发货后自动确认收货时间（天）!'}]}
+            >
+              <InputNumber addonAfter={'天'}/>
+            </FormItem>
+            <Tooltip>
+              未收货，订单自动完成
+            </Tooltip>
+          </Space>
         </FormItem>
-        <FormItem
-          name="finishOvertime"
-          label="自动完成交易时间（天）"
-        >
-          <Input id="update-finishOvertime" placeholder={'请输入自动完成交易时间（天）'}/>
+        <FormItem label="订单完成超过">
+          <Space>
+            <FormItem
+              name="finishOvertime"
+              noStyle
+              rules={[{required: true, message: '请输入自动完成交易时间（天）!'}]}
+            >
+              <InputNumber addonAfter={'天'}/>
+            </FormItem>
+            <Tooltip>
+              自动结束交易，不能申请售后
+            </Tooltip>
+          </Space>
         </FormItem>
-        <FormItem
-          name="commentOvertime"
-          label="订单完成后自动好评时间（天）"
-        >
-          <Input id="update-commentOvertime" placeholder={'请输入订单完成后自动好评时间（天）'}/>
+        <FormItem label="订单完成超过">
+          <Space>
+            <FormItem
+              name="commentOvertime"
+              noStyle
+              rules={[{required: true, message: '请输入订单完成后自动好评时间（天）!'}]}
+            >
+              <InputNumber addonAfter={'天'}/>
+            </FormItem>
+            <Tooltip>
+              自动五星好评
+            </Tooltip>
+          </Space>
         </FormItem>
       </>
     );
@@ -102,8 +137,9 @@ const UpdateSettingForm: React.FC<UpdateFormProps> = (props) => {
       forceRender
       destroyOnClose
       title="修改订单设置"
-      visible={updateModalVisible}
+      open={updateModalVisible}
       {...modalFooter}
+      width={700}
     >
       <Form
         {...formLayout}

@@ -17,7 +17,7 @@ export interface SettingListData {
 export interface SettingListParams {
 
   pageSize?: number;
-  currentPage?: number;
+  current?: number;
   filter?: { [key: string]: any[] };
   sorter?: { [key: string]: any };
 
