@@ -1,10 +1,10 @@
 import React, {useEffect} from 'react';
-import { Form, Input, Modal, Select } from 'antd';
-import { OrderListItem } from '../data.d';
+import {Form, Input, Modal, Select} from 'antd';
+import type {OrderListItem} from '../data.d';
 
 export interface UpdateFormProps {
   onCancel: () => void;
-  onSubmit: (values: Partial<OrderListItem>) => void;
+  onSubmit: (values: OrderListItem) => void;
   updateModalVisible: boolean;
   currentData: Partial<OrderListItem>;
 }
@@ -48,7 +48,7 @@ const UpdateOrderForm: React.FC<UpdateFormProps> = (props) => {
 
   const handleFinish = (values: { [key: string]: any }) => {
     if (onSubmit) {
-      onSubmit(values);
+      onSubmit(values as OrderListItem);
     }
   };
 

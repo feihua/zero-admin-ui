@@ -15,8 +15,12 @@ export interface OrderListData {
 }
 
 export interface OrderListParams {
+  payType?: number;
+  sourceType?: number;
+  status?: number;
+  orderType?: number;
   pageSize?: number;
-  currentPage?: number;
+  current?: number;
   filter?: { [key: string]: any[] };
   sorter?: { [key: string]: any };
 

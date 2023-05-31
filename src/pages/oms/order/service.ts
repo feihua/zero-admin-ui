@@ -1,7 +1,19 @@
-import { request } from 'umi';
-import { OrderListParams, OrderListItem } from './data.d';
+import {request} from 'umi';
+import type {OrderListParams, OrderListItem} from './data.d';
 
-export async function queryOrderList(params?: OrderListParams) {
+export async function queryOrderList(params: OrderListParams) {
+  if (params.payType != null) {
+    params.payType = Number(params.payType)
+  }
+  if (params.sourceType != null) {
+    params.sourceType = Number(params.sourceType)
+  }
+  if (params.status != null) {
+    params.status = Number(params.status)
+  }
+  if (params.orderType != null) {
+    params.orderType = Number(params.orderType)
+  }
   return request('/api/order/order/list', {
     method: 'POST',
     data: {
