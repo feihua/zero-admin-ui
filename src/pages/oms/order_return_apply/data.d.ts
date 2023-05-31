@@ -16,6 +16,7 @@ export interface ReturnApplyListData {
 
 export interface ReturnApplyListParams {
 
+  status?: number;
   pageSize?: number;
   currentPage?: number;
   filter?: { [key: string]: any[] };

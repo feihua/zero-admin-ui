@@ -16,7 +16,7 @@ import {
   removeReturnReason,
 } from './service';
 
-const { confirm } = Modal;
+const {confirm} = Modal;
 
 /**
  * 添加节点
@@ -25,7 +25,7 @@ const { confirm } = Modal;
 const handleAdd = async (fields: ReturnReasonListItem) => {
   const hide = message.loading('正在添加');
   try {
-    await addReturnReason({ ...fields });
+    await addReturnReason({...fields});
     hide();
     message.success('添加成功');
     return true;
@@ -151,7 +151,7 @@ const ReasonTableList: React.FC = () => {
           >
             编辑
           </Button>
-          <Divider type="vertical" />
+          <Divider type="vertical"/>
           <Button
             type="primary"
             danger
@@ -187,13 +187,13 @@ const ReasonTableList: React.FC = () => {
         rowSelection={{
           onChange: (_, selectedRows) => setSelectedRows(selectedRows),
         }}
-        pagination={{pageSize:10}}
+        pagination={{pageSize: 10}}
       />
       {selectedRowsState?.length > 0 && (
         <FooterToolbar
           extra={
             <div>
-              已选择 <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a> 项&nbsp;&nbsp;
+              已选择 <a style={{fontWeight: 600}}>{selectedRowsState.length}</a> 项&nbsp;&nbsp;
             </div>
           }
         >

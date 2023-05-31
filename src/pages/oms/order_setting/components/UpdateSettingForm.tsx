@@ -130,7 +130,7 @@ const UpdateSettingForm: React.FC<UpdateFormProps> = (props) => {
   };
 
 
-  const modalFooter = { okText: '保存', onOk: handleSubmit, onCancel };
+  const modalFooter = {okText: '保存', onOk: handleSubmit, onCancel};
 
   return (
     <Modal

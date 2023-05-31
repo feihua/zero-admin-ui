@@ -1,23 +1,24 @@
 import React, {useEffect} from 'react';
-import { Form, Input, Modal, Select } from 'antd';
-import { ReturnApplyListItem } from '../data.d';
+import {Form, Input, Modal, Select} from 'antd';
+import type {ReturnApplyListItem} from '../data.d';
 
 export interface UpdateFormProps {
   onCancel: () => void;
-  onSubmit: (values: Partial<ReturnApplyListItem>) => void;
+  onSubmit: (values: ReturnApplyListItem) => void;
   updateModalVisible: boolean;
   currentData: Partial<ReturnApplyListItem>;
 }
+
 const FormItem = Form.Item;
 
 const formLayout = {
-  labelCol: { span: 7 },
-  wrapperCol: { span: 13 },
+  labelCol: {span: 7},
+  wrapperCol: {span: 13},
 };
 
 const UpdateReturnForm: React.FC<UpdateFormProps> = (props) => {
   const [form] = Form.useForm();
-  const { Option } = Select;
+  const {Option} = Select;
 
   const {
     onSubmit,
@@ -48,7 +49,7 @@ const UpdateReturnForm: React.FC<UpdateFormProps> = (props) => {
 
   const handleFinish = (values: { [key: string]: any }) => {
     if (onSubmit) {
-      onSubmit(values);
+      onSubmit(values as ReturnApplyListItem);
     }
   };
 
@@ -60,7 +61,7 @@ const UpdateReturnForm: React.FC<UpdateFormProps> = (props) => {
           label="主键"
           hidden
         >
-          <Input id="update-id" placeholder="请输入主键" />
+          <Input id="update-id" placeholder="请输入主键"/>
         </FormItem>
         <FormItem
           name="orderSn"
@@ -115,7 +116,7 @@ const UpdateReturnForm: React.FC<UpdateFormProps> = (props) => {
   };
 
 
-  const modalFooter = { okText: '保存', onOk: handleSubmit, onCancel };
+  const modalFooter = {okText: '保存', onOk: handleSubmit, onCancel};
 
   return (
     <Modal

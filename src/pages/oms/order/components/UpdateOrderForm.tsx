@@ -8,16 +8,17 @@ export interface UpdateFormProps {
   updateModalVisible: boolean;
   currentData: Partial<OrderListItem>;
 }
+
 const FormItem = Form.Item;
 
 const formLayout = {
-  labelCol: { span: 7 },
-  wrapperCol: { span: 13 },
+  labelCol: {span: 7},
+  wrapperCol: {span: 13},
 };
 
 const UpdateOrderForm: React.FC<UpdateFormProps> = (props) => {
   const [form] = Form.useForm();
-  const { Option } = Select;
+  const {Option} = Select;
 
   const {
     onSubmit,
@@ -60,7 +61,7 @@ const UpdateOrderForm: React.FC<UpdateFormProps> = (props) => {
           label="主键"
           hidden
         >
-          <Input id="update-id" placeholder="请输入主键" />
+          <Input id="update-id" placeholder="请输入主键"/>
         </FormItem>
         <FormItem
           name="orderSn"
@@ -135,7 +136,7 @@ const UpdateOrderForm: React.FC<UpdateFormProps> = (props) => {
   };
 
 
-  const modalFooter = { okText: '保存', onOk: handleSubmit, onCancel };
+  const modalFooter = {okText: '保存', onOk: handleSubmit, onCancel};
 
   return (
     <Modal

@@ -12,12 +12,12 @@ const FormItem = Form.Item;
 
 const formLayout = {
   labelCol: {span: 7},
-  wrapperCol: { span: 13 },
+  wrapperCol: {span: 13},
 };
 
 const CreateReasonForm: React.FC<CreateFormProps> = (props) => {
   const [form] = Form.useForm();
-  const { Option } = Select;
+  const {Option} = Select;
 
   const {
     onSubmit,
@@ -78,7 +78,7 @@ const CreateReasonForm: React.FC<CreateFormProps> = (props) => {
   };
 
 
-  const modalFooter = { okText: '保存', onOk: handleSubmit, onCancel };
+  const modalFooter = {okText: '保存', onOk: handleSubmit, onCancel};
 
   return (
     <Modal

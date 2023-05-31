@@ -1,13 +1,14 @@
 import {DeleteOutlined, EditOutlined, ExclamationCircleOutlined} from '@ant-design/icons';
-import {Button, Divider, message, Drawer, Modal} from 'antd';
-import React, {useState, useRef} from 'react';
+import {Button, Divider, Drawer, message, Modal} from 'antd';
+import React, {useRef, useState} from 'react';
 import {PageContainer} from '@ant-design/pro-layout';
+import type {ActionType, ProColumns} from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
-import type {ProColumns, ActionType} from '@ant-design/pro-table';
-import ProDescriptions, {ProDescriptionsItemProps} from '@ant-design/pro-descriptions';
+import type {ProDescriptionsItemProps} from '@ant-design/pro-descriptions';
+import ProDescriptions from '@ant-design/pro-descriptions';
 import UpdateOrderForm from './components/UpdateOrderForm';
 import type {OrderListItem} from './data.d';
-import {queryOrderList, updateOrder, removeOrder} from './service';
+import {queryOrderList, removeOrder, updateOrder} from './service';
 
 
 const {confirm} = Modal;
@@ -187,7 +188,7 @@ const OrderTableList: React.FC = () => {
           >
             编辑
           </Button>
-          <Divider type="vertical" />
+          <Divider type="vertical"/>
           <Button
             type="primary"
             danger
@@ -218,7 +219,7 @@ const OrderTableList: React.FC = () => {
         rowSelection={{
           onChange: (_, selectedRows) => console.log(selectedRows),
         }}
-        pagination={{pageSize:10}}
+        pagination={{pageSize: 10}}
       />
 
 
