@@ -1,5 +1,5 @@
-import { request } from 'umi';
-import { ReturnReasonListParams, ReturnReasonListItem } from './data.d';
+import {request} from 'umi';
+import type {ReturnReasonListParams, ReturnReasonListItem} from './data.d';
 
 export async function queryReturnReasonList(params: ReturnReasonListParams) {
   if (params.status != null) {

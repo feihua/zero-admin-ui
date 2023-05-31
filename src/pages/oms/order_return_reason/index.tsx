@@ -4,7 +4,8 @@ import React, {useState, useRef} from 'react';
 import {PageContainer, FooterToolbar} from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
 import type {ProColumns, ActionType} from '@ant-design/pro-table';
-import ProDescriptions, {ProDescriptionsItemProps} from '@ant-design/pro-descriptions';
+import ProDescriptions from '@ant-design/pro-descriptions';
+import type {ProDescriptionsItemProps} from '@ant-design/pro-descriptions';
 import CreateReasonForm from './components/CreateReasonForm';
 import UpdateReasonForm from './components/UpdateReasonForm';
 import type {ReturnReasonListItem} from './data.d';
@@ -90,7 +91,7 @@ const ReasonTableList: React.FC = () => {
       icon: <ExclamationCircleOutlined/>,
       content: '删除的记录不能恢复,请确认!',
       onOk() {
-        handleRemove([item]).then((r) => {
+        handleRemove([item]).then(() => {
           actionRef.current?.reloadAndRest?.();
         });
       },
@@ -169,6 +170,7 @@ const ReasonTableList: React.FC = () => {
   return (
     <PageContainer>
       <ProTable<ReturnReasonListItem>
+        tableLayout={'fixed'}
         headerTitle="原因列表"
         actionRef={actionRef}
         rowKey="id"
@@ -176,7 +178,7 @@ const ReasonTableList: React.FC = () => {
           labelWidth: 120,
         }}
         toolBarRender={() => [
-          <Button type="primary" onClick={() => handleModalVisible(true)}>
+          <Button key={"reasonAdd"} type="primary" onClick={() => handleModalVisible(true)}>
             <PlusOutlined/> 新建原因
           </Button>,
         ]}

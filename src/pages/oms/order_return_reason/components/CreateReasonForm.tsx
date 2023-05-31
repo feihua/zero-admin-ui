@@ -49,6 +49,7 @@ const CreateReasonForm: React.FC<CreateFormProps> = (props) => {
         <FormItem
           name="name"
           label="退货类型"
+          rules={[{required: true, message: '请输入退货类型!'}]}
         >
           <Input id="update-name" placeholder={'请输入退货类型'}/>
         </FormItem>
@@ -56,6 +57,7 @@ const CreateReasonForm: React.FC<CreateFormProps> = (props) => {
           name="sort"
           label="排序"
           initialValue={1}
+          rules={[{required: true, message: '请输入排序!'}]}
         >
           <InputNumber/>
         </FormItem>
@@ -63,6 +65,7 @@ const CreateReasonForm: React.FC<CreateFormProps> = (props) => {
           name="status"
           label="状态"
           initialValue={1}
+          rules={[{required: true, message: '请选择状态!'}]}
         >
           <Select id="status" placeholder={'请选择状态'}>
             <Option value={0}>禁用</Option>
