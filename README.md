@@ -16,7 +16,7 @@ npm run dev
 
 # 3.项目预览
 
-**预览地址**
+**预览地址**http://139.159.180.129:81/mall <span  style="color: red;"> 账号：admin 密码: 123456</span>
 
 ## 3.1 用户
 
