@@ -18,9 +18,9 @@ export interface JobListData {
 
 export interface JobListParams {
 
+  delFlag?: number;
   pageSize?: number;
   current?: number;
-  currentPage?: number;
   filter?: { [key: string]: any[] };
   sorter?: { [key: string]: any };
 

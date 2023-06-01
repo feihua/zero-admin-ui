@@ -1,17 +1,11 @@
-import { request } from 'umi';
-import { JobListParams, JobListItem } from './data.d';
+import {request} from 'umi';
+import type {JobListParams, JobListItem} from './data.d';
 
-export async function queryJob(params?: JobListParams) {
+export async function queryJob(params: JobListParams) {
+  if (params.delFlag != null) {
+    params.delFlag = Number(params.delFlag)
+  }
   return request('/api/sys/job/list', {
-    method: 'POST',
-    data: {
-      ...params,
-    },
-  });
-}
-
-export async function removeJobOne(params: { id: number }) {
-  return request('/api/sys/job/delete', {
     method: 'POST',
     data: {
       ...params,

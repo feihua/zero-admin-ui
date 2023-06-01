@@ -1,15 +1,17 @@
-import { PlusOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
-import { Button, Divider, message, Input, Drawer, Modal } from 'antd';
-import React, { useState, useRef } from 'react';
-import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
-import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
+import {PlusOutlined, ExclamationCircleOutlined, EditOutlined, DeleteOutlined} from '@ant-design/icons';
+import {Button, Divider, message, Drawer, Modal} from 'antd';
+import React, {useState, useRef} from 'react';
+import {PageContainer, FooterToolbar} from '@ant-design/pro-layout';
+import ProTable from '@ant-design/pro-table';
+import type {ProColumns, ActionType} from '@ant-design/pro-table';
 import ProDescriptions from '@ant-design/pro-descriptions';
+import type {ProDescriptionsItemProps} from '@ant-design/pro-descriptions';
 import CreateJobForm from './components/CreateJobForm';
 import UpdateJobForm from './components/UpdateJobForm';
-import { JobListItem } from './data.d';
-import { queryJob, updateJob, addJob, removeJob, removeJobOne } from './service';
+import type {JobListItem} from './data.d';
+import {queryJob, updateJob, addJob, removeJob} from './service';
 
-const { confirm } = Modal;
+const {confirm} = Modal;
 
 /**
  * 添加节点
@@ -19,7 +21,7 @@ const handleAdd = async (fields: JobListItem) => {
   const hide = message.loading('正在添加');
   try {
     fields.orderNum = Number(fields.orderNum);
-    await addJob({ ...fields });
+    await addJob({...fields});
     hide();
     message.success('添加成功');
     return true;
@@ -34,11 +36,10 @@ const handleAdd = async (fields: JobListItem) => {
  * 更新节点
  * @param fields
  */
-const handleUpdate = async (fields: Partial<JobListItem>) => {
+const handleUpdate = async (fields: JobListItem) => {
   const hide = message.loading('正在更新');
   try {
-    fields.orderNum = Number(fields.orderNum);
-    await updateJob(fields as JobListItem);
+    await updateJob(fields);
     hide();
 
     message.success('更新成功');
@@ -46,26 +47,6 @@ const handleUpdate = async (fields: Partial<JobListItem>) => {
   } catch (error) {
     hide();
     message.error('更新失败请重试！');
-    return false;
-  }
-};
-
-/**
- *  删除节点(单个)
- * @param id
- */
-const handleRemoveOne = async (id: number) => {
-  const hide = message.loading('正在删除');
-  try {
-    await removeJobOne({
-      id,
-    });
-    hide();
-    message.success('删除成功，即将刷新');
-    return true;
-  } catch (error) {
-    hide();
-    message.error('删除失败，请重试');
     return false;
   }
 };
@@ -91,25 +72,26 @@ const handleRemove = async (selectedRows: JobListItem[]) => {
   }
 };
 
-const TableList: React.FC<{}> = () => {
+const JobTableList: React.FC = () => {
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
-  const [stepFormValues, setStepFormValues] = useState({});
+  const [showDetail, setShowDetail] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
-  const [row, setRow] = useState<JobListItem>();
+  const [currentRow, setCurrentRow] = useState<JobListItem>();
   const [selectedRowsState, setSelectedRows] = useState<JobListItem[]>([]);
 
-  const showDeleteConfirm = (id: number) => {
+  const showDeleteConfirm = (item: JobListItem) => {
     confirm({
       title: '是否删除记录?',
-      icon: <ExclamationCircleOutlined />,
+      icon: <ExclamationCircleOutlined/>,
       content: '删除的记录不能恢复,请确认!',
       onOk() {
-        handleRemoveOne(id).then((r) => {
+        handleRemove([item]).then(() => {
           actionRef.current?.reloadAndRest?.();
         });
       },
-      onCancel() {},
+      onCancel() {
+      },
     });
   };
 
@@ -123,7 +105,10 @@ const TableList: React.FC<{}> = () => {
       title: '职位名称',
       dataIndex: 'jobName',
       render: (dom, entity) => {
-        return <a onClick={() => setRow(entity)}>{dom}</a>;
+        return <a onClick={() => {
+          setCurrentRow(entity);
+          setShowDetail(true);
+        }}>{dom}</a>;
       },
     },
     {
@@ -134,14 +119,13 @@ const TableList: React.FC<{}> = () => {
     {
       title: '状态',
       dataIndex: 'delFlag',
-      hideInSearch: true,
       valueEnum: {
-        0: { text: '正常', status: 'Success' },
-        1: { text: '已删除', status: 'Error' },
+        1: {text: '正常', status: 'Success'},
+        0: {text: '停用', status: 'Error'},
       },
     },
     {
-      title: '状态',
+      title: '备注',
       dataIndex: 'remarks',
       valueType: 'textarea',
       hideInSearch: true,
@@ -154,43 +138,19 @@ const TableList: React.FC<{}> = () => {
     {
       title: '创建时间',
       dataIndex: 'createTime',
-      sorter: true,
       valueType: 'dateTime',
       hideInSearch: true,
-      renderFormItem: (item, { defaultRender, ...rest }, form) => {
-        const status = form.getFieldValue('status');
-        if (`${status}` === '0') {
-          return false;
-        }
-        if (`${status}` === '3') {
-          return <Input {...rest} placeholder="请输入异常原因！" />;
-        }
-        return defaultRender(item);
-      },
     },
     {
       title: '更新人',
       dataIndex: 'lastUpdateBy',
-      hideInForm: true,
       hideInSearch: true,
     },
     {
       title: '更新时间',
       dataIndex: 'lastUpdateTime',
-      sorter: true,
       valueType: 'dateTime',
-      hideInForm: true,
       hideInSearch: true,
-      renderFormItem: (item, { defaultRender, ...rest }, form) => {
-        const status = form.getFieldValue('status');
-        if (`${status}` === '0') {
-          return false;
-        }
-        if (`${status}` === '3') {
-          return <Input {...rest} placeholder="请输入异常原因！" />;
-        }
-        return defaultRender(item);
-      },
     },
     {
       title: '操作',
@@ -200,21 +160,21 @@ const TableList: React.FC<{}> = () => {
         <>
           <Button
             type="primary"
-            size="small"
+            icon={<EditOutlined/>}
             onClick={() => {
               handleUpdateModalVisible(true);
-              setStepFormValues(record);
+              setCurrentRow(record);
             }}
           >
             编辑
           </Button>
-          <Divider type="vertical" />
+          <Divider type="vertical"/>
           <Button
             type="primary"
             danger
-            size="small"
+            icon={<DeleteOutlined/>}
             onClick={() => {
-              showDeleteConfirm(record.id);
+              showDeleteConfirm(record);
             }}
           >
             删除
@@ -234,22 +194,22 @@ const TableList: React.FC<{}> = () => {
           labelWidth: 120,
         }}
         toolBarRender={() => [
-          <Button type="primary" onClick={() => handleModalVisible(true)}>
-            <PlusOutlined /> 新建职位
+          <Button type="primary" key="primary" onClick={() => handleModalVisible(true)}>
+            <PlusOutlined/> 新建职位
           </Button>,
         ]}
-        request={(params, sorter, filter) => queryJob({ ...params, sorter, filter })}
+        request={queryJob}
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows) => setSelectedRows(selectedRows),
         }}
-        pagination={{ pageSize: 10 }}
+        pagination={{pageSize: 10}}
       />
       {selectedRowsState?.length > 0 && (
         <FooterToolbar
           extra={
             <div>
-              已选择 <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a> 项&nbsp;&nbsp;
+              已选择 <a style={{fontWeight: 600}}>{selectedRowsState.length}</a> 项&nbsp;&nbsp;
             </div>
           }
         >
@@ -271,7 +231,7 @@ const TableList: React.FC<{}> = () => {
           const success = await handleAdd(value);
           if (success) {
             handleModalVisible(false);
-            setStepFormValues({});
+            setCurrentRow(undefined);
             if (actionRef.current) {
               actionRef.current.reload();
             }
@@ -279,7 +239,9 @@ const TableList: React.FC<{}> = () => {
         }}
         onCancel={() => {
           handleModalVisible(false);
-          setStepFormValues({});
+          if (!showDetail) {
+            setCurrentRow(undefined);
+          }
         }}
         createModalVisible={createModalVisible}
       />
@@ -290,7 +252,7 @@ const TableList: React.FC<{}> = () => {
           const success = await handleUpdate(value);
           if (success) {
             handleUpdateModalVisible(false);
-            setStepFormValues({});
+            setCurrentRow(undefined);
             if (actionRef.current) {
               actionRef.current.reload();
             }
@@ -298,31 +260,34 @@ const TableList: React.FC<{}> = () => {
         }}
         onCancel={() => {
           handleUpdateModalVisible(false);
-          setStepFormValues({});
+          if (!showDetail) {
+            setCurrentRow(undefined);
+          }
         }}
         updateModalVisible={updateModalVisible}
-        currentData={stepFormValues}
+        currentData={currentRow || {}}
       />
 
       <Drawer
         width={600}
-        visible={!!row}
+        visible={showDetail}
         onClose={() => {
-          setRow(undefined);
+          setCurrentRow(undefined);
+          setShowDetail(false)
         }}
         closable={false}
       >
-        {row?.id && (
+        {currentRow?.id && (
           <ProDescriptions<JobListItem>
             column={2}
-            title={row?.id}
+            title={"职位详情"}
             request={async () => ({
-              data: row || {},
+              data: currentRow || {},
             })}
             params={{
-              id: row?.id,
+              id: currentRow?.id,
             }}
-            columns={columns}
+            columns={columns as ProDescriptionsItemProps<JobListItem>[]}
           />
         )}
       </Drawer>
@@ -330,4 +295,4 @@ const TableList: React.FC<{}> = () => {
   );
 };
 
-export default TableList;
+export default JobTableList;
