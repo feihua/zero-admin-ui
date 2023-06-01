@@ -9,11 +9,12 @@ export interface CreateFormProps {
   onSubmit: (values: UserListItem) => void;
   createModalVisible: boolean;
 }
+
 const FormItem = Form.Item;
 
 const formLayout = {
-  labelCol: { span: 7 },
-  wrapperCol: { span: 13 },
+  labelCol: {span: 7},
+  wrapperCol: {span: 13},
 };
 
 const CreateUserForm: React.FC<CreateFormProps> = (props) => {
@@ -33,8 +34,8 @@ const CreateUserForm: React.FC<CreateFormProps> = (props) => {
     if (form && !createModalVisible) {
       form.resetFields();
 
-    }else {
-      querySelectAllData({pageSize: 100,current: 1 }).then((res) => {
+    } else {
+      querySelectAllData({pageSize: 100, current: 1}).then((res) => {
         setRoleConf(res.roleAll)
         setJobConf(res.jobAll)
         setDeptConf(tree(res.deptAll, 0, 'parentId'))
@@ -64,7 +65,7 @@ const CreateUserForm: React.FC<CreateFormProps> = (props) => {
           label="部门"
         >
           <TreeSelect
-            style={{ width: '100%' }}
+            style={{width: '100%'}}
             // value={this.state.value}
             // dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
             treeData={deptConf}
@@ -86,7 +87,7 @@ const CreateUserForm: React.FC<CreateFormProps> = (props) => {
           label="角色"
         >
           <Select id="roleId" placeholder={'请选择角色'}>
-            {roleConf.map(r => <Select.Option value={r.id}>{r.name+r.remark}</Select.Option>)}
+            {roleConf.map(r => <Select.Option value={r.id}>{r.name + r.remark}</Select.Option>)}
           </Select>
         </FormItem>
         <FormItem
@@ -115,20 +116,19 @@ const CreateUserForm: React.FC<CreateFormProps> = (props) => {
         </FormItem>
 
 
-
       </>
     );
   };
 
 
-  const modalFooter = { okText: '保存', onOk: handleSubmit, onCancel };
+  const modalFooter = {okText: '保存', onOk: handleSubmit, onCancel};
 
   return (
     <Modal
       forceRender
       destroyOnClose
       title="新建用户"
-      visible={createModalVisible}
+      open={createModalVisible}
       {...modalFooter}
     >
       <Form

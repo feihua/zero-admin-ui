@@ -1,14 +1,14 @@
-import { DeleteOutlined, EditOutlined, PlusOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
-import { Button, Divider, message, Drawer, Modal } from 'antd';
-import React, { useState, useRef } from 'react';
-import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
+import {DeleteOutlined, EditOutlined, PlusOutlined, ExclamationCircleOutlined} from '@ant-design/icons';
+import {Button, Divider, message, Drawer, Modal} from 'antd';
+import React, {useState, useRef} from 'react';
+import {PageContainer, FooterToolbar} from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
-import type { ProColumns, ActionType } from '@ant-design/pro-table';
+import type {ProColumns, ActionType} from '@ant-design/pro-table';
 import ProDescriptions from '@ant-design/pro-descriptions';
 import type {ProDescriptionsItemProps} from '@ant-design/pro-descriptions';
 import CreateUserForm from './components/CreateUserForm';
 import UpdateUserForm from './components/UpdateUserForm';
-import type { UserListItem } from './data.d';
+import type {UserListItem} from './data.d';
 import {
   queryUserList,
   updateUser,
@@ -16,7 +16,7 @@ import {
   removeUser,
 } from './service';
 
-const { confirm } = Modal;
+const {confirm} = Modal;
 
 /**
  * 添加节点
@@ -25,8 +25,8 @@ const { confirm } = Modal;
 const handleAdd = async (fields: UserListItem) => {
   const hide = message.loading('正在添加');
   try {
-    fields.deptId=Number(fields.deptId)
-    await addUser({ ...fields });
+    fields.deptId = Number(fields.deptId)
+    await addUser({...fields});
     hide();
     message.success('添加成功');
     return true;
@@ -44,7 +44,7 @@ const handleAdd = async (fields: UserListItem) => {
 const handleUpdate = async (fields: UserListItem) => {
   const hide = message.loading('正在更新');
   try {
-    fields.deptId=Number(fields.deptId)
+    fields.deptId = Number(fields.deptId)
     await updateUser(fields);
     hide();
     message.success('更新成功');
@@ -88,14 +88,15 @@ const UserList: React.FC = () => {
   const showDeleteConfirm = (item: UserListItem) => {
     confirm({
       title: '是否删除记录?',
-      icon: <ExclamationCircleOutlined />,
+      icon: <ExclamationCircleOutlined/>,
       content: '删除的记录不能恢复,请确认!',
       onOk() {
-        handleRemove([item]).then((r) => {
+        handleRemove([item]).then(() => {
           actionRef.current?.reloadAndRest?.();
         });
       },
-      onCancel() {},
+      onCancel() {
+      },
     });
   };
 
@@ -109,8 +110,10 @@ const UserList: React.FC = () => {
       title: '用户名',
       dataIndex: 'name',
       render: (dom, entity) => {
-        return <a onClick={() => {setCurrentRow(entity);
-          setShowDetail(true);}}>{dom}</a>;
+        return <a onClick={() => {
+          setCurrentRow(entity);
+          setShowDetail(true);
+        }}>{dom}</a>;
       },
     },
     {
@@ -141,8 +144,8 @@ const UserList: React.FC = () => {
       title: '状态',
       dataIndex: 'status',
       valueEnum: {
-        0: { text: '禁用', status: 'Error' },
-        1: { text: '正常', status: 'Success' },
+        0: {text: '禁用', status: 'Error'},
+        1: {text: '正常', status: 'Success'},
       },
     },
 
@@ -188,7 +191,7 @@ const UserList: React.FC = () => {
           >
             编辑
           </Button>
-          <Divider type="vertical" />
+          <Divider type="vertical"/>
           <Button
             type="primary"
             danger
@@ -215,7 +218,7 @@ const UserList: React.FC = () => {
         }}
         toolBarRender={() => [
           <Button type="primary" key="primary" onClick={() => handleModalVisible(true)}>
-            <PlusOutlined /> 新建用户
+            <PlusOutlined/> 新建用户
           </Button>,
         ]}
         request={queryUserList}
@@ -223,13 +226,13 @@ const UserList: React.FC = () => {
         rowSelection={{
           onChange: (_, selectedRows) => setSelectedRows(selectedRows),
         }}
-        pagination={{pageSize:10}}
+        pagination={{pageSize: 10}}
       />
       {selectedRowsState?.length > 0 && (
         <FooterToolbar
           extra={
             <div>
-              已选择 <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a> 项&nbsp;&nbsp;
+              已选择 <a style={{fontWeight: 600}}>{selectedRowsState.length}</a> 项&nbsp;&nbsp;
             </div>
           }
         >
@@ -259,34 +262,34 @@ const UserList: React.FC = () => {
         }}
         onCancel={() => {
           handleModalVisible(false);
-          if (!showDetail){
+          if (!showDetail) {
             setCurrentRow(undefined);
           }
         }}
         createModalVisible={createModalVisible}
       />
 
-    <UpdateUserForm
-      key={'UpdateUserForm'}
-      onSubmit={async (value) => {
-        const success = await handleUpdate(value);
-        if (success) {
-          handleUpdateModalVisible(false);
-          setCurrentRow(undefined);
-          if (actionRef.current) {
-            actionRef.current.reload();
+      <UpdateUserForm
+        key={'UpdateUserForm'}
+        onSubmit={async (value) => {
+          const success = await handleUpdate(value);
+          if (success) {
+            handleUpdateModalVisible(false);
+            setCurrentRow(undefined);
+            if (actionRef.current) {
+              actionRef.current.reload();
+            }
           }
-        }
-      }}
-      onCancel={() => {
-        handleUpdateModalVisible(false);
-        if (!showDetail){
-          setCurrentRow(undefined);
-        }
-      }}
-      updateModalVisible={updateModalVisible}
-      values={currentRow||{}}
-    />
+        }}
+        onCancel={() => {
+          handleUpdateModalVisible(false);
+          if (!showDetail) {
+            setCurrentRow(undefined);
+          }
+        }}
+        updateModalVisible={updateModalVisible}
+        values={currentRow || {}}
+      />
 
       <Drawer
         width={600}

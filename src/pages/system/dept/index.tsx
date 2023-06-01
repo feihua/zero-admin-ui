@@ -1,16 +1,17 @@
-import { PlusOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
-import { Button, Divider, message, Drawer, Modal } from 'antd';
-import React, { useState, useRef } from 'react';
-import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
-import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
-import ProDescriptions from '@ant-design/pro-descriptions';
+import {PlusOutlined, ExclamationCircleOutlined, EditOutlined, DeleteOutlined} from '@ant-design/icons';
+import {Button, Divider, message, Drawer, Modal} from 'antd';
+import React, {useState, useRef} from 'react';
+import {PageContainer, FooterToolbar} from '@ant-design/pro-layout';
+import ProTable from '@ant-design/pro-table';
+import type {ProColumns, ActionType} from '@ant-design/pro-table';
+import ProDescriptions, {ProDescriptionsItemProps} from '@ant-design/pro-descriptions';
 import CreateDeptForm from './components/CreateDeptForm';
 import UpdateDeptForm from './components/UpdateDeptForm';
-import { DeptListItem } from './data.d';
-import { queryDept, updateDept, addDept, removeDept, removeDeptOne } from './service';
-import { tree } from '@/utils/utils';
+import type {DeptListItem} from './data.d';
+import {queryDept, updateDept, addDept, removeDept} from './service';
+import {tree} from '@/utils/utils';
 
-const { confirm } = Modal;
+const {confirm} = Modal;
 
 /**
  * 添加节点
@@ -20,7 +21,7 @@ const handleAdd = async (fields: DeptListItem) => {
   const hide = message.loading('正在添加');
   try {
     fields.orderNum = Number(fields.orderNum);
-    await addDept({ ...fields });
+    await addDept({...fields});
     hide();
     message.success('添加成功');
     return true;
@@ -35,11 +36,11 @@ const handleAdd = async (fields: DeptListItem) => {
  * 更新节点
  * @param fields
  */
-const handleUpdate = async (fields: Partial<DeptListItem>) => {
+const handleUpdate = async (fields: DeptListItem) => {
   const hide = message.loading('正在更新');
   try {
     fields.orderNum = Number(fields.orderNum);
-    await updateDept(fields as DeptListItem);
+    await updateDept(fields);
     hide();
 
     message.success('更新成功');
@@ -51,25 +52,6 @@ const handleUpdate = async (fields: Partial<DeptListItem>) => {
   }
 };
 
-/**
- *  删除节点(单个)
- * @param id
- */
-const handleRemoveOne = async (id: number) => {
-  const hide = message.loading('正在删除');
-  try {
-    await removeDeptOne({
-      id,
-    });
-    hide();
-    message.success('删除成功，即将刷新');
-    return true;
-  } catch (error) {
-    hide();
-    message.error('删除失败，请重试');
-    return false;
-  }
-};
 
 /**
  *  删除节点
@@ -92,25 +74,26 @@ const handleRemove = async (selectedRows: DeptListItem[]) => {
   }
 };
 
-const TableList: React.FC<{}> = () => {
+const TableList: React.FC = () => {
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
-  const [stepFormValues, setStepFormValues] = useState<DeptListItem>();
+  const [showDetail, setShowDetail] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
-  const [row, setRow] = useState<DeptListItem>();
+  const [currentRow, setCurrentRow] = useState<DeptListItem>();
   const [selectedRowsState, setSelectedRows] = useState<DeptListItem[]>([]);
 
-  const showDeleteConfirm = (id: number) => {
+  const showDeleteConfirm = (item: DeptListItem) => {
     confirm({
       title: '是否删除记录?',
-      icon: <ExclamationCircleOutlined />,
+      icon: <ExclamationCircleOutlined/>,
       content: '删除的记录不能恢复,请确认!',
       onOk() {
-        handleRemoveOne(id).then((r) => {
+        handleRemove([item]).then(() => {
           actionRef.current?.reloadAndRest?.();
         });
       },
-      onCancel() {},
+      onCancel() {
+      },
     });
   };
 
@@ -124,7 +107,10 @@ const TableList: React.FC<{}> = () => {
       title: '机构名称',
       dataIndex: 'name',
       render: (dom, entity) => {
-        return <a onClick={() => setRow(entity)}>{dom}</a>;
+        return <a onClick={() => {
+          setCurrentRow(entity);
+          setShowDetail(true);
+        }}>{dom}</a>;
       },
     },
     {
@@ -167,32 +153,32 @@ const TableList: React.FC<{}> = () => {
         <>
           <Button
             type="primary"
-            size="small"
+            icon={<EditOutlined/>}
             onClick={() => {
               handleUpdateModalVisible(true);
-              setStepFormValues(record);
+              setCurrentRow(record);
             }}
           >
             编辑
           </Button>
-          <Divider type="vertical" />
+          <Divider type="vertical"/>
           <Button
             type="primary"
             size="small"
             onClick={() => {
               handleModalVisible(true);
-              setStepFormValues(record);
+              setCurrentRow(record);
             }}
           >
             添加子机构
           </Button>
-          <Divider type="vertical" />
+          <Divider type="vertical"/>
           <Button
             type="primary"
             danger
-            size="small"
+            icon={<DeleteOutlined/>}
             onClick={() => {
-              showDeleteConfirm(record.id);
+              showDeleteConfirm(record);
             }}
           >
             删除
@@ -212,11 +198,11 @@ const TableList: React.FC<{}> = () => {
           labelWidth: 120,
         }}
         toolBarRender={() => [
-          <Button type="primary" onClick={() => handleModalVisible(true)}>
-            <PlusOutlined /> 新建机构
+          <Button type="primary" key="primary" onClick={() => handleModalVisible(true)}>
+            <PlusOutlined/> 新建机构
           </Button>,
         ]}
-        request={(params, sorter, filter) => queryDept({ ...params, sorter, filter })}
+        request={queryDept}
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows) => setSelectedRows(selectedRows),
@@ -228,7 +214,7 @@ const TableList: React.FC<{}> = () => {
         <FooterToolbar
           extra={
             <div>
-              已选择 <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a> 项&nbsp;&nbsp;
+              已选择 <a style={{fontWeight: 600}}>{selectedRowsState.length}</a> 项&nbsp;&nbsp;
             </div>
           }
         >
@@ -250,7 +236,7 @@ const TableList: React.FC<{}> = () => {
           const success = await handleAdd(value);
           if (success) {
             handleModalVisible(false);
-            setStepFormValues(undefined);
+            setCurrentRow(undefined);
             if (actionRef.current) {
               actionRef.current.reload();
             }
@@ -258,10 +244,12 @@ const TableList: React.FC<{}> = () => {
         }}
         onCancel={() => {
           handleModalVisible(false);
-          setStepFormValues(undefined);
+          if (!showDetail) {
+            setCurrentRow(undefined);
+          }
         }}
         createModalVisible={createModalVisible}
-        parentId={stepFormValues?.id || 0}
+        parentId={currentRow?.id || 0}
       />
 
       <UpdateDeptForm
@@ -270,7 +258,7 @@ const TableList: React.FC<{}> = () => {
           const success = await handleUpdate(value);
           if (success) {
             handleUpdateModalVisible(false);
-            setStepFormValues(undefined);
+            setCurrentRow(undefined);
             if (actionRef.current) {
               actionRef.current.reload();
             }
@@ -278,31 +266,34 @@ const TableList: React.FC<{}> = () => {
         }}
         onCancel={() => {
           handleUpdateModalVisible(false);
-          setStepFormValues(undefined);
+          if (!showDetail) {
+            setCurrentRow(undefined);
+          }
         }}
         updateModalVisible={updateModalVisible}
-        currentData={stepFormValues || {}}
+        currentData={currentRow || {}}
       />
 
       <Drawer
         width={600}
-        visible={!!row}
+        visible={showDetail}
         onClose={() => {
-          setRow(undefined);
+          setCurrentRow(undefined);
+          setShowDetail(false)
         }}
         closable={false}
       >
-        {row?.id && (
+        {currentRow?.id && (
           <ProDescriptions<DeptListItem>
             column={2}
-            title={row?.id}
+            title={"部门详情"}
             request={async () => ({
-              data: row || {},
+              data: currentRow || {},
             })}
             params={{
-              id: row?.id,
+              id: currentRow?.id,
             }}
-            columns={columns}
+            columns={columns as ProDescriptionsItemProps<DeptListItem>[]}
           />
         )}
       </Drawer>

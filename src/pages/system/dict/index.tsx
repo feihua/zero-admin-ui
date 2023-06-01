@@ -1,15 +1,16 @@
-import { PlusOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
-import { Button, Divider, message, Input, Drawer, Modal } from 'antd';
-import React, { useState, useRef } from 'react';
-import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
-import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
-import ProDescriptions from '@ant-design/pro-descriptions';
+import {PlusOutlined, ExclamationCircleOutlined, EditOutlined, DeleteOutlined} from '@ant-design/icons';
+import {Button, Divider, message, Drawer, Modal} from 'antd';
+import React, {useState, useRef} from 'react';
+import {PageContainer, FooterToolbar} from '@ant-design/pro-layout';
+import ProTable from '@ant-design/pro-table';
+import type {ProColumns, ActionType} from '@ant-design/pro-table';
+import ProDescriptions, {ProDescriptionsItemProps} from '@ant-design/pro-descriptions';
 import CreateDictForm from './components/CreateDictForm';
 import UpdateDictForm from './components/UpdateDictForm';
-import { DictListItem } from './data.d';
-import { queryDict, updateDict, addDict, removeDict, removeDictOne } from './service';
+import type {DictListItem} from './data.d';
+import {queryDict, updateDict, addDict, removeDict} from './service';
 
-const { confirm } = Modal;
+const {confirm} = Modal;
 
 /**
  * 添加节点
@@ -18,7 +19,7 @@ const { confirm } = Modal;
 const handleAdd = async (fields: DictListItem) => {
   const hide = message.loading('正在添加');
   try {
-    await addDict({ ...fields });
+    await addDict({...fields});
     hide();
     message.success('添加成功');
     return true;
@@ -33,10 +34,10 @@ const handleAdd = async (fields: DictListItem) => {
  * 更新节点
  * @param fields
  */
-const handleUpdate = async (fields: Partial<DictListItem>) => {
+const handleUpdate = async (fields: DictListItem) => {
   const hide = message.loading('正在更新');
   try {
-    await updateDict(fields as DictListItem);
+    await updateDict(fields);
     hide();
 
     message.success('更新成功');
@@ -44,26 +45,6 @@ const handleUpdate = async (fields: Partial<DictListItem>) => {
   } catch (error) {
     hide();
     message.error('更新失败请重试！');
-    return false;
-  }
-};
-
-/**
- *  删除节点(单个)
- * @param id
- */
-const handleRemoveOne = async (id: number) => {
-  const hide = message.loading('正在删除');
-  try {
-    await removeDictOne({
-      id,
-    });
-    hide();
-    message.success('删除成功，即将刷新');
-    return true;
-  } catch (error) {
-    hide();
-    message.error('删除失败，请重试');
     return false;
   }
 };
@@ -89,25 +70,26 @@ const handleRemove = async (selectedRows: DictListItem[]) => {
   }
 };
 
-const TableList: React.FC<{}> = () => {
+const TableList: React.FC = () => {
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
-  const [stepFormValues, setStepFormValues] = useState({});
+  const [showDetail, setShowDetail] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
-  const [row, setRow] = useState<DictListItem>();
+  const [currentRow, setCurrentRow] = useState<DictListItem>();
   const [selectedRowsState, setSelectedRows] = useState<DictListItem[]>([]);
 
-  const showDeleteConfirm = (id: number) => {
+  const showDeleteConfirm = (item: DictListItem) => {
     confirm({
       title: '是否删除记录?',
-      icon: <ExclamationCircleOutlined />,
+      icon: <ExclamationCircleOutlined/>,
       content: '删除的记录不能恢复,请确认!',
       onOk() {
-        handleRemoveOne(id).then((r) => {
+        handleRemove([item]).then(() => {
           actionRef.current?.reloadAndRest?.();
         });
       },
-      onCancel() {},
+      onCancel() {
+      },
     });
   };
 
@@ -122,7 +104,10 @@ const TableList: React.FC<{}> = () => {
       dataIndex: 'value',
       hideInSearch: true,
       render: (dom, entity) => {
-        return <a onClick={() => setRow(entity)}>{dom}</a>;
+        return <a onClick={() => {
+          setCurrentRow(entity);
+          setShowDetail(true);
+        }}>{dom}</a>;
       },
     },
     {
@@ -147,10 +132,9 @@ const TableList: React.FC<{}> = () => {
     {
       title: '状态',
       dataIndex: 'delFlag',
-      hideInForm: true,
       valueEnum: {
-        0: { text: '正常', status: 'Success' },
-        1: { text: '已删除', status: 'Error' },
+        0: {text: '正常', status: 'Success'},
+        1: {text: '已删除', status: 'Error'},
       },
     },
     {
@@ -158,14 +142,6 @@ const TableList: React.FC<{}> = () => {
       dataIndex: 'remarks',
       valueType: 'textarea',
       hideInSearch: true,
-      formItemProps: {
-        rules: [
-          {
-            required: true,
-            message: '备注为必填项',
-          },
-        ],
-      },
     },
     {
       title: '创建人',
@@ -178,21 +154,10 @@ const TableList: React.FC<{}> = () => {
       sorter: true,
       valueType: 'dateTime',
       hideInSearch: true,
-      renderFormItem: (item, { defaultRender, ...rest }, form) => {
-        const status = form.getFieldValue('status');
-        if (`${status}` === '0') {
-          return false;
-        }
-        if (`${status}` === '3') {
-          return <Input {...rest} placeholder="请输入异常原因！" />;
-        }
-        return defaultRender(item);
-      },
     },
     {
       title: '更新人',
       dataIndex: 'lastUpdateBy',
-      hideInForm: true,
       hideInSearch: true,
     },
     {
@@ -200,18 +165,7 @@ const TableList: React.FC<{}> = () => {
       dataIndex: 'lastUpdateTime',
       sorter: true,
       valueType: 'dateTime',
-      hideInForm: true,
       hideInSearch: true,
-      renderFormItem: (item, { defaultRender, ...rest }, form) => {
-        const status = form.getFieldValue('status');
-        if (`${status}` === '0') {
-          return false;
-        }
-        if (`${status}` === '3') {
-          return <Input {...rest} placeholder="请输入异常原因！" />;
-        }
-        return defaultRender(item);
-      },
     },
     {
       title: '操作',
@@ -221,21 +175,21 @@ const TableList: React.FC<{}> = () => {
         <>
           <Button
             type="primary"
-            size="small"
+            icon={<EditOutlined/>}
             onClick={() => {
               handleUpdateModalVisible(true);
-              setStepFormValues(record);
+              setCurrentRow(record);
             }}
           >
             编辑
           </Button>
-          <Divider type="vertical" />
+          <Divider type="vertical"/>
           <Button
             type="primary"
             danger
-            size="small"
+            icon={<DeleteOutlined/>}
             onClick={() => {
-              showDeleteConfirm(record.id);
+              showDeleteConfirm(record);
             }}
           >
             删除
@@ -255,22 +209,22 @@ const TableList: React.FC<{}> = () => {
           labelWidth: 120,
         }}
         toolBarRender={() => [
-          <Button type="primary" onClick={() => handleModalVisible(true)}>
-            <PlusOutlined /> 新建字典
+          <Button type="primary" key="primary" onClick={() => handleModalVisible(true)}>
+            <PlusOutlined/> 新建字典
           </Button>,
         ]}
-        request={(params, sorter, filter) => queryDict({ ...params, sorter, filter })}
+        request={queryDict}
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows) => setSelectedRows(selectedRows),
         }}
-        pagination={{ pageSize: 10 }}
+        pagination={{pageSize: 10}}
       />
       {selectedRowsState?.length > 0 && (
         <FooterToolbar
           extra={
             <div>
-              已选择 <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a> 项&nbsp;&nbsp;
+              已选择 <a style={{fontWeight: 600}}>{selectedRowsState.length}</a> 项&nbsp;&nbsp;
             </div>
           }
         >
@@ -292,7 +246,7 @@ const TableList: React.FC<{}> = () => {
           const success = await handleAdd(value);
           if (success) {
             handleModalVisible(false);
-            setStepFormValues({});
+            setCurrentRow(undefined);
             if (actionRef.current) {
               actionRef.current.reload();
             }
@@ -300,7 +254,9 @@ const TableList: React.FC<{}> = () => {
         }}
         onCancel={() => {
           handleModalVisible(false);
-          setStepFormValues({});
+          if (!showDetail) {
+            setCurrentRow(undefined);
+          }
         }}
         createModalVisible={createModalVisible}
       />
@@ -311,7 +267,7 @@ const TableList: React.FC<{}> = () => {
           const success = await handleUpdate(value);
           if (success) {
             handleUpdateModalVisible(false);
-            setStepFormValues({});
+            setCurrentRow(undefined);
             if (actionRef.current) {
               actionRef.current.reload();
             }
@@ -319,31 +275,34 @@ const TableList: React.FC<{}> = () => {
         }}
         onCancel={() => {
           handleUpdateModalVisible(false);
-          setStepFormValues({});
+          if (!showDetail) {
+            setCurrentRow(undefined);
+          }
         }}
         updateModalVisible={updateModalVisible}
-        currentData={stepFormValues}
+        currentData={currentRow || {}}
       />
 
       <Drawer
         width={600}
-        visible={!!row}
+        visible={showDetail}
         onClose={() => {
-          setRow(undefined);
+          setCurrentRow(undefined);
+          setShowDetail(false)
         }}
         closable={false}
       >
-        {row?.id && (
+        {currentRow?.id && (
           <ProDescriptions<DictListItem>
             column={2}
-            title={row?.id}
+            title={"字典详情"}
             request={async () => ({
-              data: row || {},
+              data: currentRow || {},
             })}
             params={{
-              id: row?.id,
+              id: currentRow?.id,
             }}
-            columns={columns}
+            columns={columns as ProDescriptionsItemProps<DictListItem>[]}
           />
         )}
       </Drawer>

@@ -1,5 +1,5 @@
-import { request } from 'umi';
-import { RoleListParams, RoleListItem } from './data.d';
+import {request} from 'umi';
+import {RoleListParams, RoleListItem} from './data.d';
 
 export async function queryRole(params?: RoleListParams) {
   return request('/api/sys/role/list', {
@@ -19,7 +19,7 @@ export async function queryMenuByRoleId(params: { id?: number }) {
   });
 }
 
-export async function updateRoleMenu(params: { roleId: number ,menuIds:number[]}) {
+export async function updateRoleMenu(params: { roleId: number, menuIds: number[] }) {
   return request('/api/sys/role/updateRoleMenu', {
     method: 'POST',
     data: {

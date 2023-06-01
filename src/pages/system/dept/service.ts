@@ -1,5 +1,5 @@
-import { request } from 'umi';
-import { DeptListParams, DeptListItem } from './data.d';
+import {request} from 'umi';
+import {DeptListParams, DeptListItem} from './data.d';
 
 export async function queryDept(params?: DeptListParams) {
   return request('/api/sys/dept/list', {

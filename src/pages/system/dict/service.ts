@@ -1,5 +1,5 @@
-import { request } from 'umi';
-import { DictListParams, DictListItem } from './data.d';
+import {request} from 'umi';
+import {DictListParams, DictListItem} from './data.d';
 
 export async function queryDict(params?: DictListParams) {
   return request('/api/sys/dict/list', {

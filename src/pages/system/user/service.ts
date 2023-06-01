@@ -1,5 +1,5 @@
-import { request } from 'umi';
-import { UserListParams, UserListItem } from './data.d';
+import {request} from 'umi';
+import {UserListParams, UserListItem} from './data.d';
 
 export async function queryUserList(params?: UserListParams) {
   return request('/api/sys/user/list', {

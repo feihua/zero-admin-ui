@@ -1,17 +1,18 @@
 import React, {useEffect} from 'react';
 import {Form, Input, Modal} from 'antd';
-import { RoleListItem } from '../data.d';
+import {RoleListItem} from '../data.d';
 
 export interface CreateFormProps {
   onCancel: () => void;
   onSubmit: (values: RoleListItem) => void;
   createModalVisible: boolean;
 }
+
 const FormItem = Form.Item;
 
 const formLayout = {
-  labelCol: { span: 7 },
-  wrapperCol: { span: 13 },
+  labelCol: {span: 7},
+  wrapperCol: {span: 13},
 };
 
 const CreateRoleForm: React.FC<CreateFormProps> = (props) => {
@@ -63,14 +64,14 @@ const CreateRoleForm: React.FC<CreateFormProps> = (props) => {
   };
 
 
-  const modalFooter = { okText: '保存', onOk: handleSubmit, onCancel };
+  const modalFooter = {okText: '保存', onOk: handleSubmit, onCancel};
 
   return (
     <Modal
       forceRender
       destroyOnClose
       title="新建角色"
-      visible={createModalVisible}
+      open={createModalVisible}
       {...modalFooter}
     >
       <Form

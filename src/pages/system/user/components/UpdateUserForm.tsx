@@ -10,16 +10,17 @@ export interface UpdateFormProps {
   updateModalVisible: boolean;
   values: Partial<UserListItem>;
 }
+
 const FormItem = Form.Item;
 
 const formLayout = {
-  labelCol: { span: 7 },
-  wrapperCol: { span: 13 },
+  labelCol: {span: 7},
+  wrapperCol: {span: 13},
 };
 
 const UpdateUserForm: React.FC<UpdateFormProps> = (props) => {
   const [form] = Form.useForm();
-  const { Option } = Select;
+  const {Option} = Select;
   const [roleConf, setRoleConf] = useState<RoleList[]>([]);
   const [jobConf, setJobConf] = useState<JobList[]>([]);
   const [deptConf, setDeptConf] = useState<JobList[]>([]);
@@ -34,8 +35,8 @@ const UpdateUserForm: React.FC<UpdateFormProps> = (props) => {
   useEffect(() => {
     if (form && !updateModalVisible) {
       form.resetFields();
-    }else {
-      querySelectAllData({pageSize: 100,current: 1 }).then((res) => {
+    } else {
+      querySelectAllData({pageSize: 100, current: 1}).then((res) => {
         setRoleConf(res.roleAll)
         setJobConf(res.jobAll)
         setDeptConf(tree(res.deptAll, 0, 'parentId'))
@@ -47,7 +48,7 @@ const UpdateUserForm: React.FC<UpdateFormProps> = (props) => {
     if (values) {
       form.setFieldsValue({
         ...values,
-        deptId:values.deptId+'',
+        deptId: values.deptId + '',
       });
     }
   }, [props.values]);
@@ -71,14 +72,14 @@ const UpdateUserForm: React.FC<UpdateFormProps> = (props) => {
           label="主键"
           hidden
         >
-          <Input id="update-id" placeholder="请输入主键" />
+          <Input id="update-id" placeholder="请输入主键"/>
         </FormItem>
         <FormItem
           name="deptId"
           label="部门"
         >
           <TreeSelect
-            style={{ width: '100%' }}
+            style={{width: '100%'}}
             // value={currentData.deptId+''}
             // dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
             treeData={deptConf}
@@ -100,7 +101,7 @@ const UpdateUserForm: React.FC<UpdateFormProps> = (props) => {
           label="角色"
         >
           <Select id="roleId" placeholder={'请选择角色'}>
-            {roleConf.map(r => <Select.Option value={r.id}>{r.name+r.remark}</Select.Option>)}
+            {roleConf.map(r => <Select.Option value={r.id}>{r.name + r.remark}</Select.Option>)}
           </Select>
         </FormItem>
         <FormItem
@@ -141,7 +142,7 @@ const UpdateUserForm: React.FC<UpdateFormProps> = (props) => {
   };
 
 
-  const modalFooter = { okText: '保存', onOk: handleSubmit, onCancel };
+  const modalFooter = {okText: '保存', onOk: handleSubmit, onCancel};
 
   return (
     <Modal
