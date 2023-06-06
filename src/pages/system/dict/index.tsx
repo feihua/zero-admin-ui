@@ -4,7 +4,8 @@ import React, {useState, useRef} from 'react';
 import {PageContainer, FooterToolbar} from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
 import type {ProColumns, ActionType} from '@ant-design/pro-table';
-import ProDescriptions, {ProDescriptionsItemProps} from '@ant-design/pro-descriptions';
+import ProDescriptions from '@ant-design/pro-descriptions';
+import type {ProDescriptionsItemProps} from '@ant-design/pro-descriptions';
 import CreateDictForm from './components/CreateDictForm';
 import UpdateDictForm from './components/UpdateDictForm';
 import type {DictListItem} from './data.d';
@@ -123,6 +124,7 @@ const TableList: React.FC = () => {
       dataIndex: 'description',
       valueType: 'textarea',
       hideInSearch: true,
+      hideInTable: true,
     },
     {
       title: '排序',
@@ -134,7 +136,7 @@ const TableList: React.FC = () => {
       dataIndex: 'delFlag',
       valueEnum: {
         0: {text: '正常', status: 'Success'},
-        1: {text: '已删除', status: 'Error'},
+        1: {text: '禁用', status: 'Error'},
       },
     },
     {
@@ -142,6 +144,7 @@ const TableList: React.FC = () => {
       dataIndex: 'remarks',
       valueType: 'textarea',
       hideInSearch: true,
+      hideInTable: true,
     },
     {
       title: '创建人',

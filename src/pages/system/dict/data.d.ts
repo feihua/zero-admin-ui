@@ -17,8 +17,9 @@ export interface DictListData {
 
 export interface DictListParams {
 
+  delFlag?: number;
   pageSize?: number;
-  currentPage?: number;
+  current?: number;
   filter?: { [key: string]: any[] };
   sorter?: { [key: string]: any };
 
