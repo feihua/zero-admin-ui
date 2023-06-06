@@ -124,6 +124,14 @@ const TableList: React.FC = () => {
       hideInSearch: true,
     },
     {
+      title: '状态',
+      dataIndex: 'delFlag',
+      valueEnum: {
+        1: {text: '正常', status: 'Success'},
+        0: {text: '禁用', status: 'Error'},
+      },
+    },
+    {
       title: '创建人',
       dataIndex: 'createBy',
       hideInSearch: true,
@@ -164,17 +172,6 @@ const TableList: React.FC = () => {
           <Divider type="vertical"/>
           <Button
             type="primary"
-            size="small"
-            onClick={() => {
-              handleModalVisible(true);
-              setCurrentRow(record);
-            }}
-          >
-            添加子机构
-          </Button>
-          <Divider type="vertical"/>
-          <Button
-            type="primary"
             danger
             icon={<DeleteOutlined/>}
             onClick={() => {
@@ -194,9 +191,7 @@ const TableList: React.FC = () => {
         headerTitle="机构列表"
         actionRef={actionRef}
         rowKey="id"
-        search={{
-          labelWidth: 120,
-        }}
+        search={false}
         toolBarRender={() => [
           <Button type="primary" key="primary" onClick={() => handleModalVisible(true)}>
             <PlusOutlined/> 新建机构
