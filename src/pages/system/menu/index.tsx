@@ -1,7 +1,7 @@
 import {PlusOutlined, ExclamationCircleOutlined, EditOutlined, DeleteOutlined} from '@ant-design/icons';
 import {Button, Divider, message, Drawer, Modal} from 'antd';
 import React, {useState, useRef} from 'react';
-import {PageContainer, FooterToolbar} from '@ant-design/pro-layout';
+import {PageContainer} from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
 import type {ProColumns, ActionType} from '@ant-design/pro-table';
 import ProDescriptions, {ProDescriptionsItemProps} from '@ant-design/pro-descriptions';
@@ -82,7 +82,6 @@ const TableList: React.FC = () => {
   const [showDetail, setShowDetail] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<MenuListItem>();
-  const [selectedRowsState, setSelectedRows] = useState<MenuListItem[]>([]);
 
   const showDeleteConfirm = (item: MenuListItem) => {
     confirm({
@@ -142,6 +141,14 @@ const TableList: React.FC = () => {
       hideInTable: true,
     },
     {
+      title: '状态',
+      dataIndex: 'delFlag',
+      valueEnum: {
+        1: {text: '正常', status: 'Success'},
+        0: {text: '禁用', status: 'Error'},
+      },
+    },
+    {
       title: '创建人',
       dataIndex: 'createBy',
       hideInSearch: true,
@@ -182,17 +189,6 @@ const TableList: React.FC = () => {
           <Divider type="vertical"/>
           <Button
             type="primary"
-            size="small"
-            onClick={() => {
-              handleModalVisible(true);
-              setCurrentRow(record);
-            }}
-          >
-            添加子菜单
-          </Button>
-          <Divider type="vertical"/>
-          <Button
-            type="primary"
             danger
             icon={<DeleteOutlined/>}
             onClick={() => {
@@ -221,30 +217,11 @@ const TableList: React.FC = () => {
         request={queryMenu}
         columns={columns}
         rowSelection={{
-          onChange: (_, selectedRows) => setSelectedRows(selectedRows),
+          onChange: (_, selectedRows) => console.log(selectedRows),
         }}
         postData={(data) => tree(data, 0, 'parentId')}
         pagination={false}
       />
-      {selectedRowsState?.length > 0 && (
-        <FooterToolbar
-          extra={
-            <div>
-              已选择 <a style={{fontWeight: 600}}>{selectedRowsState.length}</a> 项&nbsp;&nbsp;
-            </div>
-          }
-        >
-          <Button
-            onClick={async () => {
-              await handleRemove(selectedRowsState);
-              setSelectedRows([]);
-              actionRef.current?.reloadAndRest?.();
-            }}
-          >
-            批量删除
-          </Button>
-        </FooterToolbar>
-      )}
 
       <CreateMenuForm
         key={'CreateMenuForm'}
@@ -265,7 +242,6 @@ const TableList: React.FC = () => {
           }
         }}
         createModalVisible={createModalVisible}
-        parentId={currentRow?.id || 0}
       />
 
       <UpdateMenuForm

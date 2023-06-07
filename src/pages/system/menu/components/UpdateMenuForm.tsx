@@ -1,6 +1,8 @@
-import React, {useEffect} from 'react';
-import {Form, Input, Modal} from 'antd';
+import React, {useEffect, useState} from 'react';
+import {Form, Input, InputNumber, message, Modal, Radio, RadioChangeEvent, TreeSelect} from 'antd';
 import {MenuListItem} from '../data.d';
+import {queryMenu} from "@/pages/system/menu/service";
+import {tree} from "@/utils/utils";
 
 export interface UpdateFormProps {
   onCancel: () => void;
@@ -18,12 +20,29 @@ const formLayout = {
 
 const UpdateMenuForm: React.FC<UpdateFormProps> = (props) => {
   const [form] = Form.useForm();
+  const [menuType, setMenuType] = useState<number>(1);
+  const [menuName, setMenuName] = useState<string>('菜单名称');
+  const [treeData, setTreeData] = useState<MenuListItem[]>([]);
 
   const {onSubmit, onCancel, updateModalVisible, currentData} = props;
 
   useEffect(() => {
     if (form && !updateModalVisible) {
       form.resetFields();
+    } else {
+      setMenuType(props.currentData.type || 1)
+      queryMenu({}).then((res) => {
+        if (res.code === '000000') {
+          const tree1 = tree(res.data, 0, 'parentId');
+          tree1.unshift({
+            id: 0,
+            name: '无上级菜单',
+          })
+          setTreeData(tree1);
+        } else {
+          message.error(res.msg);
+        }
+      })
     }
   }, [props.updateModalVisible]);
 
@@ -46,29 +65,104 @@ const UpdateMenuForm: React.FC<UpdateFormProps> = (props) => {
     }
   };
 
+  const onChange = (e: RadioChangeEvent) => {
+    const t = e.target.value
+    setMenuType(t)
+    if (t === 0) {
+      setMenuName('目录名称');
+    } else if (t === 1) {
+      treeData.unshift({
+        id: 0,
+        name: '无上级菜单',
+      })
+      setTreeData(treeData)
+      setMenuName('菜单名称');
+    } else {
+      treeData.splice(0, 1)
+      setTreeData(treeData)
+      setMenuName('按钮名称');
+    }
+  };
+
   const renderContent = () => {
     return (
       <>
         <FormItem name="id" label="主键" hidden>
           <Input id="update-id" placeholder="请输入主键"/>
         </FormItem>
-        <FormItem name="name" label="菜单名称">
-          <Input id="update-name" placeholder={'请输入菜单名称'}/>
+        <FormItem
+          label="类型"
+          name="type"
+        >
+          <Radio.Group onChange={onChange}>
+            <Radio value={0}>目录</Radio>
+            <Radio value={1}>菜单</Radio>
+            <Radio value={2}>按钮</Radio>
+          </Radio.Group>
         </FormItem>
-        <FormItem name="parentId" label="父id" hidden>
-          <Input id="update-parentId" placeholder={'请输入父id'}/>
+        {menuType !== 0 && <FormItem
+          label="上级"
+          name="parentId"
+          rules={[{required: true, message: '请选择上级菜单!'}]}
+        >
+          <TreeSelect
+            style={{width: '100%'}}
+            dropdownStyle={{maxHeight: 400, overflow: 'auto'}}
+            treeData={treeData}
+            placeholder="请选择上级"
+            fieldNames={{label: 'name', value: 'id', children: 'children'}}
+            allowClear
+          />
         </FormItem>
-        <FormItem name="url" label="路径">
-          <Input id="update-url" placeholder={'请输入路径'}/>
+        }
+        <FormItem
+          label={menuName}
+          name="name"
+          rules={[{required: true, message: '请输入菜单名称!'}]}
+        >
+          <Input/>
         </FormItem>
-        <FormItem name="type" label="类型">
-          <Input id="update-type" placeholder={'请输入类型'}/>
+        {menuType !== 2 &&
+          <FormItem
+            label="路径"
+            name="url"
+            rules={[{required: true, message: '请输入路径!'}]}
+          >
+            <Input/>
+          </FormItem>
+        }
+        {menuType !== 0 &&
+          <FormItem
+            label="接口地址"
+            name="backgroundUrl"
+            rules={[{required: true, message: '请输入接口地址!'}]}
+          >
+            <Input/>
+          </FormItem>
+        }
+        <FormItem
+          label="排序"
+          name="orderNum"
+          rules={[{required: true, message: '请输入排序!'}]}>
+          <InputNumber style={{width: 255}}/>
         </FormItem>
-        <FormItem name="icon" label="图标">
-          <Input id="update-icon" placeholder={'请输入图标'}/>
-        </FormItem>
-        <FormItem name="orderNum" label="排序">
-          <Input id="update-orderNum" placeholder={'请输入排序'}/>
+        {menuType !== 2 &&
+          <FormItem
+            label="图标"
+            name="icon"
+            rules={[{required: true, message: '请输入图标!'}]}
+          >
+            <Input/>
+          </FormItem>
+        }
+        <FormItem
+          label="状态"
+          name="delFlag"
+          rules={[{required: true, message: '请选择状态!'}]}>
+          <Radio.Group>
+            <Radio value={1}>正常</Radio>
+            <Radio value={0}>禁用</Radio>
+          </Radio.Group>
         </FormItem>
       </>
     );

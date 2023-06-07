@@ -1,7 +1,8 @@
 export interface MenuListItem {
   id: number;
-  orderNum: number;
-  type: number;
+  orderNum?: number;
+  type?: number;
+  name: string;
 
 }
 
@@ -18,7 +19,7 @@ export interface MenuListData {
 
 export interface MenuListParams {
   pageSize?: number;
-  currentPage?: number;
+  current?: number;
   filter?: { [key: string]: any[] };
   sorter?: { [key: string]: any };
 

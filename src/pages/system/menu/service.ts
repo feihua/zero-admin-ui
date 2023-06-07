@@ -1,7 +1,7 @@
 import {request} from 'umi';
 import {MenuListParams, MenuListItem} from './data.d';
 
-export async function queryMenu(params?: MenuListParams) {
+export async function queryMenu(params: MenuListParams) {
   return request('/api/sys/menu/list', {
     method: 'POST',
     data: {
