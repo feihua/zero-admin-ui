@@ -17,6 +17,7 @@ export interface UserListData {
 
 export interface UserListParams {
   id?: number;
+  status?: number;
   pageSize?: number;
   current?: number;
   currentPage?: number;

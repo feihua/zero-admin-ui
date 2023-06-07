@@ -2,6 +2,7 @@ export interface RoleListItem {
   id: number;
   name: string;
   remark: string;
+
 }
 
 export interface RoleListPagination {
@@ -16,10 +17,9 @@ export interface RoleListData {
 }
 
 export interface RoleListParams {
-
+  status?: number;
   pageSize?: number;
   current?: number;
-  currentPage?: number;
   filter?: { [key: string]: any[] };
   sorter?: { [key: string]: any };
 }

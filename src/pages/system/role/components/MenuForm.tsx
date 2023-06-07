@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {Form, Input, Modal, Tree} from 'antd';
-import {RoleListItem} from '../data.d';
+import type {RoleListItem} from '../data.d';
 import {queryMenuByRoleId} from '@/pages/system/role/service';
 import {tree as toTree} from '@/utils/utils';
 
@@ -40,11 +40,10 @@ const UpdateRoleForm: React.FC<MenuFormProps> = (props) => {
 
   const handleFinish = (values: { [key: string]: any }) => {
     if (onSubmit) {
-      const data = {
+      onSubmit({
         roleId: currentData.id || 0,
         menuIds: selectedKey,
-      };
-      onSubmit(data);
+      });
     }
   };
 
@@ -53,27 +52,24 @@ const UpdateRoleForm: React.FC<MenuFormProps> = (props) => {
       setSelectedKey([]);
       setCheckedKeys([]);
       queryMenuByRoleId({id: currentData.id}).then((res) => {
-        let tr = toTree(res.allData, 0, 'parentId');
         // @ts-ignore
-        setTreeData(tr);
+        setTreeData(toTree(res.allData, 0, 'parentId'));
 
         if (res.userData) {
-          // @ts-ignore
-          let map = res.userData.map(r => r + '');
+          const map = res.userData.map((r: number) => r + '');
           setSelectedKey(map);
           setCheckedKeys(map);
 
-          console.log(tr);
         }
       });
     }
   }, [props.updateMenuModalVisible]);
 
 
-  const onCheck = (checkedKeys: React.Key[]) => {
-    setCheckedKeys(checkedKeys);
+  const onCheck = (checkedKeysValue: React.Key[]) => {
+    setCheckedKeys(checkedKeysValue);
 
-    setSelectedKey(checkedKeys.map((i) => Number(i)));
+    setSelectedKey(checkedKeysValue.map((i) => Number(i)));
   };
 
   const renderContent = () => {
@@ -89,13 +85,9 @@ const UpdateRoleForm: React.FC<MenuFormProps> = (props) => {
         <Tree
           checkable
           defaultExpandAll={true}
-          // onExpand={onExpand}
-          // expandedKeys={expandedKeys}
-          // autoExpandParent={autoExpandParent}
+          // @ts-ignore
           onCheck={onCheck}
           checkedKeys={checkedKeys}
-          // onSelect={onSelect}
-          // selectedKeys={selectedKeys}
           treeData={treeData}
         />
       </>

@@ -119,6 +119,7 @@ const UserList: React.FC = () => {
     {
       title: '昵称',
       dataIndex: 'nickName',
+      hideInSearch: true,
     },
     {
       title: '手机号',
@@ -127,18 +128,22 @@ const UserList: React.FC = () => {
     {
       title: '邮箱',
       dataIndex: 'email',
+      hideInSearch: true,
     },
     {
       title: '部门',
       dataIndex: 'deptName',
+      hideInSearch: true,
     },
     {
       title: '职位',
       dataIndex: 'jobName',
+      hideInSearch: true,
     },
     {
       title: '角色',
       dataIndex: 'roleName',
+      hideInSearch: true,
     },
     {
       title: '状态',
