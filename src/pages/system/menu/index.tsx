@@ -4,7 +4,8 @@ import React, {useState, useRef} from 'react';
 import {PageContainer} from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
 import type {ProColumns, ActionType} from '@ant-design/pro-table';
-import ProDescriptions, {ProDescriptionsItemProps} from '@ant-design/pro-descriptions';
+import ProDescriptions from '@ant-design/pro-descriptions';
+import type {ProDescriptionsItemProps} from '@ant-design/pro-descriptions';
 import UpdateMenuForm from './components/UpdateMenuForm';
 import type {MenuListItem} from './data.d';
 import {queryMenu, updateRule, addMenu, removeMenu} from './service';
@@ -120,9 +121,18 @@ const TableList: React.FC = () => {
       dataIndex: 'url',
     },
     {
+      title: '接口地址',
+      dataIndex: 'backgroundUrl',
+    },
+    {
       title: '类型',
       dataIndex: 'type',
       hideInSearch: true,
+      valueEnum: {
+        0: {text: '目录', status: 'Success'},
+        1: {text: '菜单', status: 'Error'},
+        2: {text: '按钮', status: 'Success'},
+      },
     },
     {
       title: '排序',
