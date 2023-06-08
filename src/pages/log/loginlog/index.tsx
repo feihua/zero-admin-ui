@@ -1,35 +1,14 @@
-import { ExclamationCircleOutlined } from '@ant-design/icons';
-import {Button, message, Drawer, Modal} from 'antd';
-import React, { useState, useRef } from 'react';
-import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
-import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
-import ProDescriptions from '@ant-design/pro-descriptions';
-import { TableListItem } from './data.d';
-import {queryLoginLog, removeLoginLog, removeLoginLogOne} from './service';
+import {DeleteOutlined, ExclamationCircleOutlined} from '@ant-design/icons';
+import {Button, message, Modal} from 'antd';
+import React, {useState, useRef} from 'react';
+import {PageContainer, FooterToolbar} from '@ant-design/pro-layout';
+import ProTable from '@ant-design/pro-table';
+import type {ProColumns, ActionType} from '@ant-design/pro-table';
+import type {TableListItem} from './data.d';
+import {queryLoginLog, removeLoginLog} from './service';
 
-const { confirm } = Modal;
+const {confirm} = Modal;
 
-
-
-/**
- *  删除节点(单个)
- * @param id
- */
-const handleRemoveOne = async (id: number) => {
-  const hide = message.loading('正在删除');
-  try {
-    await removeLoginLogOne({
-      id,
-    });
-    hide();
-    message.success('删除成功，即将刷新');
-    return true;
-  } catch (error) {
-    hide();
-    message.error('删除失败，请重试');
-    return false;
-  }
-};
 
 /**
  *  删除节点
@@ -52,22 +31,22 @@ const handleRemove = async (selectedRows: TableListItem[]) => {
   }
 };
 
-const TableList: React.FC<{}> = () => {
+const LoginLogList: React.FC = () => {
   const actionRef = useRef<ActionType>();
-  const [row, setRow] = useState<TableListItem>();
   const [selectedRowsState, setSelectedRows] = useState<TableListItem[]>([]);
 
-  const showDeleteConfirm = (id: number) => {
+  const showDeleteConfirm = (item: TableListItem) => {
     confirm({
       title: '是否删除记录?',
-      icon: <ExclamationCircleOutlined />,
+      icon: <ExclamationCircleOutlined/>,
       content: '删除的记录不能恢复,请确认!',
       onOk() {
-        handleRemoveOne(id).then((r) => {
+        handleRemove([item]).then(() => {
           actionRef.current?.reloadAndRest?.();
         });
       },
-      onCancel() {},
+      onCancel() {
+      },
     });
   };
 
@@ -75,17 +54,13 @@ const TableList: React.FC<{}> = () => {
     {
       title: '用户名',
       dataIndex: 'userName',
-      render: (dom, entity) => {
-        return <a onClick={() => setRow(entity)}>{dom}</a>;
-      },
     },
     {
       title: 'IP地址',
       dataIndex: 'ip',
-      hideInSearch: true,
     },
     {
-      title: '登录状态',
+      title: '状态',
       dataIndex: 'status',
       hideInSearch: true,
     },
@@ -98,7 +73,6 @@ const TableList: React.FC<{}> = () => {
       title: '创建时间',
       dataIndex: 'createTime',
       sorter: true,
-      valueType: 'dateTime',
       hideInSearch: true,
     },
 
@@ -111,9 +85,9 @@ const TableList: React.FC<{}> = () => {
           <Button
             type="primary"
             danger
-            size="small"
+            icon={<DeleteOutlined/>}
             onClick={() => {
-              showDeleteConfirm(record.id);
+              showDeleteConfirm(record);
             }}
           >
             删除
@@ -127,29 +101,31 @@ const TableList: React.FC<{}> = () => {
     <PageContainer
       title={false}>
       <ProTable<TableListItem>
-        headerTitle="日志列表"
+        headerTitle="登录日志列表"
         actionRef={actionRef}
         rowKey="id"
-        search={false}
-        options={{
-          search: true,
+        search={{
+          labelWidth: 120,
         }}
-        request={(params, sorter, filter) => queryLoginLog({...params, sorter, filter})}
+        request={queryLoginLog}
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows) => setSelectedRows(selectedRows),
         }}
-        pagination={{pageSize:10}}
+        pagination={{pageSize: 10}}
       />
       {selectedRowsState?.length > 0 && (
         <FooterToolbar
           extra={
             <div>
-              已选择 <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a> 项&nbsp;&nbsp;
+              已选择 <a style={{fontWeight: 600}}>{selectedRowsState.length}</a> 项&nbsp;&nbsp;
             </div>
           }
         >
           <Button
+            type="primary"
+            danger
+            icon={<DeleteOutlined/>}
             onClick={async () => {
               await handleRemove(selectedRowsState);
               setSelectedRows([]);
@@ -161,30 +137,8 @@ const TableList: React.FC<{}> = () => {
         </FooterToolbar>
       )}
 
-      <Drawer
-        width={600}
-        visible={!!row}
-        onClose={() => {
-          setRow(undefined);
-        }}
-        closable={false}
-      >
-        {row?.user_name && (
-          <ProDescriptions<TableListItem>
-            column={2}
-            title={row?.user_name}
-            request={async () => ({
-              data: row || {},
-            })}
-            params={{
-              id: row?.user_name,
-            }}
-            columns={columns}
-          />
-        )}
-      </Drawer>
     </PageContainer>
   );
 };
 
-export default TableList;
+export default LoginLogList;

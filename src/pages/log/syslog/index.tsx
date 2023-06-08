@@ -1,33 +1,15 @@
-import { ExclamationCircleOutlined } from '@ant-design/icons';
-import { Button, message, Input, Drawer, Modal } from 'antd';
-import React, { useState, useRef } from 'react';
-import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
-import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
+import {DeleteOutlined, ExclamationCircleOutlined} from '@ant-design/icons';
+import {Button, message, Drawer, Modal} from 'antd';
+import React, {useState, useRef} from 'react';
+import {PageContainer, FooterToolbar} from '@ant-design/pro-layout';
+import ProTable from '@ant-design/pro-table';
+import type {ProColumns, ActionType} from '@ant-design/pro-table';
 import ProDescriptions from '@ant-design/pro-descriptions';
-import { TableListItem } from './data.d';
-import {querySysLog, removeSysLog, removeSysLogOne} from './service';
+import type {ProDescriptionsItemProps} from '@ant-design/pro-descriptions';
+import type {TableListItem} from './data.d';
+import {querySysLog, removeSysLog} from './service';
 
-const { confirm } = Modal;
-
-/**
- *  删除节点(单个)
- * @param id
- */
-const handleRemoveOne = async (id: number) => {
-  const hide = message.loading('正在删除');
-  try {
-    await removeSysLogOne({
-      id,
-    });
-    hide();
-    message.success('删除成功，即将刷新');
-    return true;
-  } catch (error) {
-    hide();
-    message.error('删除失败，请重试');
-    return false;
-  }
-};
+const {confirm} = Modal;
 
 /**
  *  删除节点
@@ -50,22 +32,24 @@ const handleRemove = async (selectedRows: TableListItem[]) => {
   }
 };
 
-const TableList: React.FC<{}> = () => {
+const TableList: React.FC = () => {
   const actionRef = useRef<ActionType>();
-  const [row, setRow] = useState<TableListItem>();
+  const [showDetail, setShowDetail] = useState<boolean>(false);
+  const [currentRow, setCurrentRow] = useState<TableListItem>();
   const [selectedRowsState, setSelectedRows] = useState<TableListItem[]>([]);
 
-  const showDeleteConfirm = (id: number) => {
+  const showDeleteConfirm = (item: TableListItem) => {
     confirm({
       title: '是否删除记录?',
-      icon: <ExclamationCircleOutlined />,
+      icon: <ExclamationCircleOutlined/>,
       content: '删除的记录不能恢复,请确认!',
       onOk() {
-        handleRemoveOne(id).then((r) => {
+        handleRemove([item]).then(() => {
           actionRef.current?.reloadAndRest?.();
         });
       },
-      onCancel() {},
+      onCancel() {
+      },
     });
   };
 
@@ -74,16 +58,25 @@ const TableList: React.FC<{}> = () => {
       title: '用户名',
       dataIndex: 'userName',
       render: (dom, entity) => {
-        return <a onClick={() => setRow(entity)}>{dom}</a>;
+        return <a onClick={() => {
+          setCurrentRow(entity);
+          setShowDetail(true);
+        }}>{dom}</a>;
       },
     },
     {
       title: '用户操作',
       dataIndex: 'operation',
+      hideInSearch: true,
     },
     {
       title: '请求方法',
       dataIndex: 'method',
+    },
+    {
+      title: '请求参数',
+      dataIndex: 'params',
+      hideInSearch: true,
     },
     {
       title: '执行时间(毫秒)',
@@ -93,6 +86,7 @@ const TableList: React.FC<{}> = () => {
     {
       title: 'IP地址',
       dataIndex: 'ip',
+      hideInSearch: true,
     },
     {
       title: '创建时间',
@@ -100,16 +94,6 @@ const TableList: React.FC<{}> = () => {
       sorter: true,
       valueType: 'dateTime',
       hideInSearch: true,
-      renderFormItem: (item, { defaultRender, ...rest }, form) => {
-        const status = form.getFieldValue('status');
-        if (`${status}` === '0') {
-          return false;
-        }
-        if (`${status}` === '3') {
-          return <Input {...rest} placeholder="请输入异常原因！" />;
-        }
-        return defaultRender(item);
-      },
     },
 
     {
@@ -121,9 +105,9 @@ const TableList: React.FC<{}> = () => {
           <Button
             type="primary"
             danger
-            size="small"
+            icon={<DeleteOutlined/>}
             onClick={() => {
-              showDeleteConfirm(record.id);
+              showDeleteConfirm(record);
             }}
           >
             删除
@@ -137,29 +121,31 @@ const TableList: React.FC<{}> = () => {
     <PageContainer
       title={false}>
       <ProTable<TableListItem>
-        headerTitle="日志列表"
+        headerTitle="操作日志列表"
         actionRef={actionRef}
         rowKey="id"
-        search={false}
-        options={{
-          search: true,
+        search={{
+          labelWidth: 120,
         }}
-        request={(params, sorter, filter) => querySysLog({...params, sorter, filter})}
+        request={querySysLog}
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows) => setSelectedRows(selectedRows),
         }}
-        pagination={{pageSize:10}}
+        pagination={{pageSize: 10}}
       />
       {selectedRowsState?.length > 0 && (
         <FooterToolbar
           extra={
             <div>
-              已选择 <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a> 项&nbsp;&nbsp;
+              已选择 <a style={{fontWeight: 600}}>{selectedRowsState.length}</a> 项&nbsp;&nbsp;
             </div>
           }
         >
           <Button
+            type="primary"
+            danger
+            icon={<DeleteOutlined/>}
             onClick={async () => {
               await handleRemove(selectedRowsState);
               setSelectedRows([]);
@@ -173,23 +159,24 @@ const TableList: React.FC<{}> = () => {
 
       <Drawer
         width={600}
-        visible={!!row}
+        visible={showDetail}
         onClose={() => {
-          setRow(undefined);
+          setCurrentRow(undefined);
+          setShowDetail(false)
         }}
         closable={false}
       >
-        {row?.user_name && (
+        {currentRow?.id && (
           <ProDescriptions<TableListItem>
             column={2}
-            title={row?.user_name}
+            title={"操作日志详情"}
             request={async () => ({
-              data: row || {},
+              data: currentRow || {},
             })}
             params={{
-              id: row?.user_name,
+              id: currentRow?.id,
             }}
-            columns={columns}
+            columns={columns as ProDescriptionsItemProps<TableListItem>[]}
           />
         )}
       </Drawer>

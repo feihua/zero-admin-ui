@@ -93,8 +93,9 @@ const UpdateMenuForm: React.FC<UpdateFormProps> = (props) => {
         <FormItem
           label="类型"
           name="type"
+          initialValue={props.currentData.type}
         >
-          <Radio.Group onChange={onChange}>
+          <Radio.Group onChange={onChange} defaultValue={props.currentData.type}>
             <Radio value={0}>目录</Radio>
             <Radio value={1}>菜单</Radio>
             <Radio value={2}>按钮</Radio>

@@ -1,7 +1,11 @@
-import { request } from 'umi';
-import { TableListParams } from './data.d';
+import {request} from 'umi';
+import type {TableListParams} from './data.d';
 
-export async function queryLoginLog(params?: TableListParams) {
+/**
+ * 查询登录日志
+ * @param params
+ */
+export async function queryLoginLog(params: TableListParams) {
   return request('/api/sys/loginLog/list', {
     method: 'POST',
     data: {
@@ -10,15 +14,10 @@ export async function queryLoginLog(params?: TableListParams) {
   });
 }
 
-export async function removeLoginLogOne(params: { id: number }) {
-  return request('/api/sys/loginLog/delete', {
-    method: 'POST',
-    data: {
-      ...params,
-    },
-  });
-}
-
+/**
+ * 批量删除登录日志
+ * @param params
+ */
 export async function removeLoginLog(params: { ids: number[] }) {
   return request('/api/sys/loginLog/delete', {
     method: 'POST',
