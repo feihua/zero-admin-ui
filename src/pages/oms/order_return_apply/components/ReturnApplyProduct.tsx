@@ -33,7 +33,6 @@ const ReturnApplyProduct: React.FC<ReturnApplyProductProps> = (props) => {
     {
       title: '货号',
       dataIndex: 'productId',
-      render: (text) => <a>{text}</a>,
     },
     {
       title: '属性',

@@ -1,16 +1,14 @@
-import {DeleteOutlined, EditOutlined, ExclamationCircleOutlined} from '@ant-design/icons';
-import {Button, Divider, Drawer, message, Modal} from 'antd';
+import {EditOutlined} from '@ant-design/icons';
+import {Button, Drawer, message} from 'antd';
 import React, {useRef, useState} from 'react';
 import {PageContainer} from '@ant-design/pro-layout';
 import type {ActionType, ProColumns} from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
 import type {ProDescriptionsItemProps} from '@ant-design/pro-descriptions';
 import ProDescriptions from '@ant-design/pro-descriptions';
-import UpdateReturnApplyForm from './components/ReturnApplyDetailModel';
+import ReturnApplyDetailModel from './components/ReturnApplyDetailModel';
 import type {ReturnApplyListItem} from './data.d';
-import {queryReturnApply, removeReturnApply, updateReturnApply} from './service';
-
-const {confirm} = Modal;
+import {queryReturnApply, updateReturnApply} from './service';
 
 
 /**
@@ -33,47 +31,13 @@ const handleUpdate = async (fields: ReturnApplyListItem) => {
 };
 
 
-/**
- *  删除节点
- * @param selectedRows
- */
-const handleRemove = async (selectedRows: ReturnApplyListItem[]) => {
-  const hide = message.loading('正在删除');
-  if (!selectedRows) return true;
-  try {
-    await removeReturnApply({
-      ids: selectedRows.map((row) => row.id),
-    });
-    hide();
-    message.success('删除成功，即将刷新');
-    return true;
-  } catch (error) {
-    hide();
-    message.error('删除失败，请重试');
-    return false;
-  }
-};
-
 const ReturnApplyTableList: React.FC = () => {
-  const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
+  const [detailModalVisible, handleDetailModalVisible] = useState<boolean>(false);
   const [showDetail, setShowDetail] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<ReturnApplyListItem>();
 
-  const showDeleteConfirm = (item: ReturnApplyListItem) => {
-    confirm({
-      title: '是否删除记录?',
-      icon: <ExclamationCircleOutlined/>,
-      content: '删除的记录不能恢复,请确认!',
-      onOk() {
-        handleRemove([item]).then(() => {
-          actionRef.current?.reloadAndRest?.();
-        });
-      },
-      onCancel() {
-      },
-    });
-  };
+  const [companyAddressId, setCompanyAddressId] = useState<number>(0);
 
   const columns: ProColumns<ReturnApplyListItem>[] = [
     {
@@ -159,22 +123,11 @@ const ReturnApplyTableList: React.FC = () => {
             type="primary"
             icon={<EditOutlined/>}
             onClick={() => {
-              handleUpdateModalVisible(true);
+              handleDetailModalVisible(true);
               setCurrentRow(record);
             }}
           >
             查看详情
-          </Button>
-          <Divider type="vertical"/>
-          <Button
-            type="primary"
-            danger
-            icon={<DeleteOutlined/>}
-            onClick={() => {
-              showDeleteConfirm(record);
-            }}
-          >
-            删除
           </Button>
         </>
       ),
@@ -200,26 +153,29 @@ const ReturnApplyTableList: React.FC = () => {
       />
 
 
-      <UpdateReturnApplyForm
+      <ReturnApplyDetailModel
         key={'UpdateReturnApplyForm'}
         onSubmit={async (value) => {
+          value.companyAddressId = companyAddressId
           const success = await handleUpdate(value);
           if (success) {
-            handleUpdateModalVisible(false);
+            handleDetailModalVisible(false);
             setCurrentRow(undefined);
             if (actionRef.current) {
               actionRef.current.reload();
             }
           }
         }}
+        getCompanyAddressId={async (addressId) => {
+          setCompanyAddressId(addressId)
+        }}
         onCancel={() => {
-          handleUpdateModalVisible(false);
+          handleDetailModalVisible(false);
           if (!showDetail) {
             setCurrentRow(undefined);
           }
         }}
-        updateModalVisible={updateModalVisible}
-
+        detailModalVisible={detailModalVisible}
         currentData={currentRow || {id: 0}}
       />
 

@@ -1,5 +1,5 @@
 import {request} from 'umi';
-import {ReturnApplyListParams, ReturnApplyListItem} from './data.d';
+import type {ReturnApplyListParams, ReturnApplyListItem} from './data.d';
 
 export async function queryReturnApply(params: ReturnApplyListParams) {
   if (params.status != null) {
@@ -13,16 +13,6 @@ export async function queryReturnApply(params: ReturnApplyListParams) {
   });
 }
 
-export async function removeReturnApply(params: { ids: number[] }) {
-  return request('/api/order/returnapply/delete', {
-    method: 'POST',
-    data: {
-      ...params,
-    },
-  });
-}
-
-
 export async function updateReturnApply(params: ReturnApplyListItem) {
   return request('/api/order/returnapply/update', {
     method: 'POST',
@@ -32,3 +22,11 @@ export async function updateReturnApply(params: ReturnApplyListItem) {
   });
 }
 
+export async function queryCompanyAddress(params: ReturnApplyListParams) {
+  return request('/api/order/compayaddress/list', {
+    method: 'POST',
+    data: {
+      ...params,
+    },
+  });
+}
