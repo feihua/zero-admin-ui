@@ -6,7 +6,7 @@ import type {ActionType, ProColumns} from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
 import type {ProDescriptionsItemProps} from '@ant-design/pro-descriptions';
 import ProDescriptions from '@ant-design/pro-descriptions';
-import UpdateOrderForm from './components/UpdateOrderForm';
+import OrderDetailModel from './components/OrderDetailModel';
 import type {OrderListItem} from './data.d';
 import {queryOrderList, removeOrder, updateOrder} from './service';
 
@@ -186,7 +186,7 @@ const OrderTableList: React.FC = () => {
               setCurrentRow(record);
             }}
           >
-            编辑
+            查看订单
           </Button>
           <Divider type="vertical"/>
           <Button
@@ -223,8 +223,8 @@ const OrderTableList: React.FC = () => {
       />
 
 
-      <UpdateOrderForm
-        key={'UpdateOrderForm'}
+      <OrderDetailModel
+        key={'OrderDetailModel'}
         onSubmit={async (value) => {
           const success = await handleUpdate(value);
           if (success) {

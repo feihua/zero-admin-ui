@@ -6,7 +6,7 @@ import type {ActionType, ProColumns} from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
 import type {ProDescriptionsItemProps} from '@ant-design/pro-descriptions';
 import ProDescriptions from '@ant-design/pro-descriptions';
-import UpdateReturnApplyForm from './components/UpdateReturnApplyForm';
+import UpdateReturnApplyForm from './components/ReturnApplyDetailModel';
 import type {ReturnApplyListItem} from './data.d';
 import {queryReturnApply, removeReturnApply, updateReturnApply} from './service';
 
@@ -163,7 +163,7 @@ const ReturnApplyTableList: React.FC = () => {
               setCurrentRow(record);
             }}
           >
-            编辑
+            查看详情
           </Button>
           <Divider type="vertical"/>
           <Button
@@ -219,7 +219,8 @@ const ReturnApplyTableList: React.FC = () => {
           }
         }}
         updateModalVisible={updateModalVisible}
-        currentData={currentRow || {}}
+
+        currentData={currentRow || {id: 0}}
       />
 
       <Drawer
