@@ -242,7 +242,7 @@ const OrderTableList: React.FC = () => {
           }
         }}
         updateModalVisible={updateModalVisible}
-        currentData={currentRow || {}}
+        currentData={currentRow || {id: 0}}
       />
 
       <Drawer
