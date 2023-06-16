@@ -22,7 +22,7 @@ const BaseInfo: React.FC<BaseInfoProps> = (props) => {
       </Row>
       <Row style={{marginTop: 8}}>
         <Col span={4}>{item.orderSn}</Col>
-        <Col span={4}>暂无</Col>
+        <Col span={4}>{item.deliverySn}</Col>
         <Col span={4}>{item.memberUserName}</Col>
         {item.payType === 0 && <Col span={4}>未支付</Col>}
         {item.payType === 1 && <Col span={4}>支付宝</Col>}

@@ -9,6 +9,9 @@ import ProDescriptions from '@ant-design/pro-descriptions';
 import OrderDetailModel from './components/OrderDetailModel';
 import type {OrderListItem} from './data.d';
 import {queryOrderList, removeOrder, updateOrder} from './service';
+import CloseOrderModel from "@/pages/oms/order/components/CloseOrderModel";
+import DeliveryModel from "@/pages/oms/order/components/DeliveryModel";
+import OrderTrackingModel from "@/pages/oms/order/components/OrderTrackingModel";
 
 
 const {confirm} = Modal;
@@ -55,6 +58,9 @@ const handleRemove = async (selectedRows: OrderListItem[]) => {
 
 const OrderTableList: React.FC = () => {
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
+  const [closeOrderModelVisible, handleCloseOrderModelVisible] = useState<boolean>(false);
+  const [deliveryModelVisible, handleDeliveryModelVisible] = useState<boolean>(false);
+  const [orderTrackingModalVisible, handleOrderTrackingModalVisible] = useState<boolean>(false);
   const [showDetail, setShowDetail] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<OrderListItem>();
@@ -189,16 +195,21 @@ const OrderTableList: React.FC = () => {
             查看订单
           </Button>
           <Divider type="vertical"/>
-          <Button
-            type="primary"
-            danger
-            icon={<DeleteOutlined/>}
-            onClick={() => {
-              showDeleteConfirm(record);
-            }}
-          >
-            删除
-          </Button>
+          {record.status === 0 && <Button type="primary" danger icon={<DeleteOutlined/>} onClick={() => {
+            handleCloseOrderModelVisible(true);
+            setCurrentRow(record);
+          }}>关闭订单</Button>}
+          {record.status === 4 && <Button type="primary" danger icon={<DeleteOutlined/>} onClick={() => {
+            showDeleteConfirm(record);
+          }}>删除订单</Button>}
+          {record.status === 1 && <Button icon={<EditOutlined/>} onClick={() => {
+            handleDeliveryModelVisible(true);
+            setCurrentRow(record);
+          }} style={{background: '#c762ef', color: 'white'}}>订单发货</Button>}
+          {(record.status === 2 || record.status === 3) && <Button icon={<EditOutlined/>} style={{background: 'rgba(103,170,247,0.96)', color: 'white'}} onClick={() => {
+            handleOrderTrackingModalVisible(true);
+            setCurrentRow(record);
+          }}>订单跟踪</Button>}
         </>
       ),
     },
@@ -235,6 +246,15 @@ const OrderTableList: React.FC = () => {
             }
           }
         }}
+        onRefresh={() => {
+          handleUpdateModalVisible(false);
+          if (!showDetail) {
+            setCurrentRow(undefined);
+          }
+          if (actionRef.current) {
+            actionRef.current.reload();
+          }
+        }}
         onCancel={() => {
           handleUpdateModalVisible(false);
           if (!showDetail) {
@@ -245,6 +265,64 @@ const OrderTableList: React.FC = () => {
         currentData={currentRow || {id: 0}}
       />
 
+      <CloseOrderModel
+        key={'CloseOrderModel'}
+        onSubmit={async (value) => {
+          value.status = 4
+          const success = await handleUpdate(value);
+          if (success) {
+            handleUpdateModalVisible(false);
+            setCurrentRow(undefined);
+            if (actionRef.current) {
+              actionRef.current.reload();
+            }
+          }
+          handleCloseOrderModelVisible(false);
+        }}
+        onCancel={() => {
+          handleCloseOrderModelVisible(false);
+          if (!showDetail) {
+            setCurrentRow(undefined);
+          }
+        }}
+        closeOrderModelVisible={closeOrderModelVisible}
+        currentData={currentRow || {id: 0}}
+      />
+
+      <DeliveryModel
+        key={'DeliveryModel'}
+        onSubmit={async (value) => {
+          value.status = 2
+          const success = await handleUpdate(value);
+          if (success) {
+            handleDeliveryModelVisible(false);
+            setCurrentRow(undefined);
+            if (actionRef.current) {
+              actionRef.current.reload();
+            }
+          }
+        }}
+        onCancel={() => {
+          handleDeliveryModelVisible(false);
+          if (!showDetail) {
+            setCurrentRow(undefined);
+          }
+        }}
+        deliveryModelVisible={deliveryModelVisible}
+        currentData={currentRow || {id: 0}}
+      />
+
+      <OrderTrackingModel
+        key={'OrderTrackingModel'}
+        onCancel={() => {
+          handleOrderTrackingModalVisible(false);
+          if (!showDetail) {
+            setCurrentRow(undefined);
+          }
+        }}
+        orderTrackingModalVisible={orderTrackingModalVisible}
+        currentData={currentRow || {id: 0}}
+      />
       <Drawer
         width={600}
         visible={showDetail}
