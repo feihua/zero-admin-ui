@@ -100,7 +100,7 @@ const TableList: React.FC<{}> = () => {
       hideInSearch: true,
     },
     {
-      title: '商品名',
+      title: '商品名称',
       dataIndex: 'name',
       render: (dom, entity) => {
         return <a onClick={() => {
@@ -110,34 +110,31 @@ const TableList: React.FC<{}> = () => {
       },
     },
     {
-      title: '促销价格',
+      title: '商品图片',
+      dataIndex: 'pic',
+      valueType: 'image',
+      fieldProps: {width: 100, height: 80},
+      hideInSearch: true,
+    },
+    {
+      title: '价格/货号',
       dataIndex: 'promotionPrice',
     },
     {
-      title: '赠送的成长值',
-      dataIndex: 'giftGrowth',
+      title: '排序',
+      dataIndex: 'sort',
     },
     {
-      title: '赠送的积分',
+      title: 'SKU库存',
       dataIndex: 'giftPoint',
     },
     {
-      title: '市场价',
+      title: '销量',
       dataIndex: 'originalPrice',
     },
     {
-      title: '库存',
+      title: '审核状态',
       dataIndex: 'stock',
-    },
-    {
-      title: '品牌名称',
-      dataIndex: 'brandName',
-      hideInSearch: true,
-    },
-    {
-      title: '商品分类名称',
-      dataIndex: 'productCategoryName',
-      hideInSearch: true,
     },
     {
       title: '操作',

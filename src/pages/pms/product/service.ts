@@ -1,5 +1,5 @@
-import { request } from 'umi';
-import { ProductListParams, ProductListItem } from './data.d';
+import {request} from 'umi';
+import type {ProductListParams, ProductListItem} from './data.d';
 
 export async function queryProduct(params?: ProductListParams) {
   return request('/api/product/product/list', {
