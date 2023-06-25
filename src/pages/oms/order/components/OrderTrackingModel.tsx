@@ -13,10 +13,6 @@ const OrderTrackingModel: React.FC<UpdateFormProps> = (props) => {
 
   const {onCancel} = props
 
-  const handleSubmit = () => {
-    console.log("cancel")
-  };
-
   const renderContent = () => {
     return (
       <>
@@ -39,15 +35,14 @@ const OrderTrackingModel: React.FC<UpdateFormProps> = (props) => {
   };
 
 
-  const modalFooter = {okText: '保存', onOk: handleSubmit, onCancel};
-
   return (
     <Modal
       forceRender
       destroyOnClose
       title="订单跟踪"
       open={props.orderTrackingModalVisible}
-      {...modalFooter}
+      onCancel={onCancel}
+      footer={false}
     >
       {renderContent()}
     </Modal>

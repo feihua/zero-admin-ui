@@ -12,7 +12,7 @@ export interface UpdateFormProps {
 
 const {confirm} = Modal;
 
-const CloseOrderModel: React.FC<UpdateFormProps> = (props) => {
+const NoteOrderModel: React.FC<UpdateFormProps> = (props) => {
 
   const {
     onSubmit,
@@ -74,4 +74,4 @@ const CloseOrderModel: React.FC<UpdateFormProps> = (props) => {
   );
 };
 
-export default CloseOrderModel;
+export default NoteOrderModel;

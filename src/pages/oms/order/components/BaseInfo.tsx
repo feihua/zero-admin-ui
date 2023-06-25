@@ -1,6 +1,6 @@
 import React from 'react';
 import {Col, Row} from 'antd';
-import {OrderListItem} from "../data.d";
+import type {OrderListItem} from "../data.d";
 import '../index.less'
 
 export interface BaseInfoProps {

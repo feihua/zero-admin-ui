@@ -9,7 +9,7 @@ import ProDescriptions from '@ant-design/pro-descriptions';
 import OrderDetailModel from './components/OrderDetailModel';
 import type {OrderListItem} from './data.d';
 import {queryOrderList, removeOrder, updateOrder} from './service';
-import CloseOrderModel from "@/pages/oms/order/components/CloseOrderModel";
+import NoteOrderModel from "@/pages/oms/order/components/NoteOrderModel";
 import DeliveryModel from "@/pages/oms/order/components/DeliveryModel";
 import OrderTrackingModel from "@/pages/oms/order/components/OrderTrackingModel";
 
@@ -195,7 +195,7 @@ const OrderTableList: React.FC = () => {
             查看订单
           </Button>
           <Divider type="vertical"/>
-          {record.status === 0 && <Button type="primary" danger icon={<DeleteOutlined/>} onClick={() => {
+          {record.status === 0 && <Button style={{background: 'rgba(254,105,204,0.9)', color: 'white'}} icon={<DeleteOutlined/>} onClick={() => {
             handleCloseOrderModelVisible(true);
             setCurrentRow(record);
           }}>关闭订单</Button>}
@@ -260,24 +260,26 @@ const OrderTableList: React.FC = () => {
           if (!showDetail) {
             setCurrentRow(undefined);
           }
+          if (actionRef.current) {
+            actionRef.current.reload();
+          }
         }}
         updateModalVisible={updateModalVisible}
         currentData={currentRow || {id: 0}}
       />
 
-      <CloseOrderModel
+      <NoteOrderModel
         key={'CloseOrderModel'}
         onSubmit={async (value) => {
           value.status = 4
           const success = await handleUpdate(value);
           if (success) {
-            handleUpdateModalVisible(false);
+            handleCloseOrderModelVisible(false);
             setCurrentRow(undefined);
             if (actionRef.current) {
               actionRef.current.reload();
             }
           }
-          handleCloseOrderModelVisible(false);
         }}
         onCancel={() => {
           handleCloseOrderModelVisible(false);
