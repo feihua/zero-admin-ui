@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
-import {Checkbox, DatePicker, Form, Input, InputNumber, Radio, Switch} from 'antd';
 import type {RadioChangeEvent} from 'antd';
+import {Checkbox, DatePicker, Form, Input, InputNumber, Radio, Switch} from 'antd';
 
 export interface BaseInfoProps {
 }
@@ -34,13 +34,13 @@ const ProductPromotionalInfo: React.FC<BaseInfoProps> = (props) => {
         <InputNumber style={{width: 407}}/>
       </FormItem>
       <FormItem name="previewStatus" label="预告商品" style={{textAlign: "left"}} rules={[{required: true, message: '请选择商品分类!'}]}>
-        <Switch/>
+        <Switch checked={false}/>
       </FormItem>
       <FormItem name="publishStatus" label="商品上架" style={{textAlign: "left"}} rules={[{required: true, message: '请选择商品分类!'}]}>
-        <Switch/>
+        <Switch checked/>
       </FormItem>
       <FormItem name="recommandStatus" label="商品推荐" style={{textAlign: "left"}} rules={[{required: true, message: '请选择商品分类!'}]}>
-        <Switch/>
+        <Switch checked/>
       </FormItem>
       <FormItem name="serviceIds" label="服务保证" style={{textAlign: "left"}} rules={[{required: true, message: '请选择商品分类!'}]}>
         <Checkbox.Group options={options}/>
@@ -76,60 +76,47 @@ const ProductPromotionalInfo: React.FC<BaseInfoProps> = (props) => {
           <FormItem name="endTIme" label="结束时间" style={{textAlign: "left"}}>
             <DatePicker showTime placeholder={'请输入结束时间'}/>
           </FormItem>
-          <FormItem name="keywords" label="促销价格" style={{textAlign: "left"}}>
+          <FormItem name="promotionPrice" label="促销价格" style={{textAlign: "left"}}>
             <InputNumber addonAfter={'元'}/>
           </FormItem>
         </div>
       )}
       {promotionTypes === 2 && (
         <div>
-          <FormItem name="keywords" label="黄金会员" style={{textAlign: "left"}}>
+          <FormItem name="goldMembership" label="黄金会员" style={{textAlign: "left"}}>
             <InputNumber addonAfter={'元'}/>
           </FormItem>
-          <FormItem name="keywords" label="白金会员" style={{textAlign: "left"}}>
+          <FormItem name="whiteMembership" label="白金会员" style={{textAlign: "left"}}>
             <InputNumber addonAfter={'元'}/>
           </FormItem>
-          <FormItem name="keywords" label="钻石会员" style={{textAlign: "left"}}>
+          <FormItem name="diamondMembership" label="钻石会员" style={{textAlign: "left"}}>
             <InputNumber addonAfter={'元'}/>
           </FormItem>
         </div>
       )}
       {promotionTypes === 3 && (
-        <>
-          <FormItem name="keywords" label="满减">
-            <Input id="update-keywords" placeholder={'100-10'}/>
-          </FormItem>
-          <FormItem name="keywords" label="满减">
-            <Input id="update-keywords" placeholder={'500-60'}/>
-          </FormItem>
-          <FormItem name="keywords" label="满减">
-            <Input id="update-keywords" placeholder={'1000-150'}/>
-          </FormItem>
-        </>
-      )}
-      {promotionTypes === 4 && (
         <div>
-          <FormItem name="keywords" label="满减">
-            <Input id="update-keywords" placeholder={'100-10'}/>
+          <FormItem name="discount1" label="折扣">
+            <Input id="update-discount1" placeholder={'1-9'}/>
           </FormItem>
-          <FormItem name="keywords" label="满减">
-            <Input id="update-keywords" placeholder={'500-60'}/>
+          <FormItem name="discount2" label="折扣">
+            <Input id="update-discount2" placeholder={'2-8'}/>
           </FormItem>
-          <FormItem name="keywords" label="满减">
-            <Input id="update-keywords" placeholder={'1000-150'}/>
+          <FormItem name="discount3" label="折扣">
+            <Input id="update-discount3" placeholder={'3-5'}/>
           </FormItem>
         </div>
       )}
-      {promotionTypes === 5 && (
+      {promotionTypes === 4 && (
         <div>
-          <FormItem name="keywords" label="开始时间">
-            <Input id="update-keywords" placeholder={'请输入关键字'}/>
+          <FormItem name="fullReduction1" label="满减">
+            <Input id="update-fullReduction1" placeholder={'100-10'}/>
           </FormItem>
-          <FormItem name="keywords" label="结束时间">
-            <Input id="update-keywords" placeholder={'请输入关键字'}/>
+          <FormItem name="fullReduction2" label="满减">
+            <Input id="update-fullReduction2" placeholder={'500-60'}/>
           </FormItem>
-          <FormItem name="keywords" label="促销价格">
-            <Input id="update-keywords" placeholder={'请输入关键字'}/>
+          <FormItem name="fullReduction3" label="满减">
+            <Input id="update-fullReduction3" placeholder={'1000-150'}/>
           </FormItem>
         </div>
       )}

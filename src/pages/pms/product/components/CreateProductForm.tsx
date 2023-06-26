@@ -53,6 +53,14 @@ const CreateProductForm: React.FC<CreateFormProps> = (props) => {
   ];
 
   const next = () => {
+    // form.validateFields()
+    //   .then((values) => {
+    //     setCurrent(current + 1);
+    //     setProductListItem({...form.getFieldsValue(true)})
+    //   })
+    //   .catch((info) => {
+    //     console.log('Validate Failed:', info);
+    //   });
     setCurrent(current + 1);
     setProductListItem({...form.getFieldsValue(true)})
   };
@@ -90,6 +98,10 @@ const CreateProductForm: React.FC<CreateFormProps> = (props) => {
     'giftPoint': 0,
     'giftGrowth': 0,
     'usePointLimit': 0,
+    'previewStatus': false,
+    'publishStatus': true,
+    'recommandStatus': true,
+    'serviceIds': ['1'],
   }
 
   return (

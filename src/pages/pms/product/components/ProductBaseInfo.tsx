@@ -54,7 +54,7 @@ const ProductBaseInfo: React.FC<BaseInfoProps> = (props) => {
           placeholder="请选择商品分类"
         />
       </FormItem>
-      <FormItem name="name" label="商品名" rules={[{required: true, message: '请选择商品分类!'}]}>
+      <FormItem name="name" label="商品名称" rules={[{required: true, message: '请输入商品名!'}]}>
         <Input id="update-name" placeholder={'请输入商品名'}/>
       </FormItem>
       <FormItem name="subTitle" label="副标题" rules={[{required: true, message: '请输入副标题!'}]}>
