@@ -1,5 +1,5 @@
 import {request} from 'umi';
-import {AttributeCategoryListParams, AttributeCategoryListItem} from './data.d';
+import type {AttributeCategoryListParams, AttributeCategoryListItem} from './data.d';
 
 export async function queryCategoryAttribute(params: AttributeCategoryListParams) {
 

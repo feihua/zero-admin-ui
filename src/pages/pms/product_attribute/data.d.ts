@@ -1,6 +1,7 @@
 export interface AttributeListItem {
   id: number;
-
+  type: number;
+  name: string;
 }
 
 export interface AttributeListPagination {

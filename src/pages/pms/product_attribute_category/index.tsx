@@ -1,15 +1,15 @@
-import {PlusOutlined, ExclamationCircleOutlined, EditOutlined, DeleteOutlined} from '@ant-design/icons';
-import {Button, Divider, message, Drawer, Modal} from 'antd';
-import React, {useState, useRef} from 'react';
-import {PageContainer, FooterToolbar} from '@ant-design/pro-layout';
+import {DeleteOutlined, EditOutlined, ExclamationCircleOutlined, PlusOutlined} from '@ant-design/icons';
+import {Button, Divider, Drawer, message, Modal} from 'antd';
+import React, {useRef, useState} from 'react';
+import {FooterToolbar, PageContainer} from '@ant-design/pro-layout';
+import type {ActionType, ProColumns} from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
-import type {ProColumns, ActionType} from '@ant-design/pro-table';
-import ProDescriptions from '@ant-design/pro-descriptions';
 import type {ProDescriptionsItemProps} from '@ant-design/pro-descriptions';
+import ProDescriptions from '@ant-design/pro-descriptions';
 import CreateAttributeForm from './components/CreateAttributeForm';
 import UpdateAttributeForm from './components/UpdateAttributeForm';
 import type {AttributeCategoryListItem} from './data.d';
-import {queryCategoryAttribute, updateAttributeCategory, addAttributeCategory, removeAttributeCategory} from './service';
+import {addAttributeCategory, queryCategoryAttribute, removeAttributeCategory, updateAttributeCategory} from './service';
 import {history} from 'umi';
 
 const {confirm} = Modal;

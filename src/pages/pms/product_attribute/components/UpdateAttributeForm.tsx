@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {Form, Input, InputNumber, Modal, Radio, Select} from 'antd';
 import type {AttributeListItem} from '../data.d';
-import {AttributeCategoryListItem} from "@/pages/pms/product_attribute_category/data";
+import type {AttributeCategoryListItem} from "@/pages/pms/product_attribute_category/data";
 import {queryCategoryAttribute} from "@/pages/pms/product_attribute_category/service";
 
 export interface UpdateFormProps {

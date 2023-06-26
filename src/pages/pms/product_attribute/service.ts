@@ -1,5 +1,5 @@
 import {request} from 'umi';
-import {AttributeListParams, AttributeListItem} from './data.d';
+import type {AttributeListParams, AttributeListItem} from './data.d';
 
 export async function queryAttribute(params: AttributeListParams) {
   if (params.type != null) {
