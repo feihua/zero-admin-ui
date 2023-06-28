@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Modal, Form, Input, message, Radio, Upload, TreeSelect, Card} from 'antd';
+import {Modal, Form, Input, message, Checkbox, Upload, TreeSelect, Card, Select} from 'antd';
 import type {AttributeCategoryListItem} from "@/pages/pms/product_attribute_category/data";
 import {queryCategoryAttribute} from "@/pages/pms/product_attribute_category/service";
 import {queryAttribute} from "@/pages/pms/product_attribute/service";
@@ -9,7 +9,8 @@ import type {UploadFile} from 'antd/es/upload/interface';
 import {PlusOutlined} from "@ant-design/icons";
 import 'braft-editor/dist/index.css';
 import BraftEditor from 'braft-editor';
-
+// @ts-ignore
+import {ContentUtils} from 'braft-utils';
 
 export interface BaseInfoProps {
   visible: boolean;
@@ -30,6 +31,8 @@ const ProductAttributeInfo: React.FC<BaseInfoProps> = (props) => {
   const [attributeCategoryListItem, setAttributeCategoryListItem] = useState<AttributeCategoryListItem[]>([]);
   const [attributeListItem0, setAttributeListItem0] = useState<AttributeListItem[]>([]);
   const [attributeListItem1, setAttributeListItem1] = useState<AttributeListItem[]>([]);
+
+  const [content, setContent] = useState(BraftEditor.createEditorState(null))
 
   useEffect(() => {
     if (props.visible) {
@@ -62,6 +65,9 @@ const ProductAttributeInfo: React.FC<BaseInfoProps> = (props) => {
 
           const params1 = resData.filter((x: { type: number; }) => x.type === 1);
           setAttributeListItem1(params1)
+        } else {
+          setAttributeListItem0([])
+          setAttributeListItem1([])
         }
       } else {
         message.error(res.msg);
@@ -113,11 +119,47 @@ const ProductAttributeInfo: React.FC<BaseInfoProps> = (props) => {
   );
 
   //编辑器
-  const controls = ['bold', 'italic', 'underline', 'text-color', 'separator', 'link', 'separator', 'media']
+  // const controls: any = ['undo', 'redo', 'separator',
+  //   'font-size', 'line-height', 'letter-spacing', 'separator',
+  //   'text-color', 'blod', 'italic', 'underline', 'strike-through', 'separator',
+  //   'superscript', 'subscript', 'remove-styles', 'emoji', 'separator', 'text-indent', 'text-align', 'separator',
+  //   'headings', 'list-ul', 'list-ol', 'blockquote', 'code', 'separator',
+  //   'link', 'separator', 'hr', 'separator',
+  //   'clear', 'separator',
+  // ]
+  const controls: any = ['bold', 'italic', 'underline', 'text-color', 'separator', 'link', 'separator', 'media']
+  const handleImageContentChange = (info: any) => {
+    // if (info?.file?.response?.message == "success") {
+    //   setContent(ContentUtils.insertMedias(content, [{
+    //     type: 'IMAGE',
+    //     url: info?.file?.response?.url
+    //   }]))
+    // }
+    setContent(ContentUtils.insertMedias(content, [{
+      type: 'IMAGE',
+      url: "https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png"
+    }]))
+  }
+  const extendControlsContent: any = [
+    {
+      key: 'antd-uploader',
+      type: 'component',
+      component: (
+        <Upload
+          accept="*"
+          showUploadList={false}
+          onChange={handleImageContentChange}
+          action='http://127.0.0.1:9097/upload/image'
+        >
+          <button type="button" className="control-item button upload-button" data-title="插入图片">上传图片</button>
+        </Upload>
+      )
+    }
+  ]
 
   return (
     <>
-      <FormItem name="name" label="属性类型">
+      <FormItem name="productAttributeCategoryId" label="属性类型">
         <TreeSelect
           style={{width: '100%'}}
           dropdownStyle={{maxHeight: 400, overflow: 'auto'}}
@@ -127,21 +169,31 @@ const ProductAttributeInfo: React.FC<BaseInfoProps> = (props) => {
           onChange={onChange}
         />
       </FormItem>
-      <FormItem name="name" label="商品规格">
+      <FormItem name="name1" label="商品规格">
         <Card>
-          <Radio.Group>
-            {attributeListItem0.map(r => <Radio key={r.id} value={r.id}>{r.name}</Radio>)}
-          </Radio.Group>
+          {attributeListItem0.map(r => r.inputList !== "" && <FormItem name={r.name} key={r.id} label={r.name}>
+            {/*<Radio.Group>*/}
+            {/*  {r.inputList.split(',').map(x => <Radio key={x} value={x}>{x}</Radio>)}*/}
+            {/*</Radio.Group>*/}
+            {/* eslint-disable-next-line react/jsx-no-undef */}
+            <Checkbox.Group key={r.name}>
+              {r.inputList.split(',').map(x => <Checkbox key={x} value={x}>{x}</Checkbox>)}
+            </Checkbox.Group>
+
+          </FormItem>)}
         </Card>
       </FormItem>
-      <FormItem name="name" label="商品参数">
+      <FormItem name="name2" label="商品参数">
         <Card>
-          <Radio.Group>
-            {attributeListItem1.map(r => <Radio key={r.id} value={r.id}>{r.name}</Radio>)}
-          </Radio.Group>
+          {attributeListItem1.map(r => <FormItem key={r.id} name="subTitle" label={r.name}>
+            {r.inputType === 0 && <Input id={r.name}/>}
+            {r.inputType === 1 && <Select id="productAttributeCategoryId" placeholder={'请选择' + r.name}>
+              {r.inputList.split(",").map(x => <Select.Option key={x} value={x}>{x}</Select.Option>)}
+            </Select>}
+          </FormItem>)}
         </Card>
       </FormItem>
-      <FormItem name="name" label="商品相册">
+      <FormItem name="albumPics" label="商品相册">
         <Card>
           <Upload
             action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
@@ -157,12 +209,18 @@ const ProductAttributeInfo: React.FC<BaseInfoProps> = (props) => {
           </Modal>
         </Card>
       </FormItem>
-      <FormItem name="name" label="商品详情">
+      <FormItem name="detailMobileHtml" label="商品详情">
         <Card>
           <BraftEditor
             className="my-editor"
+            value={content}
+            onChange={(editorState) => {
+              setContent(editorState)
+            }}
             controls={controls}
+            extendControls={extendControlsContent}
             placeholder="请输入正文内容"
+            contentStyle={{height: 400}}
           />
         </Card>
       </FormItem>

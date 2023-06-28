@@ -2,6 +2,9 @@ export interface AttributeListItem {
   id: number;
   type: number;
   name: string;
+  inputList: string;
+  selectType: number;
+  inputType: number;
 }
 
 export interface AttributeListPagination {

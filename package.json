@@ -55,6 +55,7 @@
     "@umijs/route-utils": "^2.0.0",
     "antd": "^4.17.0",
     "braft-editor": "^2.3.9",
+    "braft-utils": "^3.0.12",
     "classnames": "^2.3.0",
     "echarts-for-react": "^3.0.2",
     "lodash": "^4.17.0",
