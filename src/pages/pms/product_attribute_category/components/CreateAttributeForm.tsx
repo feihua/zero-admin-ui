@@ -1,10 +1,10 @@
 import React, {useEffect} from 'react';
 import {Form, Input, Modal} from 'antd';
-import type {AttributeListItem} from '../data.d';
+import type {AttributeCategoryListItem} from '../data.d';
 
 export interface CreateFormProps {
   onCancel: () => void;
-  onSubmit: (values: AttributeListItem) => void;
+  onSubmit: (values: AttributeCategoryListItem) => void;
   createModalVisible: boolean;
 }
 
@@ -31,7 +31,7 @@ const CreateAttributeForm: React.FC<CreateFormProps> = (props) => {
     form.submit();
   };
 
-  const handleFinish = (values: AttributeListItem) => {
+  const handleFinish = (values: AttributeCategoryListItem) => {
     if (onSubmit) {
       onSubmit(values);
     }
@@ -53,7 +53,7 @@ const CreateAttributeForm: React.FC<CreateFormProps> = (props) => {
     <Modal
       forceRender
       destroyOnClose
-      title="属性分类"
+      title="新建属性分类"
       open={createModalVisible}
       {...modalFooter}
     >

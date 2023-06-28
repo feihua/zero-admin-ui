@@ -1,7 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import {Form, Input, InputNumber, Modal, Radio, Select} from 'antd';
+import type {RadioChangeEvent} from 'antd';
 import type {AttributeListItem} from '../data.d';
-import {AttributeCategoryListItem} from "@/pages/pms/product_attribute_category/data";
+import type {AttributeCategoryListItem} from "@/pages/pms/product_attribute_category/data";
 import {queryCategoryAttribute} from "@/pages/pms/product_attribute_category/service";
 
 export interface CreateFormProps {
@@ -20,6 +21,7 @@ const formLayout = {
 const CreateAttributeForm: React.FC<CreateFormProps> = (props) => {
   const [form] = Form.useForm();
 
+  const [inputType, setInputType] = useState<number>(1);
   const [categoryListItems, setCategoryListItems] = useState<AttributeCategoryListItem[]>([]);
 
   const {onSubmit, onCancel, createModalVisible} = props;
@@ -45,6 +47,10 @@ const CreateAttributeForm: React.FC<CreateFormProps> = (props) => {
     if (onSubmit) {
       onSubmit(values);
     }
+  };
+
+  const onChange = (e: RadioChangeEvent) => {
+    setInputType(e.target.value);
   };
 
   const renderContent = () => {
@@ -84,15 +90,15 @@ const CreateAttributeForm: React.FC<CreateFormProps> = (props) => {
             <Radio value={2}>多选</Radio>
           </Radio.Group>
         </FormItem>
-        <FormItem name="inputType" label="属性值的录入方式" initialValue={0} rules={[{required: true, message: '请选择属性值的录入方式!'}]}>
-          <Radio.Group>
+        <FormItem name="inputType" label="属性值的录入方式" initialValue={inputType} rules={[{required: true, message: '请选择属性值的录入方式!'}]}>
+          <Radio.Group onChange={onChange} value={inputType}>
             <Radio value={0}>手工录入</Radio>
             <Radio value={1}>从列表中选取</Radio>
           </Radio.Group>
         </FormItem>
-        <FormItem name="inputList" label="属性值可选值列表">
+        {inputType === 1 && <FormItem name="inputList" label="属性值可选值列表">
           <Input.TextArea rows={3} placeholder={'请输入属性值可选值列表,可选值列表，以逗号隔开'}/>
-        </FormItem>
+        </FormItem>}
         <FormItem name="handAddStatus" label="是否支持手动新增" initialValue={1} rules={[{required: true, message: '请选择是否支持手动新增!'}]}>
           <Radio.Group>
             <Radio value={0}>不支持</Radio>
@@ -118,7 +124,7 @@ const CreateAttributeForm: React.FC<CreateFormProps> = (props) => {
     <Modal
       forceRender
       destroyOnClose
-      title="属性分类"
+      title="新建属性"
       open={createModalVisible}
       {...modalFooter}
       width={800}

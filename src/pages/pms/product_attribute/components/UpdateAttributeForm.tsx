@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Form, Input, InputNumber, Modal, Radio, Select} from 'antd';
+import {Form, Input, InputNumber, Modal, Radio, RadioChangeEvent, Select} from 'antd';
 import type {AttributeListItem} from '../data.d';
 import type {AttributeCategoryListItem} from "@/pages/pms/product_attribute_category/data";
 import {queryCategoryAttribute} from "@/pages/pms/product_attribute_category/service";
@@ -25,6 +25,8 @@ const UpdateAttributeForm: React.FC<UpdateFormProps> = (props) => {
 
   const {onSubmit, onCancel, updateModalVisible, values} = props;
 
+  const [inputType, setInputType] = useState<number>(0);
+
   useEffect(() => {
     if (form && !updateModalVisible) {
       form.resetFields();
@@ -41,6 +43,7 @@ const UpdateAttributeForm: React.FC<UpdateFormProps> = (props) => {
       form.setFieldsValue({
         ...values,
       });
+      setInputType(values.inputType || 0)
     }
   }, [props.values]);
 
@@ -55,11 +58,15 @@ const UpdateAttributeForm: React.FC<UpdateFormProps> = (props) => {
     }
   };
 
+  const onChange = (e: RadioChangeEvent) => {
+    setInputType(e.target.value);
+  };
+
   const renderContent = () => {
     return (
       <>
         <FormItem name="id" label="主键" hidden>
-          <Input id="update-id" placeholder="请输入主键"/>
+          <Input id="update-id"/>
         </FormItem>
         <FormItem name="name" label="规格/参数名称" rules={[{required: true, message: '请输入规格/参数名称!'}]}>
           <Input id="update-name" placeholder={'请输入规格/参数名称'}/>
@@ -96,14 +103,14 @@ const UpdateAttributeForm: React.FC<UpdateFormProps> = (props) => {
           </Radio.Group>
         </FormItem>
         <FormItem name="inputType" label="属性值的录入方式" rules={[{required: true, message: '请选择属性值的录入方式!'}]}>
-          <Radio.Group>
+          <Radio.Group onChange={onChange}>
             <Radio value={0}>手工录入</Radio>
             <Radio value={1}>从列表中选取</Radio>
           </Radio.Group>
         </FormItem>
-        <FormItem name="inputList" label="属性值可选值列表">
+        {inputType === 1 && <FormItem name="inputList" label="属性值可选值列表">
           <Input.TextArea rows={3} placeholder={'请输入属性值可选值列表,可选值列表，以逗号隔开'}/>
-        </FormItem>
+        </FormItem>}
         <FormItem name="handAddStatus" label="是否支持手动新增" rules={[{required: true, message: '请选择是否支持手动新增!'}]}>
           <Radio.Group>
             <Radio value={0}>不支持</Radio>
@@ -129,7 +136,7 @@ const UpdateAttributeForm: React.FC<UpdateFormProps> = (props) => {
     <Modal
       forceRender
       destroyOnClose
-      title="修改属性分类"
+      title="修改属性"
       open={updateModalVisible}
       {...modalFooter}
       width={800}

@@ -1,12 +1,12 @@
 import React, {useEffect} from 'react';
 import {Form, Input, Modal} from 'antd';
-import type {AttributeListItem} from '../data.d';
+import type {AttributeCategoryListItem} from '../data.d';
 
 export interface UpdateFormProps {
   onCancel: () => void;
-  onSubmit: (values: AttributeListItem) => void;
+  onSubmit: (values: AttributeCategoryListItem) => void;
   updateModalVisible: boolean;
-  values: Partial<AttributeListItem>;
+  values: Partial<AttributeCategoryListItem>;
 }
 
 const FormItem = Form.Item;
@@ -42,7 +42,7 @@ const UpdateAttributeForm: React.FC<UpdateFormProps> = (props) => {
 
   const handleFinish = (item: { [key: string]: any }) => {
     if (onSubmit) {
-      onSubmit(item as AttributeListItem);
+      onSubmit(item as AttributeCategoryListItem);
     }
   };
 
