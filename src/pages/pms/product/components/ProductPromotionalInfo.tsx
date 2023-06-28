@@ -1,8 +1,11 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import type {RadioChangeEvent} from 'antd';
-import {Checkbox, DatePicker, Form, Input, InputNumber, Radio, Switch} from 'antd';
+import {Checkbox, DatePicker, Form, Input, InputNumber, message, Radio, Switch} from 'antd';
+import {queryLevel} from "@/pages/ums/member_level/service";
+import type {LevelListItem} from "@/pages/ums/member_level/data";
 
 export interface BaseInfoProps {
+  visible: boolean;
 }
 
 const FormItem = Form.Item;
@@ -15,12 +18,28 @@ const options = [
 
 const ProductPromotionalInfo: React.FC<BaseInfoProps> = (props) => {
   const [promotionTypes, setPromotionTypes] = useState(0);
+  const [levelListItem, setLevelListItem] = useState<LevelListItem[]>([]);
 
   const onChange = (e: RadioChangeEvent) => {
     console.log('radio checked', e.target.value);
     setPromotionTypes(e.target.value);
     console.log('radio checked', promotionTypes);
   };
+
+  useEffect(() => {
+    if (props.visible) {
+      queryLevel({pageSize: 100, current: 1}).then((res) => {
+        if (res.code === '000000') {
+          setLevelListItem(res.data)
+        } else {
+          message.error(res.msg);
+        }
+
+      });
+
+
+    }
+  }, [props.visible]);
 
   return (
     <>
@@ -83,15 +102,9 @@ const ProductPromotionalInfo: React.FC<BaseInfoProps> = (props) => {
       )}
       {promotionTypes === 2 && (
         <div>
-          <FormItem name="goldMembership" label="黄金会员" style={{textAlign: "left"}}>
+          {levelListItem.map(r => <FormItem name={r.name} key={r.id} label={r.name} style={{textAlign: "left"}}>
             <InputNumber addonAfter={'元'}/>
-          </FormItem>
-          <FormItem name="whiteMembership" label="白金会员" style={{textAlign: "left"}}>
-            <InputNumber addonAfter={'元'}/>
-          </FormItem>
-          <FormItem name="diamondMembership" label="钻石会员" style={{textAlign: "left"}}>
-            <InputNumber addonAfter={'元'}/>
-          </FormItem>
+          </FormItem>)}
         </div>
       )}
       {promotionTypes === 3 && (

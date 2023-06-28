@@ -1,5 +1,5 @@
 import {request} from 'umi';
-import {RecommendSubjectListParams, RecommendSubjectListItem, SubjectListParams} from './data.d';
+import type {RecommendSubjectListParams, RecommendSubjectListItem, SubjectListParams} from './data.d';
 
 export async function queryRecommendSubject(params: RecommendSubjectListParams) {
   if (params.recommendStatus != null) {

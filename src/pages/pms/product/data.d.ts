@@ -3,6 +3,13 @@ export interface ProductListItem {
 
 }
 
+export interface PrefrenceAreaItem {
+  id: number;
+  name: string;
+  subTitle: string;
+
+}
+
 export interface ProductListPagination {
   total: number;
   pageSize: number;
@@ -17,7 +24,16 @@ export interface ProductListData {
 export interface ProductListParams {
 
   pageSize?: number;
-  currentPage?: number;
+  current?: number;
+  filter?: { [key: string]: any[] };
+  sorter?: { [key: string]: any };
+
+}
+
+export interface PrefrenceAreaParams {
+
+  pageSize?: number;
+  current?: number;
   filter?: { [key: string]: any[] };
   sorter?: { [key: string]: any };
 

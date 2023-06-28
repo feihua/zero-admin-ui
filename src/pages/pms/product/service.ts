@@ -1,5 +1,6 @@
 import {request} from 'umi';
 import type {ProductListParams, ProductListItem} from './data.d';
+import {PrefrenceAreaParams} from "./data.d";
 
 export async function queryProduct(params?: ProductListParams) {
   return request('/api/product/product/list', {
@@ -37,3 +38,11 @@ export async function updateProduct(params: ProductListItem) {
   });
 }
 
+export async function queryPrefrenceArea(params: PrefrenceAreaParams) {
+  return request('/api/cms/prefrenceArea/list', {
+    method: 'POST',
+    data: {
+      ...params,
+    },
+  });
+}

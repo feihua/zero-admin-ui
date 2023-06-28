@@ -1,5 +1,6 @@
 export interface LevelListItem {
   id: number;
+  name: string;
 
 }
 
@@ -17,7 +18,7 @@ export interface LevelListData {
 export interface LevelListParams {
 
   pageSize?: number;
-  currentPage?: number;
+  current?: number;
   filter?: { [key: string]: any[] };
   sorter?: { [key: string]: any };
 

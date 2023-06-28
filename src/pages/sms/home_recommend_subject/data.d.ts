@@ -5,6 +5,8 @@ export interface RecommendSubjectListItem {
 
 export interface SubjectListItem {
   subjectName: string;
+  title: string;
+  description: string;
   id: number;
 }
 
@@ -30,7 +32,7 @@ export interface RecommendSubjectListParams {
 export interface SubjectListParams {
   subjectName?: string;
   pageSize?: number;
-  currentPage?: number;
+  current?: number;
   filter?: { [key: string]: any[] };
   sorter?: { [key: string]: any };
 }

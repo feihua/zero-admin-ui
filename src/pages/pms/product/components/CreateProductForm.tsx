@@ -37,7 +37,7 @@ const CreateProductForm: React.FC<CreateFormProps> = (props) => {
       title: '填写商品促销',
       nextPrompt: '下一步,填写商品属性',
       prePrompt: '上一步,填写商品信息',
-      content: <ProductPromotionalInfo/>
+      content: <ProductPromotionalInfo visible={createModalVisible}/>
     },
     {
       title: '填写商品属性',
@@ -48,7 +48,7 @@ const CreateProductForm: React.FC<CreateFormProps> = (props) => {
     {
       title: '选择商品关联',
       prePrompt: '上一步,填写商品属性',
-      content: <ProductRelationshipInfo/>
+      content: <ProductRelationshipInfo visible={createModalVisible}/>
     },
   ];
 
