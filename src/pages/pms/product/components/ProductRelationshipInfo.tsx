@@ -9,6 +9,7 @@ import type {ProductParams} from "@/pages/pms/product/data";
 export interface BaseInfoProps {
   visible: boolean;
   onChangeProductParams: (value: ProductParams) => void;
+  currentData?: ProductParams;
 }
 
 const ProductRelationshipInfo: React.FC<BaseInfoProps> = (props) => {
@@ -22,6 +23,9 @@ const ProductRelationshipInfo: React.FC<BaseInfoProps> = (props) => {
   const [subjectList, setSubjectList] = useState<RecordType[]>([]);
   const [prefrenceArea, setPrefrenceArea] = useState<RecordType[]>([]);
 
+  const [subjectTargetKeys, setSubjectTargetKeys] = useState<string[]>([]);
+  const [targetPrefrenceAreaKeys, setPrefrenceAreaTargetKeys] = useState<string[]>([]);
+
   useEffect(() => {
     if (props.visible) {
       querySubject({pageSize: 100, current: 1}).then((res) => {
@@ -31,6 +35,8 @@ const ProductRelationshipInfo: React.FC<BaseInfoProps> = (props) => {
             title: item.title,
             description: item.description,
           })))
+          // @ts-ignore
+          setSubjectTargetKeys(props.currentData?.subjectProductRelationList || [])
         } else {
           message.error(res.msg);
         }
@@ -44,6 +50,8 @@ const ProductRelationshipInfo: React.FC<BaseInfoProps> = (props) => {
             title: item.name,
             description: item.subTitle,
           })))
+          // @ts-ignore
+          setPrefrenceAreaTargetKeys(props.currentData?.prefrenceAreaProductRelationList || [])
         } else {
           message.error(res.msg);
         }
@@ -53,15 +61,10 @@ const ProductRelationshipInfo: React.FC<BaseInfoProps> = (props) => {
     }
   }, [props.visible]);
 
-  // const initialTargetKeys = mockData.filter((item) => Number(item.key) > 10).map((item) => item.key);
-
-  const [subjectTargetKeys, setSubjectTargetKeys] = useState<string[]>([]);
-
-  const [targetPrefrenceAreaKeys, setPrefrenceAreaTargetKeys] = useState<string[]>([]);
-
   const onChangeSubject = (nextTargetKeys: string[]) => {
-    props.onChangeProductParams({subjectProductRelationList: nextTargetKeys.map(x => Number(x))})
     setSubjectTargetKeys(nextTargetKeys);
+    console.log("onChangeSubject", nextTargetKeys)
+    props.onChangeProductParams({subjectProductRelationList: nextTargetKeys.map(x => Number(x))})
   };
 
 

@@ -16,6 +16,7 @@ import type {ProductParams} from "@/pages/pms/product/data";
 export interface BaseInfoProps {
   visible: boolean;
   onChangeProductParams: (value: ProductParams) => void;
+  currentData?: ProductParams;
 }
 
 const FormItem = Form.Item;
@@ -38,6 +39,7 @@ const ProductAttributeInfo: React.FC<BaseInfoProps> = (props) => {
 
   useEffect(() => {
     if (props.visible) {
+      setContent(BraftEditor.createEditorState(props.currentData?.detailMobileHtml))
       queryCategoryAttribute({}).then((res) => {
         if (res.code === '000000') {
           const map = res.data.map((item: { id: any; name: any; title: any; parentId: any }) => ({
