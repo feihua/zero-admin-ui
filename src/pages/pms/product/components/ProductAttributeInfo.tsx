@@ -11,9 +11,11 @@ import 'braft-editor/dist/index.css';
 import BraftEditor from 'braft-editor';
 // @ts-ignore
 import {ContentUtils} from 'braft-utils';
+import type {ProductParams} from "@/pages/pms/product/data";
 
 export interface BaseInfoProps {
   visible: boolean;
+  onChangeProductParams: (value: ProductParams) => void;
 }
 
 const FormItem = Form.Item;
@@ -108,8 +110,13 @@ const ProductAttributeInfo: React.FC<BaseInfoProps> = (props) => {
     setPreviewTitle(file.name || file.url!.substring(file.url!.lastIndexOf('/') + 1));
   };
 
-  const handleChange: UploadProps['onChange'] = ({fileList: newFileList}) =>
+  const handleChange: UploadProps['onChange'] = ({fileList: newFileList}) => {
     setFileList(newFileList);
+    //获取上传的图片url
+    const url = newFileList.map(x => x.url).join(',');
+    props.onChangeProductParams({pic: url, albumPics: url})
+  }
+
 
   const uploadButton = (
     <div>
@@ -216,6 +223,7 @@ const ProductAttributeInfo: React.FC<BaseInfoProps> = (props) => {
             value={content}
             onChange={(editorState) => {
               setContent(editorState)
+              props.onChangeProductParams({detailMobileHtml: editorState.toHTML()})
             }}
             controls={controls}
             extendControls={extendControlsContent}

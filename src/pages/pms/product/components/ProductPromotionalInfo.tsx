@@ -58,10 +58,13 @@ const ProductPromotionalInfo: React.FC<BaseInfoProps> = (props) => {
       <FormItem name="publishStatus" label="商品上架" style={{textAlign: "left"}} rules={[{required: true, message: '请选择商品分类!'}]}>
         <Switch checked/>
       </FormItem>
+      <FormItem name="newStatus" label="新品推荐" style={{textAlign: "left"}} rules={[{required: true, message: '请选择新品推荐!'}]}>
+        <Switch checked/>
+      </FormItem>
       <FormItem name="recommandStatus" label="商品推荐" style={{textAlign: "left"}} rules={[{required: true, message: '请选择商品分类!'}]}>
         <Switch checked/>
       </FormItem>
-      <FormItem name="serviceIds" label="服务保证" style={{textAlign: "left"}} rules={[{required: true, message: '请选择商品分类!'}]}>
+      <FormItem name="serviceIdsArray" label="服务保证" style={{textAlign: "left"}} rules={[{required: true, message: '请选择商品分类!'}]}>
         <Checkbox.Group options={options}/>
       </FormItem>
       <FormItem name="detailTitle" label="详细页标题" rules={[{required: true, message: '请选择商品分类!'}]}>
@@ -89,11 +92,11 @@ const ProductPromotionalInfo: React.FC<BaseInfoProps> = (props) => {
 
       {promotionTypes === 1 && (
         <div>
-          <FormItem name="startTime" label="开始时间" style={{textAlign: "left"}}>
-            <DatePicker showTime placeholder={'请输入开始时间'}/>
+          <FormItem name="promotionStartTime" label="开始时间" style={{textAlign: "left"}}>
+            <DatePicker showTime placeholder={'请输入开始时间'} format={'YYYY-MM-DD HH:mm:ss'}/>
           </FormItem>
-          <FormItem name="endTIme" label="结束时间" style={{textAlign: "left"}}>
-            <DatePicker showTime placeholder={'请输入结束时间'}/>
+          <FormItem name="promotionEndTime" label="结束时间" style={{textAlign: "left"}}>
+            <DatePicker showTime placeholder={'请输入结束时间'} format={'YYYY-MM-DD HH:mm:ss'}/>
           </FormItem>
           <FormItem name="promotionPrice" label="促销价格" style={{textAlign: "left"}}>
             <InputNumber addonAfter={'元'}/>

@@ -9,6 +9,7 @@ import CreateProductForm from './components/CreateProductForm';
 import UpdateProductForm from './components/UpdateProductForm';
 import type {ProductListItem} from './data.d';
 import {queryProduct, updateProduct, addProduct, removeProduct} from './service';
+import type {ProductParams} from "./data.d";
 
 const {confirm} = Modal;
 
@@ -16,7 +17,7 @@ const {confirm} = Modal;
  * 添加节点
  * @param fields
  */
-const handleAdd = async (fields: ProductListItem) => {
+const handleAdd = async (fields: ProductParams) => {
   const hide = message.loading('正在添加');
   try {
     await addProduct({...fields});
@@ -119,22 +120,30 @@ const TableList: React.FC<{}> = () => {
     {
       title: '价格/货号',
       dataIndex: 'promotionPrice',
+      hideInSearch: true,
     },
     {
       title: '排序',
       dataIndex: 'sort',
+      hideInSearch: true,
     },
     {
       title: 'SKU库存',
-      dataIndex: 'giftPoint',
+      dataIndex: 'stock',
+      hideInSearch: true,
     },
     {
       title: '销量',
-      dataIndex: 'originalPrice',
+      dataIndex: 'sale',
+      hideInSearch: true,
     },
     {
       title: '审核状态',
-      dataIndex: 'stock',
+      dataIndex: 'verifyStatus',
+      valueEnum: {
+        0: {text: '未审核', status: 'Error'},
+        1: {text: '审核通过', status: 'Success'},
+      },
     },
     {
       title: '操作',

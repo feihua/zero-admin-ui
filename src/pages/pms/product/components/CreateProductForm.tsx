@@ -1,16 +1,17 @@
 import React, {useState} from 'react';
 import {Form, Modal, Steps} from 'antd';
-import type {ProductListItem} from '../data.d';
 import ProductBaseInfo from "@/pages/pms/product/components/ProductBaseInfo";
 import ProductPromotionalInfo from "@/pages/pms/product/components/ProductPromotionalInfo";
 import ProductAttributeInfo from "@/pages/pms/product/components/ProductAttributeInfo";
 import ProductRelationshipInfo from "@/pages/pms/product/components/ProductRelationshipInfo";
 import ProductStepInfo from "@/pages/pms/product/components/ProductStepInfo";
+import type {ProductParams} from "../data.d";
 
 export interface CreateFormProps {
   onCancel: () => void;
-  onSubmit: (values: ProductListItem) => void;
+  onSubmit: (values: ProductParams) => void;
   createModalVisible: boolean;
+  // productParams: ProductParams;
 }
 
 const formLayout = {
@@ -25,7 +26,30 @@ const CreateProductForm: React.FC<CreateFormProps> = (props) => {
   const {onSubmit, onCancel, createModalVisible} = props;
 
   const [current, setCurrent] = useState(0);
-  const [productListItem, setProductListItem] = useState<ProductListItem>();
+
+  const [productParams, setProductParams] = useState<ProductParams>();
+
+
+  // const onChangeProductParams = (value: string, flag: number) => {
+  //   //专题推荐
+  //   if (flag === 0) {
+  //     setProductParams({...productParams, subjectProductRelationList: value})
+  //     //优选商品关联
+  //   } else if (flag === 1) {
+  //     setProductParams({...productParams, prefrenceAreaProductRelationList: value})
+  //     //图片地址
+  //   } else if (flag === 3) {
+  //     setProductParams({...productParams, pic: value, albumPics: value})
+  //     //手机端商品详情
+  //   } else if (flag === 4) {
+  //     setProductParams({...productParams, detailMobileHtml: value})
+  //   }
+  //
+  // };
+
+  const onChangeProductParams = (value: ProductParams) => {
+    setProductParams({...productParams, ...value})
+  };
 
   const steps = [
     {
@@ -43,12 +67,12 @@ const CreateProductForm: React.FC<CreateFormProps> = (props) => {
       title: '填写商品属性',
       nextPrompt: '下一步,选择商品关联',
       prePrompt: '上一步,填写商品促销',
-      content: <ProductAttributeInfo visible={createModalVisible}/>
+      content: <ProductAttributeInfo visible={createModalVisible} onChangeProductParams={onChangeProductParams}/>
     },
     {
       title: '选择商品关联',
       prePrompt: '上一步,填写商品属性',
-      content: <ProductRelationshipInfo visible={createModalVisible}/>
+      content: <ProductRelationshipInfo visible={createModalVisible} onChangeProductParams={onChangeProductParams}/>
     },
   ];
 
@@ -61,9 +85,11 @@ const CreateProductForm: React.FC<CreateFormProps> = (props) => {
     //   .catch((info) => {
     //     console.log('Validate Failed:', info);
     //   });
+    console.log('商品添加参数:', JSON.stringify({...productParams, ...form.getFieldsValue(true)}))
     setCurrent(current + 1);
-    setProductListItem({...form.getFieldsValue(true)})
+    setProductParams({...productParams, ...form.getFieldsValue(true)})
   };
+
 
   const prev = () => {
     setCurrent(current - 1);
@@ -83,7 +109,8 @@ const CreateProductForm: React.FC<CreateFormProps> = (props) => {
         <Steps current={current} items={items}/>
         <div style={contentStyle}>{steps[current].content}</div>
         <div style={{marginTop: 24, textAlign: "center"}}>
-          <ProductStepInfo current={current} steps={steps} handleSubmit={() => onSubmit(productListItem || {id: 0})} prev={prev} next={next}/>
+          <ProductStepInfo current={current} steps={steps} handleSubmit={() => onSubmit(productParams || {})} prev={prev}
+                           next={next}/>
         </div>
       </>
     );
@@ -101,7 +128,8 @@ const CreateProductForm: React.FC<CreateFormProps> = (props) => {
     'previewStatus': false,
     'publishStatus': true,
     'recommandStatus': true,
-    'serviceIds': ['1'],
+    'newStatus': true,
+    'serviceIdsArray': ['1'],
   }
 
   return (

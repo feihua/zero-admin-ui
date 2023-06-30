@@ -46,9 +46,11 @@ const ProductBaseInfo: React.FC<BaseInfoProps> = (props) => {
 
     }
   }, [props.visible]);
+
+
   return (
     <>
-      <FormItem name="productCategoryId" label="商品分类" rules={[{required: true, message: '请选择商品分类!'}]}>
+      <FormItem name="productCategoryIdArray" label="商品分类" rules={[{required: true, message: '请选择商品分类!'}]}>
         <Cascader
           options={categoryListItem}
           placeholder="请选择商品分类"
