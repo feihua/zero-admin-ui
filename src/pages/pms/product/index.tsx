@@ -229,6 +229,7 @@ const TableList: React.FC<{}> = () => {
               actionRef.current.reload();
             }
           }
+          return success;
         }}
         onCancel={() => {
           handleModalVisible(false);

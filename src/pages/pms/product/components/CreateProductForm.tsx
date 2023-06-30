@@ -9,7 +9,7 @@ import type {ProductParams} from "../data.d";
 
 export interface CreateFormProps {
   onCancel: () => void;
-  onSubmit: (values: ProductParams) => void;
+  onSubmit: (values: ProductParams) => Promise<boolean>;
   createModalVisible: boolean;
   // productParams: ProductParams;
 }
@@ -28,24 +28,6 @@ const CreateProductForm: React.FC<CreateFormProps> = (props) => {
   const [current, setCurrent] = useState(0);
 
   const [productParams, setProductParams] = useState<ProductParams>();
-
-
-  // const onChangeProductParams = (value: string, flag: number) => {
-  //   //专题推荐
-  //   if (flag === 0) {
-  //     setProductParams({...productParams, subjectProductRelationList: value})
-  //     //优选商品关联
-  //   } else if (flag === 1) {
-  //     setProductParams({...productParams, prefrenceAreaProductRelationList: value})
-  //     //图片地址
-  //   } else if (flag === 3) {
-  //     setProductParams({...productParams, pic: value, albumPics: value})
-  //     //手机端商品详情
-  //   } else if (flag === 4) {
-  //     setProductParams({...productParams, detailMobileHtml: value})
-  //   }
-  //
-  // };
 
   const onChangeProductParams = (value: ProductParams) => {
     setProductParams({...productParams, ...value})
@@ -77,17 +59,17 @@ const CreateProductForm: React.FC<CreateFormProps> = (props) => {
   ];
 
   const next = () => {
-    // form.validateFields()
-    //   .then((values) => {
-    //     setCurrent(current + 1);
-    //     setProductListItem({...form.getFieldsValue(true)})
-    //   })
-    //   .catch((info) => {
-    //     console.log('Validate Failed:', info);
-    //   });
-    console.log('商品添加参数:', JSON.stringify({...productParams, ...form.getFieldsValue(true)}))
-    setCurrent(current + 1);
-    setProductParams({...productParams, ...form.getFieldsValue(true)})
+    form.validateFields()
+      .then((values) => {
+        setCurrent(current + 1);
+        setProductParams({...productParams, ...form.getFieldsValue(true)})
+      })
+      .catch((info) => {
+        console.log('Validate Failed:', info);
+      });
+    // console.log('商品添加参数:', JSON.stringify({...productParams, ...form.getFieldsValue(true)}))
+    // setCurrent(current + 1);
+    // setProductParams({...productParams, ...form.getFieldsValue(true)})
   };
 
 
@@ -103,13 +85,25 @@ const CreateProductForm: React.FC<CreateFormProps> = (props) => {
     marginTop: 16,
   };
 
+  const handleFinish = (values: ProductParams) => {
+    if (onSubmit) {
+      onSubmit(values).then((res) => {
+        if (res) {
+          form.resetFields()
+          setCurrent(0)
+        }
+      });
+
+    }
+  };
+
   const renderContent = () => {
     return (
       <>
         <Steps current={current} items={items}/>
         <div style={contentStyle}>{steps[current].content}</div>
         <div style={{marginTop: 24, textAlign: "center"}}>
-          <ProductStepInfo current={current} steps={steps} handleSubmit={() => onSubmit(productParams || {})} prev={prev}
+          <ProductStepInfo current={current} steps={steps} handleSubmit={() => handleFinish(productParams || {})} prev={prev}
                            next={next}/>
         </div>
       </>
