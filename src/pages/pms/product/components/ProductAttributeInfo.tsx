@@ -80,25 +80,18 @@ const ProductAttributeInfo: React.FC<BaseInfoProps> = (props) => {
 
   };
 
+  const list = props.currentData?.pic?.split(",").map((url: string) => ({
+    uid: Math.random() + '',
+    name: "image.png",
+    status: 'done',
+    url: url,
+  } as UploadFile))
+
   //上传图片
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState('');
   const [previewTitle, setPreviewTitle] = useState('');
-  const [fileList, setFileList] = useState<UploadFile[]>([
-    {
-      uid: '-1',
-      name: 'image.png',
-      status: 'done',
-      url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-    },
-    {
-      uid: '-2',
-      name: 'image.png',
-      status: 'done',
-      url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-    },
-
-  ]);
+  const [fileList, setFileList] = useState<UploadFile[]>(list || []);
 
   const handleCancel = () => setPreviewOpen(false);
 
@@ -115,7 +108,14 @@ const ProductAttributeInfo: React.FC<BaseInfoProps> = (props) => {
   const handleChange: UploadProps['onChange'] = ({fileList: newFileList}) => {
     setFileList(newFileList);
     //获取上传的图片url
-    const url = newFileList.map(x => x.url).join(',');
+    const url = newFileList.filter(x => x.status === 'done').map(x => {
+      if (x.response) {
+        return x.response.data
+      } else {
+        return x.url
+      }
+    }).join(',');
+    console.log(url)
     props.onChangeProductParams({pic: url, albumPics: url})
   }
 
@@ -138,16 +138,13 @@ const ProductAttributeInfo: React.FC<BaseInfoProps> = (props) => {
   // ]
   const controls: any = ['bold', 'italic', 'underline', 'text-color', 'separator', 'link', 'separator', 'media']
   const handleImageContentChange = (info: any) => {
-    // if (info?.file?.response?.message == "success") {
-    //   setContent(ContentUtils.insertMedias(content, [{
-    //     type: 'IMAGE',
-    //     url: info?.file?.response?.url
-    //   }]))
-    // }
-    setContent(ContentUtils.insertMedias(content, [{
-      type: 'IMAGE',
-      url: "https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png"
-    }]))
+    if (info.file.status == "done") {
+      setContent(ContentUtils.insertMedias(content, [{
+        type: 'IMAGE',
+        url: info?.file?.response?.data
+      }]))
+    }
+
   }
   const extendControlsContent: any = [
     {
@@ -158,7 +155,8 @@ const ProductAttributeInfo: React.FC<BaseInfoProps> = (props) => {
           accept="*"
           showUploadList={false}
           onChange={handleImageContentChange}
-          action='http://127.0.0.1:9097/upload/image'
+          action='/api/sys/upload'
+          headers={{"Authorization": 'Bearer ' + localStorage.getItem('token')}}
         >
           <button type="button" className="control-item button upload-button" data-title="插入图片">上传图片</button>
         </Upload>
@@ -180,11 +178,7 @@ const ProductAttributeInfo: React.FC<BaseInfoProps> = (props) => {
       </FormItem>
       <FormItem name="name1" label="商品规格">
         <Card>
-          {attributeListItem0.map(r => r.inputList !== "" && <FormItem name={r.name} key={r.id} label={r.name}>
-            {/*<Radio.Group>*/}
-            {/*  {r.inputList.split(',').map(x => <Radio key={x} value={x}>{x}</Radio>)}*/}
-            {/*</Radio.Group>*/}
-            {/* eslint-disable-next-line react/jsx-no-undef */}
+          {attributeListItem0.map(r => r.inputList !== "" && <FormItem name={r.id} key={r.id} label={r.name}>
             <Checkbox.Group key={r.name}>
               {r.inputList.split(',').map(x => <Checkbox key={x} value={x}>{x}</Checkbox>)}
             </Checkbox.Group>
@@ -202,14 +196,15 @@ const ProductAttributeInfo: React.FC<BaseInfoProps> = (props) => {
           </FormItem>)}
         </Card>
       </FormItem>
-      <FormItem name="albumPics" label="商品相册">
+      <FormItem label="商品相册">
         <Card>
           <Upload
-            action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+            action="/api/sys/upload"
             listType="picture-card"
             fileList={fileList}
             onPreview={handlePreview}
             onChange={handleChange}
+            headers={{"Authorization": 'Bearer ' + localStorage.getItem('token')}}
           >
             {fileList.length >= 3 ? null : uploadButton}
           </Upload>
@@ -218,7 +213,7 @@ const ProductAttributeInfo: React.FC<BaseInfoProps> = (props) => {
           </Modal>
         </Card>
       </FormItem>
-      <FormItem name="detailMobileHtml" label="商品详情">
+      <FormItem label="商品详情">
         <Card>
           <BraftEditor
             className="my-editor"

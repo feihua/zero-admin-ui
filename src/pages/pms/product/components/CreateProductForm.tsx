@@ -59,14 +59,14 @@ const CreateProductForm: React.FC<CreateFormProps> = (props) => {
   ];
 
   const next = () => {
-    form.validateFields()
-      .then((values) => {
-        setCurrent(current + 1);
-        setProductParams({...productParams, ...form.getFieldsValue(true)})
-      })
-      .catch((info) => {
-        console.log('Validate Failed:', info);
-      });
+    // form.validateFields()
+    //   .then((values) => {
+    //     setCurrent(current + 1);
+    //     setProductParams({...productParams, ...form.getFieldsValue(true)})
+    //   })
+    //   .catch((info) => {
+    //     console.log('Validate Failed:', info);
+    //   });
     console.log('商品添加参数:', JSON.stringify({...productParams, ...form.getFieldsValue(true)}))
     setCurrent(current + 1);
     setProductParams({...productParams, ...form.getFieldsValue(true)})
