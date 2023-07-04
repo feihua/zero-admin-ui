@@ -1,5 +1,5 @@
-import {DeleteOutlined, ExclamationCircleOutlined} from '@ant-design/icons';
-import {Button, message, Drawer, Modal} from 'antd';
+import {DeleteOutlined, EditOutlined, ExclamationCircleOutlined} from '@ant-design/icons';
+import {Button, message, Drawer, Modal, Divider} from 'antd';
 import React, {useState, useRef} from 'react';
 import {PageContainer, FooterToolbar} from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
@@ -75,8 +75,14 @@ const TableList: React.FC = () => {
     },
     {
       title: '请求参数',
-      dataIndex: 'params',
+      dataIndex: 'requestParams',
       hideInSearch: true,
+    },
+    {
+      title: '响应参数',
+      dataIndex: 'responseParams',
+      hideInSearch: true,
+      hideInTable: true,
     },
     {
       title: '执行时间(毫秒)',
@@ -89,8 +95,8 @@ const TableList: React.FC = () => {
       hideInSearch: true,
     },
     {
-      title: '创建时间',
-      dataIndex: 'createTime',
+      title: '操作时间时间',
+      dataIndex: 'operationTime',
       sorter: true,
       valueType: 'dateTime',
       hideInSearch: true,
@@ -102,6 +108,17 @@ const TableList: React.FC = () => {
       valueType: 'option',
       render: (_, record) => (
         <>
+          <Button
+            type="primary"
+            icon={<EditOutlined/>}
+            onClick={() => {
+              setCurrentRow(record);
+              setShowDetail(true);
+            }}
+          >
+            查看响应参数
+          </Button>
+          <Divider type="vertical"/>
           <Button
             type="primary"
             danger
