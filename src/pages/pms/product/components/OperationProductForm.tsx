@@ -1,17 +1,17 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Form, Modal, Steps} from 'antd';
 import ProductBaseInfo from "@/pages/pms/product/components/ProductBaseInfo";
 import ProductPromotionalInfo from "@/pages/pms/product/components/ProductPromotionalInfo";
 import ProductAttributeInfo from "@/pages/pms/product/components/ProductAttributeInfo";
 import ProductRelationshipInfo from "@/pages/pms/product/components/ProductRelationshipInfo";
 import ProductStepInfo from "@/pages/pms/product/components/ProductStepInfo";
-import type {ProductParams} from "../data.d";
+import type {ProductParams, ProductListItem} from "../data.d";
 
 export interface CreateFormProps {
   onCancel: () => void;
   onSubmit: (values: ProductParams) => Promise<boolean>;
   createModalVisible: boolean;
-  // productParams: ProductParams;
+  productListItem?: ProductListItem;
 }
 
 const formLayout = {
@@ -20,18 +20,26 @@ const formLayout = {
 };
 
 
-const CreateProductForm: React.FC<CreateFormProps> = (props) => {
+const OperationProductForm: React.FC<CreateFormProps> = (props) => {
   const [form] = Form.useForm();
 
-  const {onSubmit, onCancel, createModalVisible} = props;
+  const {onSubmit, onCancel, createModalVisible, productListItem} = props;
 
   const [current, setCurrent] = useState(0);
 
-  const [productParams, setProductParams] = useState<ProductParams>();
+  const [productParams, setProductParams] = useState<ProductParams>({...productListItem});
 
   const onChangeProductParams = (value: ProductParams) => {
     setProductParams({...productParams, ...value})
   };
+
+  useEffect(() => {
+    if (productListItem) {
+      form.setFieldsValue({
+        ...productListItem,
+      });
+    }
+  }, [productListItem]);
 
   const steps = [
     {
@@ -135,4 +143,4 @@ const CreateProductForm: React.FC<CreateFormProps> = (props) => {
   );
 };
 
-export default CreateProductForm;
+export default OperationProductForm;

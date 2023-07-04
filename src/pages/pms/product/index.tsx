@@ -4,9 +4,9 @@ import React, {useState, useRef} from 'react';
 import {PageContainer, FooterToolbar} from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
 import type {ProColumns, ActionType} from '@ant-design/pro-table';
-import ProDescriptions, {ProDescriptionsItemProps} from '@ant-design/pro-descriptions';
-import CreateProductForm from './components/CreateProductForm';
-import UpdateProductForm from './components/UpdateProductForm';
+import ProDescriptions from '@ant-design/pro-descriptions';
+import type {ProDescriptionsItemProps} from '@ant-design/pro-descriptions';
+import OperationProductForm from './components/OperationProductForm';
 import type {ProductListItem} from './data.d';
 import {queryProduct, updateProduct, addProduct, removeProduct} from './service';
 import type {ProductParams} from "./data.d";
@@ -14,41 +14,28 @@ import type {ProductParams} from "./data.d";
 const {confirm} = Modal;
 
 /**
- * 添加节点
- * @param fields
+ * 添加或者更新节点
+ * @param params
  */
-const handleAdd = async (fields: ProductParams) => {
-  const hide = message.loading('正在添加');
+const handleAdd = async (params: ProductParams) => {
+  const hide = message.loading('正在操作');
   try {
-    await addProduct({...fields});
+    if (params.id) {
+      await addProduct(params);
+    } else {
+      await updateProduct(params);
+    }
+
     hide();
-    message.success('添加成功');
+    message.success('操作成功');
     return true;
   } catch (error) {
     hide();
-    message.error('添加失败请重试！');
+    message.error('操作失败请重试！');
     return false;
   }
 };
 
-/**
- * 更新节点
- * @param fields
- */
-const handleUpdate = async (fields: ProductListItem) => {
-  const hide = message.loading('正在更新');
-  try {
-    await updateProduct(fields);
-    hide();
-
-    message.success('更新成功');
-    return true;
-  } catch (error) {
-    hide();
-    message.error('更新失败请重试！');
-    return false;
-  }
-};
 
 /**
  *  删除节点
@@ -71,9 +58,8 @@ const handleRemove = async (selectedRows: ProductListItem[]) => {
   }
 };
 
-const TableList: React.FC<{}> = () => {
+const TableList: React.FC = () => {
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
-  const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
   const [showDetail, setShowDetail] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<ProductListItem>();
@@ -85,7 +71,7 @@ const TableList: React.FC<{}> = () => {
       icon: <ExclamationCircleOutlined/>,
       content: '删除的记录不能恢复,请确认!',
       onOk() {
-        handleRemove([item]).then((r) => {
+        handleRemove([item]).then(() => {
           actionRef.current?.reloadAndRest?.();
         });
       },
@@ -155,7 +141,8 @@ const TableList: React.FC<{}> = () => {
             type="primary"
             icon={<EditOutlined/>}
             onClick={() => {
-              handleUpdateModalVisible(true);
+              handleModalVisible(true);
+              console.log(record)
               setCurrentRow(record);
             }}
           >
@@ -187,7 +174,7 @@ const TableList: React.FC<{}> = () => {
           labelWidth: 120,
         }}
         toolBarRender={() => [
-          <Button type="primary" onClick={() => handleModalVisible(true)}>
+          <Button type="primary" key={'add'} onClick={() => handleModalVisible(true)}>
             <PlusOutlined/> 新建商品
           </Button>,
         ]}
@@ -218,8 +205,8 @@ const TableList: React.FC<{}> = () => {
         </FooterToolbar>
       )}
 
-      <CreateProductForm
-        key={'CreateProductForm'}
+      <OperationProductForm
+        key={'OperationProductForm'}
         onSubmit={async (value) => {
           const success = await handleAdd(value);
           if (success) {
@@ -238,28 +225,7 @@ const TableList: React.FC<{}> = () => {
           }
         }}
         createModalVisible={createModalVisible}
-      />
-
-      <UpdateProductForm
-        key={'UpdateProductForm'}
-        onSubmit={async (value) => {
-          const success = await handleUpdate(value);
-          if (success) {
-            handleUpdateModalVisible(false);
-            setCurrentRow(undefined);
-            if (actionRef.current) {
-              actionRef.current.reload();
-            }
-          }
-        }}
-        onCancel={() => {
-          handleUpdateModalVisible(false);
-          if (!showDetail) {
-            setCurrentRow(undefined);
-          }
-        }}
-        updateModalVisible={updateModalVisible}
-        currentData={currentRow || {}}
+        productListItem={currentRow}
       />
 
       <Drawer
