@@ -63,7 +63,6 @@ const ProductRelationshipInfo: React.FC<BaseInfoProps> = (props) => {
 
   const onChangeSubject = (nextTargetKeys: string[]) => {
     setSubjectTargetKeys(nextTargetKeys);
-    console.log("onChangeSubject", nextTargetKeys)
     props.onChangeProductParams({subjectProductRelationList: nextTargetKeys.map(x => Number(x))})
   };
 

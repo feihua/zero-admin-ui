@@ -1,15 +1,14 @@
-import {PlusOutlined, ExclamationCircleOutlined, EditOutlined, DeleteOutlined} from '@ant-design/icons';
-import {Button, Divider, message, Drawer, Modal} from 'antd';
-import React, {useState, useRef} from 'react';
-import {PageContainer, FooterToolbar} from '@ant-design/pro-layout';
+import {DeleteOutlined, EditOutlined, ExclamationCircleOutlined, PlusOutlined} from '@ant-design/icons';
+import {Button, Divider, Drawer, message, Modal} from 'antd';
+import React, {useRef, useState} from 'react';
+import {FooterToolbar, PageContainer} from '@ant-design/pro-layout';
+import type {ActionType, ProColumns} from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
-import type {ProColumns, ActionType} from '@ant-design/pro-table';
-import ProDescriptions from '@ant-design/pro-descriptions';
 import type {ProDescriptionsItemProps} from '@ant-design/pro-descriptions';
+import ProDescriptions from '@ant-design/pro-descriptions';
 import OperationProductForm from './components/OperationProductForm';
-import type {ProductListItem} from './data.d';
-import {queryProduct, updateProduct, addProduct, removeProduct} from './service';
-import type {ProductParams} from "./data.d";
+import type {ProductListItem, ProductParams} from './data.d';
+import {operation, queryProduct, removeProduct} from './service';
 
 const {confirm} = Modal;
 
@@ -17,15 +16,10 @@ const {confirm} = Modal;
  * 添加或者更新节点
  * @param params
  */
-const handleAdd = async (params: ProductParams) => {
+const handleOperation = async (params: ProductParams) => {
   const hide = message.loading('正在操作');
   try {
-    if (params.id) {
-      await addProduct(params);
-    } else {
-      await updateProduct(params);
-    }
-
+    await operation(params);
     hide();
     message.success('操作成功');
     return true;
@@ -142,7 +136,7 @@ const TableList: React.FC = () => {
             icon={<EditOutlined/>}
             onClick={() => {
               handleModalVisible(true);
-              console.log(record)
+              console.log('编辑', record)
               setCurrentRow(record);
             }}
           >
@@ -208,7 +202,7 @@ const TableList: React.FC = () => {
       <OperationProductForm
         key={'OperationProductForm'}
         onSubmit={async (value) => {
-          const success = await handleAdd(value);
+          const success = await handleOperation(value);
           if (success) {
             handleModalVisible(false);
             setCurrentRow(undefined);

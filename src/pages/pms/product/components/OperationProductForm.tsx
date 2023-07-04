@@ -35,6 +35,7 @@ const OperationProductForm: React.FC<CreateFormProps> = (props) => {
 
   useEffect(() => {
     if (productListItem) {
+      console.log('useEffect', productListItem)
       form.setFieldsValue({
         ...productListItem,
       });
@@ -134,8 +135,15 @@ const OperationProductForm: React.FC<CreateFormProps> = (props) => {
     'serviceIdsArray': ['1'],
   }
 
+  const handleOnCancel = () => {
+    //如果是编辑打开的页面,关闭的时间让它回到第一步,否则再编辑其它记录的时候,存在数据不是最新的问题
+    if (productParams.id) {
+      setCurrent(0)
+    }
+    onCancel()
+  };
   return (
-    <Modal forceRender destroyOnClose title="添加商品" open={createModalVisible} footer={null} onCancel={onCancel} width={800}>
+    <Modal forceRender destroyOnClose title="添加或更新商品" open={createModalVisible} footer={null} onCancel={handleOnCancel} width={800}>
       <Form {...formLayout} form={form} initialValues={initValues}>
         {renderContent()}
       </Form>
