@@ -116,12 +116,12 @@ const FlashPromotionList: React.FC = () => {
     {
       title: '开始日期',
       dataIndex: 'startDate',
-      hideInSearch: true,
+      valueType: 'date'
     },
     {
       title: '结束日期',
       dataIndex: 'endDate',
-      hideInSearch: true,
+      valueType: 'date'
     },
     {
       title: '上下线状态',
