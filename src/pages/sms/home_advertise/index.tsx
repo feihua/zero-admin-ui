@@ -152,23 +152,13 @@ const HomeAdvertiseTableList: React.FC = () => {
       hideInSearch: true,
     },
     {
-      title: '时间',
-      dataIndex: 'startAndEndTime',
-      hideInSearch: true,
-      render: (dom, entity) => {
-        return (
-          <div
-          >
-            开始时间：{entity.startTime}<br/>
-            结束时间：{entity.endTime}
-          </div>
-        );
-      },
+      title: '开始时间',
+      dataIndex: 'startTime',
+      valueType: "dateTime"
     },
     {
       title: '结束时间',
       dataIndex: 'endTime',
-      hideInTable: true,
       valueType: "dateTime"
     },
     {
