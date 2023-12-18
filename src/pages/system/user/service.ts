@@ -1,6 +1,7 @@
 import {request} from 'umi';
-import {UserListParams, UserListItem} from './data.d';
+import type {UserListParams, UserListItem} from './data.d';
 
+//查询用户列表
 export async function queryUserList(params: UserListParams) {
   if (params.status != null) {
     params.status = Number(params.status)
@@ -13,8 +14,9 @@ export async function queryUserList(params: UserListParams) {
   });
 }
 
-export async function querySelectAllData(params?: UserListParams) {
-  return request('/api/sys/user/selectAllData', {
+//查询用户的关糸
+export async function queryAllRelations(params?: UserListParams) {
+  return request('/api/sys/user/queryAllRelations', {
     method: 'POST',
     data: {
       ...params,
@@ -23,6 +25,7 @@ export async function querySelectAllData(params?: UserListParams) {
 }
 
 
+//删除用户
 export async function removeUser(params: { ids: number[] }) {
   return request('/api/sys/user/delete', {
     method: 'POST',
@@ -32,6 +35,7 @@ export async function removeUser(params: { ids: number[] }) {
   });
 }
 
+//添加用户
 export async function addUser(params: UserListItem) {
   return request('/api/sys/user/add', {
     method: 'POST',
@@ -41,6 +45,7 @@ export async function addUser(params: UserListItem) {
   });
 }
 
+//更新用户
 export async function updateUser(params: UserListItem) {
   return request('/api/sys/user/update', {
     method: 'POST',

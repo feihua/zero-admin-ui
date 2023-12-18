@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {Form, Input, Modal, Radio, Select, TreeSelect} from 'antd';
-import {JobList, RoleList, UserListItem} from '../data.d';
-import {querySelectAllData} from "@/pages/system/user/service";
+import type {JobList, RoleList, UserListItem} from '../data.d';
+import {queryAllRelations} from "@/pages/system/user/service";
 import {tree} from "@/utils/utils";
 
 export interface CreateFormProps {
@@ -35,10 +35,10 @@ const CreateUserForm: React.FC<CreateFormProps> = (props) => {
       form.resetFields();
 
     } else {
-      querySelectAllData({pageSize: 100, current: 1}).then((res) => {
-        setRoleConf(res.roleAll)
-        setJobConf(res.jobAll)
-        setDeptConf(tree(res.deptAll, 0, 'parentId'))
+      queryAllRelations({pageSize: 100, current: 1}).then((res) => {
+        setRoleConf(res.data.roleRelations)
+        setJobConf(res.data.jobRelations)
+        setDeptConf(tree(res.data.deptRelations, 0, 'parentId'))
       });
     }
 
@@ -78,7 +78,7 @@ const CreateUserForm: React.FC<CreateFormProps> = (props) => {
           rules={[{required: true, message: '请选择职位'}]}
         >
           <Select id="jobId" placeholder={'请选择职位'}>
-            {jobConf.map(r => <Select.Option value={r.id}>{r.jobName}</Select.Option>)}
+            {jobConf.map(r => <Select.Option key={r.id} value={r.id}>{r.jobName}</Select.Option>)}
           </Select>
         </FormItem>
         <FormItem
@@ -87,7 +87,7 @@ const CreateUserForm: React.FC<CreateFormProps> = (props) => {
           rules={[{required: true, message: '请选择角色'}]}
         >
           <Select id="roleId" placeholder={'请选择角色'}>
-            {roleConf.map(r => <Select.Option value={r.id}>{r.name + r.remark}</Select.Option>)}
+            {roleConf.map(r => <Select.Option key={r.id} value={r.id}>{r.name + r.remark}</Select.Option>)}
           </Select>
         </FormItem>
         <FormItem
