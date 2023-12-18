@@ -40,6 +40,8 @@ export default defineConfig({
   theme: {
     'root-entry-name': 'variable',
   },
+  base: '/mall/',
+  publicPath: '/mall/',
   // esbuild is father build tools
   // https://umijs.org/plugins/plugin-esbuild
   esbuild: {},
@@ -47,7 +49,7 @@ export default defineConfig({
   ignoreMomentLocale: true,
   proxy: proxy[REACT_APP_ENV || 'dev'],
   manifest: {
-    basePath: '/',
+    basePath: '/mall/',
   },
   // Fast Refresh 热更新
   fastRefresh: {},
