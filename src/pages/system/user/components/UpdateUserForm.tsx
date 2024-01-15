@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {Form, Input, Modal, Radio, Select, TreeSelect} from 'antd';
 import type {JobList, RoleList, UserListItem} from '../data.d';
-import {querySelectAllData} from "@/pages/system/user/service";
+import {queryAllRelations} from "@/pages/system/user/service";
 import {tree} from "@/utils/utils";
 
 export interface UpdateFormProps {
@@ -35,7 +35,7 @@ const UpdateUserForm: React.FC<UpdateFormProps> = (props) => {
     if (form && !updateModalVisible) {
       form.resetFields();
     } else {
-      querySelectAllData({pageSize: 100, current: 1}).then((res) => {
+      queryAllRelations({pageSize: 100, current: 1}).then((res) => {
         setRoleConf(res.roleAll)
         setJobConf(res.jobAll)
         setDeptConf(tree(res.deptAll, 0, 'parentId'))
