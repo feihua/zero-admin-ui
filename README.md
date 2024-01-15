@@ -45,7 +45,8 @@ zero-admin-ui 是一个电商后台管理系统的前端项目，基于 react �
 # 1.安装 node_modules:
 
 ```shell
-npm install
+npm install --legacy-peer-deps
+
 ```
 
 # 2.启动项目
