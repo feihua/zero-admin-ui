@@ -21,3 +21,10 @@ export interface TableListParams {
   filter?: { [key: string]: any[] };
   sorter?: { [key: string]: any };
 }
+
+
+export interface StatisticsLoginLog {
+  dayLoginCount: number;
+  weekLoginCount: number;
+  monthLoginCount: number;
+}

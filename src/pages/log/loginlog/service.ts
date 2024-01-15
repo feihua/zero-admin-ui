@@ -26,3 +26,12 @@ export async function removeLoginLog(params: { ids: number[] }) {
     },
   });
 }
+
+/**
+ * 查询日志统计
+ */
+export async function statisticsLoginLog() {
+  return request('/api/sys/loginLog/statisticsLoginLog', {
+    method: 'GET',
+  });
+}

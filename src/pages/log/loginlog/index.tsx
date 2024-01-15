@@ -1,11 +1,12 @@
-import {DeleteOutlined, ExclamationCircleOutlined} from '@ant-design/icons';
-import {Button, message, Modal} from 'antd';
-import React, {useState, useRef} from 'react';
-import {PageContainer, FooterToolbar} from '@ant-design/pro-layout';
+import {Button, Card, Col, message, Modal, Row, Statistic} from 'antd';
+import React, {useEffect, useRef, useState} from 'react';
+import {FooterToolbar, PageContainer} from '@ant-design/pro-layout';
+import type {ActionType, ProColumns} from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
-import type {ProColumns, ActionType} from '@ant-design/pro-table';
 import type {TableListItem} from './data.d';
-import {queryLoginLog, removeLoginLog} from './service';
+import {StatisticsLoginLog} from "./data.d";
+import {queryLoginLog, removeLoginLog, statisticsLoginLog} from './service';
+import {DeleteOutlined, ExclamationCircleOutlined} from "@ant-design/icons";
 
 const {confirm} = Modal;
 
@@ -34,6 +35,7 @@ const handleRemove = async (selectedRows: TableListItem[]) => {
 const LoginLogList: React.FC = () => {
   const actionRef = useRef<ActionType>();
   const [selectedRowsState, setSelectedRows] = useState<TableListItem[]>([]);
+  const [statisticsLoginLogData, setStatisticsLoginLogData] = useState<StatisticsLoginLog>();
 
   const showDeleteConfirm = (item: TableListItem) => {
     confirm({
@@ -97,23 +99,72 @@ const LoginLogList: React.FC = () => {
     },
   ];
 
+  useEffect(() => {
+
+    statisticsLoginLog().then((res) => {
+      if (res.code === '000000') {
+        setStatisticsLoginLogData({
+          dayLoginCount: res.data.dayLoginCount, monthLoginCount: res.data.monthLoginCount, weekLoginCount: res.data.weekLoginCount
+        })
+      } else {
+        message.error(res.msg);
+      }
+    });
+
+  }, []);
+
   return (
     <PageContainer
       title={false}>
-      <ProTable<TableListItem>
-        headerTitle="登录日志列表"
-        actionRef={actionRef}
-        rowKey="id"
-        search={{
-          labelWidth: 120,
-        }}
-        request={queryLoginLog}
-        columns={columns}
-        rowSelection={{
-          onChange: (_, selectedRows) => setSelectedRows(selectedRows),
-        }}
-        pagination={{pageSize: 10}}
-      />
+      <Row gutter={8}>
+        <Col span={8}>
+          <Card bordered={false} hoverable>
+            <Statistic
+              title="当天用户登录数"
+              value={statisticsLoginLogData?.dayLoginCount}
+              valueStyle={{color: '#cf1322'}}
+            />
+          </Card>
+        </Col>
+        <Col span={8}>
+          <Card bordered={false} hoverable>
+            <Statistic
+              title="当周用户登录数"
+              value={statisticsLoginLogData?.weekLoginCount}
+              valueStyle={{color: '#3f8600'}}
+            />
+          </Card>
+        </Col>
+
+        <Col span={8}>
+          <Card bordered={false} hoverable>
+            <Statistic
+              title="当月用户登录数"
+              value={statisticsLoginLogData?.monthLoginCount}
+              valueStyle={{color: 'blue'}}
+            />
+          </Card>
+        </Col>
+      </Row>
+      <Row style={{marginTop: 10}}>
+        <Col span={24}>
+          <ProTable<TableListItem>
+            headerTitle="登录日志列表"
+            actionRef={actionRef}
+            rowKey="id"
+            search={{
+              labelWidth: 120,
+            }}
+            request={queryLoginLog}
+            columns={columns}
+            rowSelection={{
+              onChange: (_, selectedRows) => setSelectedRows(selectedRows),
+            }}
+            pagination={{pageSize: 10}}
+          />
+        </Col>
+      </Row>
+
       {selectedRowsState?.length > 0 && (
         <FooterToolbar
           extra={
