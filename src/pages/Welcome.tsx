@@ -1,8 +1,9 @@
-import { Col, Row, Statistic, Card } from 'antd';
+import {Card, Col, Row, Statistic, Typography} from 'antd';
 import ReactEcharts from 'echarts-for-react';
 // import { useState } from "react";
-import { ArrowUpOutlined, ArrowDownOutlined } from '@ant-design/icons';
-import { PageContainer } from '@ant-design/pro-layout';
+import {ArrowDownOutlined, ArrowUpOutlined} from '@ant-design/icons';
+import {PageContainer} from '@ant-design/pro-layout';
+const { Link } = Typography;
 
 const Welcome: React.FC = () => {
   // const [sales, setSales] = useState<number[]>([5, 20, 36, 10, 10, 20]);
@@ -61,11 +62,11 @@ const Welcome: React.FC = () => {
           radius: '55%',
           center: ['50%', '60%'],
           data: [
-            { value: 335, name: '直接访问' },
-            { value: 310, name: '邮件营销' },
-            { value: 234, name: '联盟广告' },
-            { value: 135, name: '视频广告' },
-            { value: 1548, name: '搜索引擎' },
+            {value: 335, name: '直接访问'},
+            {value: 310, name: '邮件营销'},
+            {value: 234, name: '联盟广告'},
+            {value: 135, name: '视频广告'},
+            {value: 1548, name: '搜索引擎'},
           ],
           itemStyle: {
             emphasis: {
@@ -110,13 +111,79 @@ const Welcome: React.FC = () => {
     <PageContainer>
       <Row gutter={8}>
         <Col span={6}>
+          <span
+            onClick={() => {
+              window.open('https://github.com/feihua/zero-admin');
+            }}
+          >
+          <Card bordered={false} hoverable title={"zero-admin"} style={{height: 200}}>
+            Zero-Admin是一套基于go-zero框架实现的电商系统，包括前台商城系统和后台管理系统，提供了完整的电商解决方案。
+            <p/>
+            <Link>
+                 zero-admin github 地址
+             </Link>
+          </Card>
+          </span>
+        </Col>
+        <Col span={6} style={{height: 200}}>
+          <span
+            onClick={() => {
+              window.open('https://github.com/feihua/zero-admin-ui');
+            }}
+          >
+            <Card bordered={false} hoverable title={"zero-admin-ui"} style={{height: 200}}>
+              Zero-Admin-UI是一个基于React实现的电商后台管理系统的前端项目，为管理者提供了便捷高效的操作界面。
+              <br/>
+              <br/>
+            <Link>
+                 zero-admin-ui github 地址
+             </Link>
+            </Card>
+          </span>
+        </Col>
+        <Col span={6}>
+          <span
+            onClick={() => {
+              window.open('https://github.com/feihua/flutter_mall');
+            }}
+          >
+            <Card bordered={false} hoverable title={"flutter_mall"} style={{height: 200}}>
+              Flutter Mall是一个基于Flutter框架实现的电商系统移动端项目，旨在提供全面的购物体验。
+              <br/>
+              <br/>
+            <Link>
+                 flutter_mall github 地址
+             </Link>
+            </Card>
+          </span>
+        </Col>
+        <Col span={6}>
+          <span
+            onClick={() => {
+              window.open('https://feihua.github.io');
+            }}
+          >
+            <Card bordered={false} hoverable title={"项目文档"} style={{height: 200}}>
+              基于vuepress和markdown编写的项目文档
+              <br/>
+              <br/>
+              <br/>
+            <Link>
+                 文档地址
+             </Link>
+            </Card>
+            </span>
+        </Col>
+      </Row>
+      <Row gutter={8} style={{marginTop: 10}}>
+        <Col span={6}>
           <Card bordered={false} hoverable>
             <Statistic
               title="总销售额"
               value={126560}
               precision={2}
-              valueStyle={{ color: '#cf1322' }}
-              suffix={<ArrowUpOutlined />}
+              valueStyle={{color: '#cf1322'}}
+              suffix={<ArrowUpOutlined/>}
               prefix="￥"
             />
           </Card>
@@ -127,7 +194,7 @@ const Welcome: React.FC = () => {
               title="访问量"
               value={8846}
               precision={2}
-              valueStyle={{ color: '#3f8600' }}
+              valueStyle={{color: '#3f8600'}}
             />
           </Card>
         </Col>
@@ -137,8 +204,8 @@ const Welcome: React.FC = () => {
               title="支付笔数"
               value={6560}
               precision={2}
-              valueStyle={{ color: '#3f8600' }}
-              suffix={<ArrowDownOutlined />}
+              valueStyle={{color: '#3f8600'}}
+              suffix={<ArrowDownOutlined/>}
             />
           </Card>
         </Col>
@@ -148,29 +215,29 @@ const Welcome: React.FC = () => {
               title="运营活动效果"
               value={9.3}
               precision={2}
-              valueStyle={{ color: '#cf1322' }}
-              prefix={<ArrowDownOutlined />}
+              valueStyle={{color: '#cf1322'}}
+              prefix={<ArrowDownOutlined/>}
               suffix="%"
             />
           </Card>
         </Col>
       </Row>
-      <Row gutter={8} style={{ marginTop: 10 }}>
+      <Row gutter={8} style={{marginTop: 10}}>
         <Col span={12}>
           <Card bordered={false} hoverable>
-            <ReactEcharts option={getOption()} style={{ height: 280 }} />
+            <ReactEcharts option={getOption()} style={{height: 280}}/>
           </Card>
         </Col>
         <Col span={12}>
           <Card bordered={false} hoverable>
-            <ReactEcharts option={getOption2()} style={{ height: 280 }} />
+            <ReactEcharts option={getOption2()} style={{height: 280}}/>
           </Card>
         </Col>
       </Row>
-      <Row style={{ marginTop: 10 }}>
+      <Row style={{marginTop: 10}}>
         <Col span={24}>
           <Card bordered={false} hoverable>
-            <ReactEcharts option={getOption3()} style={{ height: 280 }} />
+            <ReactEcharts option={getOption3()} style={{height: 280}}/>
           </Card>
         </Col>
       </Row>
