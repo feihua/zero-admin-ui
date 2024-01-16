@@ -1,13 +1,13 @@
 import {DeleteOutlined, EditOutlined, ExclamationCircleOutlined} from '@ant-design/icons';
-import {Button, message, Drawer, Modal, Divider} from 'antd';
-import React, {useState, useRef} from 'react';
-import {PageContainer, FooterToolbar} from '@ant-design/pro-layout';
+import {Button, Divider, Drawer, message, Modal, Typography} from 'antd';
+import React, {useRef, useState} from 'react';
+import {FooterToolbar, PageContainer} from '@ant-design/pro-layout';
+import type {ActionType, ProColumns} from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
-import type {ProColumns, ActionType} from '@ant-design/pro-table';
-import ProDescriptions from '@ant-design/pro-descriptions';
-import type {ProDescriptionsItemProps} from '@ant-design/pro-descriptions';
 import type {TableListItem} from './data.d';
 import {querySysLog, removeSysLog} from './service';
+
+const {Paragraph} = Typography;
 
 const {confirm} = Modal;
 
@@ -183,19 +183,18 @@ const TableList: React.FC = () => {
         }}
         closable={false}
       >
-        {currentRow?.id && (
-          <ProDescriptions<TableListItem>
-            column={2}
-            title={"操作日志详情"}
-            request={async () => ({
-              data: currentRow || {},
-            })}
-            params={{
-              id: currentRow?.id,
-            }}
-            columns={columns as ProDescriptionsItemProps<TableListItem>[]}
-          />
-        )}
+        <div>
+          <Paragraph>请求方法:</Paragraph>
+          <Paragraph copyable>{currentRow?.method}</Paragraph>
+        </div>
+        <div>
+          <Paragraph>请求参数:</Paragraph>
+          <Paragraph copyable>{currentRow?.requestParams}</Paragraph>
+        </div>
+        <div>
+          <Paragraph>响应参数:</Paragraph>
+          <Paragraph copyable>{currentRow?.responseParams}</Paragraph>
+        </div>
       </Drawer>
     </PageContainer>
   );

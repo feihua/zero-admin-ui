@@ -118,7 +118,7 @@ const Welcome: React.FC = () => {
           >
           <Card bordered={false} hoverable title={"zero-admin"} style={{height: 200}}>
             Zero-Admin是一套基于go-zero框架实现的电商系统，包括前台商城系统和后台管理系统，提供了完整的电商解决方案。
-            <p/>
+            <br/>
             <Link>
                  zero-admin github 地址
              </Link>

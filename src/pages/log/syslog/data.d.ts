@@ -1,5 +1,8 @@
 export interface TableListItem {
   id: number;
+  requestParams: string;
+  responseParams: string;
+  method: string;
 
 }
 
