@@ -7,7 +7,7 @@
     "analyze": "cross-env ANALYZE=1 umi build",
     "build": "umi build",
     "deploy": "npm run build && npm run gh-pages",
-    "dev": "SET NODE_OPTIONS=--openssl-legacy-provider && npm run start:dev",
+    "dev": "set NODE_OPTIONS=--openssl-legacy-provider && npm run start:dev",
     "gh-pages": "gh-pages -d dist",
     "i18n-remove": "pro i18n-remove --locale=zh-CN --write",
     "postinstall": "umi g tmp",
