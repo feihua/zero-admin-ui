@@ -45,15 +45,15 @@ export const initialStateConfig = {
  * */
 export async function getInitialState(): Promise<{
   settings?: Partial<LayoutSettings>;
-  currentUser?: API.CurrentUser;
+  currentUser?: API.UserInfo;
   loading?: boolean;
-  fetchUserInfo?: () => Promise<API.CurrentUser | undefined>;
+  fetchUserInfo?: () => Promise<API.UserInfo | undefined>;
 }> {
   const fetchUserInfo = async () => {
     try {
-      const msg = await queryCurrentUser();
-      localStorage.setItem('menuTree', JSON.stringify(msg.menuTree));
-      return msg;
+      const userInfo = await queryCurrentUser();
+      localStorage.setItem('menuTree', JSON.stringify(userInfo.data.menuTree));
+      return userInfo;
     } catch (error) {
       history.push(loginPath);
     }
@@ -80,7 +80,7 @@ export const layout: RunTimeLayoutConfig = ({initialState, setInitialState}) => 
     rightContentRender: () => <RightContent/>,
     disableContentMargin: false,
     waterMarkProps: {
-      content: initialState?.currentUser?.name,
+      content: initialState?.currentUser?.data.name,
     },
     menuDataRender: () => menuDataRender(),
     onPageChange: () => {
@@ -123,8 +123,6 @@ export const layout: RunTimeLayoutConfig = ({initialState, setInitialState}) => 
 
 const menuDataRender: any = () => {
   let item = localStorage.getItem('menuTree') + '';
-
-  console.log(loopMenuItem(tree(JSON.parse(item), 0, 'parentId')));
 
   return loopMenuItem(tree(JSON.parse(item), 0, 'parentId'));
 

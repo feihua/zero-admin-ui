@@ -2,34 +2,27 @@
 /* eslint-disable */
 
 declare namespace API {
-  type CurrentUser = {
-    name?: string;
-    avatar?: string;
-    userid?: string;
-    email?: string;
-    signature?: string;
-    title?: string;
-    group?: string;
-    tags?: { key?: string; label?: string }[];
-    notifyCount?: number;
-    unreadCount?: number;
-    country?: string;
-    access?: string;
-    geographic?: {
-      province?: { label?: string; key?: string };
-      city?: { label?: string; key?: string };
-    };
-    address?: string;
-    phone?: string;
-    menuTree?:[];
-  };
+  type UserInfo = {
+    code: string;
+    message: string;
+    data: UserInfoData;
+  }
+
+  type UserInfoData = {
+    avatar: string;
+    name: string;
+    menuTree: [];
+  }
 
   type LoginResult = {
-    status?: string;
-    type?: string;
-    currentAuthority?: string;
+    code: string;
+    message: string;
+    data: LoginData;
+  }
+
+  type LoginData = {
     token: string;
-  };
+  }
 
   type PageParams = {
     current?: number;
