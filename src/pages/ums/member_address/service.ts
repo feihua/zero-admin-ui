@@ -1,10 +1,10 @@
 import { request } from 'umi';
-import { AddressTableListParams, AddressTableListItem } from './data.d';
+import { AddressListParams, AddressListItem } from './data.d';
 
-export async function queryAddress(params?: AddressTableListParams) {
+export async function queryAddress(params?: AddressListParams) {
   return request('/api/member/address/list', {
-    method: 'POST',
-    data: {
+    method: 'GET',
+    params: {
       ...params,
     },
   });
@@ -12,14 +12,14 @@ export async function queryAddress(params?: AddressTableListParams) {
 
 export async function removeAddress(params: { ids: number[] }) {
   return request('/api/member/address/delete', {
-    method: 'POST',
-    data: {
+    method: 'GET',
+    params: {
       ...params,
     },
   });
 }
 
-export async function addAddress(params: AddressTableListItem) {
+export async function addAddress(params: AddressListItem) {
   return request('/api/member/address/add', {
     method: 'POST',
     data: {
@@ -28,7 +28,7 @@ export async function addAddress(params: AddressTableListItem) {
   });
 }
 
-export async function updateAddress(params: AddressTableListItem) {
+export async function updateAddress(params: AddressListItem) {
   return request('/api/member/address/update', {
     method: 'POST',
     data: {

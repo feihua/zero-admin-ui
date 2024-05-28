@@ -73,7 +73,7 @@ const handleRemove = async (selectedRows: AttributeCategoryListItem[]) => {
   }
 };
 
-const TableList: React.FC = () => {
+const ProductAttrCateList: React.FC = () => {
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
   const [showDetail, setShowDetail] = useState<boolean>(false);
@@ -289,4 +289,4 @@ const TableList: React.FC = () => {
   );
 };
 
-export default TableList;
+export default ProductAttrCateList;

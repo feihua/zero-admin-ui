@@ -6,8 +6,8 @@ export async function queryJob(params: JobListParams) {
     params.delFlag = Number(params.delFlag)
   }
   return request('/api/sys/job/list', {
-    method: 'POST',
-    data: {
+    method: 'GET',
+    params: {
       ...params,
     },
   });
@@ -15,8 +15,8 @@ export async function queryJob(params: JobListParams) {
 
 export async function removeJob(params: { ids: number[] }) {
   return request('/api/sys/job/delete', {
-    method: 'POST',
-    data: {
+    method: 'GET',
+    params: {
       ...params,
     },
   });

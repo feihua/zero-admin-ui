@@ -6,8 +6,8 @@ export async function queryRecommendSubject(params: RecommendSubjectListParams) 
     params.recommendStatus = Number(params.recommendStatus);
   }
   return request('/api/sms/homerecommendsubject/list', {
-    method: 'POST',
-    data: {
+    method: 'GET',
+    params: {
       ...params,
     },
   });
@@ -15,8 +15,8 @@ export async function queryRecommendSubject(params: RecommendSubjectListParams) 
 
 export async function removeRecommendSubject(params: { ids: number[] }) {
   return request('/api/sms/homerecommendsubject/delete', {
-    method: 'POST',
-    data: {
+    method: 'GET',
+    params: {
       ...params,
     },
   });

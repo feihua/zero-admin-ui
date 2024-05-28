@@ -1,12 +1,12 @@
 import React, {useEffect, useState} from 'react';
 import {Form, Input, Modal, Select} from 'antd';
-import { AddressTableListItem } from '../data.d';
+import { AddressListItem } from '../data.d';
 import {queryRole} from "@/pages/system/role/service";
 import {RoleListItem} from "@/pages/system/role/data";
 
 export interface CreateFormProps {
   onCancel: () => void;
-  onSubmit: (values: AddressTableListItem) => void;
+  onSubmit: (values: AddressListItem) => void;
   createModalVisible: boolean;
 }
 const FormItem = Form.Item;
@@ -44,7 +44,7 @@ const CreateAddressForm: React.FC<CreateFormProps> = (props) => {
     form.submit();
   };
 
-  const handleFinish = (values: AddressTableListItem) => {
+  const handleFinish = (values: AddressListItem) => {
     if (onSubmit) {
       onSubmit(values);
     }

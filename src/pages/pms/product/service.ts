@@ -4,8 +4,8 @@ import moment from "moment";
 
 export async function queryProduct(params?: ProductListParams) {
   return request('/api/product/product/list', {
-    method: 'POST',
-    data: {
+    method: 'GET',
+    params: {
       ...params,
     },
   });
@@ -13,8 +13,8 @@ export async function queryProduct(params?: ProductListParams) {
 
 export async function removeProduct(params: { ids: number[] }) {
   return request('/api/product/product/delete', {
-    method: 'POST',
-    data: {
+    method: 'GET',
+    params: {
       ...params,
     },
   });
@@ -45,8 +45,8 @@ export async function operation(params: ProductParams) {
 
 export async function queryPrefrenceArea(params: PrefrenceAreaParams) {
   return request('/api/cms/prefrenceArea/list', {
-    method: 'POST',
-    data: {
+    method: 'GET',
+    params: {
       ...params,
     },
   });

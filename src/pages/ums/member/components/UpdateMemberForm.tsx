@@ -1,12 +1,12 @@
 import React, {useEffect} from 'react';
 import { Form, Input, Modal, Select } from 'antd';
-import { MemberTableListItem } from '../data.d';
+import { MemberListItem } from '../data.d';
 
 export interface UpdateFormProps {
   onCancel: () => void;
-  onSubmit: (values: Partial<MemberTableListItem>) => void;
+  onSubmit: (values: Partial<MemberListItem>) => void;
   updateModalVisible: boolean;
-  currentData: Partial<MemberTableListItem>;
+  currentData: Partial<MemberListItem>;
 }
 const FormItem = Form.Item;
 

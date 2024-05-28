@@ -50,7 +50,7 @@ const handleRemove = async (selectedRows: LoginLogListItem[]) => {
   }
 };
 
-const TableList: React.FC<{}> = () => {
+const MemberLoginLogList: React.FC<{}> = () => {
   const actionRef = useRef<ActionType>();
   const [row, setRow] = useState<LoginLogListItem>();
   const [selectedRowsState, setSelectedRows] = useState<LoginLogListItem[]>([]);
@@ -186,4 +186,4 @@ const TableList: React.FC<{}> = () => {
   );
 };
 
-export default TableList;
+export default MemberLoginLogList;

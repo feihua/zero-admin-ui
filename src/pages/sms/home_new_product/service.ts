@@ -7,8 +7,8 @@ export async function queryHomeNewProduct(params: HomeNewProductListParams) {
     params.recommendStatus = Number(params.recommendStatus);
   }
   return request('/api/sms/homenewproduct/list', {
-    method: 'POST',
-    data: {
+    method: 'GET',
+    params: {
       ...params,
     },
   });
@@ -16,8 +16,8 @@ export async function queryHomeNewProduct(params: HomeNewProductListParams) {
 
 export async function removeHomeNewProduct(params: { ids: number[] }) {
   return request('/api/sms/homenewproduct/delete', {
-    method: 'POST',
-    data: {
+    method: 'GET',
+    params: {
       ...params,
     },
   });

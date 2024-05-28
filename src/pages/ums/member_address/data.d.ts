@@ -1,20 +1,20 @@
-export interface AddressTableListItem {
+export interface AddressListItem {
   id: number;
 
 }
 
-export interface AddressTableListPagination {
+export interface AddressListPagination {
   total: number;
   pageSize: number;
   current: number;
 }
 
-export interface AddressTableListData {
-  list: AddressTableListItem[];
-  pagination: Partial<AddressTableListPagination>;
+export interface AddressListData {
+  list: AddressListItem[];
+  pagination: Partial<AddressListPagination>;
 }
 
-export interface AddressTableListParams {
+export interface AddressListParams {
 
   pageSize?: number;
   currentPage?: number;

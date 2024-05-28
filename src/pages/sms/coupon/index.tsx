@@ -76,7 +76,7 @@ const handleRemove = async (selectedRows: CouponListItem[]) => {
   }
 };
 
-const CouponTableList: React.FC = () => {
+const CouponList: React.FC = () => {
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
   const [showDetail, setShowDetail] = useState<boolean>(false);
@@ -323,7 +323,7 @@ const CouponTableList: React.FC = () => {
 
       <Drawer
         width={600}
-        visible={showDetail}
+        open={showDetail}
         onClose={() => {
           setCurrentRow(undefined);
           setShowDetail(false);
@@ -348,4 +348,4 @@ const CouponTableList: React.FC = () => {
   );
 };
 
-export default CouponTableList;
+export default CouponList;

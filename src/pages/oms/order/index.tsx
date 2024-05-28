@@ -56,7 +56,7 @@ const handleRemove = async (selectedRows: OrderListItem[]) => {
   }
 };
 
-const OrderTableList: React.FC = () => {
+const OrderList: React.FC = () => {
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
   const [closeOrderModelVisible, handleCloseOrderModelVisible] = useState<boolean>(false);
   const [deliveryModelVisible, handleDeliveryModelVisible] = useState<boolean>(false);
@@ -352,4 +352,4 @@ const OrderTableList: React.FC = () => {
   );
 };
 
-export default OrderTableList;
+export default OrderList;

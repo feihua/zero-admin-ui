@@ -1,4 +1,4 @@
-export interface TableListItem {
+export interface SysLogListItem {
   id: number;
   requestParams: string;
   responseParams: string;
@@ -6,18 +6,18 @@ export interface TableListItem {
 
 }
 
-export interface TableListPagination {
+export interface SysLogListPagination {
   total: number;
   pageSize: number;
   current: number;
 }
 
-export interface TableListData {
-  list: TableListItem[];
-  pagination: Partial<TableListPagination>;
+export interface SysLogListData {
+  list: SysLogListItem[];
+  pagination: Partial<SysLogListPagination>;
 }
 
-export interface TableListParams {
+export interface SysLogListParams {
   status?: string;
   name?: string;
   desc?: string;

@@ -4,7 +4,8 @@ import { CategoryListParams, CategoryListItem } from './data.d';
 export async function queryCategory(params: CategoryListParams) {
   return request('/api/product/category/list', {
     method: 'POST',
-    data: {
+    method: 'GET',
+    params: {
       ...params,
     },
   });
@@ -12,8 +13,8 @@ export async function queryCategory(params: CategoryListParams) {
 
 export async function removeCategory(params: { ids: number[] }) {
   return request('/api/product/category/delete', {
-    method: 'POST',
-    data: {
+    method: 'GET',
+    params: {
       ...params,
     },
   });

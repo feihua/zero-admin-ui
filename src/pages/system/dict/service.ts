@@ -6,8 +6,8 @@ export async function queryDict(params: DictListParams) {
     params.delFlag = Number(params.delFlag)
   }
   return request('/api/sys/dict/list', {
-    method: 'POST',
-    data: {
+    method: 'GET',
+    params: {
       ...params,
     },
   });
@@ -15,8 +15,8 @@ export async function queryDict(params: DictListParams) {
 
 export async function removeDict(params: { ids: number[] }) {
   return request('/api/sys/dict/delete', {
-    method: 'POST',
-    data: {
+    method: 'GET',
+    params: {
       ...params,
     },
   });

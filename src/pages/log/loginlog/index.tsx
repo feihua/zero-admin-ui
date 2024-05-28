@@ -3,7 +3,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import {FooterToolbar, PageContainer} from '@ant-design/pro-layout';
 import type {ActionType, ProColumns} from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
-import type {TableListItem} from './data.d';
+import type {LoginLogListItem} from './data.d';
 import {StatisticsLoginLog} from "./data.d";
 import {queryLoginLog, removeLoginLog, statisticsLoginLog} from './service';
 import {DeleteOutlined, ExclamationCircleOutlined} from "@ant-design/icons";
@@ -15,7 +15,7 @@ const {confirm} = Modal;
  *  删除节点
  * @param selectedRows
  */
-const handleRemove = async (selectedRows: TableListItem[]) => {
+const handleRemove = async (selectedRows: LoginLogListItem[]) => {
   const hide = message.loading('正在删除');
   if (!selectedRows) return true;
   try {
@@ -34,10 +34,10 @@ const handleRemove = async (selectedRows: TableListItem[]) => {
 
 const LoginLogList: React.FC = () => {
   const actionRef = useRef<ActionType>();
-  const [selectedRowsState, setSelectedRows] = useState<TableListItem[]>([]);
+  const [selectedRowsState, setSelectedRows] = useState<LoginLogListItem[]>([]);
   const [statisticsLoginLogData, setStatisticsLoginLogData] = useState<StatisticsLoginLog>();
 
-  const showDeleteConfirm = (item: TableListItem) => {
+  const showDeleteConfirm = (item: LoginLogListItem) => {
     confirm({
       title: '是否删除记录?',
       icon: <ExclamationCircleOutlined/>,
@@ -52,7 +52,7 @@ const LoginLogList: React.FC = () => {
     });
   };
 
-  const columns: ProColumns<TableListItem>[] = [
+  const columns: ProColumns<LoginLogListItem>[] = [
     {
       title: '用户名',
       dataIndex: 'userName',
@@ -148,7 +148,7 @@ const LoginLogList: React.FC = () => {
       </Row>
       <Row style={{marginTop: 10}}>
         <Col span={24}>
-          <ProTable<TableListItem>
+          <ProTable<LoginLogListItem>
             headerTitle="登录日志列表"
             actionRef={actionRef}
             rowKey="id"

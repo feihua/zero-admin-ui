@@ -1,13 +1,13 @@
 import {request} from 'umi';
-import type {MemberTableListParams, MemberTableListItem, AddressTableListParams, LoginLogListParams} from './data.d';
+import type {MemberListParams, MemberListItem, AddressListParams, LoginLogListParams} from './data.d';
 
-export async function queryMemberList(params: MemberTableListParams) {
+export async function queryMemberList(params: MemberListParams) {
   if (params.status != null) {
     params.status = Number(params.status)
   }
   return request('/api/member/member/list', {
-    method: 'POST',
-    data: {
+    method: 'GET',
+    params: {
       ...params,
     },
   });
@@ -15,14 +15,14 @@ export async function queryMemberList(params: MemberTableListParams) {
 
 export async function removeMember(params: { ids: number[] }) {
   return request('/api/member/member/delete', {
-    method: 'POST',
-    data: {
+    method: 'GET',
+    params: {
       ...params,
     },
   });
 }
 
-export async function updateMember(params: MemberTableListItem) {
+export async function updateMember(params: MemberListItem) {
   return request('/api/member/member/update', {
     method: 'POST',
     data: {
@@ -31,10 +31,10 @@ export async function updateMember(params: MemberTableListItem) {
   });
 }
 
-export async function queryAddress(params: AddressTableListParams) {
+export async function queryAddress(params: AddressListParams) {
   return request('/api/member/address/list', {
-    method: 'POST',
-    data: {
+    method: 'GET',
+    params: {
       ...params,
     },
   });
@@ -42,8 +42,8 @@ export async function queryAddress(params: AddressTableListParams) {
 
 export async function queryLoginLog(params: LoginLogListParams) {
   return request('/api/member/loginlog/list', {
-    method: 'POST',
-    data: {
+    method: 'GET',
+    params: {
       ...params,
     },
   });

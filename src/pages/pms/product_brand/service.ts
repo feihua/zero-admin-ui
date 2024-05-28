@@ -10,7 +10,8 @@ export async function queryBrand(params: BrandListParams) {
   }
   return request('/api/product/brand/list', {
     method: 'POST',
-    data: {
+    method: 'GET',
+    params: {
       ...params,
     },
   });
@@ -18,8 +19,8 @@ export async function queryBrand(params: BrandListParams) {
 
 export async function removeBrand(params: { ids: number[] }) {
   return request('/api/product/brand/delete', {
-    method: 'POST',
-    data: {
+    method: 'GET',
+    params: {
       ...params,
     },
   });

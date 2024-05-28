@@ -72,7 +72,7 @@ const handleRemove = async (selectedRows: JobListItem[]) => {
   }
 };
 
-const JobTableList: React.FC = () => {
+const JobList: React.FC = () => {
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
   const [showDetail, setShowDetail] = useState<boolean>(false);
@@ -295,4 +295,4 @@ const JobTableList: React.FC = () => {
   );
 };
 
-export default JobTableList;
+export default JobList;

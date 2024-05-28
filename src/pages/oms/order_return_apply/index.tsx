@@ -31,7 +31,7 @@ const handleUpdate = async (fields: ReturnApplyListItem) => {
 };
 
 
-const ReturnApplyTableList: React.FC = () => {
+const ReturnApplyList: React.FC = () => {
   const [detailModalVisible, handleDetailModalVisible] = useState<boolean>(false);
   const [showDetail, setShowDetail] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
@@ -206,4 +206,4 @@ const ReturnApplyTableList: React.FC = () => {
   );
 };
 
-export default ReturnApplyTableList;
+export default ReturnApplyList;

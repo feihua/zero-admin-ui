@@ -1,20 +1,20 @@
-export interface TableListItem {
+export interface LoginLogListItem {
   id: number;
 
 }
 
-export interface TableListPagination {
+export interface LoginLogListPagination {
   total: number;
   pageSize: number;
   current: number;
 }
 
-export interface TableListData {
-  list: TableListItem[];
-  pagination: Partial<TableListPagination>;
+export interface LoginLogListData {
+  list: LoginLogListItem[];
+  pagination: Partial<LoginLogListPagination>;
 }
 
-export interface TableListParams {
+export interface LoginLogListParams {
 
   pageSize?: number;
   current?: number;

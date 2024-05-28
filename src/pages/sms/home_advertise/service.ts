@@ -7,8 +7,8 @@ export async function queryHomeAdvertise(params: HomeAdvertiseListParams) {
     params.type = Number(params.type)
   }
   return request('/api/sms/homeadvertise/list', {
-    method: 'POST',
-    data: {
+    method: 'GET',
+    params: {
       ...params,
     },
   });
@@ -16,8 +16,8 @@ export async function queryHomeAdvertise(params: HomeAdvertiseListParams) {
 
 export async function removeHomeAdvertise(params: { ids: number[] }) {
   return request('/api/sms/homeadvertise/delete', {
-    method: 'POST',
-    data: {
+    method: 'GET',
+    params: {
       ...params,
     },
   });

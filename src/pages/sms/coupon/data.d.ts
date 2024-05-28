@@ -24,9 +24,8 @@ export interface CouponListParams {
   type?: number;
   platform?: number;
   useType?: number;
+  /** 当前的页码 */
+  current?: number;
+  /** 页面的容量 */
   pageSize?: number;
-  currentPage?: number;
-  filter?: { [key: string]: any[] };
-  sorter?: { [key: string]: any };
-
 }

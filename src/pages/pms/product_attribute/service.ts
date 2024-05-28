@@ -9,8 +9,8 @@ export async function queryAttribute(params: AttributeListParams) {
     params.productAttributeCategoryId = Number(params.productAttributeCategoryId)
   }
   return request('/api/product/attribute/list', {
-    method: 'POST',
-    data: {
+    method: 'GET',
+    params: {
       ...params,
     },
   });
@@ -18,8 +18,8 @@ export async function queryAttribute(params: AttributeListParams) {
 
 export async function removeAttribute(params: { ids: number[] }) {
   return request('/api/product/attribute/delete', {
-    method: 'POST',
-    data: {
+    method: 'GET',
+    params: {
       ...params,
     },
   });

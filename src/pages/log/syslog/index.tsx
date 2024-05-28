@@ -4,7 +4,7 @@ import React, {useRef, useState} from 'react';
 import {FooterToolbar, PageContainer} from '@ant-design/pro-layout';
 import type {ActionType, ProColumns} from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
-import type {TableListItem} from './data.d';
+import type {SysLogListItem} from './data.d';
 import {querySysLog, removeSysLog} from './service';
 
 const {Paragraph} = Typography;
@@ -15,7 +15,7 @@ const {confirm} = Modal;
  *  删除节点
  * @param selectedRows
  */
-const handleRemove = async (selectedRows: TableListItem[]) => {
+const handleRemove = async (selectedRows: SysLogListItem[]) => {
   const hide = message.loading('正在删除');
   if (!selectedRows) return true;
   try {
@@ -32,13 +32,13 @@ const handleRemove = async (selectedRows: TableListItem[]) => {
   }
 };
 
-const TableList: React.FC = () => {
+const SysLogList: React.FC = () => {
   const actionRef = useRef<ActionType>();
   const [showDetail, setShowDetail] = useState<boolean>(false);
-  const [currentRow, setCurrentRow] = useState<TableListItem>();
-  const [selectedRowsState, setSelectedRows] = useState<TableListItem[]>([]);
+  const [currentRow, setCurrentRow] = useState<SysLogListItem>();
+  const [selectedRowsState, setSelectedRows] = useState<SysLogListItem[]>([]);
 
-  const showDeleteConfirm = (item: TableListItem) => {
+  const showDeleteConfirm = (item: SysLogListItem) => {
     confirm({
       title: '是否删除记录?',
       icon: <ExclamationCircleOutlined/>,
@@ -53,7 +53,7 @@ const TableList: React.FC = () => {
     });
   };
 
-  const columns: ProColumns<TableListItem>[] = [
+  const columns: ProColumns<SysLogListItem>[] = [
     {
       title: '用户名',
       dataIndex: 'userName',
@@ -137,7 +137,7 @@ const TableList: React.FC = () => {
   return (
     <PageContainer
       title={false}>
-      <ProTable<TableListItem>
+      <ProTable<SysLogListItem>
         headerTitle="操作日志列表"
         actionRef={actionRef}
         rowKey="id"
@@ -200,4 +200,4 @@ const TableList: React.FC = () => {
   );
 };
 
-export default TableList;
+export default SysLogList;

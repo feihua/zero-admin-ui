@@ -9,7 +9,7 @@ export interface ReturnReasonListPagination {
   current: number;
 }
 
-export interface TableListData {
+export interface ListData {
   list: ReturnReasonListItem[];
   pagination: Partial<ReturnReasonListPagination>;
 }

@@ -6,8 +6,8 @@ export async function queryRole(params: RoleListParams) {
     params.status = Number(params.status)
   }
   return request('/api/sys/role/list', {
-    method: 'POST',
-    data: {
+    method: 'GET',
+    params: {
       ...params,
     },
   });
@@ -15,8 +15,8 @@ export async function queryRole(params: RoleListParams) {
 
 export async function queryMenuByRoleId(params: { id?: number }) {
   return request('/api/sys/role/queryMenuByRoleId', {
-    method: 'POST',
-    data: {
+    method: 'GET',
+    params: {
       ...params,
     },
   });

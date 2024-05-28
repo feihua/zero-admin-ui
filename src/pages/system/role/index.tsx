@@ -78,7 +78,7 @@ const handleRemove = async (selectedRows: RoleListItem[]) => {
   }
 };
 
-const TableList: React.FC = () => {
+const RoleList: React.FC = () => {
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
   const [updateMenuModalVisible, handleUpdateMenuModalVisible] = useState<boolean>(false);
@@ -330,4 +330,4 @@ const TableList: React.FC = () => {
   );
 };
 
-export default TableList;
+export default RoleList;

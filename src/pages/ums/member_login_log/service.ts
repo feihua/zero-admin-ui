@@ -3,8 +3,8 @@ import { LoginLogListParams } from './data.d';
 
 export async function queryLoginLog(params?: LoginLogListParams) {
   return request('/api/member/loginlog/list', {
-    method: 'POST',
-    data: {
+    method: 'GET',
+    params: {
       ...params,
     },
   });
@@ -12,8 +12,8 @@ export async function queryLoginLog(params?: LoginLogListParams) {
 
 export async function removeLoginLog(params: { ids: number[] }) {
   return request('/api/member/loginlog/delete', {
-    method: 'POST',
-    data: {
+    method: 'GET',
+    params: {
       ...params,
     },
   });

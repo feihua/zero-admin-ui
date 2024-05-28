@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { Form, Input, Modal, Select } from 'antd';
-import { AddressTableListItem } from '../data.d';
+import { AddressListItem } from '../data.d';
 import { RoleListItem } from '@/pages/system/role/data';
 import { queryRole } from '@/pages/system/role/service';
 
 export interface UpdateFormProps {
   onCancel: () => void;
-  onSubmit: (values: Partial<AddressTableListItem>) => void;
+  onSubmit: (values: Partial<AddressListItem>) => void;
   updateModalVisible: boolean;
-  currentData: Partial<AddressTableListItem>;
+  currentData: Partial<AddressListItem>;
 }
 const FormItem = Form.Item;
 

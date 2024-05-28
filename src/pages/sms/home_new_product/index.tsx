@@ -79,7 +79,7 @@ const handleRemove = async (selectedRows: HomeNewProductListItem[]) => {
   }
 };
 
-const HomeNewProductTableList: React.FC = () => {
+const HomeNewProductList: React.FC = () => {
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
   const [showDetail, setShowDetail] = useState<boolean>(false);
@@ -280,4 +280,4 @@ const HomeNewProductTableList: React.FC = () => {
   );
 };
 
-export default HomeNewProductTableList;
+export default HomeNewProductList;

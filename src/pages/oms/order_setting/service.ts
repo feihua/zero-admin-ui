@@ -3,8 +3,8 @@ import type {SettingListParams, SettingListItem} from './data.d';
 
 export async function querySetting(params?: SettingListParams) {
   return request('/api/order/setting/list', {
-    method: 'POST',
-    data: {
+    method: 'GET',
+    params: {
       ...params,
     },
   });

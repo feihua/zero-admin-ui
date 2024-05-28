@@ -1,6 +1,6 @@
 import React, {useEffect, useRef} from 'react';
 import {message, Modal} from 'antd';
-import type {AddressTableListItem} from '../data.d';
+import type {AddressListItem} from '../data.d';
 import {queryAddress} from '../service';
 import type {ActionType, ProColumns} from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
@@ -29,7 +29,7 @@ const MemberAddressModal: React.FC<CreateFormProps> = (props) => {
     onSubmit();
   };
 
-  const columns: ProColumns<AddressTableListItem>[] = [
+  const columns: ProColumns<AddressListItem>[] = [
     {
       title: '编号',
       dataIndex: 'id',
@@ -97,7 +97,7 @@ const MemberAddressModal: React.FC<CreateFormProps> = (props) => {
       {...modalFooter}
       width={800}
     >
-      <ProTable<AddressTableListItem>
+      <ProTable<AddressListItem>
         toolBarRender={false}
         actionRef={actionRef}
         rowKey="id"

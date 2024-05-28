@@ -7,8 +7,8 @@ export async function queryUserList(params: UserListParams) {
     params.status = Number(params.status)
   }
   return request('/api/sys/user/list', {
-    method: 'POST',
-    data: {
+    method: 'GET',
+    params: {
       ...params,
     },
   });
@@ -28,8 +28,8 @@ export async function queryAllRelations(params?: UserListParams) {
 //删除用户
 export async function removeUser(params: { ids: number[] }) {
   return request('/api/sys/user/delete', {
-    method: 'POST',
-    data: {
+    method: 'GET',
+    params: {
       ...params,
     },
   });

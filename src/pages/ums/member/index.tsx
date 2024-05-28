@@ -6,7 +6,7 @@ import ProTable from '@ant-design/pro-table';
 import type {ProColumns, ActionType} from '@ant-design/pro-table';
 import ProDescriptions from '@ant-design/pro-descriptions';
 import type {ProDescriptionsItemProps} from '@ant-design/pro-descriptions';
-import type {MemberTableListItem} from './data.d';
+import type {MemberListItem} from './data.d';
 import {queryMemberList, removeMember} from './service';
 import MemberAddressModal from "@/pages/ums/member/components/MemberAddressModal";
 import MemberLogModal from "@/pages/ums/member/components/MemberLoginLogModal";
@@ -19,7 +19,7 @@ const {confirm} = Modal;
  *  删除节点
  * @param selectedRows
  */
-const handleRemove = async (selectedRows: MemberTableListItem[]) => {
+const handleRemove = async (selectedRows: MemberListItem[]) => {
   const hide = message.loading('正在删除');
   if (!selectedRows) return true;
   try {
@@ -42,10 +42,10 @@ const MemberList: React.FC<{}> = () => {
   // const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
   const [showDetail, setShowDetail] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
-  const [currentRow, setCurrentRow] = useState<MemberTableListItem>();
-  const [selectedRowsState, setSelectedRows] = useState<MemberTableListItem[]>([]);
+  const [currentRow, setCurrentRow] = useState<MemberListItem>();
+  const [selectedRowsState, setSelectedRows] = useState<MemberListItem[]>([]);
 
-  const showDeleteConfirm = (item: MemberTableListItem) => {
+  const showDeleteConfirm = (item: MemberListItem) => {
     confirm({
       title: '是否删除记录?',
       icon: <ExclamationCircleOutlined/>,
@@ -60,7 +60,7 @@ const MemberList: React.FC<{}> = () => {
     });
   };
 
-  const columns: ProColumns<MemberTableListItem>[] = [
+  const columns: ProColumns<MemberListItem>[] = [
     {
       title: '编号',
       dataIndex: 'id',
@@ -202,7 +202,7 @@ const MemberList: React.FC<{}> = () => {
 
   return (
     <PageContainer>
-      <ProTable<MemberTableListItem>
+      <ProTable<MemberListItem>
         headerTitle="会员列表"
         actionRef={actionRef}
         rowKey="id"
@@ -307,7 +307,7 @@ const MemberList: React.FC<{}> = () => {
         closable={false}
       >
         {currentRow?.id && (
-          <ProDescriptions<MemberTableListItem>
+          <ProDescriptions<MemberListItem>
             column={2}
             title={currentRow?.id}
             request={async () => ({
@@ -316,7 +316,7 @@ const MemberList: React.FC<{}> = () => {
             params={{
               id: currentRow?.id,
             }}
-            columns={columns as ProDescriptionsItemProps<MemberTableListItem>[]}
+            columns={columns as ProDescriptionsItemProps<MemberListItem>[]}
           />
         )}
       </Drawer>

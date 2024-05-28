@@ -52,7 +52,7 @@ const handleRemove = async (selectedRows: ProductListItem[]) => {
   }
 };
 
-const TableList: React.FC = () => {
+const ProductList: React.FC = () => {
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
   const [showDetail, setShowDetail] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
@@ -249,4 +249,4 @@ const TableList: React.FC = () => {
   );
 };
 
-export default TableList;
+export default ProductList;

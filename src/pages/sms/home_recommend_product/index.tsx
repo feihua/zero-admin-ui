@@ -80,7 +80,7 @@ const handleRemove = async (selectedRows: RecommendProductListItem[]) => {
   }
 };
 
-const RecommendProductTableList: React.FC = () => {
+const RecommendProductList: React.FC = () => {
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
   const [showDetail, setShowDetail] = useState<boolean>(false);
@@ -281,4 +281,4 @@ const RecommendProductTableList: React.FC = () => {
   );
 };
 
-export default RecommendProductTableList;
+export default RecommendProductList;

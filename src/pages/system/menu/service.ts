@@ -3,8 +3,8 @@ import {MenuListParams, MenuListItem} from './data.d';
 
 export async function queryMenu(params: MenuListParams) {
   return request('/api/sys/menu/list', {
-    method: 'POST',
-    data: {
+    method: 'GET',
+    params: {
       ...params,
     },
   });
@@ -12,8 +12,8 @@ export async function queryMenu(params: MenuListParams) {
 
 export async function removeMenuOne(params: { id: number }) {
   return request('/api/sys/menu/delete', {
-    method: 'POST',
-    data: {
+    method: 'GET',
+    params: {
       ...params,
     },
   });

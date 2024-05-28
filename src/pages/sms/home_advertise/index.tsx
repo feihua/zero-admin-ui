@@ -81,7 +81,7 @@ const handleRemove = async (selectedRows: HomeAdvertiseListItem[]) => {
   }
 };
 
-const HomeAdvertiseTableList: React.FC = () => {
+const HomeAdvertiseList: React.FC = () => {
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
   const [showDetail, setShowDetail] = useState<boolean>(false);
@@ -329,4 +329,4 @@ const HomeAdvertiseTableList: React.FC = () => {
   );
 };
 
-export default HomeAdvertiseTableList;
+export default HomeAdvertiseList;

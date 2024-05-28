@@ -29,7 +29,7 @@ const handleUpdate = async (fields: SettingListItem) => {
 };
 
 
-const TableList: React.FC = () => {
+const OrderSettingList: React.FC = () => {
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<SettingListItem>();
@@ -134,4 +134,4 @@ const TableList: React.FC = () => {
   );
 };
 
-export default TableList;
+export default OrderSettingList;

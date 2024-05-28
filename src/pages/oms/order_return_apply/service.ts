@@ -6,8 +6,8 @@ export async function queryReturnApply(params: ReturnApplyListParams) {
     params.status = Number(params.status)
   }
   return request('/api/order/returnapply/list', {
-    method: 'POST',
-    data: {
+    method: 'GET',
+    params: {
       ...params,
     },
   });
@@ -24,8 +24,8 @@ export async function updateReturnApply(params: ReturnApplyListItem) {
 
 export async function queryCompanyAddress(params: ReturnApplyListParams) {
   return request('/api/order/compayaddress/list', {
-    method: 'POST',
-    data: {
+    method: 'GET',
+    params: {
       ...params,
     },
   });

@@ -7,8 +7,8 @@ export async function queryHomeBrand(params: HomeBrandListParams) {
     params.recommendStatus = Number(params.recommendStatus);
   }
   return request('/api/sms/homebrand/list', {
-    method: 'POST',
-    data: {
+    method: 'GET',
+    params: {
       ...params,
     },
   });
@@ -16,8 +16,8 @@ export async function queryHomeBrand(params: HomeBrandListParams) {
 
 export async function removeHomeBrand(params: { ids: number[] }) {
   return request('/api/sms/homebrand/delete', {
-    method: 'POST',
-    data: {
+    method: 'GET',
+    params: {
       ...params,
     },
   });

@@ -1,9 +1,9 @@
-export interface MemberTableListItem {
+export interface MemberListItem {
   id: number;
   status: number
 }
 
-export interface AddressTableListItem {
+export interface AddressListItem {
   id: number;
 
 }
@@ -13,18 +13,18 @@ export interface LoginLogListItem {
 
 }
 
-export interface MemberTableListPagination {
+export interface MemberListPagination {
   total: number;
   pageSize: number;
   current: number;
 }
 
-export interface MemberTableListData {
-  list: MemberTableListItem[];
-  pagination: Partial<MemberTableListPagination>;
+export interface MemberListData {
+  list: MemberListItem[];
+  pagination: Partial<MemberListPagination>;
 }
 
-export interface MemberTableListParams {
+export interface MemberListParams {
   status?: number
   pageSize?: number;
   currentPage?: number;
@@ -33,7 +33,7 @@ export interface MemberTableListParams {
 
 }
 
-export interface AddressTableListParams {
+export interface AddressListParams {
   memberId?: number;
   pageSize?: number;
   currentPage?: number;

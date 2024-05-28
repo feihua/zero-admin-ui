@@ -6,7 +6,7 @@ import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
 import ProDescriptions from '@ant-design/pro-descriptions';
 import CreateAddressForm from './components/CreateAddressForm';
 import UpdateAddressForm from './components/UpdateAddressForm';
-import { AddressTableListItem } from './data.d';
+import { AddressListItem } from './data.d';
 import { queryAddress, updateAddress, addAddress, removeAddress } from './service';
 
 const { confirm } = Modal;
@@ -15,7 +15,7 @@ const { confirm } = Modal;
  * 添加节点
  * @param fields
  */
-const handleAdd = async (fields: AddressTableListItem) => {
+const handleAdd = async (fields: AddressListItem) => {
   const hide = message.loading('正在添加');
   try {
     await addAddress({ ...fields });
@@ -33,10 +33,10 @@ const handleAdd = async (fields: AddressTableListItem) => {
  * 更新节点
  * @param fields
  */
-const handleUpdate = async (fields: Partial<AddressTableListItem>) => {
+const handleUpdate = async (fields: Partial<AddressListItem>) => {
   const hide = message.loading('正在更新');
   try {
-    await updateAddress(fields as AddressTableListItem);
+    await updateAddress(fields as AddressListItem);
     hide();
 
     message.success('更新成功');
@@ -72,7 +72,7 @@ const handleRemoveOne = async (id: number) => {
  *  删除节点
  * @param selectedRows
  */
-const handleRemove = async (selectedRows: AddressTableListItem[]) => {
+const handleRemove = async (selectedRows: AddressListItem[]) => {
   const hide = message.loading('正在删除');
   if (!selectedRows) return true;
   try {
@@ -89,13 +89,13 @@ const handleRemove = async (selectedRows: AddressTableListItem[]) => {
   }
 };
 
-const TableList: React.FC<{}> = () => {
+const MemberAddressList: React.FC<{}> = () => {
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
   const [stepFormValues, setStepFormValues] = useState({});
   const actionRef = useRef<ActionType>();
-  const [row, setRow] = useState<AddressTableListItem>();
-  const [selectedRowsState, setSelectedRows] = useState<AddressTableListItem[]>([]);
+  const [row, setRow] = useState<AddressListItem>();
+  const [selectedRowsState, setSelectedRows] = useState<AddressListItem[]>([]);
 
   const showDeleteConfirm = (id: number) => {
     confirm({
@@ -111,7 +111,7 @@ const TableList: React.FC<{}> = () => {
     });
   };
 
-  const columns: ProColumns<AddressTableListItem>[] = [
+  const columns: ProColumns<AddressListItem>[] = [
     {
       title: '编号',
       dataIndex: 'id',
@@ -196,7 +196,7 @@ const TableList: React.FC<{}> = () => {
 
   return (
     <PageContainer>
-      <ProTable<AddressTableListItem>
+      <ProTable<AddressListItem>
         headerTitle="会员地址列表"
         actionRef={actionRef}
         rowKey="id"
@@ -281,7 +281,7 @@ const TableList: React.FC<{}> = () => {
         closable={false}
       >
         {row?.id && (
-          <ProDescriptions<AddressTableListItem>
+          <ProDescriptions<AddressListItem>
             column={2}
             title={row?.id}
             request={async () => ({
@@ -298,4 +298,4 @@ const TableList: React.FC<{}> = () => {
   );
 };
 
-export default TableList;
+export default MemberAddressList;

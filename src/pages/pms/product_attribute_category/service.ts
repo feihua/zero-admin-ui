@@ -4,8 +4,8 @@ import type {AttributeCategoryListParams, AttributeCategoryListItem} from './dat
 export async function queryCategoryAttribute(params: AttributeCategoryListParams) {
 
   return request('/api/product/attributecategory/list', {
-    method: 'POST',
-    data: {
+    method: 'GET',
+    params: {
       ...params,
     },
   });
@@ -13,8 +13,8 @@ export async function queryCategoryAttribute(params: AttributeCategoryListParams
 
 export async function removeAttributeCategory(params: { ids: number[] }) {
   return request('/api/product/attributecategory/delete', {
-    method: 'POST',
-    data: {
+    method: 'GET',
+    params: {
       ...params,
     },
   });

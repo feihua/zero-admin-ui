@@ -6,8 +6,8 @@ export async function queryReturnReasonList(params: ReturnReasonListParams) {
     params.status = Number(params.status)
   }
   return request('/api/order/returnreason/list', {
-    method: 'POST',
-    data: {
+    method: 'GET',
+    params: {
       ...params,
     },
   });
@@ -15,8 +15,8 @@ export async function queryReturnReasonList(params: ReturnReasonListParams) {
 
 export async function removeReturnReason(params: { ids: number[] }) {
   return request('/api/order/returnreason/delete', {
-    method: 'POST',
-    data: {
+    method: 'GET',
+    params: {
       ...params,
     },
   });

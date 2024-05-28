@@ -3,8 +3,8 @@ import { LevelListParams, LevelListItem } from './data.d';
 
 export async function queryLevel(params?: LevelListParams) {
   return request('/api/member/level/list', {
-    method: 'POST',
-    data: {
+    method: 'GET',
+    params: {
       ...params,
     },
   });
@@ -13,8 +13,8 @@ export async function queryLevel(params?: LevelListParams) {
 
 export async function removeLevel(params: { ids: number[] }) {
   return request('/api/member/level/delete', {
-    method: 'POST',
-    data: {
+    method: 'GET',
+    params: {
       ...params,
     },
   });

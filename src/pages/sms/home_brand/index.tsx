@@ -79,7 +79,7 @@ const handleRemove = async (selectedRows: HomeBrandListItem[]) => {
   }
 };
 
-const HomeBrandTableList: React.FC = () => {
+const HomeBrandList: React.FC = () => {
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
   const [showDetail, setShowDetail] = useState<boolean>(false);
@@ -280,4 +280,4 @@ const HomeBrandTableList: React.FC = () => {
   );
 };
 
-export default HomeBrandTableList;
+export default HomeBrandList;

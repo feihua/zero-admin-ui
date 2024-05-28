@@ -6,8 +6,8 @@ export async function queryFlashPromotion(params: FlashPromotionListParams) {
     params.status=Number(params.status)
   }
   return request('/api/sms/flashpromotion/list', {
-    method: 'POST',
-    data: {
+    method: 'GET',
+    params: {
       ...params,
     },
   });
@@ -15,8 +15,8 @@ export async function queryFlashPromotion(params: FlashPromotionListParams) {
 
 export async function removeFlashPromotion(params: { ids: number[] }) {
   return request('/api/sms/flashpromotion/delete', {
-    method: 'POST',
-    data: {
+    method: 'GET',
+    params: {
       ...params,
     },
   });

@@ -15,8 +15,8 @@ export async function queryOrderList(params: OrderListParams) {
     params.orderType = Number(params.orderType)
   }
   return request('/api/order/order/list', {
-    method: 'POST',
-    data: {
+    method: 'GET',
+    params: {
       ...params,
     },
   });
@@ -24,8 +24,8 @@ export async function queryOrderList(params: OrderListParams) {
 
 export async function removeOrder(params: { ids: number[] }) {
   return request('/api/order/order/delete', {
-    method: 'POST',
-    data: {
+    method: 'GET',
+    params: {
       ...params,
     },
   });
