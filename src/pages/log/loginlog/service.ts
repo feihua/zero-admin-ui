@@ -6,7 +6,7 @@ import type {LoginLogListParams} from './data.d';
  * @param params
  */
 export async function queryLoginLog(params: LoginLogListParams) {
-  return request('/api/sys/loginLog/list', {
+  return request('/api/sys/log/queryLoginLogList', {
     method: 'GET',
     params: {
       ...params,

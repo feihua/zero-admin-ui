@@ -54,26 +54,38 @@ const LoginLogList: React.FC = () => {
 
   const columns: ProColumns<LoginLogListItem>[] = [
     {
-      title: '用户名',
+      title: '访问编号',
+      dataIndex: 'id',
+    },
+    {
+      title: '用户名称',
       dataIndex: 'userName',
     },
     {
-      title: 'IP地址',
-      dataIndex: 'ip',
+      title: '登录地址',
+      dataIndex: 'ipAddress',
     },
     {
-      title: '状态',
-      dataIndex: 'status',
+      title: '浏览器',
+      dataIndex: 'browser',
+    },
+    {
+      title: '操作系统',
+      dataIndex: 'os',
+    },
+    {
+      title: '登录状态',
+      dataIndex: 'loginStatus',
       hideInSearch: true,
     },
     {
-      title: '创建人',
-      dataIndex: 'createBy',
+      title: '操作信息',
+      dataIndex: 'errorMsg',
       hideInSearch: true,
     },
     {
-      title: '创建时间',
-      dataIndex: 'createTime',
+      title: '登录时间',
+      dataIndex: 'loginTime',
       sorter: true,
       hideInSearch: true,
     },
@@ -149,7 +161,7 @@ const LoginLogList: React.FC = () => {
       <Row style={{marginTop: 10}}>
         <Col span={24}>
           <ProTable<LoginLogListItem>
-            headerTitle="登录日志列表"
+            headerTitle="登录日志"
             actionRef={actionRef}
             rowKey="id"
             search={{
