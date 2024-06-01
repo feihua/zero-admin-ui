@@ -10,11 +10,11 @@ import CreateRoleForm from './components/CreateRoleForm';
 import UpdateRoleForm from './components/UpdateRoleForm';
 import type {RoleListItem} from './data.d';
 import {
-  queryRole,
-  updateRule,
+  queryRoleList,
+  updateRole,
   addRole,
   removeRole,
-  updateRoleMenu,
+  updateRoleMenuList,
 } from './service';
 
 const {confirm} = Modal;
@@ -44,7 +44,7 @@ const handleAdd = async (fields: RoleListItem) => {
 const handleUpdate = async (fields: RoleListItem) => {
   const hide = message.loading('正在更新');
   try {
-    await updateRule(fields);
+    await updateRole(fields);
     hide();
 
     message.success('更新成功');
@@ -65,9 +65,7 @@ const handleRemove = async (selectedRows: RoleListItem[]) => {
   const hide = message.loading('正在删除');
   if (!selectedRows) return true;
   try {
-    await removeRole({
-      ids: selectedRows.map((row) => row.id),
-    });
+    await removeRole(selectedRows.map((row) => row.id));
     hide();
     message.success('删除成功，即将刷新');
     return true;
@@ -105,13 +103,13 @@ const RoleList: React.FC = () => {
 
   const columns: ProColumns<RoleListItem>[] = [
     {
-      title: '编号',
+      title: '角色编号',
       dataIndex: 'id',
       hideInSearch: true,
     },
     {
       title: '角色名称',
-      dataIndex: 'name',
+      dataIndex: 'roleName',
       render: (dom, entity) => {
         return <a onClick={() => {
           setCurrentRow(entity);
@@ -120,21 +118,31 @@ const RoleList: React.FC = () => {
       },
     },
     {
-      title: '备注',
-      dataIndex: 'remark',
-      valueType: 'textarea',
+      title: '权限字符',
+      dataIndex: 'roleKey',
+    },
+    {
+      title: '角色排序',
+      dataIndex: 'roleSort',
       hideInSearch: true,
     },
     {
       title: '状态',
-      dataIndex: 'status',
+      dataIndex: 'roleStatus',
       valueEnum: {
         1: {text: '启用', status: 'Success'},
         0: {text: '禁用', status: 'Error'},
       },
     },
     {
-      title: '创建人',
+      title: '备注',
+      dataIndex: 'remark',
+      valueType: 'textarea',
+      hideInSearch: true,
+    },
+
+    {
+      title: '创建者',
       dataIndex: 'createBy',
       hideInSearch: true,
     },
@@ -146,13 +154,13 @@ const RoleList: React.FC = () => {
       hideInSearch: true,
     },
     {
-      title: '更新人',
-      dataIndex: 'lastUpdateBy',
+      title: '更新者',
+      dataIndex: 'updateBy',
       hideInSearch: true,
     },
     {
       title: '更新时间',
-      dataIndex: 'lastUpdateTime',
+      dataIndex: 'updateTime',
       sorter: true,
       valueType: 'dateTime',
       hideInSearch: true,
@@ -203,7 +211,7 @@ const RoleList: React.FC = () => {
   return (
     <PageContainer>
       <ProTable<RoleListItem>
-        headerTitle="角色列表"
+        headerTitle="角色管理"
         actionRef={actionRef}
         rowKey="id"
         search={{
@@ -211,10 +219,10 @@ const RoleList: React.FC = () => {
         }}
         toolBarRender={() => [
           <Button key={'new'} type="primary" onClick={() => handleModalVisible(true)}>
-            <PlusOutlined/> 新建角色
+            <PlusOutlined/> 新建
           </Button>,
         ]}
-        request={queryRole}
+        request={queryRoleList}
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows) => setSelectedRows(selectedRows),
@@ -286,7 +294,7 @@ const RoleList: React.FC = () => {
 
       <MenuForm
         onSubmit={async (value) => {
-          const success = await updateRoleMenu(value);
+          const success = await updateRoleMenuList(value);
           if (success) {
             handleUpdateMenuModalVisible(false);
             setMenuStepFormValues({});
@@ -305,7 +313,7 @@ const RoleList: React.FC = () => {
 
       <Drawer
         width={600}
-        visible={showDetail}
+        open={showDetail}
         onClose={() => {
           setCurrentRow(undefined);
           setShowDetail(false)

@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react';
-import {Form, Input, Modal, Radio} from 'antd';
+import {Form, Input, InputNumber, Modal, Radio} from 'antd';
 import type {RoleListItem} from '../data.d';
 
 export interface UpdateFormProps {
@@ -59,19 +59,31 @@ const UpdateRoleForm: React.FC<UpdateFormProps> = (props) => {
           name="id"
           label="主键"
           hidden
-        >
-          <Input id="update-id" placeholder="请输入主键"/>
-        </FormItem>
+        />
         <FormItem
-          name="name"
-          label="名称"
+          name="roleName"
+          label="角色名称"
           rules={[{required: true, message: '请输入角色名称'}]}
         >
           <Input id="update-name" placeholder={'请输入角色名称'}/>
         </FormItem>
         <FormItem
-          name="status"
+          name="roleKey"
+          label="权限字符"
+          rules={[{required: true, message: '请输入权限字符'}]}
+        >
+          <Input id="update-name" placeholder={'请输入权限字符'}/>
+        </FormItem>
+        <FormItem
+          name="roleSort"
+          label="角色排序" initialValue={0}
+          rules={[{required: true, message: '请输入角色排序'}]}>
+          <InputNumber placeholder={'请输入角色排序'} style={{width: 255}}/>
+        </FormItem>
+        <FormItem
+          name="roleStatus"
           label="状态"
+          initialValue={1}
           rules={[{required: true, message: '请选择状态'}]}
         >
           <Radio.Group id="status">
@@ -85,6 +97,7 @@ const UpdateRoleForm: React.FC<UpdateFormProps> = (props) => {
         >
           <Input.TextArea id="update-remark" placeholder={'请输入备注'} rows={2}/>
         </FormItem>
+
       </>
     );
   };

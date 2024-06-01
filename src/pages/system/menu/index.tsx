@@ -8,7 +8,7 @@ import ProDescriptions from '@ant-design/pro-descriptions';
 import type {ProDescriptionsItemProps} from '@ant-design/pro-descriptions';
 import UpdateMenuForm from './components/UpdateMenuForm';
 import type {MenuListItem} from './data.d';
-import {queryMenu, updateRule, addMenu, removeMenu} from './service';
+import {queryMenuList, updateMenu, addMenu, removeMenu} from './service';
 import {tree} from '@/utils/utils';
 import CreateMenuForm from '@/pages/system/menu/components/CreateMenuForm';
 
@@ -43,7 +43,7 @@ const handleUpdate = async (fields: MenuListItem) => {
   try {
     fields.orderNum = Number(fields.orderNum);
     fields.type = Number(fields.type);
-    await updateRule(fields);
+    await updateMenu(fields);
     hide();
 
     message.success('更新成功');
@@ -64,9 +64,7 @@ const handleRemove = async (selectedRows: MenuListItem[]) => {
   const hide = message.loading('正在删除');
   if (!selectedRows) return true;
   try {
-    await removeMenu({
-      ids: selectedRows.map((row) => row.id),
-    });
+    await removeMenu(selectedRows.map((row) => row.id));
     hide();
     message.success('删除成功，即将刷新');
     return true;
@@ -102,7 +100,7 @@ const MenuList: React.FC = () => {
   const columns: ProColumns<MenuListItem>[] = [
     {
       title: '菜单名称',
-      dataIndex: 'name',
+      dataIndex: 'menuName',
       render: (dom, entity) => {
         return <a onClick={() => {
           setCurrentRow(entity);
@@ -117,31 +115,37 @@ const MenuList: React.FC = () => {
       hideInTable: true,
     },
     {
-      title: '路径',
-      dataIndex: 'url',
+      title: '权限标识',
+      dataIndex: 'menuPerms',
+    },
+    {
+      title: '组件路径',
+      dataIndex: 'menuPath',
     },
     {
       title: '接口地址',
       dataIndex: 'backgroundUrl',
+      hideInTable: true,
     },
     {
       title: '类型',
-      dataIndex: 'type',
+      dataIndex: 'menuType',
       hideInSearch: true,
       valueEnum: {
         0: {text: '目录', status: 'Success'},
         1: {text: '菜单', status: 'Error'},
         2: {text: '按钮', status: 'Success'},
+        3: {text: '外链', status: 'Success'},
       },
     },
     {
-      title: '排序',
-      dataIndex: 'orderNum',
+      title: '菜单排序',
+      dataIndex: 'menuSort',
       hideInSearch: true,
     },
     {
-      title: '图标',
-      dataIndex: 'icon',
+      title: '菜单图标',
+      dataIndex: 'menuIcon',
       hideInSearch: true,
     },
     {
@@ -151,34 +155,44 @@ const MenuList: React.FC = () => {
       hideInTable: true,
     },
     {
-      title: '状态',
-      dataIndex: 'delFlag',
+      title: '菜单状态',
+      dataIndex: 'menuStatus',
       valueEnum: {
         1: {text: '正常', status: 'Success'},
         0: {text: '禁用', status: 'Error'},
       },
     },
     {
-      title: '创建人',
+      title: '备注信息',
+      dataIndex: 'remark',
+      hideInSearch: true,
+      hideInTable: true,
+    },
+    {
+      title: '创建者',
       dataIndex: 'createBy',
       hideInSearch: true,
+      hideInTable: true,
     },
     {
       title: '创建时间',
       dataIndex: 'createTime',
       valueType: 'dateTime',
       hideInSearch: true,
+      hideInTable: true,
     },
     {
-      title: '更新人',
-      dataIndex: 'lastUpdateBy',
+      title: '更新者',
+      dataIndex: 'updateBy',
       hideInSearch: true,
+      hideInTable: true,
     },
     {
       title: '更新时间',
-      dataIndex: 'lastUpdateTime',
+      dataIndex: 'updateTime',
       valueType: 'dateTime',
       hideInSearch: true,
+      hideInTable: true,
     },
     {
       title: '操作',
@@ -224,7 +238,7 @@ const MenuList: React.FC = () => {
             <PlusOutlined/> 新建菜单
           </Button>,
         ]}
-        request={queryMenu}
+        request={queryMenuList}
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows) => console.log(selectedRows),

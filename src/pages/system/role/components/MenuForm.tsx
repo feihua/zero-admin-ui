@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {Form, Input, Modal, Tree} from 'antd';
 import type {RoleListItem} from '../data.d';
-import {queryMenuByRoleId} from '@/pages/system/role/service';
+import {queryRoleMenuList} from '@/pages/system/role/service';
 import {tree as toTree} from '@/utils/utils';
 
 export interface MenuFormProps {
@@ -51,7 +51,7 @@ const UpdateRoleForm: React.FC<MenuFormProps> = (props) => {
     if (updateMenuModalVisible) {
       setSelectedKey([]);
       setCheckedKeys([]);
-      queryMenuByRoleId({id: currentData.id}).then((res) => {
+      queryRoleMenuList(currentData.id || 0).then((res) => {
         // @ts-ignore
         setTreeData(toTree(res.allData, 0, 'parentId'));
 

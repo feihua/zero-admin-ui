@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import type {RadioChangeEvent} from 'antd';
 import {Form, Input, InputNumber, message, Modal, Radio, TreeSelect} from 'antd';
 import type {MenuListItem} from '../data.d';
-import {queryMenu} from "@/pages/system/menu/service";
+import {queryMenuList} from "@/pages/system/menu/service";
 import {tree} from "@/utils/utils";
 
 export interface CreateFormProps {
@@ -31,7 +31,7 @@ const CreateMenuForm: React.FC<CreateFormProps> = (props) => {
       form.resetFields();
     } else {
       setMenuType(1)
-      queryMenu({}).then((res) => {
+      queryMenuList({}).then((res) => {
         if (res.code === '000000') {
           const tree1 = tree(res.data, 0, 'parentId');
           tree1.unshift({

@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {Form, Input, InputNumber, message, Modal, Radio, RadioChangeEvent, TreeSelect} from 'antd';
 import {MenuListItem} from '../data.d';
-import {queryMenu} from "@/pages/system/menu/service";
+import {queryMenuList} from "@/pages/system/menu/service";
 import {tree} from "@/utils/utils";
 
 export interface UpdateFormProps {
@@ -31,7 +31,7 @@ const UpdateMenuForm: React.FC<UpdateFormProps> = (props) => {
       form.resetFields();
     } else {
       setMenuType(props.currentData.type || 1)
-      queryMenu({}).then((res) => {
+      queryMenuList({}).then((res) => {
         if (res.code === '000000') {
           const tree1 = tree(res.data, 0, 'parentId');
           tree1.unshift({

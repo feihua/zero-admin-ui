@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {Form, Input, Modal, Radio, Select, TreeSelect} from 'antd';
-import type {JobList, RoleList, UserListItem} from '../data.d';
-import {queryAllRelations} from "@/pages/system/user/service";
+import type {JobList, UserListItem} from '../data.d';
+import {queryDeptAndPostList, queryUserDetail} from "@/pages/system/user/service";
 import {tree} from "@/utils/utils";
 
 export interface UpdateFormProps {
@@ -20,9 +20,9 @@ const formLayout = {
 
 const UpdateUserForm: React.FC<UpdateFormProps> = (props) => {
   const [form] = Form.useForm();
-  const [roleConf, setRoleConf] = useState<RoleList[]>([]);
   const [jobConf, setJobConf] = useState<JobList[]>([]);
   const [deptConf, setDeptConf] = useState<JobList[]>([]);
+  const [postIds, setPostIds] = useState<number[]>([]);
 
   const {
     onSubmit,
@@ -35,22 +35,26 @@ const UpdateUserForm: React.FC<UpdateFormProps> = (props) => {
     if (form && !updateModalVisible) {
       form.resetFields();
     } else {
-      queryAllRelations({pageSize: 100, current: 1}).then((res) => {
-        setRoleConf(res.roleAll)
-        setJobConf(res.jobAll)
-        setDeptConf(tree(res.deptAll, 0, 'parentId'))
+      queryDeptAndPostList().then((res) => {
+        setJobConf(res.data.postList)
+        setDeptConf(tree(res.data.deptList, 0, 'parentId'))
       });
     }
   }, [props.updateModalVisible]);
 
   useEffect(() => {
-    if (values) {
-      form.setFieldsValue({
-        ...values,
-        deptId: values.deptId + '',
-      });
+    if (updateModalVisible) {
+      queryUserDetail(values.id || 0).then((res)=>{
+
+        setPostIds(res.data.postIds)
+        form.setFieldsValue({
+          ...res.data,
+          deptId: values.deptId + '',
+        });
+      })
+
     }
-  }, [props.values]);
+  }, [props.updateModalVisible]);
 
   const handleSubmit = () => {
     if (!form) return;
@@ -86,25 +90,21 @@ const UpdateUserForm: React.FC<UpdateFormProps> = (props) => {
           />
         </FormItem>
         <FormItem
-          name="jobId"
+          name="postIds"
           label="职位"
           rules={[{required: true, message: '请选择职位'}]}
         >
-          <Select id="jobId" placeholder={'请选择职位'}>
-            {jobConf.map(r => <Select.Option value={r.id}>{r.jobName}</Select.Option>)}
+          <Select id="postIds"
+                  mode="multiple"
+                  allowClear
+                  defaultValue={postIds}
+                  placeholder={'请选择职位'}>
+            {jobConf.map(r => <Select.Option key={r.id} value={r.id}>{r.postName}</Select.Option>)}
           </Select>
         </FormItem>
+
         <FormItem
-          name="roleId"
-          label="角色"
-          rules={[{required: true, message: '请选择角色'}]}
-        >
-          <Select id="roleId" placeholder={'请选择角色'}>
-            {roleConf.map(r => <Select.Option value={r.id}>{r.name + r.remark}</Select.Option>)}
-          </Select>
-        </FormItem>
-        <FormItem
-          name="name"
+          name="userName"
           label="用户名"
           rules={[{required: true, message: '请输入用户名'}]}
         >
@@ -132,14 +132,21 @@ const UpdateUserForm: React.FC<UpdateFormProps> = (props) => {
           <Input id="update-email" placeholder={'请输入邮箱'}/>
         </FormItem>
         <FormItem
-          name="status"
+          name="userStatus"
           label="状态"
+          initialValue={1}
           rules={[{required: true, message: '请选择状态'}]}
         >
           <Radio.Group id="status">
             <Radio value={0}>禁用</Radio>
             <Radio value={1}>启用</Radio>
           </Radio.Group>
+        </FormItem>
+        <FormItem
+          name="remark"
+          label="备注"
+        >
+          <Input.TextArea rows={2} placeholder={'请输入备注'}/>
         </FormItem>
       </>
     );
@@ -152,7 +159,7 @@ const UpdateUserForm: React.FC<UpdateFormProps> = (props) => {
     <Modal
       forceRender
       destroyOnClose
-      title="修改用户"
+      title="编辑"
       open={updateModalVisible}
       {...modalFooter}
     >

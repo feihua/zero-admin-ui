@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {Form, Input, Modal, Radio, Select, TreeSelect} from 'antd';
-import type {JobList, RoleList, UserListItem} from '../data.d';
-import {queryAllRelations} from "@/pages/system/user/service";
+import type {JobList, UserListItem} from '../data.d';
+import {queryDeptAndPostList} from "@/pages/system/user/service";
 import {tree} from "@/utils/utils";
 
 export interface CreateFormProps {
@@ -20,7 +20,6 @@ const formLayout = {
 const CreateUserForm: React.FC<CreateFormProps> = (props) => {
   const [form] = Form.useForm();
 
-  const [roleConf, setRoleConf] = useState<RoleList[]>([]);
   const [jobConf, setJobConf] = useState<JobList[]>([]);
   const [deptConf, setDeptConf] = useState<JobList[]>([]);
 
@@ -35,10 +34,9 @@ const CreateUserForm: React.FC<CreateFormProps> = (props) => {
       form.resetFields();
 
     } else {
-      queryAllRelations({pageSize: 100, current: 1}).then((res) => {
-        setRoleConf(res.data.roleRelations)
-        setJobConf(res.data.jobRelations)
-        setDeptConf(tree(res.data.deptRelations, 0, 'parentId'))
+      queryDeptAndPostList().then((res) => {
+        setJobConf(res.data.postList)
+        setDeptConf(tree(res.data.deptList, 0, 'parentId'))
       });
     }
 
@@ -73,25 +71,20 @@ const CreateUserForm: React.FC<CreateFormProps> = (props) => {
           />
         </FormItem>
         <FormItem
-          name="jobId"
+          name="postIds"
           label="职位"
           rules={[{required: true, message: '请选择职位'}]}
         >
-          <Select id="jobId" placeholder={'请选择职位'}>
-            {jobConf.map(r => <Select.Option key={r.id} value={r.id}>{r.jobName}</Select.Option>)}
+          <Select id="postIds"
+                  mode="multiple"
+                  allowClear
+                  placeholder={'请选择职位'}>
+            {jobConf.map(r => <Select.Option key={r.id} value={r.id}>{r.postName}</Select.Option>)}
           </Select>
         </FormItem>
+
         <FormItem
-          name="roleId"
-          label="角色"
-          rules={[{required: true, message: '请选择角色'}]}
-        >
-          <Select id="roleId" placeholder={'请选择角色'}>
-            {roleConf.map(r => <Select.Option key={r.id} value={r.id}>{r.name + r.remark}</Select.Option>)}
-          </Select>
-        </FormItem>
-        <FormItem
-          name="name"
+          name="userName"
           label="用户名"
           rules={[{required: true, message: '请输入用户名'}]}
         >
@@ -119,7 +112,7 @@ const CreateUserForm: React.FC<CreateFormProps> = (props) => {
           <Input id="update-email" placeholder={'请输入邮箱'}/>
         </FormItem>
         <FormItem
-          name="status"
+          name="userStatus"
           label="状态"
           initialValue={1}
           rules={[{required: true, message: '请选择状态'}]}
@@ -129,7 +122,12 @@ const CreateUserForm: React.FC<CreateFormProps> = (props) => {
             <Radio value={1}>启用</Radio>
           </Radio.Group>
         </FormItem>
-
+        <FormItem
+          name="remark"
+          label="备注"
+        >
+          <Input.TextArea rows={2} placeholder={'请输入备注'}/>
+        </FormItem>
       </>
     );
   };
@@ -141,7 +139,7 @@ const CreateUserForm: React.FC<CreateFormProps> = (props) => {
     <Modal
       forceRender
       destroyOnClose
-      title="新建用户"
+      title="新建"
       open={createModalVisible}
       {...modalFooter}
     >

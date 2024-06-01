@@ -1,35 +1,9 @@
 import {request} from 'umi';
-import {MenuListParams, MenuListItem} from './data.d';
+import type {MenuListParams, MenuListItem} from './data.d';
 
-export async function queryMenu(params: MenuListParams) {
-  return request('/api/sys/menu/list', {
-    method: 'GET',
-    params: {
-      ...params,
-    },
-  });
-}
-
-export async function removeMenuOne(params: { id: number }) {
-  return request('/api/sys/menu/delete', {
-    method: 'GET',
-    params: {
-      ...params,
-    },
-  });
-}
-
-export async function removeMenu(params: { ids: number[] }) {
-  return request('/api/sys/menu/delete', {
-    method: 'POST',
-    data: {
-      ...params,
-    },
-  });
-}
-
+// 添加菜单信息
 export async function addMenu(params: MenuListItem) {
-  return request('/api/sys/menu/add', {
+  return request('/api/sys/menu/addMenu', {
     method: 'POST',
     data: {
       ...params,
@@ -37,10 +11,52 @@ export async function addMenu(params: MenuListItem) {
   });
 }
 
-export async function updateRule(params: MenuListItem) {
-  return request('/api/sys/menu/update', {
+//
+
+// 删除菜单信息
+export async function removeMenu(ids: number[]) {
+  return request('/api/sys/menu/deleteMenu?ids=[' + ids + "]", {
+    method: 'GET',
+  });
+}
+
+
+// 更新菜单信息
+export async function updateMenu(params: MenuListItem) {
+  return request('/api/sys/menu/updateMenu', {
     method: 'POST',
     data: {
+      ...params,
+    },
+  });
+}
+
+// 批量更新菜单信息状态
+export async function updateMenuStatus(params: { menuIds: number[], postStatus: number }) {
+  return request('/api/sys/menu/updateMenuStatus', {
+    method: 'POST',
+    data: {
+      ...params,
+    },
+
+  });
+}
+
+
+// 查询菜单信息详情
+export async function queryMenuDetail(menuId: number) {
+  return request('/api/sys/menu/queryMenuDetail?id='+menuId, {
+    method: 'GET',
+
+  });
+}
+
+// 分页查询菜单信息列表
+export async function queryMenuList(params: MenuListParams) {
+
+  return request('/api/sys/menu/queryMenuList', {
+    method: 'GET',
+    params: {
       ...params,
     },
   });

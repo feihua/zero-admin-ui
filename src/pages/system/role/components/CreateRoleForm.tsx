@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react';
-import {Form, Input, Modal, Radio} from 'antd';
+import {Form, Input, InputNumber, Modal, Radio} from 'antd';
 import type {RoleListItem} from '../data.d';
 
 export interface CreateFormProps {
@@ -47,14 +47,27 @@ const CreateRoleForm: React.FC<CreateFormProps> = (props) => {
     return (
       <>
         <FormItem
-          name="name"
-          label="名称"
+          name="roleName"
+          label="角色名称"
           rules={[{required: true, message: '请输入角色名称'}]}
         >
           <Input id="update-name" placeholder={'请输入角色名称'}/>
         </FormItem>
         <FormItem
-          name="status"
+          name="roleKey"
+          label="权限字符"
+          rules={[{required: true, message: '请输入权限字符'}]}
+        >
+          <Input id="update-name" placeholder={'请输入权限字符'}/>
+        </FormItem>
+        <FormItem
+          name="roleSort"
+          label="角色排序" initialValue={0}
+          rules={[{required: true, message: '请输入角色排序'}]}>
+          <InputNumber placeholder={'请输入角色排序'} style={{width: 255}}/>
+        </FormItem>
+        <FormItem
+          name="roleStatus"
           label="状态"
           initialValue={1}
           rules={[{required: true, message: '请选择状态'}]}

@@ -35,7 +35,7 @@ export interface RoleList {
 
 export interface JobList {
   id: number;
-  jobName: string;
+  postName: string;
 }
 
 export interface SelectData {

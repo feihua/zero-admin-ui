@@ -64,9 +64,7 @@ const handleRemove = async (selectedRows: UserListItem[]) => {
   const hide = message.loading('正在删除');
   if (!selectedRows) return true;
   try {
-    await removeUser({
-      ids: selectedRows.map((row) => row.id),
-    });
+    await removeUser(selectedRows.map((row) => row.id));
     hide();
     message.success('删除成功，即将刷新');
     return true;
@@ -80,6 +78,7 @@ const handleRemove = async (selectedRows: UserListItem[]) => {
 const UserList: React.FC = () => {
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
+  const [setRoleModalVisible, handleSetRoleModalVisible] = useState<boolean>(false);
   const [showDetail, setShowDetail] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<UserListItem>();
@@ -108,7 +107,7 @@ const UserList: React.FC = () => {
     },
     {
       title: '用户名',
-      dataIndex: 'name',
+      dataIndex: 'userName',
       render: (dom, entity) => {
         return <a onClick={() => {
           setCurrentRow(entity);
@@ -131,31 +130,34 @@ const UserList: React.FC = () => {
       hideInSearch: true,
     },
     {
-      title: '部门',
-      dataIndex: 'deptName',
-      hideInSearch: true,
-    },
-    {
-      title: '职位',
-      dataIndex: 'jobName',
-      hideInSearch: true,
-    },
-    {
-      title: '角色',
-      dataIndex: 'roleName',
-      hideInSearch: true,
-    },
-    {
       title: '状态',
-      dataIndex: 'status',
+      dataIndex: 'userStatus',
       valueEnum: {
         0: {text: '禁用', status: 'Error'},
         1: {text: '正常', status: 'Success'},
       },
     },
+    {
+      title: '最近登录ip',
+      dataIndex: 'loginIp',
+      hideInSearch: true,
+      hideInTable: true,
+    },
+    {
+      title: '最近登录时间',
+      dataIndex: 'loginTime',
+      hideInSearch: true,
+      hideInTable: true,
+    },
+    {
+      title: '备注',
+      dataIndex: 'remark',
+      hideInSearch: true,
+      // hideInTable: true,
+    },
 
     {
-      title: '创建人',
+      title: '创建者',
       dataIndex: 'createBy',
       hideInSearch: true,
       hideInTable: true,
@@ -168,14 +170,14 @@ const UserList: React.FC = () => {
       hideInTable: true,
     },
     {
-      title: '更新人',
-      dataIndex: 'lastUpdateBy',
+      title: '更新者',
+      dataIndex: 'updateBy',
       hideInSearch: true,
       hideInTable: true,
     },
     {
       title: '更新时间',
-      dataIndex: 'lastUpdateTime',
+      dataIndex: 'updateTime',
       valueType: 'dateTime',
       hideInSearch: true,
       hideInTable: true,
@@ -195,6 +197,17 @@ const UserList: React.FC = () => {
             }}
           >
             编辑
+          </Button>
+          <Divider type="vertical"/>
+          <Button
+            type="primary"
+            icon={<EditOutlined/>}
+            onClick={() => {
+              handleSetRoleModalVisible(true);
+              setCurrentRow(record);
+            }}
+          >
+            分配角色
           </Button>
           <Divider type="vertical"/>
           <Button
@@ -223,7 +236,7 @@ const UserList: React.FC = () => {
         }}
         toolBarRender={() => [
           <Button type="primary" key="primary" onClick={() => handleModalVisible(true)}>
-            <PlusOutlined/> 新建用户
+            <PlusOutlined/> 新建
           </Button>,
         ]}
         request={queryUserList}
@@ -298,7 +311,7 @@ const UserList: React.FC = () => {
 
       <Drawer
         width={600}
-        visible={showDetail}
+        open={showDetail}
         onClose={() => {
           setCurrentRow(undefined);
           setShowDetail(false)
