@@ -1,6 +1,5 @@
 export interface DeptListItem {
   id: number;
-  orderNum: number;
   parentIds?: number[];
   parentId?: number;
 }

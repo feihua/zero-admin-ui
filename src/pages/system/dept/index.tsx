@@ -8,7 +8,7 @@ import ProDescriptions, {ProDescriptionsItemProps} from '@ant-design/pro-descrip
 import CreateDeptForm from './components/CreateDeptForm';
 import UpdateDeptForm from './components/UpdateDeptForm';
 import type {DeptListItem} from './data.d';
-import {queryDept, updateDept, addDept, removeDept} from './service';
+import {queryDeptList, updateDept, addDept, removeDept} from './service';
 import {tree} from '@/utils/utils';
 
 const {confirm} = Modal;
@@ -20,7 +20,6 @@ const {confirm} = Modal;
 const handleAdd = async (fields: DeptListItem) => {
   const hide = message.loading('正在添加');
   try {
-    fields.orderNum = Number(fields.orderNum);
     await addDept({...fields});
     hide();
     message.success('添加成功');
@@ -39,7 +38,6 @@ const handleAdd = async (fields: DeptListItem) => {
 const handleUpdate = async (fields: DeptListItem) => {
   const hide = message.loading('正在更新');
   try {
-    fields.orderNum = Number(fields.orderNum);
     await updateDept(fields);
     hide();
 
@@ -61,9 +59,7 @@ const handleRemove = async (selectedRows: DeptListItem[]) => {
   const hide = message.loading('正在删除');
   if (!selectedRows) return true;
   try {
-    await removeDept({
-      ids: selectedRows.map((row) => row.id),
-    });
+    await removeDept(selectedRows.map((row) => row.id));
     hide();
     message.success('删除成功，即将刷新');
     return true;
@@ -104,8 +100,8 @@ const DeptList: React.FC = () => {
       hideInSearch: true,
     },
     {
-      title: '机构名称',
-      dataIndex: 'name',
+      title: '部门名称',
+      dataIndex: 'deptName',
       render: (dom, entity) => {
         return <a onClick={() => {
           setCurrentRow(entity);
@@ -114,44 +110,67 @@ const DeptList: React.FC = () => {
       },
     },
     {
-      title: '父id',
-      dataIndex: 'parentId',
+      title: '部门排序',
+      dataIndex: 'deptSort',
       hideInSearch: true,
     },
     {
-      title: '排序',
-      dataIndex: 'orderNum',
-      hideInSearch: true,
-    },
-    {
-      title: '状态',
-      dataIndex: 'delFlag',
+      title: '部门状态',
+      dataIndex: 'deptStatus',
       valueEnum: {
         1: {text: '正常', status: 'Success'},
         0: {text: '禁用', status: 'Error'},
       },
     },
     {
-      title: '创建人',
+      title: '邮箱',
+      dataIndex: 'email',
+      hideInSearch: true,
+      hideInTable: true
+    },
+    {
+      title: '负责人',
+      dataIndex: 'leader',
+      hideInSearch: true,
+      hideInTable: true
+    },
+    {
+      title: '电话号码',
+      dataIndex: 'phone',
+      hideInSearch: true,
+      hideInTable: true
+    },
+    {
+      title: '备注',
+      dataIndex: 'remark',
+      hideInSearch: true,
+      hideInTable: true
+    },
+    {
+      title: '创建者',
       dataIndex: 'createBy',
       hideInSearch: true,
+      hideInTable: true
     },
     {
       title: '创建时间',
       dataIndex: 'createTime',
       valueType: 'dateTime',
       hideInSearch: true,
+      hideInTable: true
     },
     {
-      title: '更新人',
-      dataIndex: 'lastUpdateBy',
+      title: '更新者',
+      dataIndex: 'updateBy',
       hideInSearch: true,
+      hideInTable: true
     },
     {
       title: '更新时间',
-      dataIndex: 'lastUpdateTime',
+      dataIndex: 'updateTime',
       valueType: 'dateTime',
       hideInSearch: true,
+      hideInTable: true
     },
     {
       title: '操作',
@@ -188,16 +207,16 @@ const DeptList: React.FC = () => {
   return (
     <PageContainer>
       <ProTable<DeptListItem>
-        headerTitle="机构列表"
+        headerTitle="部门管理"
         actionRef={actionRef}
         rowKey="id"
         search={false}
         toolBarRender={() => [
           <Button type="primary" key="primary" onClick={() => handleModalVisible(true)}>
-            <PlusOutlined/> 新建机构
+            <PlusOutlined/> 新建
           </Button>,
         ]}
-        request={queryDept}
+        request={queryDeptList}
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows) => setSelectedRows(selectedRows),
