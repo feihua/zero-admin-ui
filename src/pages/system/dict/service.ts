@@ -1,29 +1,9 @@
 import {request} from 'umi';
-import {DictListParams, DictListItem} from './data.d';
+import type {DictTypeListParams, DictTypeListItem} from './data.d';
 
-export async function queryDict(params: DictListParams) {
-  if (params.delFlag != null) {
-    params.delFlag = Number(params.delFlag)
-  }
-  return request('/api/sys/dict/list', {
-    method: 'GET',
-    params: {
-      ...params,
-    },
-  });
-}
-
-export async function removeDict(params: { ids: number[] }) {
-  return request('/api/sys/dict/delete', {
-    method: 'GET',
-    params: {
-      ...params,
-    },
-  });
-}
-
-export async function addDict(params: DictListItem) {
-  return request('/api/sys/dict/add', {
+// 添加字典类型
+export async function addDictType(params: DictTypeListItem) {
+  return request('/api/sys/dictType/addDictType', {
     method: 'POST',
     data: {
       ...params,
@@ -31,10 +11,54 @@ export async function addDict(params: DictListItem) {
   });
 }
 
-export async function updateDict(params: DictListItem) {
-  return request('/api/sys/dict/update', {
+//
+
+// 删除字典类型
+export async function removeDictType(ids: number[]) {
+  return request('/api/sys/dictType/deleteDictType?ids=[' + ids + "]", {
+    method: 'GET',
+  });
+}
+
+
+// 更新字典类型
+export async function updateDictType(params: DictTypeListItem) {
+  return request('/api/sys/dictType/updateDictType', {
     method: 'POST',
     data: {
+      ...params,
+    },
+  });
+}
+
+// 批量更新字典类型状态
+export async function updateDictTypeStatus(params: { dictTypeIds: number[], postStatus: number }) {
+  return request('/api/sys/dictType/updateDictTypeStatus', {
+    method: 'POST',
+    data: {
+      ...params,
+    },
+
+  });
+}
+
+
+// 查询字典类型详情
+export async function queryDictTypeDetail(params: { ids: number }) {
+  return request('/api/sys/dictType/queryDictTypeDetail', {
+    method: 'GET',
+    params: {
+      ...params,
+    },
+  });
+}
+
+// 分页查询字典类型列表
+export async function queryDictTypeList(params: DictTypeListParams) {
+
+  return request('/api/sys/dictType/queryDictTypeList', {
+    method: 'GET',
+    params: {
       ...params,
     },
   });

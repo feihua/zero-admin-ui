@@ -1,7 +1,7 @@
 import {request} from 'umi';
 import type {PostListParams, PostListItem} from './data.d';
 
-// 添加岗位管理
+// 添加岗位信息
 export async function addPost(params: PostListItem) {
   return request('/api/sys/post/addPost', {
     method: 'POST',
@@ -13,7 +13,7 @@ export async function addPost(params: PostListItem) {
 
 //
 
-// 删除岗位管理
+// 删除岗位信息
 export async function removePost(ids: number[]) {
   return request('/api/sys/post/deletePost?ids=[' + ids + "]", {
     method: 'GET',
@@ -21,7 +21,7 @@ export async function removePost(ids: number[]) {
 }
 
 
-// 更新岗位管理
+// 更新岗位信息
 export async function updatePost(params: PostListItem) {
   return request('/api/sys/post/updatePost', {
     method: 'POST',
@@ -31,7 +31,7 @@ export async function updatePost(params: PostListItem) {
   });
 }
 
-// 批量更新岗位管理状态
+// 批量更新岗位信息状态
 export async function updatePostStatus(params: { postIds: number[], postStatus: number }) {
   return request('/api/sys/post/updatePostStatus', {
     method: 'POST',
@@ -43,7 +43,7 @@ export async function updatePostStatus(params: { postIds: number[], postStatus: 
 }
 
 
-// 查询岗位管理详情
+// 查询岗位信息详情
 export async function queryPostDetail(params: { ids: number }) {
   return request('/api/sys/post/queryPostDetail', {
     method: 'GET',
@@ -53,7 +53,7 @@ export async function queryPostDetail(params: { ids: number }) {
   });
 }
 
-// 分页查询岗位管理列
+// 分页查询岗位信息列表
 export async function queryPostList(params: PostListParams) {
 
   return request('/api/sys/post/queryPostList', {

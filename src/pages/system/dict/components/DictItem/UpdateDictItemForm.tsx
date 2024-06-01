@@ -1,12 +1,12 @@
 import React, {useEffect} from 'react';
-import {Form, Input, Modal, Radio} from 'antd';
-import {DictTypeListItem} from '../data.d';
+import {Form, Input, InputNumber, Modal, Radio} from 'antd';
+import {DictItemListItem} from './data.d';
 
 export interface UpdateFormProps {
   onCancel: () => void;
-  onSubmit: (values: DictTypeListItem) => void;
+  onSubmit: (values: DictItemListItem) => void;
   updateModalVisible: boolean;
-  currentData: Partial<DictTypeListItem>;
+  currentData: Partial<DictItemListItem>;
 }
 
 const FormItem = Form.Item;
@@ -16,7 +16,7 @@ const formLayout = {
   wrapperCol: {span: 13},
 };
 
-const UpdateDictForm: React.FC<UpdateFormProps> = (props) => {
+const UpdateDictItemForm: React.FC<UpdateFormProps> = (props) => {
   const [form] = Form.useForm();
 
   const {onSubmit, onCancel, updateModalVisible, currentData} = props;
@@ -42,7 +42,7 @@ const UpdateDictForm: React.FC<UpdateFormProps> = (props) => {
 
   const handleFinish = (values: { [key: string]: any }) => {
     if (onSubmit) {
-      onSubmit(values as DictTypeListItem);
+      onSubmit(values as DictItemListItem);
     }
   };
 
@@ -53,24 +53,30 @@ const UpdateDictForm: React.FC<UpdateFormProps> = (props) => {
           <Input id="update-id" placeholder="请输入主键"/>
         </FormItem>
         <FormItem
-          name="dictName"
-          label="字典名称"
+          name="dictLabel"
+          label="字典标签"
           rules={[{required: true, message: '请输入字典类型名称!'}]}
         >
-          <Input id="update-jobName" placeholder={'请输入字典类型名称'}/>
+          <Input id="update-dictLabel" placeholder={'请输入字典标签'}/>
         </FormItem>
         <FormItem
-          name="dictType"
-          label="字典类型"
-          rules={[{required: true, message: '请输入字典类型名称!'}]}
+          name="dictValue"
+          label="字典键值"
+          rules={[{required: true, message: '请输入字典键值'}]}
         >
-          <Input id="update-jobName" placeholder={'请输入字典类型名称'}/>
+          <Input id="update-dictValue" placeholder={'请输入字典键值'}/>
+        </FormItem>
+        <FormItem
+          name="dictSort"
+          label="字典排序"
+          rules={[{required: true}]}
+        >
+          <InputNumber style={{width: 255}}/>
         </FormItem>
         <FormItem
           name="dictStatus"
           label="字典状态"
-          initialValue={1}
-          rules={[{required: true, message: '请选择状态!'}]}
+          rules={[{required: true}]}
         >
           <Radio.Group>
             <Radio value={0}>禁用</Radio>
@@ -78,10 +84,9 @@ const UpdateDictForm: React.FC<UpdateFormProps> = (props) => {
           </Radio.Group>
         </FormItem>
         <FormItem
-          name="isSystem"
-          label="系统预留"
-          initialValue={1}
-          rules={[{required: true, message: '请选择状态!'}]}
+          name="isDefault"
+          label="是否默认"
+          rules={[{required: true}]}
         >
           <Radio.Group>
             <Radio value={0}>否</Radio>
@@ -94,7 +99,6 @@ const UpdateDictForm: React.FC<UpdateFormProps> = (props) => {
         >
           <Input.TextArea rows={2} placeholder={'请输入备注'}/>
         </FormItem>
-
       </>
     );
   };
@@ -116,4 +120,4 @@ const UpdateDictForm: React.FC<UpdateFormProps> = (props) => {
   );
 };
 
-export default UpdateDictForm;
+export default UpdateDictItemForm;

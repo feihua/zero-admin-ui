@@ -8,8 +8,9 @@ import ProDescriptions from '@ant-design/pro-descriptions';
 import type {ProDescriptionsItemProps} from '@ant-design/pro-descriptions';
 import CreateDictForm from './components/CreateDictForm';
 import UpdateDictForm from './components/UpdateDictForm';
-import type {DictListItem} from './data.d';
-import {queryDict, updateDict, addDict, removeDict} from './service';
+import type {DictTypeListItem} from './data.d';
+import {addDictType, queryDictTypeList, removeDictType, updateDictType} from "@/pages/system/dict/service";
+import DictItemModal from "@/pages/system/dict/components/DictItem/DictItemModal";
 
 const {confirm} = Modal;
 
@@ -17,10 +18,10 @@ const {confirm} = Modal;
  * 添加节点
  * @param fields
  */
-const handleAdd = async (fields: DictListItem) => {
+const handleAdd = async (fields: DictTypeListItem) => {
   const hide = message.loading('正在添加');
   try {
-    await addDict({...fields});
+    await addDictType({...fields});
     hide();
     message.success('添加成功');
     return true;
@@ -35,10 +36,10 @@ const handleAdd = async (fields: DictListItem) => {
  * 更新节点
  * @param fields
  */
-const handleUpdate = async (fields: DictListItem) => {
+const handleUpdate = async (fields: DictTypeListItem) => {
   const hide = message.loading('正在更新');
   try {
-    await updateDict(fields);
+    await updateDictType(fields);
     hide();
 
     message.success('更新成功');
@@ -54,13 +55,11 @@ const handleUpdate = async (fields: DictListItem) => {
  *  删除节点
  * @param selectedRows
  */
-const handleRemove = async (selectedRows: DictListItem[]) => {
+const handleRemove = async (selectedRows: DictTypeListItem[]) => {
   const hide = message.loading('正在删除');
   if (!selectedRows) return true;
   try {
-    await removeDict({
-      ids: selectedRows.map((row) => row.id),
-    });
+    await removeDictType(selectedRows.map((row) => row.id));
     hide();
     message.success('删除成功，即将刷新');
     return true;
@@ -74,12 +73,13 @@ const handleRemove = async (selectedRows: DictListItem[]) => {
 const DictList: React.FC = () => {
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
+  const [dictItemModalVisible, handleDictItemModalVisible] = useState<boolean>(false);
   const [showDetail, setShowDetail] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
-  const [currentRow, setCurrentRow] = useState<DictListItem>();
-  const [selectedRowsState, setSelectedRows] = useState<DictListItem[]>([]);
+  const [currentRow, setCurrentRow] = useState<DictTypeListItem>();
+  const [selectedRowsState, setSelectedRows] = useState<DictTypeListItem[]>([]);
 
-  const showDeleteConfirm = (item: DictListItem) => {
+  const showDeleteConfirm = (item: DictTypeListItem) => {
     confirm({
       title: '是否删除记录?',
       icon: <ExclamationCircleOutlined/>,
@@ -94,16 +94,16 @@ const DictList: React.FC = () => {
     });
   };
 
-  const columns: ProColumns<DictListItem>[] = [
+  //DictListItem
+  const columns: ProColumns<DictTypeListItem>[] = [
     {
-      title: '编号',
+      title: '字典编号',
       dataIndex: 'id',
       hideInSearch: true,
     },
     {
-      title: '数据值',
-      dataIndex: 'value',
-      hideInSearch: true,
+      title: '字典名称',
+      dataIndex: 'dictName',
       render: (dom, entity) => {
         return <a onClick={() => {
           setCurrentRow(entity);
@@ -112,42 +112,34 @@ const DictList: React.FC = () => {
       },
     },
     {
-      title: '标签名',
-      dataIndex: 'label',
-    },
-    {
-      title: '类型',
-      dataIndex: 'type',
-    },
-    {
-      title: '描述',
-      dataIndex: 'description',
-      valueType: 'textarea',
-      hideInSearch: true,
-      hideInTable: true,
-    },
-    {
-      title: '排序',
-      dataIndex: 'sort',
-      hideInSearch: true,
+      title: '字典类型',
+      dataIndex: 'dictType',
     },
     {
       title: '状态',
-      dataIndex: 'delFlag',
+      dataIndex: 'dictStatus',
       valueEnum: {
-        0: {text: '正常', status: 'Success'},
-        1: {text: '禁用', status: 'Error'},
+        1: {text: '正常', status: 'Success'},
+        0: {text: '禁用', status: 'Error'},
+      },
+    },
+    {
+      title: '系统预留',
+      dataIndex: 'isSystem',
+      valueEnum: {
+        1: {text: '是', status: 'Success'},
+        0: {text: '否', status: 'Error'},
       },
     },
     {
       title: '备注',
-      dataIndex: 'remarks',
+      dataIndex: 'remark',
       valueType: 'textarea',
       hideInSearch: true,
       hideInTable: true,
     },
     {
-      title: '创建人',
+      title: '创建者',
       dataIndex: 'createBy',
       hideInSearch: true,
     },
@@ -159,13 +151,13 @@ const DictList: React.FC = () => {
       hideInSearch: true,
     },
     {
-      title: '更新人',
-      dataIndex: 'lastUpdateBy',
+      title: '更新者',
+      dataIndex: 'updateBy',
       hideInSearch: true,
     },
     {
       title: '更新时间',
-      dataIndex: 'lastUpdateTime',
+      dataIndex: 'updateTime',
       sorter: true,
       valueType: 'dateTime',
       hideInSearch: true,
@@ -189,6 +181,17 @@ const DictList: React.FC = () => {
           <Divider type="vertical"/>
           <Button
             type="primary"
+            icon={<EditOutlined/>}
+            onClick={() => {
+              handleDictItemModalVisible(true);
+              setCurrentRow(record);
+            }}
+          >
+            配置字典项
+          </Button>
+          <Divider type="vertical"/>
+          <Button
+            type="primary"
             danger
             icon={<DeleteOutlined/>}
             onClick={() => {
@@ -204,8 +207,8 @@ const DictList: React.FC = () => {
 
   return (
     <PageContainer>
-      <ProTable<DictListItem>
-        headerTitle="字典列表"
+      <ProTable<DictTypeListItem>
+        headerTitle="字典管理"
         actionRef={actionRef}
         rowKey="id"
         search={{
@@ -213,10 +216,13 @@ const DictList: React.FC = () => {
         }}
         toolBarRender={() => [
           <Button type="primary" key="primary" onClick={() => handleModalVisible(true)}>
-            <PlusOutlined/> 新建字典
+            <PlusOutlined/> 新建
+          </Button>,
+          <Button type="primary" key="primary">
+            <PlusOutlined/> 刷新缓存
           </Button>,
         ]}
-        request={queryDict}
+        request={queryDictTypeList}
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows) => setSelectedRows(selectedRows),
@@ -232,6 +238,8 @@ const DictList: React.FC = () => {
           }
         >
           <Button
+            type={"primary"}
+            danger
             onClick={async () => {
               await handleRemove(selectedRowsState);
               setSelectedRows([]);
@@ -286,6 +294,27 @@ const DictList: React.FC = () => {
         currentData={currentRow || {}}
       />
 
+    <DictItemModal
+      key={'DictItemModal'}
+      onSubmit={async (value) => {
+        const success = await handleUpdate(value);
+        if (success) {
+          handleDictItemModalVisible(false);
+          setCurrentRow(undefined);
+          if (actionRef.current) {
+            actionRef.current.reload();
+          }
+        }
+      }}
+      onCancel={() => {
+        handleDictItemModalVisible(false);
+        if (!showDetail) {
+          setCurrentRow(undefined);
+        }
+      }}
+      dictItemModalVisible={dictItemModalVisible}
+      currentData={currentRow || {}}
+    />
       <Drawer
         width={600}
         visible={showDetail}
@@ -296,7 +325,7 @@ const DictList: React.FC = () => {
         closable={false}
       >
         {currentRow?.id && (
-          <ProDescriptions<DictListItem>
+          <ProDescriptions<DictTypeListItem>
             column={2}
             title={"字典详情"}
             request={async () => ({
@@ -305,7 +334,7 @@ const DictList: React.FC = () => {
             params={{
               id: currentRow?.id,
             }}
-            columns={columns as ProDescriptionsItemProps<DictListItem>[]}
+            columns={columns as ProDescriptionsItemProps<DictTypeListItem>[]}
           />
         )}
       </Drawer>

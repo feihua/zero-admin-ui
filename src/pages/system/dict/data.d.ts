@@ -1,23 +1,22 @@
-export interface DictListItem {
+export interface DictTypeListItem {
   id: number;
-
-
+  dictType: string;
+  dictName: string;
 }
 
-export interface DictListPagination {
+export interface DictTypeListPagination {
   total: number;
   pageSize: number;
   current: number;
 }
 
-export interface DictListData {
-  list: DictListItem[];
-  pagination: Partial<DictListPagination>;
+export interface DictTypeListData {
+  list: DictTypeListItem[];
+  pagination: Partial<DictTypeListPagination>;
 }
 
-export interface DictListParams {
+export interface DictTypeListParams {
 
-  delFlag?: number;
   pageSize?: number;
   current?: number;
   filter?: { [key: string]: any[] };
