@@ -88,10 +88,10 @@
         component: './system/dict',
       },
       {
-        name: '职位列表',
+        name: '岗位管理',
         icon: 'table',
-        path: '/system/job/list',
-        component: './system/job',
+        path: '/system/post/list',
+        component: './system/post',
       },
       // {
       //   name: '参数管理',

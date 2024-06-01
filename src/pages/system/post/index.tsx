@@ -6,10 +6,10 @@ import ProTable from '@ant-design/pro-table';
 import type {ProColumns, ActionType} from '@ant-design/pro-table';
 import ProDescriptions from '@ant-design/pro-descriptions';
 import type {ProDescriptionsItemProps} from '@ant-design/pro-descriptions';
-import CreateJobForm from './components/CreateJobForm';
-import UpdateJobForm from './components/UpdateJobForm';
-import type {JobListItem} from './data.d';
-import {queryJob, updateJob, addJob, removeJob} from './service';
+import CreatePostForm from './components/CreatePostForm';
+import UpdatePostForm from './components/UpdatePostForm';
+import type {PostListItem} from './data.d';
+import {queryPostList, updatePost, addPost, removePost} from './service';
 
 const {confirm} = Modal;
 
@@ -17,11 +17,10 @@ const {confirm} = Modal;
  * 添加节点
  * @param fields
  */
-const handleAdd = async (fields: JobListItem) => {
+const handleAdd = async (fields: PostListItem) => {
   const hide = message.loading('正在添加');
   try {
-    fields.orderNum = Number(fields.orderNum);
-    await addJob({...fields});
+    await addPost({...fields});
     hide();
     message.success('添加成功');
     return true;
@@ -36,10 +35,10 @@ const handleAdd = async (fields: JobListItem) => {
  * 更新节点
  * @param fields
  */
-const handleUpdate = async (fields: JobListItem) => {
+const handleUpdate = async (fields: PostListItem) => {
   const hide = message.loading('正在更新');
   try {
-    await updateJob(fields);
+    await updatePost(fields);
     hide();
 
     message.success('更新成功');
@@ -55,13 +54,11 @@ const handleUpdate = async (fields: JobListItem) => {
  *  删除节点
  * @param selectedRows
  */
-const handleRemove = async (selectedRows: JobListItem[]) => {
+const handleRemove = async (selectedRows: PostListItem[]) => {
   const hide = message.loading('正在删除');
   if (!selectedRows) return true;
   try {
-    await removeJob({
-      ids: selectedRows.map((row) => row.id),
-    });
+    await removePost(selectedRows.map((row) => row.id));
     hide();
     message.success('删除成功，即将刷新');
     return true;
@@ -72,15 +69,15 @@ const handleRemove = async (selectedRows: JobListItem[]) => {
   }
 };
 
-const JobList: React.FC = () => {
+const PostList: React.FC = () => {
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
   const [showDetail, setShowDetail] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
-  const [currentRow, setCurrentRow] = useState<JobListItem>();
-  const [selectedRowsState, setSelectedRows] = useState<JobListItem[]>([]);
+  const [currentRow, setCurrentRow] = useState<PostListItem>();
+  const [selectedRowsState, setSelectedRows] = useState<PostListItem[]>([]);
 
-  const showDeleteConfirm = (item: JobListItem) => {
+  const showDeleteConfirm = (item: PostListItem) => {
     confirm({
       title: '是否删除记录?',
       icon: <ExclamationCircleOutlined/>,
@@ -95,15 +92,19 @@ const JobList: React.FC = () => {
     });
   };
 
-  const columns: ProColumns<JobListItem>[] = [
+  const columns: ProColumns<PostListItem>[] = [
     {
-      title: '编号',
+      title: '岗位编号',
       dataIndex: 'id',
       hideInSearch: true,
     },
     {
-      title: '职位名称',
-      dataIndex: 'jobName',
+      title: '岗位编码',
+      dataIndex: 'postCode',
+    },
+    {
+      title: '岗位名称',
+      dataIndex: 'postName',
       render: (dom, entity) => {
         return <a onClick={() => {
           setCurrentRow(entity);
@@ -112,13 +113,13 @@ const JobList: React.FC = () => {
       },
     },
     {
-      title: '排序',
-      dataIndex: 'orderNum',
+      title: '岗位排序',
+      dataIndex: 'postSort',
       hideInSearch: true,
     },
     {
       title: '状态',
-      dataIndex: 'delFlag',
+      dataIndex: 'postStatus',
       valueEnum: {
         1: {text: '正常', status: 'Success'},
         0: {text: '停用', status: 'Error'},
@@ -126,12 +127,12 @@ const JobList: React.FC = () => {
     },
     {
       title: '备注',
-      dataIndex: 'remarks',
+      dataIndex: 'remark',
       valueType: 'textarea',
       hideInSearch: true,
     },
     {
-      title: '创建人',
+      title: '创建者',
       dataIndex: 'createBy',
       hideInSearch: true,
     },
@@ -142,13 +143,13 @@ const JobList: React.FC = () => {
       hideInSearch: true,
     },
     {
-      title: '更新人',
-      dataIndex: 'lastUpdateBy',
+      title: '更新者',
+      dataIndex: 'updateBy',
       hideInSearch: true,
     },
     {
       title: '更新时间',
-      dataIndex: 'lastUpdateTime',
+      dataIndex: 'updateTime',
       valueType: 'dateTime',
       hideInSearch: true,
     },
@@ -186,8 +187,8 @@ const JobList: React.FC = () => {
 
   return (
     <PageContainer>
-      <ProTable<JobListItem>
-        headerTitle="字典列表"
+      <ProTable<PostListItem>
+        headerTitle="岗位管理"
         actionRef={actionRef}
         rowKey="id"
         search={{
@@ -195,10 +196,10 @@ const JobList: React.FC = () => {
         }}
         toolBarRender={() => [
           <Button type="primary" key="primary" onClick={() => handleModalVisible(true)}>
-            <PlusOutlined/> 新建职位
+            <PlusOutlined/> 新增
           </Button>,
         ]}
-        request={queryJob}
+        request={queryPostList}
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows) => setSelectedRows(selectedRows),
@@ -214,6 +215,8 @@ const JobList: React.FC = () => {
           }
         >
           <Button
+            type="primary"
+            danger
             onClick={async () => {
               await handleRemove(selectedRowsState);
               setSelectedRows([]);
@@ -225,8 +228,8 @@ const JobList: React.FC = () => {
         </FooterToolbar>
       )}
 
-      <CreateJobForm
-        key={'CreateJobForm'}
+      <CreatePostForm
+        key={'CreatePostForm'}
         onSubmit={async (value) => {
           const success = await handleAdd(value);
           if (success) {
@@ -246,8 +249,8 @@ const JobList: React.FC = () => {
         createModalVisible={createModalVisible}
       />
 
-      <UpdateJobForm
-        key={'UpdateJobForm'}
+      <UpdatePostForm
+        key={'UpdatePostForm'}
         onSubmit={async (value) => {
           const success = await handleUpdate(value);
           if (success) {
@@ -278,16 +281,16 @@ const JobList: React.FC = () => {
         closable={false}
       >
         {currentRow?.id && (
-          <ProDescriptions<JobListItem>
+          <ProDescriptions<PostListItem>
             column={2}
-            title={"职位详情"}
+            title={"岗位详情"}
             request={async () => ({
               data: currentRow || {},
             })}
             params={{
               id: currentRow?.id,
             }}
-            columns={columns as ProDescriptionsItemProps<JobListItem>[]}
+            columns={columns as ProDescriptionsItemProps<PostListItem>[]}
           />
         )}
       </Drawer>
@@ -295,4 +298,4 @@ const JobList: React.FC = () => {
   );
 };
 
-export default JobList;
+export default PostList;

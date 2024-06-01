@@ -124,12 +124,12 @@ const MemberList: React.FC<{}> = () => {
     },
     {
       title: '职业',
-      dataIndex: 'job',
+      dataIndex: 'post',
       hideInSearch: true,
     },
     {
       title: '个性签名',
-      dataIndex: 'job',
+      dataIndex: 'post',
       hideInSearch: true,
     },
     {
