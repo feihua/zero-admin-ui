@@ -16,6 +16,8 @@ import {
   removeRole,
   updateRoleMenuList,
 } from './service';
+import {updateUserRoleList} from "@/pages/system/user/service";
+import SetUserModal from "@/pages/system/role/components/SetUserModal";
 
 const {confirm} = Modal;
 
@@ -81,6 +83,7 @@ const RoleList: React.FC = () => {
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
   const [setMenuModalVisible, handleSetMenuModalVisible] = useState<boolean>(false);
+  const [setUserModalVisible, handleSetUserModalVisible] = useState<boolean>(false);
 
   const [showDetail, setShowDetail] = useState<boolean>(false);
   const [currentRow, setCurrentRow] = useState<RoleListItem>();
@@ -194,6 +197,17 @@ const RoleList: React.FC = () => {
             }}
           >
             分配菜单
+          </Button>
+          <Divider type="vertical"/>
+          <Button
+            type="primary"
+            icon={<EditOutlined/>}
+            onClick={() => {
+              handleSetUserModalVisible(true);
+              setCurrentRow(record);
+            }}
+          >
+            分配用户
           </Button>
           <Divider type="vertical"/>
           <Button
@@ -316,7 +330,27 @@ const RoleList: React.FC = () => {
         currentData={currentRow || {}}
       />
 
-      {/**/}
+      <SetUserModal
+        key={'SetRoleModal'}
+        onSubmit={async (value) => {
+          const success = await updateUserRoleList(value);
+          if (success) {
+            handleSetUserModalVisible(false);
+            setCurrentRow(undefined);
+            if (actionRef.current) {
+              actionRef.current.reload();
+            }
+          }
+        }}
+        onCancel={() => {
+          handleSetUserModalVisible(false);
+          if (!showDetail) {
+            setCurrentRow(undefined);
+          }
+        }}
+        setUserModalVisible={setUserModalVisible}
+        roleId={currentRow?.id || 0}
+      />
       <Drawer
         width={600}
         open={showDetail}
