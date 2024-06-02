@@ -15,6 +15,7 @@ const formLayout = {
   wrapperCol: {span: 13},
 };
 
+// 创建角色
 const CreateRoleForm: React.FC<CreateFormProps> = (props) => {
   const [form] = Form.useForm();
 
@@ -95,7 +96,7 @@ const CreateRoleForm: React.FC<CreateFormProps> = (props) => {
     <Modal
       forceRender
       destroyOnClose
-      title="新建角色"
+      title="新建"
       open={createModalVisible}
       {...modalFooter}
     >

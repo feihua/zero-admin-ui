@@ -1,7 +1,7 @@
 export interface RoleListItem {
   id: number;
-  dictType?: string;
-  dictName?: string;
+  roleName: string;
+  remark: string;
 
 }
 
@@ -17,10 +17,29 @@ export interface RoleListData {
 }
 
 export interface RoleListParams {
-  dictType?:string;
+  userId?: number;
+  roleName?:string;
+  status?: number;
   pageSize?: number;
   current?: number;
+  currentPage?: number;
   filter?: { [key: string]: any[] };
   sorter?: { [key: string]: any };
 
+}
+
+export interface UserRoleList {
+  roleList: any[];
+  roleIds:  any[];
+}
+
+export interface RoleList {
+  id:         number;
+  roleName:   string;
+  remark:     string;
+  createBy:   string;
+  createTime: Date;
+  updateBy:   string;
+  updateTime: string;
+  roleStatus: number;
 }

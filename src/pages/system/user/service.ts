@@ -69,3 +69,14 @@ export async function queryDeptAndPostList() {
     method: 'GET',
   });
 }
+
+// 更新用户与角色的关联
+export async function updateUserRoleList(params: { userId: number, roleIds: number[] }) {
+  return request('/api/sys/user/updateUserRoleList', {
+    method: 'POST',
+    data: {
+      ...params,
+    },
+
+  });
+}

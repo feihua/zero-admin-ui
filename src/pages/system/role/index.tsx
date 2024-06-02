@@ -5,7 +5,7 @@ import {PageContainer, FooterToolbar} from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
 import type {ProColumns, ActionType} from '@ant-design/pro-table';
 import ProDescriptions, {ProDescriptionsItemProps} from '@ant-design/pro-descriptions';
-import MenuForm from './components/MenuForm';
+import SetMenuForm from './components/SetMenuForm';
 import CreateRoleForm from './components/CreateRoleForm';
 import UpdateRoleForm from './components/UpdateRoleForm';
 import type {RoleListItem} from './data.d';
@@ -21,12 +21,12 @@ const {confirm} = Modal;
 
 /**
  * 添加节点
- * @param fields
+ * @param item
  */
-const handleAdd = async (fields: RoleListItem) => {
+const handleAdd = async (item: RoleListItem) => {
   const hide = message.loading('正在添加');
   try {
-    await addRole({...fields});
+    await addRole({...item});
     hide();
     message.success('添加成功');
     return true;
@@ -39,12 +39,12 @@ const handleAdd = async (fields: RoleListItem) => {
 
 /**
  * 更新节点
- * @param fields
+ * @param item
  */
-const handleUpdate = async (fields: RoleListItem) => {
+const handleUpdate = async (item: RoleListItem) => {
   const hide = message.loading('正在更新');
   try {
-    await updateRole(fields);
+    await updateRole(item);
     hide();
 
     message.success('更新成功');
@@ -59,13 +59,13 @@ const handleUpdate = async (fields: RoleListItem) => {
 
 /**
  *  删除节点
- * @param selectedRows
+ * @param list
  */
-const handleRemove = async (selectedRows: RoleListItem[]) => {
+const handleRemove = async (list: RoleListItem[]) => {
   const hide = message.loading('正在删除');
-  if (!selectedRows) return true;
+  if (!list) return true;
   try {
-    await removeRole(selectedRows.map((row) => row.id));
+    await removeRole(list.map((row) => row.id));
     hide();
     message.success('删除成功，即将刷新');
     return true;
@@ -76,14 +76,17 @@ const handleRemove = async (selectedRows: RoleListItem[]) => {
   }
 };
 
+// 角色管理
 const RoleList: React.FC = () => {
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
-  const [updateMenuModalVisible, handleUpdateMenuModalVisible] = useState<boolean>(false);
+  const [setMenuModalVisible, handleSetMenuModalVisible] = useState<boolean>(false);
+
   const [showDetail, setShowDetail] = useState<boolean>(false);
-  const [stepMenuFormValues, setMenuStepFormValues] = useState({});
-  const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<RoleListItem>();
+
+  const actionRef = useRef<ActionType>();
+
   const [selectedRowsState, setSelectedRows] = useState<RoleListItem[]>([]);
 
   const showDeleteConfirm = (item: RoleListItem) => {
@@ -186,8 +189,8 @@ const RoleList: React.FC = () => {
             type="primary"
             icon={<EditOutlined/>}
             onClick={() => {
-              handleUpdateMenuModalVisible(true);
-              setMenuStepFormValues(record);
+              handleSetMenuModalVisible(true);
+              setCurrentRow(record);
             }}
           >
             分配菜单
@@ -238,6 +241,8 @@ const RoleList: React.FC = () => {
           }
         >
           <Button
+            type={"primary"}
+            danger={true}
             onClick={async () => {
               await handleRemove(selectedRowsState);
               setSelectedRows([]);
@@ -292,25 +297,26 @@ const RoleList: React.FC = () => {
         currentData={currentRow || {}}
       />
 
-      <MenuForm
+      <SetMenuForm
         onSubmit={async (value) => {
           const success = await updateRoleMenuList(value);
           if (success) {
-            handleUpdateMenuModalVisible(false);
-            setMenuStepFormValues({});
+            handleSetMenuModalVisible(false);
+            setCurrentRow(undefined);
             if (actionRef.current) {
               actionRef.current.reload();
             }
           }
         }}
         onCancel={() => {
-          handleUpdateMenuModalVisible(false);
-          setMenuStepFormValues({});
+          handleSetMenuModalVisible(false);
+          setCurrentRow(undefined);
         }}
-        updateMenuModalVisible={updateMenuModalVisible}
-        currentData={stepMenuFormValues}
+        updateMenuModalVisible={setMenuModalVisible}
+        currentData={currentRow || {}}
       />
 
+      {/**/}
       <Drawer
         width={600}
         open={showDetail}

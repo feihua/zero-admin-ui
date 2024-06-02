@@ -14,19 +14,21 @@ import {
   updateUser,
   addUser,
   removeUser,
+  updateUserRoleList,
 } from './service';
+import SetRoleModal from "@/pages/system/user/components/SetRoleModal";
 
 const {confirm} = Modal;
 
 /**
  * 添加节点
- * @param fields
+ * @param user
  */
-const handleAdd = async (fields: UserListItem) => {
+const handleAdd = async (user: UserListItem) => {
   const hide = message.loading('正在添加');
   try {
-    fields.deptId = Number(fields.deptId)
-    await addUser({...fields});
+    user.deptId = Number(user.deptId)
+    await addUser({...user});
     hide();
     message.success('添加成功');
     return true;
@@ -39,13 +41,13 @@ const handleAdd = async (fields: UserListItem) => {
 
 /**
  * 更新节点
- * @param fields
+ * @param user
  */
-const handleUpdate = async (fields: UserListItem) => {
+const handleUpdate = async (user: UserListItem) => {
   const hide = message.loading('正在更新');
   try {
-    fields.deptId = Number(fields.deptId)
-    await updateUser(fields);
+    user.deptId = Number(user.deptId)
+    await updateUser(user);
     hide();
     message.success('更新成功');
     return true;
@@ -75,6 +77,7 @@ const handleRemove = async (selectedRows: UserListItem[]) => {
   }
 };
 
+// 用户管理
 const UserList: React.FC = () => {
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
@@ -307,6 +310,28 @@ const UserList: React.FC = () => {
         }}
         updateModalVisible={updateModalVisible}
         values={currentRow || {}}
+      />
+
+      <SetRoleModal
+        key={'SetRoleModal'}
+        onSubmit={async (value) => {
+          const success = await updateUserRoleList(value);
+          if (success) {
+            handleSetRoleModalVisible(false);
+            setCurrentRow(undefined);
+            if (actionRef.current) {
+              actionRef.current.reload();
+            }
+          }
+        }}
+        onCancel={() => {
+          handleSetRoleModalVisible(false);
+          if (!showDetail) {
+            setCurrentRow(undefined);
+          }
+        }}
+        setRoleModalVisible={setRoleModalVisible}
+        userId={currentRow?.id || 0}
       />
 
       <Drawer

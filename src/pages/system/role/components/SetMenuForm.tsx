@@ -18,7 +18,7 @@ const formLayout = {
   wrapperCol: {span: 13},
 };
 
-const UpdateRoleForm: React.FC<MenuFormProps> = (props) => {
+const SetMenuForm: React.FC<MenuFormProps> = (props) => {
   const [form] = Form.useForm();
 
   const [treeData, setTreeData] = useState([]);
@@ -53,10 +53,10 @@ const UpdateRoleForm: React.FC<MenuFormProps> = (props) => {
       setCheckedKeys([]);
       queryRoleMenuList(currentData.id || 0).then((res) => {
         // @ts-ignore
-        setTreeData(toTree(res.allData, 0, 'parentId'));
+        setTreeData(toTree(res.data.menuList, 0, 'parentId'));
 
-        if (res.userData) {
-          const map = res.userData.map((r: number) => r + '');
+        if (res.data.menuIds) {
+          const map = res.data.menuIds.map((r: number) => r + '');
           setSelectedKey(map);
           setCheckedKeys(map);
 
@@ -116,4 +116,4 @@ const UpdateRoleForm: React.FC<MenuFormProps> = (props) => {
   );
 };
 
-export default UpdateRoleForm;
+export default SetMenuForm;

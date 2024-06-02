@@ -1,6 +1,6 @@
 export interface RoleListItem {
   id: number;
-  name: string;
+  roleName: string;
   remark: string;
 
 }
@@ -17,7 +17,7 @@ export interface RoleListData {
 }
 
 export interface RoleListParams {
-  status?: number;
+  roleStatus?: number;
   pageSize?: number;
   current?: number;
   filter?: { [key: string]: any[] };
