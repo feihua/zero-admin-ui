@@ -278,7 +278,8 @@ const UserList: React.FC = () => {
             actionRef={actionRef}
             rowKey="id"
             search={{
-              labelWidth: 120,
+              labelWidth: 80,
+              span: 6,
             }}
             toolBarRender={() => [
               <Button type="primary" key="primary" onClick={() => handleModalVisible(true)}>

@@ -10,7 +10,7 @@ import CreateFlashForm from './components/CreateFlashForm';
 import UpdateFlashForm from './components/UpdateFlashForm';
 import type {FlashPromotionListItem} from './data.d';
 import {
-  queryFlashPromotion,
+  queryFlashPromotionList,
   updateFlashPromotion,
   addFlashPromotion,
   removeFlashPromotion,
@@ -64,9 +64,7 @@ const handleRemove = async (selectedRows: FlashPromotionListItem[]) => {
   const hide = message.loading('正在删除');
   if (!selectedRows) return true;
   try {
-    await removeFlashPromotion({
-      ids: selectedRows.map((row) => row.id),
-    });
+    await removeFlashPromotion(selectedRows.map((row) => row.id));
     hide();
     message.success('删除成功，即将刷新');
     return true;
@@ -182,7 +180,7 @@ const FlashPromotionList: React.FC = () => {
             <PlusOutlined /> 新建秒杀列表
           </Button>,
         ]}
-        request={queryFlashPromotion}
+        request={queryFlashPromotionList}
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows) => setSelectedRows(selectedRows),

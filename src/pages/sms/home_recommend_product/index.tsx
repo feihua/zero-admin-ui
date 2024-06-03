@@ -8,12 +8,12 @@ import ProDescriptions from '@ant-design/pro-descriptions';
 import type {ProDescriptionsItemProps} from '@ant-design/pro-descriptions';
 import CreateRecommendProductForm from './components/CreateRecommendProductForm';
 import UpdateRecommendProductForm from './components/UpdateRecommendProductForm';
-import type {RecommendProductListItem} from './data.d';
+import type {HomeRecommendProductListItem} from './data.d';
 import {
-  queryRecommendProduct,
-  updateRecommendProduct,
-  addRecommendProduct,
-  removeRecommendProduct,
+  queryHomeRecommendProductList,
+  updateHomeRecommendProduct,
+  addHomeRecommendProduct,
+  removeHomeRecommendProduct,
 } from './service';
 
 const { confirm } = Modal;
@@ -29,7 +29,7 @@ const handleAdd = async (productIds: number[]) => {
     return true;
   }
   try {
-    await addRecommendProduct(productIds);
+    await addHomeRecommendProduct(productIds);
     hide();
     message.success('添加成功');
     return true;
@@ -44,10 +44,10 @@ const handleAdd = async (productIds: number[]) => {
  * 更新节点
  * @param fields
  */
-const handleUpdate = async (fields: RecommendProductListItem) => {
+const handleUpdate = async (fields: HomeRecommendProductListItem) => {
   const hide = message.loading('正在更新');
   try {
-    await updateRecommendProduct(fields);
+    await updateHomeRecommendProduct(fields);
     hide();
 
     message.success('更新成功');
@@ -63,13 +63,11 @@ const handleUpdate = async (fields: RecommendProductListItem) => {
  *  删除节点
  * @param selectedRows
  */
-const handleRemove = async (selectedRows: RecommendProductListItem[]) => {
+const handleRemove = async (selectedRows: HomeRecommendProductListItem[]) => {
   const hide = message.loading('正在删除');
   if (!selectedRows) return true;
   try {
-    await removeRecommendProduct({
-      ids: selectedRows.map((row) => row.id),
-    });
+    await removeHomeRecommendProduct(selectedRows.map((row) => row.id));
     hide();
     message.success('删除成功，即将刷新');
     return true;
@@ -85,10 +83,10 @@ const RecommendProductList: React.FC = () => {
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
   const [showDetail, setShowDetail] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
-  const [currentRow, setCurrentRow] = useState<RecommendProductListItem>();
-  const [selectedRowsState, setSelectedRows] = useState<RecommendProductListItem[]>([]);
+  const [currentRow, setCurrentRow] = useState<HomeRecommendProductListItem>();
+  const [selectedRowsState, setSelectedRows] = useState<HomeRecommendProductListItem[]>([]);
 
-  const showDeleteConfirm = (item: RecommendProductListItem) => {
+  const showDeleteConfirm = (item: HomeRecommendProductListItem) => {
     confirm({
       title: '是否删除记录?',
       icon: <ExclamationCircleOutlined/>,
@@ -103,7 +101,7 @@ const RecommendProductList: React.FC = () => {
     });
   };
 
-  const columns: ProColumns<RecommendProductListItem>[] = [
+  const columns: ProColumns<HomeRecommendProductListItem>[] = [
     {
       title: '编号',
       dataIndex: 'id',
@@ -172,7 +170,7 @@ const RecommendProductList: React.FC = () => {
 
   return (
     <PageContainer>
-      <ProTable<RecommendProductListItem>
+      <ProTable<HomeRecommendProductListItem>
         headerTitle="商品推荐列表"
         actionRef={actionRef}
         rowKey="id"
@@ -184,7 +182,7 @@ const RecommendProductList: React.FC = () => {
             <PlusOutlined/> 选择商品
           </Button>,
         ]}
-        request={queryRecommendProduct}
+        request={queryHomeRecommendProductList}
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows) => setSelectedRows(selectedRows),
@@ -264,7 +262,7 @@ const RecommendProductList: React.FC = () => {
         closable={false}
       >
         {currentRow?.id && (
-          <ProDescriptions<RecommendProductListItem>
+          <ProDescriptions<HomeRecommendProductListItem>
             column={2}
             title={currentRow?.productName}
             request={async () => ({
@@ -273,7 +271,7 @@ const RecommendProductList: React.FC = () => {
             params={{
               id: currentRow?.id,
             }}
-            columns={columns as ProDescriptionsItemProps<RecommendProductListItem>[]}
+            columns={columns as ProDescriptionsItemProps<HomeRecommendProductListItem>[]}
           />
         )}
       </Drawer>

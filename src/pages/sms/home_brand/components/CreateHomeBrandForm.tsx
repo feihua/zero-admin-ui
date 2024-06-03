@@ -1,7 +1,7 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {Modal} from 'antd';
 import type {BrandListItem} from '../data.d';
-import {queryBrand} from '@/pages/sms/home_brand/service';
+import {queryProductBrandList} from '@/pages/sms/home_brand/service';
 import type {ActionType, ProColumns} from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
 
@@ -67,7 +67,7 @@ const CreateHomeBrandForm: React.FC<CreateFormProps> = (props) => {
         search={{
           labelWidth: 50,
         }}
-        request={queryBrand}
+        request={queryProductBrandList}
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows) => setSelectedRows(selectedRows),

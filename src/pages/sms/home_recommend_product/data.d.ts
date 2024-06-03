@@ -1,4 +1,4 @@
-export interface RecommendProductListItem {
+export interface HomeRecommendProductListItem {
   id: number;
   productName: string;
 }
@@ -8,18 +8,18 @@ export interface ProductListItem {
 
 }
 
-export interface RecommendProductListPagination {
+export interface HomeRecommendProductListPagination {
   total: number;
   pageSize: number;
   current: number;
 }
 
-export interface RecommendProductListData {
-  list: RecommendProductListItem[];
-  pagination: Partial<RecommendProductListPagination>;
+export interface HomeRecommendProductListData {
+  list: HomeRecommendProductListItem[];
+  pagination: Partial<HomeRecommendProductListPagination>;
 }
 
-export interface RecommendProductListParams {
+export interface HomeRecommendProductListParams {
   recommendStatus?: number;
   pageSize?: number;
   currentPage?: number;

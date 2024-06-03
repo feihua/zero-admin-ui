@@ -10,7 +10,7 @@ import CreateRecommendSubjectForm from './components/CreateRecommendSubjectForm'
 import UpdateRecommendSubjectForm from './components/UpdateRecommendSubjectForm';
 import type {RecommendSubjectListItem} from './data.d';
 import {
-  queryRecommendSubject,
+  queryRecommendSubjectList,
   updateRecommendSubject,
   addRecommendSubject,
   removeRecommendSubject,
@@ -67,9 +67,7 @@ const handleRemove = async (selectedRows: RecommendSubjectListItem[]) => {
   const hide = message.loading('正在删除');
   if (!selectedRows) return true;
   try {
-    await removeRecommendSubject({
-      ids: selectedRows.map((row) => row.id),
-    });
+    await removeRecommendSubject(selectedRows.map((row) => row.id));
     hide();
     message.success('删除成功，即将刷新');
     return true;
@@ -184,7 +182,7 @@ const RecommendSubjectList: React.FC = () => {
             <PlusOutlined/> 选择专题
           </Button>,
         ]}
-        request={queryRecommendSubject}
+        request={queryRecommendSubjectList}
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows) => setSelectedRows(selectedRows),

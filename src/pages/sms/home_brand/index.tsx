@@ -13,7 +13,7 @@ import ProDescriptions, {ProDescriptionsItemProps} from '@ant-design/pro-descrip
 import CreateHomeBrandForm from './components/CreateHomeBrandForm';
 import UpdateHomeBrandForm from './components/UpdateHomeBrandForm';
 import type {HomeBrandListItem} from './data.d';
-import {queryHomeBrand, updateHomeBrand, addHomeBrand, removeHomeBrand} from './service';
+import {queryHomeBrandList, updateHomeBrand, addHomeBrand, removeHomeBrand} from './service';
 
 const {confirm} = Modal;
 
@@ -66,9 +66,7 @@ const handleRemove = async (selectedRows: HomeBrandListItem[]) => {
   const hide = message.loading('正在删除');
   if (!selectedRows) return true;
   try {
-    await removeHomeBrand({
-      ids: selectedRows.map((row) => row.id),
-    });
+    await removeHomeBrand(selectedRows.map((row) => row.id));
     hide();
     message.success('删除成功，即将刷新');
     return true;
@@ -183,7 +181,7 @@ const HomeBrandList: React.FC = () => {
             <PlusOutlined/> 选择品牌
           </Button>,
         ]}
-        request={queryHomeBrand}
+        request={queryHomeBrandList}
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows) => setSelectedRows(selectedRows),

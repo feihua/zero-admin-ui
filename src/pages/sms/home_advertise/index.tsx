@@ -15,7 +15,7 @@ import CreateHomeAdvertiseForm from './components/CreateHomeAdvertiseForm';
 import UpdateHomeAdvertiseForm from './components/UpdateHomeAdvertiseForm';
 import type {HomeAdvertiseListItem} from './data.d';
 import {
-  queryHomeAdvertise,
+  queryHomeAdvertiseList,
   updateHomeAdvertise,
   addHomeAdvertise,
   removeHomeAdvertise,
@@ -68,9 +68,7 @@ const handleRemove = async (selectedRows: HomeAdvertiseListItem[]) => {
   const hide = message.loading('正在删除');
   if (!selectedRows) return true;
   try {
-    await removeHomeAdvertise({
-      ids: selectedRows.map((row) => row.id),
-    });
+    await removeHomeAdvertise( selectedRows.map((row) => row.id));
     hide();
     message.success('删除成功，即将刷新');
     return true;
@@ -232,7 +230,7 @@ const HomeAdvertiseList: React.FC = () => {
             <PlusOutlined/> 新建广告
           </Button>,
         ]}
-        request={queryHomeAdvertise}
+        request={queryHomeAdvertiseList}
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows) => setSelectedRows(selectedRows),

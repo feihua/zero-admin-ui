@@ -9,7 +9,7 @@ import CreateHomeNewProductForm from './components/CreateHomeNewProductForm';
 import UpdateHomeNewProductForm from './components/UpdateHomeNewProductForm';
 import type {HomeNewProductListItem} from './data.d';
 import {
-  queryHomeNewProduct,
+  queryHomeNewProductList,
   updateHomeNewProduct,
   addHomeNewProduct,
   removeHomeNewProduct,
@@ -66,9 +66,7 @@ const handleRemove = async (selectedRows: HomeNewProductListItem[]) => {
   const hide = message.loading('正在删除');
   if (!selectedRows) return true;
   try {
-    await removeHomeNewProduct({
-      ids: selectedRows.map((row) => row.id),
-    });
+    await removeHomeNewProduct(selectedRows.map((row) => row.id));
     hide();
     message.success('删除成功，即将刷新');
     return true;
@@ -183,7 +181,7 @@ const HomeNewProductList: React.FC = () => {
             <PlusOutlined/> 选择商品
           </Button>,
         ]}
-        request={queryHomeNewProduct}
+        request={queryHomeNewProductList}
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows) => setSelectedRows(selectedRows),
