@@ -4,7 +4,6 @@ import SetUserList from "@/pages/system/role/components/SetUser";
 
 export interface SetRoleModalProps {
   onCancel: () => void;
-  onSubmit: (value: { userId: number, roleIds: number[] }) => void;
   setUserModalVisible: boolean;
   roleId: number;
 }

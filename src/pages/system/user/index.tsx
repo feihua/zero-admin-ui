@@ -1,6 +1,6 @@
 import {DeleteOutlined, EditOutlined, PlusOutlined, ExclamationCircleOutlined} from '@ant-design/icons';
-import {Button, Divider, message, Drawer, Modal} from 'antd';
-import React, {useState, useRef} from 'react';
+import {Button, Divider, message, Drawer, Modal, Col, Row, Tree} from 'antd';
+import React, {useState, useRef, useEffect} from 'react';
 import {PageContainer, FooterToolbar} from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
 import type {ProColumns, ActionType} from '@ant-design/pro-table';
@@ -14,9 +14,11 @@ import {
   updateUser,
   addUser,
   removeUser,
-  updateUserRoleList,
+  updateUserRoleList, queryDeptAndPostList,
 } from './service';
 import SetRoleModal from "@/pages/system/user/components/SetRoleModal";
+import {DataNode, TreeProps} from 'antd/es/tree';
+import {tree} from "@/utils/utils";
 
 const {confirm} = Modal;
 
@@ -86,6 +88,9 @@ const UserList: React.FC = () => {
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<UserListItem>();
   const [selectedRowsState, setSelectedRows] = useState<UserListItem[]>([]);
+
+  const [deptConf, setDeptConf] = useState<DataNode[]>([]);
+  const [deptId, setDeptId] = useState<number>(0);
 
   const showDeleteConfirm = (item: UserListItem) => {
     confirm({
@@ -228,111 +233,139 @@ const UserList: React.FC = () => {
     },
   ];
 
+  useEffect(() => {
+    queryDeptAndPostList().then((res) => {
+      let deptList = res.data.deptList
+      setDeptConf(tree(deptList, 0, 'parentId'))
+    });
+  }, []);
+
+  const onSelect: TreeProps['onSelect'] = (selectedKeys, info) => {
+    setDeptId(Number(selectedKeys[0]))
+    if (actionRef.current) {
+      actionRef.current.reload();
+    }
+  };
+
   return (
     <PageContainer>
-      <ProTable<UserListItem>
-        headerTitle="用户列表"
-        actionRef={actionRef}
-        rowKey="id"
-        search={{
-          labelWidth: 120,
-        }}
-        toolBarRender={() => [
-          <Button type="primary" key="primary" onClick={() => handleModalVisible(true)}>
-            <PlusOutlined/> 新建
-          </Button>,
-        ]}
-        request={queryUserList}
-        columns={columns}
-        rowSelection={{
-          onChange: (_, selectedRows) => setSelectedRows(selectedRows),
-        }}
-        pagination={{pageSize: 10}}
-      />
-      {selectedRowsState?.length > 0 && (
-        <FooterToolbar
-          extra={
-            <div>
-              已选择 <a style={{fontWeight: 600}}>{selectedRowsState.length}</a> 项&nbsp;&nbsp;
-            </div>
-          }
-        >
-          <Button
-            onClick={async () => {
-              await handleRemove(selectedRowsState);
-              setSelectedRows([]);
-              actionRef.current?.reloadAndRest?.();
+      <Row gutter={24}>
+        <Col span={6} style={{background: 'white', paddingTop: 24, paddingLeft: 24}}>
+          <Tree
+            showLine
+            onSelect={onSelect}
+            treeData={deptConf}
+          />
+        </Col>
+        <Col span={18}>
+          <ProTable<UserListItem>
+            headerTitle="用户列表"
+            actionRef={actionRef}
+            rowKey="id"
+            search={{
+              labelWidth: 120,
             }}
-          >
-            批量删除
-          </Button>
-        </FooterToolbar>
-      )}
+            toolBarRender={() => [
+              <Button type="primary" key="primary" onClick={() => handleModalVisible(true)}>
+                <PlusOutlined/> 新建
+              </Button>,
+            ]}
+            request={(params => {
+              return queryUserList({...params, deptId: deptId})
+            })}
+            columns={columns}
+            rowSelection={{
+              onChange: (_, selectedRows) => setSelectedRows(selectedRows),
+            }}
+            pagination={{pageSize: 10}}
+          />
+          {selectedRowsState?.length > 0 && (
+            <FooterToolbar
+              extra={
+                <div>
+                  已选择 <a style={{fontWeight: 600}}>{selectedRowsState.length}</a> 项&nbsp;&nbsp;
+                </div>
+              }
+            >
+              <Button
+                onClick={async () => {
+                  await handleRemove(selectedRowsState);
+                  setSelectedRows([]);
+                  actionRef.current?.reloadAndRest?.();
+                }}
+              >
+                批量删除
+              </Button>
+            </FooterToolbar>
+          )}
 
-      <CreateUserForm
-        key={'CreateUserForm'}
-        onSubmit={async (value) => {
-          const success = await handleAdd(value);
-          if (success) {
-            handleModalVisible(false);
-            setCurrentRow(undefined);
-            if (actionRef.current) {
-              actionRef.current.reload();
-            }
-          }
-        }}
-        onCancel={() => {
-          handleModalVisible(false);
-          if (!showDetail) {
-            setCurrentRow(undefined);
-          }
-        }}
-        createModalVisible={createModalVisible}
-      />
+          <CreateUserForm
+            key={'CreateUserForm'}
+            onSubmit={async (value) => {
+              const success = await handleAdd(value);
+              if (success) {
+                handleModalVisible(false);
+                setCurrentRow(undefined);
+                if (actionRef.current) {
+                  actionRef.current.reload();
+                }
+              }
+            }}
+            onCancel={() => {
+              handleModalVisible(false);
+              if (!showDetail) {
+                setCurrentRow(undefined);
+              }
+            }}
+            createModalVisible={createModalVisible}
+          />
 
-      <UpdateUserForm
-        key={'UpdateUserForm'}
-        onSubmit={async (value) => {
-          const success = await handleUpdate(value);
-          if (success) {
-            handleUpdateModalVisible(false);
-            setCurrentRow(undefined);
-            if (actionRef.current) {
-              actionRef.current.reload();
-            }
-          }
-        }}
-        onCancel={() => {
-          handleUpdateModalVisible(false);
-          if (!showDetail) {
-            setCurrentRow(undefined);
-          }
-        }}
-        updateModalVisible={updateModalVisible}
-        values={currentRow || {}}
-      />
+          <UpdateUserForm
+            key={'UpdateUserForm'}
+            onSubmit={async (value) => {
+              const success = await handleUpdate(value);
+              if (success) {
+                handleUpdateModalVisible(false);
+                setCurrentRow(undefined);
+                if (actionRef.current) {
+                  actionRef.current.reload();
+                }
+              }
+            }}
+            onCancel={() => {
+              handleUpdateModalVisible(false);
+              if (!showDetail) {
+                setCurrentRow(undefined);
+              }
+            }}
+            updateModalVisible={updateModalVisible}
+            values={currentRow || {}}
+          />
 
-      <SetRoleModal
-        key={'SetRoleModal'}
-        onSubmit={async (value) => {
-          const success = await updateUserRoleList(value);
-          if (success) {
-            handleSetRoleModalVisible(false);
-            setCurrentRow(undefined);
-            if (actionRef.current) {
-              actionRef.current.reload();
-            }
-          }
-        }}
-        onCancel={() => {
-          handleSetRoleModalVisible(false);
-          if (!showDetail) {
-            setCurrentRow(undefined);
-          }
-        }}
-        setRoleModalVisible={setRoleModalVisible}
-        userId={currentRow?.id || 0}
-      />
+          <SetRoleModal
+            key={'SetRoleModal'}
+            onSubmit={async (value) => {
+              const success = await updateUserRoleList(value);
+              if (success) {
+                handleSetRoleModalVisible(false);
+                setCurrentRow(undefined);
+                if (actionRef.current) {
+                  actionRef.current.reload();
+                }
+              }
+            }}
+            onCancel={() => {
+              handleSetRoleModalVisible(false);
+              if (!showDetail) {
+                setCurrentRow(undefined);
+              }
+            }}
+            setRoleModalVisible={setRoleModalVisible}
+            userId={currentRow?.id || 0}
+          />
+        </Col>
+      </Row>
+
 
       <Drawer
         width={600}

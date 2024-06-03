@@ -1,5 +1,5 @@
 import {PlusOutlined, ExclamationCircleOutlined, EditOutlined, DeleteOutlined} from '@ant-design/icons';
-import {Button, Divider, message, Drawer, Modal} from 'antd';
+import {Button, Divider, message, Drawer, Modal, Space} from 'antd';
 import React, {useState, useRef} from 'react';
 import {PageContainer, FooterToolbar} from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
@@ -16,7 +16,6 @@ import {
   removeRole,
   updateRoleMenuList,
 } from './service';
-import {updateUserRoleList} from "@/pages/system/user/service";
 import SetUserModal from "@/pages/system/role/components/SetUserModal";
 
 const {confirm} = Modal;
@@ -234,6 +233,28 @@ const RoleList: React.FC = () => {
         search={{
           labelWidth: 120,
         }}
+        tableAlertRender={({
+                             selectedRowKeys,
+                             selectedRows,
+                             onCleanSelected,
+                           }) => {
+          console.log(selectedRowKeys, selectedRows);
+          return (
+            <Space size={24}>
+
+              <span>{`容器数量: 个`}</span>
+              <span>{`调用量: 次`}</span>
+            </Space>
+          );
+        }}
+        tableAlertOptionRender={() => {
+          return (
+            <Space size={16}>
+              <a>批量删除</a>
+              <a>导出数据</a>
+            </Space>
+          );
+        }}
         toolBarRender={() => [
           <Button key={'new'} type="primary" onClick={() => handleModalVisible(true)}>
             <PlusOutlined/> 新建
@@ -331,17 +352,7 @@ const RoleList: React.FC = () => {
       />
 
       <SetUserModal
-        key={'SetRoleModal'}
-        onSubmit={async (value) => {
-          const success = await updateUserRoleList(value);
-          if (success) {
-            handleSetUserModalVisible(false);
-            setCurrentRow(undefined);
-            if (actionRef.current) {
-              actionRef.current.reload();
-            }
-          }
-        }}
+        key={'SetUserModal'}
         onCancel={() => {
           handleSetUserModalVisible(false);
           if (!showDetail) {
