@@ -1,5 +1,5 @@
 import {PlusOutlined, ExclamationCircleOutlined, EditOutlined, DeleteOutlined} from '@ant-design/icons';
-import {Button, Divider, message, Drawer, Modal} from 'antd';
+import {Button, Divider, message, Drawer, Modal, Tag, Select} from 'antd';
 import React, {useState, useRef} from 'react';
 import {PageContainer, FooterToolbar} from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
@@ -120,9 +120,24 @@ const PostList: React.FC = () => {
     {
       title: '状态',
       dataIndex: 'postStatus',
-      valueEnum: {
-        1: {text: '正常', status: 'Success'},
-        0: {text: '停用', status: 'Error'},
+      renderFormItem:(text, row, index) => {
+        return <Select
+          value={row.value}
+          options={[
+            { value: '1', label: '正常' },
+            { value: '0', label: '禁用' },
+          ]}
+        />
+
+      },
+      render: (dom, entity) => {
+        switch (entity.postStatus) {
+          case 1:
+            return <Tag color={'success'}>正常</Tag>;
+          case 0:
+            return <Tag>禁用</Tag>;
+        }
+        return <>未知{entity.postStatus }</>;
       },
     },
     {

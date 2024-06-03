@@ -1,5 +1,5 @@
 import {DeleteOutlined, EditOutlined, PlusOutlined, ExclamationCircleOutlined} from '@ant-design/icons';
-import {Button, Divider, message, Drawer, Modal, Col, Row, Tree} from 'antd';
+import {Button, Divider, message, Drawer, Modal, Col, Row, Tree, Tag, Select} from 'antd';
 import React, {useState, useRef, useEffect} from 'react';
 import {PageContainer, FooterToolbar} from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
@@ -140,9 +140,24 @@ const UserList: React.FC = () => {
     {
       title: '状态',
       dataIndex: 'userStatus',
-      valueEnum: {
-        0: {text: '禁用', status: 'Error'},
-        1: {text: '正常', status: 'Success'},
+      renderFormItem:(text, row, index) => {
+        return <Select
+          value={row.value}
+          options={[
+            { value: '1', label: '正常' },
+            { value: '0', label: '禁用' },
+          ]}
+        />
+
+      },
+      render: (dom, entity) => {
+        switch (entity.userStatus) {
+          case 1:
+            return <Tag color={'success'}>正常</Tag>;
+          case 0:
+            return <Tag>禁用</Tag>;
+        }
+        return <>未知{entity.userStatus }</>;
       },
     },
     {
@@ -250,14 +265,14 @@ const UserList: React.FC = () => {
   return (
     <PageContainer>
       <Row gutter={24}>
-        <Col span={6} style={{background: 'white', paddingTop: 24, paddingLeft: 24}}>
+        <Col span={4} style={{background: 'white', paddingTop: 24, paddingLeft: 24}}>
           <Tree
             showLine
             onSelect={onSelect}
             treeData={deptConf}
           />
         </Col>
-        <Col span={18}>
+        <Col span={20}>
           <ProTable<UserListItem>
             headerTitle="用户列表"
             actionRef={actionRef}

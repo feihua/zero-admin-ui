@@ -1,5 +1,6 @@
 export interface RoleListItem {
   id: number;
+  roleStatus: number;
   roleName: string;
   remark: string;
 

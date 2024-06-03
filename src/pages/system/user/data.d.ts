@@ -2,6 +2,7 @@ export interface UserListItem {
   id: number;
   name: string;
   deptId: number;
+  userStatus: number;
 }
 
 export interface UserListPagination {

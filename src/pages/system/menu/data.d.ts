@@ -1,6 +1,6 @@
 export interface MenuListItem {
   id: number;
-  orderNum?: number;
+  menuStatus?: number;
   type?: number;
   name: string;
 

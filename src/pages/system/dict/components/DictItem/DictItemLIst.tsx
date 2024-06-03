@@ -1,5 +1,5 @@
 import {PlusOutlined, ExclamationCircleOutlined, EditOutlined, DeleteOutlined} from '@ant-design/icons';
-import {Button, Divider, message, Drawer, Modal} from 'antd';
+import {Button, Divider, message, Drawer, Modal, Select, Tag} from 'antd';
 import React, {useState, useRef, useEffect} from 'react';
 import {FooterToolbar} from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
@@ -132,9 +132,24 @@ const DictList: React.FC<DictListProps> = (props) => {
     {
       title: '状态',
       dataIndex: 'dictStatus',
-      valueEnum: {
-        1: {text: '正常', status: 'Success'},
-        0: {text: '禁用', status: 'Error'},
+      renderFormItem:(text, row, index) => {
+        return <Select
+          value={row.value}
+          options={[
+            { value: '1', label: '正常' },
+            { value: '0', label: '禁用' },
+          ]}
+        />
+
+      },
+      render: (dom, entity) => {
+        switch (entity.dictStatus) {
+          case 1:
+            return <Tag color={'success'}>正常</Tag>;
+          case 0:
+            return <Tag>禁用</Tag>;
+        }
+        return <>未知{entity.dictStatus }</>;
       },
     },
     {

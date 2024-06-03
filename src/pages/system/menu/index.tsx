@@ -1,5 +1,5 @@
 import {PlusOutlined, ExclamationCircleOutlined, EditOutlined, DeleteOutlined} from '@ant-design/icons';
-import {Button, Divider, message, Drawer, Modal} from 'antd';
+import {Button, Divider, message, Drawer, Modal, Tag} from 'antd';
 import React, {useState, useRef} from 'react';
 import {PageContainer} from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
@@ -21,7 +21,6 @@ const {confirm} = Modal;
 const handleAdd = async (fields: MenuListItem) => {
   const hide = message.loading('正在添加');
   try {
-    fields.orderNum = Number(fields.orderNum);
     fields.type = Number(fields.type);
     await addMenu({...fields});
     hide();
@@ -41,7 +40,6 @@ const handleAdd = async (fields: MenuListItem) => {
 const handleUpdate = async (fields: MenuListItem) => {
   const hide = message.loading('正在更新');
   try {
-    fields.orderNum = Number(fields.orderNum);
     fields.type = Number(fields.type);
     await updateMenu(fields);
     hide();
@@ -157,9 +155,14 @@ const MenuList: React.FC = () => {
     {
       title: '菜单状态',
       dataIndex: 'menuStatus',
-      valueEnum: {
-        1: {text: '正常', status: 'Success'},
-        0: {text: '禁用', status: 'Error'},
+      render: (dom, entity) => {
+        switch (entity.menuStatus) {
+          case 1:
+            return <Tag color={'success'}>正常</Tag>;
+          case 0:
+            return <Tag>禁用</Tag>;
+        }
+        return <>未知{entity.menuStatus }</>;
       },
     },
     {

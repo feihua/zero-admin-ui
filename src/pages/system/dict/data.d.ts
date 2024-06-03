@@ -1,5 +1,6 @@
 export interface DictTypeListItem {
   id: number;
+  dictStatus: number;
   dictType: string;
   dictName: string;
 }
