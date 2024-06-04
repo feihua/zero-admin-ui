@@ -4,7 +4,7 @@ import type {HomeRecommendProductListParams, HomeRecommendProductListItem} from 
 
 // 添加人气推荐
 export async function addHomeRecommendProduct(params: number[]) {
-  return request('/api/sms/homerecommendproduct/addHomeRecommendProduct', {
+  return request('/api/sms/homeRecommendProduct/addHomeRecommendProduct', {
     method: 'POST',
     data: {
       ...params,
@@ -16,7 +16,7 @@ export async function addHomeRecommendProduct(params: number[]) {
 
 // 删除人气推荐
 export async function removeHomeRecommendProduct(ids: number[]) {
-  return request('/api/sms/homerecommendproduct/deleteHomeRecommendProduct?ids=[' + ids + "]", {
+  return request('/api/sms/homeRecommendProduct/deleteHomeRecommendProduct?ids=[' + ids + "]", {
     method: 'GET',
   });
 }
@@ -24,7 +24,7 @@ export async function removeHomeRecommendProduct(ids: number[]) {
 
 // 更新人气推荐
 export async function updateHomeRecommendProduct(params: HomeRecommendProductListItem) {
-  return request('/api/sms/homerecommendproduct/updateHomeRecommendProduct', {
+  return request('/api/sms/homeRecommendProduct/updateHomeRecommendProduct', {
     method: 'POST',
     data: {
       ...params,
@@ -34,7 +34,7 @@ export async function updateHomeRecommendProduct(params: HomeRecommendProductLis
 
 // 批量更新人气推荐状态
 export async function updateHomeRecommendProductStatus(params: { dictTypeIds: number[], postStatus: number }) {
-  return request('/api/sms/homerecommendproduct/updateHomeRecommendProductStatus', {
+  return request('/api/sms/homeRecommendProduct/updateHomeRecommendProductStatus', {
     method: 'POST',
     data: {
       ...params,
@@ -46,7 +46,7 @@ export async function updateHomeRecommendProductStatus(params: { dictTypeIds: nu
 
 // 查询人气推荐详情
 export async function queryHomeRecommendProductDetail(id: number ) {
-  return request('/api/sms/homerecommendproduct/queryHomeRecommendProductDetail', {
+  return request('/api/sms/homeRecommendProduct/queryHomeRecommendProductDetail', {
     method: 'GET',
   });
 }
@@ -54,7 +54,7 @@ export async function queryHomeRecommendProductDetail(id: number ) {
 // 分页查询人气推荐列表
 export async function queryHomeRecommendProductList(params: HomeRecommendProductListParams) {
 
-  return request('/api/sms/homerecommendproduct/queryHomeRecommendProductList', {
+  return request('/api/sms/homeRecommendProduct/queryHomeRecommendProductList', {
     method: 'GET',
     params: {
       ...params,

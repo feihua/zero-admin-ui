@@ -3,7 +3,7 @@ import type {ReturnApplyListParams, ReturnApplyListItem} from './data.d';
 
 // 更新退货申请
 export async function updateReturnApply(params: ReturnApplyListItem) {
-  return request('/api/order/returnapply/updateReturnApply', {
+  return request('/api/order/returnApply/updateReturnApply', {
     method: 'POST',
     data: {
       ...params,
@@ -13,7 +13,7 @@ export async function updateReturnApply(params: ReturnApplyListItem) {
 
 // 批量更新退货申请状态
 export async function updateReturnApplyStatus(params: { dictTypeIds: number[], postStatus: number }) {
-  return request('/api/order/returnapply/updateReturnApplyStatus', {
+  return request('/api/order/returnApply/updateReturnApplyStatus', {
     method: 'POST',
     data: {
       ...params,
@@ -25,7 +25,7 @@ export async function updateReturnApplyStatus(params: { dictTypeIds: number[], p
 
 // 查询退货申请详情
 export async function queryReturnApplyDetail(id: number ) {
-  return request('/api/order/returnapply/queryReturnApplyDetail', {
+  return request('/api/order/returnApply/queryReturnApplyDetail', {
     method: 'GET',
   });
 }
@@ -33,7 +33,7 @@ export async function queryReturnApplyDetail(id: number ) {
 // 分页查询退货申请列表
 export async function queryReturnApplyList(params: ReturnApplyListParams) {
 
-  return request('/api/order/returnapply/queryReturnApplyList', {
+  return request('/api/order/returnApply/queryReturnApplyList', {
     method: 'GET',
     params: {
       ...params,

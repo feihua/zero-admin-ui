@@ -3,7 +3,7 @@ import { FlashPromotionListParams, FlashPromotionListItem } from './data.d';
 
 // 添加秒杀活动
 export async function addFlashPromotion(params: FlashPromotionListItem) {
-  return request('/api/sms/flashpromotion/addFlashPromotion', {
+  return request('/api/sms/flashPromotion/addFlashPromotion', {
     method: 'POST',
     data: {
       ...params,
@@ -15,7 +15,7 @@ export async function addFlashPromotion(params: FlashPromotionListItem) {
 
 // 删除秒杀活动
 export async function removeFlashPromotion(ids: number[]) {
-  return request('/api/sms/flashpromotion/deleteFlashPromotion?ids=[' + ids + "]", {
+  return request('/api/sms/flashPromotion/deleteFlashPromotion?ids=[' + ids + "]", {
     method: 'GET',
   });
 }
@@ -23,7 +23,7 @@ export async function removeFlashPromotion(ids: number[]) {
 
 // 更新秒杀活动
 export async function updateFlashPromotion(params: FlashPromotionListItem) {
-  return request('/api/sms/flashpromotion/updateFlashPromotion', {
+  return request('/api/sms/flashPromotion/updateFlashPromotion', {
     method: 'POST',
     data: {
       ...params,
@@ -33,7 +33,7 @@ export async function updateFlashPromotion(params: FlashPromotionListItem) {
 
 // 批量更新秒杀活动状态
 export async function updateFlashPromotionStatus(params: { dictTypeIds: number[], postStatus: number }) {
-  return request('/api/sms/flashpromotion/updateFlashPromotionStatus', {
+  return request('/api/sms/flashPromotion/updateFlashPromotionStatus', {
     method: 'POST',
     data: {
       ...params,
@@ -45,7 +45,7 @@ export async function updateFlashPromotionStatus(params: { dictTypeIds: number[]
 
 // 查询秒杀活动详情
 export async function queryFlashPromotionDetail(id: number ) {
-  return request('/api/sms/flashpromotion/queryFlashPromotionDetail', {
+  return request('/api/sms/flashPromotion/queryFlashPromotionDetail', {
     method: 'GET',
   });
 }
@@ -53,7 +53,7 @@ export async function queryFlashPromotionDetail(id: number ) {
 // 分页查询秒杀活动列表
 export async function queryFlashPromotionList(params: FlashPromotionListParams) {
 
-  return request('/api/sms/flashpromotion/queryFlashPromotionList', {
+  return request('/api/sms/flashPromotion/queryFlashPromotionList', {
     method: 'GET',
     params: {
       ...params,

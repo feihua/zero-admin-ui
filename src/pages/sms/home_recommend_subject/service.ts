@@ -4,7 +4,7 @@ import type {RecommendSubjectListParams, RecommendSubjectListItem, SubjectListPa
 
 // 添加推荐专题
 export async function addRecommendSubject(params: number[]) {
-  return request('/api/sms/homerecommendsubject/addHomeRecommendSubject', {
+  return request('/api/sms/homeRecommendSubject/addHomeRecommendSubject', {
     method: 'POST',
     data: {
       ...params,
@@ -16,7 +16,7 @@ export async function addRecommendSubject(params: number[]) {
 
 // 删除推荐专题
 export async function removeRecommendSubject(ids: number[]) {
-  return request('/api/sms/homerecommendsubject/deleteHomeRecommendSubject?ids=[' + ids + "]", {
+  return request('/api/sms/homeRecommendSubject/deleteHomeRecommendSubject?ids=[' + ids + "]", {
     method: 'GET',
   });
 }
@@ -24,7 +24,7 @@ export async function removeRecommendSubject(ids: number[]) {
 
 // 更新推荐专题
 export async function updateRecommendSubject(params: RecommendSubjectListItem) {
-  return request('/api/sms/homerecommendsubject/updateHomeRecommendSubject', {
+  return request('/api/sms/homeRecommendSubject/updateHomeRecommendSubject', {
     method: 'POST',
     data: {
       ...params,
@@ -34,7 +34,7 @@ export async function updateRecommendSubject(params: RecommendSubjectListItem) {
 
 // 批量更新推荐专题状态
 export async function updateRecommendSubjectStatus(params: { dictTypeIds: number[], postStatus: number }) {
-  return request('/api/sms/homerecommendsubject/updateHomeRecommendSubjectStatus', {
+  return request('/api/sms/homeRecommendSubject/updateHomeRecommendSubjectStatus', {
     method: 'POST',
     data: {
       ...params,
@@ -46,7 +46,7 @@ export async function updateRecommendSubjectStatus(params: { dictTypeIds: number
 
 // 查询推荐专题详情
 export async function queryRecommendSubjectDetail(id: number ) {
-  return request('/api/sms/homerecommendsubject/queryHomeRecommendSubjectDetail', {
+  return request('/api/sms/homeRecommendSubject/queryHomeRecommendSubjectDetail', {
     method: 'GET',
   });
 }
@@ -54,7 +54,7 @@ export async function queryRecommendSubjectDetail(id: number ) {
 // 分页查询推荐专题列表
 export async function queryRecommendSubjectList(params: RecommendSubjectListParams) {
 
-  return request('/api/sms/homerecommendsubject/queryHomeRecommendSubjectList', {
+  return request('/api/sms/homeRecommendSubject/queryHomeRecommendSubjectList', {
     method: 'GET',
     params: {
       ...params,

@@ -4,7 +4,7 @@ import type {HomeNewProductListParams, HomeNewProductListItem} from './data.d';
 
 // 添加新品推荐
 export async function addHomeNewProduct(params: number[]) {
-  return request('/api/sms/homenewproduct/addHomeNewProduct', {
+  return request('/api/sms/homeNewProduct/addHomeNewProduct', {
     method: 'POST',
     data: {
       ...params,
@@ -16,7 +16,7 @@ export async function addHomeNewProduct(params: number[]) {
 
 // 删除新品推荐
 export async function removeHomeNewProduct(ids: number[]) {
-  return request('/api/sms/homenewproduct/deleteHomeNewProduct?ids=[' + ids + "]", {
+  return request('/api/sms/homeNewProduct/deleteHomeNewProduct?ids=[' + ids + "]", {
     method: 'GET',
   });
 }
@@ -24,7 +24,7 @@ export async function removeHomeNewProduct(ids: number[]) {
 
 // 更新新品推荐
 export async function updateHomeNewProduct(params: HomeNewProductListItem) {
-  return request('/api/sms/homenewproduct/updateHomeNewProduct', {
+  return request('/api/sms/homeNewProduct/updateHomeNewProduct', {
     method: 'POST',
     data: {
       ...params,
@@ -34,7 +34,7 @@ export async function updateHomeNewProduct(params: HomeNewProductListItem) {
 
 // 批量更新新品推荐状态
 export async function updateHomeNewProductStatus(params: { dictTypeIds: number[], postStatus: number }) {
-  return request('/api/sms/homenewproduct/updateHomeNewProductStatus', {
+  return request('/api/sms/homeNewProduct/updateHomeNewProductStatus', {
     method: 'POST',
     data: {
       ...params,
@@ -46,7 +46,7 @@ export async function updateHomeNewProductStatus(params: { dictTypeIds: number[]
 
 // 查询新品推荐详情
 export async function queryHomeNewProductDetail(id: number ) {
-  return request('/api/sms/homenewproduct/queryHomeNewProductDetail', {
+  return request('/api/sms/homeNewProduct/queryHomeNewProductDetail', {
     method: 'GET',
   });
 }
@@ -54,7 +54,7 @@ export async function queryHomeNewProductDetail(id: number ) {
 // 分页查询新品推荐列表
 export async function queryHomeNewProductList(params: HomeNewProductListParams) {
 
-  return request('/api/sms/homenewproduct/queryHomeNewProductList', {
+  return request('/api/sms/homeNewProduct/queryHomeNewProductList', {
     method: 'GET',
     params: {
       ...params,

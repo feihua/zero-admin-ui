@@ -7,7 +7,7 @@ import moment from "moment";
 export async function addHomeAdvertise(params: HomeAdvertiseListItem) {
   params.startTime = moment(params.startTime).format('YYYY-MM-DD HH:mm:ss');
   params.endTime = moment(params.endTime).format('YYYY-MM-DD HH:mm:ss');
-  return request('/api/sms/homeadvertise/addHomeAdvertise', {
+  return request('/api/sms/homeAdvertise/addHomeAdvertise', {
     method: 'POST',
     data: {
       ...params,
@@ -19,7 +19,7 @@ export async function addHomeAdvertise(params: HomeAdvertiseListItem) {
 
 // 删除首页轮播广告
 export async function removeHomeAdvertise(ids: number[]) {
-  return request('/api/sms/homeadvertise/deleteHomeAdvertise?ids=[' + ids + "]", {
+  return request('/api/sms/homeAdvertise/deleteHomeAdvertise?ids=[' + ids + "]", {
     method: 'GET',
   });
 }
@@ -27,7 +27,7 @@ export async function removeHomeAdvertise(ids: number[]) {
 
 // 更新首页轮播广告
 export async function updateHomeAdvertise(params: HomeAdvertiseListItem) {
-  return request('/api/sms/homeadvertise/updateHomeAdvertise', {
+  return request('/api/sms/homeAdvertise/updateHomeAdvertise', {
     method: 'POST',
     data: {
       ...params,
@@ -37,7 +37,7 @@ export async function updateHomeAdvertise(params: HomeAdvertiseListItem) {
 
 // 批量更新首页轮播广告状态
 export async function updateHomeAdvertiseStatus(params: { dictTypeIds: number[], postStatus: number }) {
-  return request('/api/sms/homeadvertise/updateHomeAdvertiseStatus', {
+  return request('/api/sms/homeAdvertise/updateHomeAdvertiseStatus', {
     method: 'POST',
     data: {
       ...params,
@@ -49,7 +49,7 @@ export async function updateHomeAdvertiseStatus(params: { dictTypeIds: number[],
 
 // 查询首页轮播广告详情
 export async function queryHomeAdvertiseDetail(id: number ) {
-  return request('/api/sms/homeadvertise/queryHomeAdvertiseDetail', {
+  return request('/api/sms/homeAdvertise/queryHomeAdvertiseDetail', {
     method: 'GET',
   });
 }
@@ -57,7 +57,7 @@ export async function queryHomeAdvertiseDetail(id: number ) {
 // 分页查询首页轮播广告列表
 export async function queryHomeAdvertiseList(params: HomeAdvertiseListParams) {
 
-  return request('/api/sms/homeadvertise/queryHomeAdvertiseList', {
+  return request('/api/sms/homeAdvertise/queryHomeAdvertiseList', {
     method: 'GET',
     params: {
       ...params,
