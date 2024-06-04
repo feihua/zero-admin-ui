@@ -1,6 +1,6 @@
 import React, {useEffect, useRef} from 'react';
 import {message, Modal} from 'antd';
-import {queryLoginLog} from '../service';
+import {queryLoginLogList} from '../service';
 import type {ActionType, ProColumns} from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
 import type {LoginLogListItem} from "../data.d";
@@ -84,7 +84,7 @@ const MemberLogModal: React.FC<CreateFormProps> = (props) => {
         rowKey="id"
         search={false}
         request={(params) => {
-          return queryLoginLog({
+          return queryLoginLogList({
             ...params,
             memberId,
           }).then((res) => {

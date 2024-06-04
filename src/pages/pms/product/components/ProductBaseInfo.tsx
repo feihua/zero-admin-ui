@@ -2,8 +2,8 @@ import React, {useEffect, useState} from 'react';
 import {Cascader, Form, Input, InputNumber, message, Select} from 'antd';
 import type {CategoryListItem} from "@/pages/pms/product_category/data";
 import type {BrandListItem} from "@/pages/pms/product_brand/data";
-import {queryBrand} from "@/pages/pms/product_brand/service";
-import {queryCategory} from "@/pages/pms/product_category/service";
+import {queryBrandList} from "@/pages/pms/product_brand/service";
+import {queryProductCategoryList} from "@/pages/pms/product_category/service";
 import {tree} from "@/utils/utils";
 
 export interface BaseInfoProps {
@@ -19,7 +19,7 @@ const ProductBaseInfo: React.FC<BaseInfoProps> = (props) => {
 
   useEffect(() => {
     if (props.visible) {
-      queryBrand({pageSize: 100, current: 1}).then((res) => {
+      queryBrandList({pageSize: 100, current: 1}).then((res) => {
         if (res.code === '000000') {
           setBrandListItem(res.data)
         } else {
@@ -28,7 +28,7 @@ const ProductBaseInfo: React.FC<BaseInfoProps> = (props) => {
 
       });
 
-      queryCategory({}).then((res) => {
+      queryProductCategoryList({}).then((res) => {
         if (res.code === '000000') {
           const map = res.data.map((item: { id: any; name: any; title: any; parentId: any }) => ({
             value: item.id,

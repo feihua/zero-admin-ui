@@ -9,7 +9,7 @@ import ProDescriptions from '@ant-design/pro-descriptions';
 import CreateAttributeForm from './components/CreateAttributeForm';
 import UpdateAttributeForm from './components/UpdateAttributeForm';
 import type {AttributeCategoryListItem} from './data.d';
-import {addAttributeCategory, queryCategoryAttribute, removeAttributeCategory, updateAttributeCategory} from './service';
+import {addAttributeCategory, queryAttributeCategoryList, removeAttributeCategory, updateAttributeCategory} from './service';
 import {history} from 'umi';
 
 const {confirm} = Modal;
@@ -60,9 +60,7 @@ const handleRemove = async (selectedRows: AttributeCategoryListItem[]) => {
   const hide = message.loading('正在删除');
   if (!selectedRows) return true;
   try {
-    await removeAttributeCategory({
-      ids: selectedRows.map((row) => row.id),
-    });
+    await removeAttributeCategory(selectedRows.map((row) => row.id));
     hide();
     message.success('删除成功，即将刷新');
     return true;
@@ -191,7 +189,7 @@ const ProductAttrCateList: React.FC = () => {
             <PlusOutlined/> 新建分类
           </Button>,
         ]}
-        request={queryCategoryAttribute}
+        request={queryAttributeCategoryList}
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows) => setSelectedRows(selectedRows),

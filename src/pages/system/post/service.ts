@@ -44,12 +44,9 @@ export async function updatePostStatus(params: { postIds: number[], postStatus: 
 
 
 // 查询岗位信息详情
-export async function queryPostDetail(params: { ids: number }) {
+export async function queryPostDetail(id: number ) {
   return request('/api/sys/post/queryPostDetail', {
     method: 'GET',
-    params: {
-      ...params,
-    },
   });
 }
 

@@ -8,7 +8,7 @@ import ProDescriptions, {ProDescriptionsItemProps} from '@ant-design/pro-descrip
 import CreateBrandForm from './components/CreateBrandForm';
 import UpdateBrandForm from './components/UpdateBrandForm';
 import type {BrandListItem} from './data.d';
-import {queryBrand, updateBrand, addBrand, removeBrand} from './service';
+import {queryBrandList, updateBrand, addBrand, removeBrand} from './service';
 
 
 const {confirm} = Modal;
@@ -59,9 +59,7 @@ const handleRemove = async (selectedRows: BrandListItem[]) => {
   const hide = message.loading('正在删除');
   if (!selectedRows) return true;
   try {
-    await removeBrand({
-      ids: selectedRows.map((row) => row.id),
-    });
+    await removeBrand(selectedRows.map((row) => row.id));
     hide();
     message.success('删除成功，即将刷新');
     return true;
@@ -213,7 +211,7 @@ const ProductBrandList: React.FC = () => {
             <PlusOutlined/> 新建品牌
           </Button>,
         ]}
-        request={queryBrand}
+        request={queryBrandList}
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows) => setSelectedRows(selectedRows),

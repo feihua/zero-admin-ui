@@ -8,7 +8,7 @@ import ReceiveInfo from "@/pages/oms/order/components/ReceiveInfo";
 import BaseInfo from "@/pages/oms/order/components/BaseInfo";
 import CostInfo from "@/pages/oms/order/components/CostInfo";
 import {DeleteOutlined, EditOutlined, ExclamationCircleOutlined} from "@ant-design/icons";
-import {removeOrder, updateOrder} from "@/pages/oms/order/service";
+import {removeOrder} from "@/pages/oms/order/service";
 import NoteOrderModel from "@/pages/oms/order/components/NoteOrderModel";
 import OrderTrackingModel from "@/pages/oms/order/components/OrderTrackingModel";
 import DeliveryModel from "@/pages/oms/order/components/DeliveryModel";
@@ -55,7 +55,7 @@ const {confirm} = Modal;
 const handleUpdate = async (fields: OrderListItem) => {
   const hide = message.loading('正在更新');
   try {
-    await updateOrder(fields);
+    // await updateOrder(fields);
     hide();
 
     message.success('更新成功');
@@ -75,9 +75,7 @@ const handleRemove = async (selectedRows: OrderListItem[]) => {
   const hide = message.loading('正在删除');
   if (!selectedRows) return true;
   try {
-    await removeOrder({
-      ids: selectedRows.map((row) => row.id),
-    });
+    await removeOrder( selectedRows.map((row) => row.id));
     hide();
     message.success('删除成功，即将刷新');
     return true;

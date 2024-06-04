@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {Form, Input, InputNumber, message, Modal, Select} from 'antd';
 import {CategoryListItem} from '../data.d';
-import {queryCategory} from "@/pages/pms/product_category/service";
+import {queryProductCategoryList} from "@/pages/pms/product_category/service";
 
 export interface UpdateFormProps {
   onCancel: () => void;
@@ -36,7 +36,7 @@ const UpdateCategoryForm: React.FC<UpdateFormProps> = (props) => {
       form.setFieldsValue({
         ...values,
       });
-      queryCategory({parentId: 0}).then((res) => {
+      queryProductCategoryList({parentId: 0}).then((res) => {
         if (res.code === '000000') {
           const map = res.data.map((item: { id: any; name: any; }) => ({
             value: item.id,

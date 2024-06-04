@@ -45,12 +45,9 @@ export async function updateRecommendSubjectStatus(params: { dictTypeIds: number
 
 
 // 查询推荐专题详情
-export async function queryRecommendSubjectDetail(params: { ids: number }) {
+export async function queryRecommendSubjectDetail(id: number ) {
   return request('/api/sms/homerecommendsubject/queryHomeRecommendSubjectDetail', {
     method: 'GET',
-    params: {
-      ...params,
-    },
   });
 }
 

@@ -8,7 +8,7 @@ import ProDescriptions, {ProDescriptionsItemProps} from '@ant-design/pro-descrip
 import CreateCategoryForm from './components/CreateCategoryForm';
 import UpdateCategoryForm from './components/UpdateCategoryForm';
 import type {CategoryListItem} from './data.d';
-import {queryCategory, updateCategory, addCategory, removeCategory} from './service';
+import {queryProductCategoryList, updateProductCategory, addProductCategory, removeProductCategory} from './service';
 
 import {tree} from '@/utils/utils';
 
@@ -21,7 +21,7 @@ const {confirm} = Modal;
 const handleAdd = async (fields: CategoryListItem) => {
   const hide = message.loading('正在添加');
   try {
-    await addCategory({ ...fields });
+    await addProductCategory({ ...fields });
     hide();
     message.success('添加成功');
     return true;
@@ -39,7 +39,7 @@ const handleAdd = async (fields: CategoryListItem) => {
 const handleUpdate = async (fields: CategoryListItem) => {
   const hide = message.loading('正在更新');
   try {
-    await updateCategory(fields);
+    await updateProductCategory(fields);
     hide();
 
     message.success('更新成功');
@@ -59,9 +59,7 @@ const handleRemove = async (selectedRows: CategoryListItem[]) => {
   const hide = message.loading('正在删除');
   if (!selectedRows) return true;
   try {
-    await removeCategory({
-      ids: selectedRows.map((row) => row.id),
-    });
+    await removeProductCategory(selectedRows.map((row) => row.id));
     hide();
     message.success('删除成功，即将刷新');
     return true;
@@ -205,7 +203,7 @@ const ProductCateList: React.FC = () => {
             <PlusOutlined/> 新建分类
           </Button>,
         ]}
-        request={queryCategory}
+        request={queryProductCategoryList}
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows) => setSelectedRows(selectedRows),

@@ -44,12 +44,9 @@ export async function updateDictTypeStatus(params: { dictTypeIds: number[], post
 
 
 // 查询字典类型详情
-export async function queryDictTypeDetail(params: { ids: number }) {
+export async function queryDictTypeDetail(id: number ) {
   return request('/api/sys/dictType/queryDictTypeDetail', {
     method: 'GET',
-    params: {
-      ...params,
-    },
   });
 }
 

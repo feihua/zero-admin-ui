@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {Form, Input, InputNumber, Modal, Radio, RadioChangeEvent, Select} from 'antd';
 import type {AttributeListItem} from '../data.d';
 import type {AttributeCategoryListItem} from "@/pages/pms/product_attribute_category/data";
-import {queryCategoryAttribute} from "@/pages/pms/product_attribute_category/service";
+import {queryAttributeCategoryList} from "@/pages/pms/product_attribute_category/service";
 
 export interface UpdateFormProps {
   onCancel: () => void;
@@ -31,7 +31,7 @@ const UpdateAttributeForm: React.FC<UpdateFormProps> = (props) => {
     if (form && !updateModalVisible) {
       form.resetFields();
     } else {
-      queryCategoryAttribute({pageSize: 100, current: 1}).then((res) => {
+      queryAttributeCategoryList({pageSize: 100, current: 1}).then((res) => {
         setCategoryListItems(res.data)
       });
     }

@@ -45,12 +45,9 @@ export async function updateHomeBrandStatus(params: { dictTypeIds: number[], pos
 
 
 // 查询品牌推荐详情
-export async function queryHomeBrandDetail(params: { ids: number }) {
+export async function queryHomeBrandDetail(id: number ) {
   return request('/api/sms/homeBrand/queryHomeBrandDetail', {
     method: 'GET',
-    params: {
-      ...params,
-    },
   });
 }
 

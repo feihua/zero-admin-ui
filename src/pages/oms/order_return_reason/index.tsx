@@ -64,9 +64,7 @@ const handleRemove = async (selectedRows: ReturnReasonListItem[]) => {
   const hide = message.loading('正在删除');
   if (!selectedRows) return true;
   try {
-    await removeReturnReason({
-      ids: selectedRows.map((row) => row.id),
-    });
+    await removeReturnReason(selectedRows.map((row) => row.id));
     hide();
     message.success('删除成功，即将刷新');
     return true;

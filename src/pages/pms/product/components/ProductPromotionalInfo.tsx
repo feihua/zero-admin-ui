@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import type {RadioChangeEvent} from 'antd';
 import {Checkbox, DatePicker, Form, Input, InputNumber, message, Radio, Switch} from 'antd';
-import {queryLevel} from "@/pages/ums/member_level/service";
+import {queryLevelList} from "@/pages/ums/member_level/service";
 import type {LevelListItem} from "@/pages/ums/member_level/data";
 
 export interface BaseInfoProps {
@@ -28,7 +28,7 @@ const ProductPromotionalInfo: React.FC<BaseInfoProps> = (props) => {
 
   useEffect(() => {
     if (props.visible) {
-      queryLevel({pageSize: 100, current: 1}).then((res) => {
+      queryLevelList({pageSize: 100, current: 1}).then((res) => {
         if (res.code === '000000') {
           setLevelListItem(res.data)
         } else {

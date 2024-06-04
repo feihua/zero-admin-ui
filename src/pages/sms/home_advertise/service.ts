@@ -48,12 +48,9 @@ export async function updateHomeAdvertiseStatus(params: { dictTypeIds: number[],
 
 
 // 查询首页轮播广告详情
-export async function queryHomeAdvertiseDetail(params: { ids: number }) {
+export async function queryHomeAdvertiseDetail(id: number ) {
   return request('/api/sms/homeadvertise/queryHomeAdvertiseDetail', {
     method: 'GET',
-    params: {
-      ...params,
-    },
   });
 }
 

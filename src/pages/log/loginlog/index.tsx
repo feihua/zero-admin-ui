@@ -5,7 +5,7 @@ import type {ActionType, ProColumns} from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
 import type {LoginLogListItem} from './data.d';
 import {StatisticsLoginLog} from "./data.d";
-import {queryLoginLog, removeLoginLog, statisticsLoginLog} from './service';
+import {queryLoginLogList, removeLoginLog, queryStatisticsLoginLog} from './service';
 import {DeleteOutlined, ExclamationCircleOutlined} from "@ant-design/icons";
 
 const {confirm} = Modal;
@@ -19,9 +19,7 @@ const handleRemove = async (selectedRows: LoginLogListItem[]) => {
   const hide = message.loading('正在删除');
   if (!selectedRows) return true;
   try {
-    await removeLoginLog({
-      ids: selectedRows.map((row) => row.id),
-    });
+    await removeLoginLog(selectedRows.map((row) => row.id));
     hide();
     message.success('删除成功，即将刷新');
     return true;
@@ -113,7 +111,7 @@ const LoginLogList: React.FC = () => {
 
   useEffect(() => {
 
-    statisticsLoginLog().then((res) => {
+    queryStatisticsLoginLog().then((res) => {
       if (res.code === '000000') {
         setStatisticsLoginLogData({
           dayLoginCount: res.data.dayLoginCount, monthLoginCount: res.data.monthLoginCount, weekLoginCount: res.data.weekLoginCount
@@ -167,7 +165,7 @@ const LoginLogList: React.FC = () => {
             search={{
               labelWidth: 120,
             }}
-            request={queryLoginLog}
+            request={queryLoginLogList}
             columns={columns}
             rowSelection={{
               onChange: (_, selectedRows) => setSelectedRows(selectedRows),

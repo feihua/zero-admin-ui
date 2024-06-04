@@ -8,7 +8,7 @@ import type {ProDescriptionsItemProps} from '@ant-design/pro-descriptions';
 import ProDescriptions from '@ant-design/pro-descriptions';
 import OperationProductForm from './components/OperationProductForm';
 import type {ProductListItem, ProductParams} from './data.d';
-import {operation, queryProduct, removeProduct} from './service';
+import {operation, queryProductList, removeProduct} from './service';
 
 const {confirm} = Modal;
 
@@ -39,9 +39,7 @@ const handleRemove = async (selectedRows: ProductListItem[]) => {
   const hide = message.loading('正在删除');
   if (!selectedRows) return true;
   try {
-    await removeProduct({
-      ids: selectedRows.map((row) => row.id),
-    });
+    await removeProduct( selectedRows.map((row) => row.id));
     hide();
     message.success('删除成功，即将刷新');
     return true;
@@ -172,7 +170,7 @@ const ProductList: React.FC = () => {
             <PlusOutlined/> 新建商品
           </Button>,
         ]}
-        request={queryProduct}
+        request={queryProductList}
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows) => setSelectedRows(selectedRows),

@@ -50,12 +50,9 @@ export async function updateDeptStatus(params: { deptIds: number[], postStatus: 
 
 
 // 查询部门信息详情
-export async function queryDeptDetail(params: { ids: number }) {
+export async function queryDeptDetail(id: number ) {
   return request('/api/sys/dept/queryDeptDetail', {
     method: 'GET',
-    params: {
-      ...params,
-    },
   });
 }
 

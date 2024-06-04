@@ -45,12 +45,9 @@ export async function updateHomeNewProductStatus(params: { dictTypeIds: number[]
 
 
 // 查询新品推荐详情
-export async function queryHomeNewProductDetail(params: { ids: number }) {
+export async function queryHomeNewProductDetail(id: number ) {
   return request('/api/sms/homenewproduct/queryHomeNewProductDetail', {
     method: 'GET',
-    params: {
-      ...params,
-    },
   });
 }
 

@@ -1,27 +1,8 @@
 import {request} from 'umi';
 import type {AttributeCategoryListParams, AttributeCategoryListItem} from './data.d';
-
-export async function queryCategoryAttribute(params: AttributeCategoryListParams) {
-
-  return request('/api/product/attributecategory/list', {
-    method: 'GET',
-    params: {
-      ...params,
-    },
-  });
-}
-
-export async function removeAttributeCategory(params: { ids: number[] }) {
-  return request('/api/product/attributecategory/delete', {
-    method: 'GET',
-    params: {
-      ...params,
-    },
-  });
-}
-
+// 添加商品属性分类
 export async function addAttributeCategory(params: AttributeCategoryListItem) {
-  return request('/api/product/attributecategory/add', {
+  return request('/api/product/attributecategory/addAttributeCategory', {
     method: 'POST',
     data: {
       ...params,
@@ -29,8 +10,19 @@ export async function addAttributeCategory(params: AttributeCategoryListItem) {
   });
 }
 
+//
+
+// 删除商品属性分类
+export async function removeAttributeCategory(ids: number[]) {
+  return request('/api/product/attributecategory/deleteAttributeCategory?ids=[' + ids + "]", {
+    method: 'GET',
+  });
+}
+
+
+// 更新商品属性分类
 export async function updateAttributeCategory(params: AttributeCategoryListItem) {
-  return request('/api/product/attributecategory/update', {
+  return request('/api/product/attributecategory/updateAttributeCategory', {
     method: 'POST',
     data: {
       ...params,
@@ -38,3 +30,32 @@ export async function updateAttributeCategory(params: AttributeCategoryListItem)
   });
 }
 
+// 批量更新商品属性分类状态
+export async function updateAttributeCategoryStatus(params: { dictTypeIds: number[], postStatus: number }) {
+  return request('/api/product/attributecategory/updateAttributeCategoryStatus', {
+    method: 'POST',
+    data: {
+      ...params,
+    },
+
+  });
+}
+
+
+// 查询商品属性分类详情
+export async function queryAttributeCategoryDetail(id: number ) {
+  return request('/api/product/attributecategory/queryAttributeCategoryDetail', {
+    method: 'GET',
+  });
+}
+
+// 分页查询商品属性分类列表
+export async function queryAttributeCategoryList(params: AttributeCategoryListParams) {
+
+  return request('/api/product/attributecategory/queryAttributeCategoryList', {
+    method: 'GET',
+    params: {
+      ...params,
+    },
+  });
+}

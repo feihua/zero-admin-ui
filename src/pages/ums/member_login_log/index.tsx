@@ -3,9 +3,9 @@ import { Button, message, Drawer, Modal } from 'antd';
 import React, { useState, useRef } from 'react';
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
-import ProDescriptions from '@ant-design/pro-descriptions';
+import ProDescriptions, {type ProDescriptionsItemProps} from '@ant-design/pro-descriptions';
 import { LoginLogListItem } from './data.d';
-import { queryLoginLog, removeLoginLog } from './service';
+import { queryLoginLogList } from './service';
 
 const { confirm } = Modal;
 
@@ -16,9 +16,9 @@ const { confirm } = Modal;
 const handleRemoveOne = async (id: number) => {
   const hide = message.loading('正在删除');
   try {
-    await removeLoginLog({
-      ids: [id],
-    });
+    // await removeLoginLog({
+    //   ids: [id],
+    // });
     hide();
     message.success('删除成功，即将刷新');
     return true;
@@ -37,9 +37,9 @@ const handleRemove = async (selectedRows: LoginLogListItem[]) => {
   const hide = message.loading('正在删除');
   if (!selectedRows) return true;
   try {
-    await removeLoginLog({
-      ids: selectedRows.map((row) => row.id),
-    });
+    // await removeLoginLog({
+    //   ids: selectedRows.map((row) => row.id),
+    // });
     hide();
     message.success('删除成功，即将刷新');
     return true;
@@ -133,7 +133,7 @@ const MemberLoginLogList: React.FC<{}> = () => {
         rowKey="id"
         search={false}
         toolBarRender={false}
-        request={(params, sorter, filter) => queryLoginLog({ ...params, sorter, filter })}
+        request={(params, sorter, filter) => queryLoginLogList({ ...params, sorter })}
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows) => setSelectedRows(selectedRows),
@@ -178,7 +178,7 @@ const MemberLoginLogList: React.FC<{}> = () => {
             params={{
               id: row?.id,
             }}
-            columns={columns}
+            columns={columns as ProDescriptionsItemProps<LoginLogListItem>[]}
           />
         )}
       </Drawer>

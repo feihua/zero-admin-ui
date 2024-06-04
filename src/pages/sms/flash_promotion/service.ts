@@ -44,12 +44,9 @@ export async function updateFlashPromotionStatus(params: { dictTypeIds: number[]
 
 
 // 查询秒杀活动详情
-export async function queryFlashPromotionDetail(params: { ids: number }) {
+export async function queryFlashPromotionDetail(id: number ) {
   return request('/api/sms/flashpromotion/queryFlashPromotionDetail', {
     method: 'GET',
-    params: {
-      ...params,
-    },
   });
 }
 

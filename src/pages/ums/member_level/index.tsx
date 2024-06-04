@@ -13,7 +13,7 @@ import ProDescriptions, {ProDescriptionsItemProps} from '@ant-design/pro-descrip
 import CreateLevelForm from './components/CreateLevelForm';
 import UpdateLevelForm from './components/UpdateLevelForm';
 import type {LevelListItem} from './data.d';
-import {queryLevel, updateLevel, addLevel, removeLevel} from './service';
+import {queryLevelList, updateLevel, addLevel, removeLevel} from './service';
 
 const {confirm} = Modal;
 
@@ -62,9 +62,7 @@ const handleRemove = async (selectedRows: LevelListItem[]) => {
   const hide = message.loading('正在删除');
   if (!selectedRows) return true;
   try {
-    await removeLevel({
-      ids: selectedRows.map((row) => row.id),
-    });
+    await removeLevel(selectedRows.map((row) => row.id));
     hide();
     message.success('删除成功，即将刷新');
     return true;
@@ -250,7 +248,7 @@ const MemberLevelList: React.FC<{}> = () => {
             <PlusOutlined/> 新建等级
           </Button>,
         ]}
-        request={queryLevel}
+        request={queryLevelList}
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows) => setSelectedRows(selectedRows),

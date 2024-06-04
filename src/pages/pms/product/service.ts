@@ -1,18 +1,59 @@
 import {request} from 'umi';
 import type {PrefrenceAreaParams, ProductListParams, ProductParams} from './data.d';
 import moment from "moment";
-
-export async function queryProduct(params?: ProductListParams) {
-  return request('/api/product/product/list', {
-    method: 'GET',
-    params: {
+// 添加商品信息
+export async function addProduct(params: ProductParams) {
+  return request('/api/product/addProduct', {
+    method: 'POST',
+    data: {
       ...params,
     },
   });
 }
 
-export async function removeProduct(params: { ids: number[] }) {
-  return request('/api/product/product/delete', {
+//
+
+// 删除商品信息
+export async function removeProduct(ids: number[]) {
+  return request('/api/product/deleteProduct?ids=[' + ids + "]", {
+    method: 'GET',
+  });
+}
+
+
+// 更新商品信息
+export async function updateProduct(params: ProductParams) {
+  return request('/api/product/updateProduct', {
+    method: 'POST',
+    data: {
+      ...params,
+    },
+  });
+}
+
+// 批量更新商品信息状态
+export async function updateProductStatus(params: { dictTypeIds: number[], postStatus: number }) {
+  return request('/api/product/updateProductStatus', {
+    method: 'POST',
+    data: {
+      ...params,
+    },
+
+  });
+}
+
+
+// 查询商品信息详情
+export async function queryProductDetail(id: number ) {
+  return request('/api/product/queryProductDetail', {
+    method: 'GET',
+  });
+}
+
+// 分页查询商品信息列表
+export async function queryProductList(params: ProductListParams) {
+
+  return request('/api/product/queryProductList', {
     method: 'GET',
     params: {
       ...params,

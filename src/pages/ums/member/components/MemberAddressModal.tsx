@@ -1,7 +1,7 @@
 import React, {useEffect, useRef} from 'react';
 import {message, Modal} from 'antd';
 import type {AddressListItem} from '../data.d';
-import {queryAddress} from '../service';
+import {queryMemberAddressList} from '../service';
 import type {ActionType, ProColumns} from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
 
@@ -103,7 +103,7 @@ const MemberAddressModal: React.FC<CreateFormProps> = (props) => {
         rowKey="id"
         search={false}
         request={(params) => {
-          return queryAddress({
+          return queryMemberAddressList({
             ...params,
             memberId: memberId,
           }).then((res) => {

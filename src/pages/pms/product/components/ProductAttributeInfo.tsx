@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import {Modal, Form, Input, message, Checkbox, Upload, TreeSelect, Card, Select} from 'antd';
 import type {AttributeCategoryListItem} from "@/pages/pms/product_attribute_category/data";
-import {queryCategoryAttribute} from "@/pages/pms/product_attribute_category/service";
-import {queryAttribute} from "@/pages/pms/product_attribute/service";
+import {queryAttributeCategoryList} from "@/pages/pms/product_attribute_category/service";
+import {queryAttributeList} from "@/pages/pms/product_attribute/service";
 import type {AttributeListItem} from "@/pages/pms/product_attribute/data";
 import type {RcFile, UploadProps} from 'antd/es/upload';
 import type {UploadFile} from 'antd/es/upload/interface';
@@ -40,7 +40,7 @@ const ProductAttributeInfo: React.FC<BaseInfoProps> = (props) => {
   useEffect(() => {
     if (props.visible) {
       setContent(BraftEditor.createEditorState(props.currentData?.detailMobileHtml))
-      queryCategoryAttribute({}).then((res) => {
+      queryAttributeCategoryList({}).then((res) => {
         if (res.code === '000000') {
           const map = res.data.map((item: { id: any; name: any; title: any; parentId: any }) => ({
             value: item.id,
@@ -60,7 +60,7 @@ const ProductAttributeInfo: React.FC<BaseInfoProps> = (props) => {
 
   const onChange = (attributeCategoryId: string) => {
     //查询规格和参数
-    queryAttribute({"productAttributeCategoryId": Number(attributeCategoryId)}).then((res) => {
+    queryAttributeList({"productAttributeCategoryId": Number(attributeCategoryId)}).then((res) => {
       if (res.code === '000000') {
         const resData = res.data
         if (resData != null) {

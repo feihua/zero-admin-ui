@@ -45,12 +45,9 @@ export async function updateHomeRecommendProductStatus(params: { dictTypeIds: nu
 
 
 // 查询人气推荐详情
-export async function queryHomeRecommendProductDetail(params: { ids: number }) {
+export async function queryHomeRecommendProductDetail(id: number ) {
   return request('/api/sms/homerecommendproduct/queryHomeRecommendProductDetail', {
     method: 'GET',
-    params: {
-      ...params,
-    },
   });
 }
 

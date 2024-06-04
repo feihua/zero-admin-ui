@@ -6,7 +6,7 @@ import ProTable from '@ant-design/pro-table';
 import type {ProColumns, ActionType} from '@ant-design/pro-table';
 import UpdateSettingForm from './components/UpdateSettingForm';
 import type {SettingListItem} from './data.d';
-import {querySetting, updateSetting} from './service';
+import {queryOrderSettingList, updateOrderSetting} from './service';
 
 
 /**
@@ -16,7 +16,7 @@ import {querySetting, updateSetting} from './service';
 const handleUpdate = async (fields: SettingListItem) => {
   const hide = message.loading('正在更新');
   try {
-    await updateSetting(fields);
+    await updateOrderSetting(fields);
     hide();
 
     message.success('更新成功');
@@ -105,7 +105,7 @@ const OrderSettingList: React.FC = () => {
         rowKey="id"
         search={false}
         toolBarRender={false}
-        request={querySetting}
+        request={queryOrderSettingList}
         columns={columns}
         pagination={{pageSize: 10}}
       />

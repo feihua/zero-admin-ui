@@ -5,7 +5,7 @@ import {FooterToolbar, PageContainer} from '@ant-design/pro-layout';
 import type {ActionType, ProColumns} from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
 import type {SysLogListItem} from './data.d';
-import {querySysLog, removeSysLog} from './service';
+import {queryOperateLogList, removeOperateLog} from './service';
 
 const {Paragraph} = Typography;
 
@@ -19,9 +19,7 @@ const handleRemove = async (selectedRows: SysLogListItem[]) => {
   const hide = message.loading('正在删除');
   if (!selectedRows) return true;
   try {
-    await removeSysLog({
-      ids: selectedRows.map((row) => row.id),
-    });
+    await removeOperateLog(selectedRows.map((row) => row.id));
     hide();
     message.success('删除成功，即将刷新');
     return true;
@@ -144,7 +142,7 @@ const SysLogList: React.FC = () => {
         search={{
           labelWidth: 120,
         }}
-        request={querySysLog}
+        request={queryOperateLogList}
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows) => setSelectedRows(selectedRows),

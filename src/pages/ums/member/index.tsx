@@ -23,9 +23,7 @@ const handleRemove = async (selectedRows: MemberListItem[]) => {
   const hide = message.loading('正在删除');
   if (!selectedRows) return true;
   try {
-    await removeMember({
-      ids: selectedRows.map((row) => row.id),
-    });
+    await removeMember(selectedRows.map((row) => row.id));
     hide();
     message.success('删除成功，即将刷新');
     return true;

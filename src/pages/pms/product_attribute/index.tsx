@@ -9,7 +9,7 @@ import type {ProDescriptionsItemProps} from '@ant-design/pro-descriptions';
 import CreateAttributeForm from './components/CreateAttributeForm';
 import UpdateAttributeForm from './components/UpdateAttributeForm';
 import type {AttributeListItem} from './data.d';
-import {queryAttribute, updateAttribute, addAttribute, removeAttribute} from './service';
+import {queryAttributeList, updateAttribute, addAttribute, removeAttribute} from './service';
 import {useLocation} from 'umi';
 
 const {confirm} = Modal;
@@ -60,9 +60,7 @@ const handleRemove = async (selectedRows: AttributeListItem[]) => {
   const hide = message.loading('正在删除');
   if (!selectedRows) return true;
   try {
-    await removeAttribute({
-      ids: selectedRows.map((row) => row.id),
-    });
+    await removeAttribute(selectedRows.map((row) => row.id));
     hide();
     message.success('删除成功，即将刷新');
     return true;
@@ -244,7 +242,7 @@ const ProductAttrList: React.FC = () => {
           </Button>,
         ]}
         request={(params) => {
-          return queryAttribute({
+          return queryAttributeList({
             ...params,
             // @ts-ignore
             productAttributeCategoryId: location.query.productAttributeCategoryId,

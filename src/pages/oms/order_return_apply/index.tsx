@@ -8,7 +8,7 @@ import type {ProDescriptionsItemProps} from '@ant-design/pro-descriptions';
 import ProDescriptions from '@ant-design/pro-descriptions';
 import ReturnApplyDetailModel from './components/ReturnApplyDetailModel';
 import type {ReturnApplyListItem} from './data.d';
-import {queryReturnApply, updateReturnApply} from './service';
+import {queryReturnApplyList, updateReturnApply} from './service';
 
 
 /**
@@ -144,7 +144,7 @@ const ReturnApplyList: React.FC = () => {
           labelWidth: 120,
         }}
         toolBarRender={false}
-        request={queryReturnApply}
+        request={queryReturnApplyList}
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows) => console.log(selectedRows),
