@@ -2,7 +2,7 @@ import { request } from 'umi';
 import { LevelListParams, LevelListItem } from './data.d';
 // 添加会员等级
 export async function addLevel(params: LevelListItem) {
-  return request('/api/member/level/addLevel', {
+  return request('/api/member/level/addMemberLevel', {
     method: 'POST',
     data: {
       ...params,
@@ -14,7 +14,7 @@ export async function addLevel(params: LevelListItem) {
 
 // 删除会员等级
 export async function removeLevel(ids: number[]) {
-  return request('/api/member/level/deleteLevel?ids=[' + ids + "]", {
+  return request('/api/member/level/deleteMemberLevel?ids=[' + ids + "]", {
     method: 'GET',
   });
 }
@@ -22,7 +22,7 @@ export async function removeLevel(ids: number[]) {
 
 // 更新会员等级
 export async function updateLevel(params: LevelListItem) {
-  return request('/api/member/level/updateLevel', {
+  return request('/api/member/level/updateMemberLevel', {
     method: 'POST',
     data: {
       ...params,
@@ -32,7 +32,7 @@ export async function updateLevel(params: LevelListItem) {
 
 // 批量更新会员等级状态
 export async function updateLevelStatus(params: { dictTypeIds: number[], postStatus: number }) {
-  return request('/api/member/level/updateLevelStatus', {
+  return request('/api/member/level/updateMemberLevelStatus', {
     method: 'POST',
     data: {
       ...params,
@@ -44,7 +44,7 @@ export async function updateLevelStatus(params: { dictTypeIds: number[], postSta
 
 // 查询会员等级详情
 export async function queryLevelDetail(id: number ) {
-  return request('/api/member/level/queryLevelDetail', {
+  return request('/api/member/level/queryMemberLevelDetail', {
     method: 'GET',
   });
 }
@@ -52,7 +52,7 @@ export async function queryLevelDetail(id: number ) {
 // 分页查询会员等级列表
 export async function queryLevelList(params: LevelListParams) {
 
-  return request('/api/member/level/queryLevelList', {
+  return request('/api/member/level/queryMemberLevelList', {
     method: 'GET',
     params: {
       ...params,

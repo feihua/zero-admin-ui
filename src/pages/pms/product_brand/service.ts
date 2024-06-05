@@ -2,7 +2,7 @@ import { request } from 'umi';
 import { BrandListParams, BrandListItem } from './data.d';
 // 添加商品品牌
 export async function addBrand(params: BrandListItem) {
-  return request('/api/product/brand/addBrand', {
+  return request('/api/product/brand/addProductBrand', {
     method: 'POST',
     data: {
       ...params,
@@ -14,7 +14,7 @@ export async function addBrand(params: BrandListItem) {
 
 // 删除商品品牌
 export async function removeBrand(ids: number[]) {
-  return request('/api/product/brand/deleteBrand?ids=[' + ids + "]", {
+  return request('/api/product/brand/deleteProductBrand?ids=[' + ids + "]", {
     method: 'GET',
   });
 }
@@ -22,7 +22,7 @@ export async function removeBrand(ids: number[]) {
 
 // 更新商品品牌
 export async function updateBrand(params: BrandListItem) {
-  return request('/api/product/brand/updateBrand', {
+  return request('/api/product/brand/updateProductBrand', {
     method: 'POST',
     data: {
       ...params,
@@ -32,7 +32,7 @@ export async function updateBrand(params: BrandListItem) {
 
 // 批量更新商品品牌状态
 export async function updateBrandStatus(params: { dictTypeIds: number[], postStatus: number }) {
-  return request('/api/product/brand/updateBrandStatus', {
+  return request('/api/product/brand/updateProductBrandStatus', {
     method: 'POST',
     data: {
       ...params,
@@ -44,7 +44,7 @@ export async function updateBrandStatus(params: { dictTypeIds: number[], postSta
 
 // 查询商品品牌详情
 export async function queryBrandDetail(id: number ) {
-  return request('/api/product/brand/queryBrandDetail', {
+  return request('/api/product/brand/queryProductBrandDetail', {
     method: 'GET',
   });
 }
@@ -52,7 +52,7 @@ export async function queryBrandDetail(id: number ) {
 // 分页查询商品品牌列表
 export async function queryBrandList(params: BrandListParams) {
 
-  return request('/api/product/brand/queryBrandList', {
+  return request('/api/product/brand/queryProductBrandList', {
     method: 'GET',
     params: {
       ...params,

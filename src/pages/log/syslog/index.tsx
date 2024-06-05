@@ -51,53 +51,87 @@ const SysLogList: React.FC = () => {
     });
   };
 
+
   const columns: ProColumns<SysLogListItem>[] = [
     {
-      title: '用户名',
-      dataIndex: 'userName',
+      title: '日志编号',
+      dataIndex: 'id',
+      hideInSearch: true
+    },
+    {
+      title: '系统模块',
+      dataIndex: 'title',
       render: (dom, entity) => {
         return <a onClick={() => {
           setCurrentRow(entity);
           setShowDetail(true);
         }}>{dom}</a>;
       },
+      hideInTable: true,
+      hideInSearch: true
+    },
+
+    {
+      title: '操作类型',
+      dataIndex: 'operationType',
     },
     {
-      title: '用户操作',
-      dataIndex: 'operation',
-      hideInSearch: true,
+      title: '浏览器',
+      dataIndex: 'browser',
     },
     {
-      title: '请求方法',
-      dataIndex: 'method',
+      title: '操作系统',
+      dataIndex: 'os',
     },
     {
-      title: '请求参数',
-      dataIndex: 'requestParams',
-      hideInSearch: true,
+      title: '请求方式',
+      dataIndex: 'requestMethod',
     },
     {
-      title: '响应参数',
-      dataIndex: 'responseParams',
-      hideInSearch: true,
+      title: '操作方法',
+      dataIndex: 'operationUrl',
       hideInTable: true,
     },
     {
+      title: '请求参数',
+      dataIndex: 'operationParams',
+      hideInTable: true,
+      hideInSearch: true
+    },
+    {
+      title: '响应参数',
+      dataIndex: 'operationResponse',
+      hideInTable: true,
+      hideInSearch: true
+    },
+    {
+      title: '操作人员',
+      dataIndex: 'operationName',
+    },
+    {
+      title: '部门名称',
+      dataIndex: 'deptName',
+    },
+    {
+      title: '操作地址',
+      dataIndex: 'operationIp',
+    },
+    {
+      title: '操作状态',
+      dataIndex: 'operationStatus',
+    },
+    {
       title: '执行时间(毫秒)',
-      dataIndex: 'time',
-      hideInSearch: true,
+      dataIndex: 'useTime',
+      hideInSearch: true
     },
+
     {
-      title: 'IP地址',
-      dataIndex: 'ip',
-      hideInSearch: true,
-    },
-    {
-      title: '操作时间时间',
+      title: '操作时间',
       dataIndex: 'operationTime',
       sorter: true,
       valueType: 'dateTime',
-      hideInSearch: true,
+      hideInSearch: true
     },
 
     {
@@ -114,7 +148,7 @@ const SysLogList: React.FC = () => {
               setCurrentRow(record);
             }}
           >
-            <EditOutlined/> 查看响应参数
+            <EditOutlined/> 查看
           </a>
           <Divider type="vertical"/>
           <a
@@ -183,15 +217,15 @@ const SysLogList: React.FC = () => {
       >
         <div>
           <Paragraph>请求方法:</Paragraph>
-          <Paragraph copyable>{currentRow?.method}</Paragraph>
+          <Paragraph copyable>{currentRow?.operationUrl}</Paragraph>
         </div>
         <div>
           <Paragraph>请求参数:</Paragraph>
-          <Paragraph copyable>{currentRow?.requestParams}</Paragraph>
+          <Paragraph copyable>{currentRow?.operationParams}</Paragraph>
         </div>
         <div>
           <Paragraph>响应参数:</Paragraph>
-          <Paragraph copyable>{currentRow?.responseParams}</Paragraph>
+          <Paragraph copyable>{currentRow?.operationResponse}</Paragraph>
         </div>
       </Drawer>
     </PageContainer>

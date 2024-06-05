@@ -65,7 +65,7 @@ export async function queryMemberAddressList(params: AddressListParams) {
 // 查询会员的登录日志
 export async function queryLoginLogList(params: LoginLogListParams) {
 
-  return request('/api/member/queryLoginLogList', {
+  return request('/api/member/queryMemberLoginLogList', {
     method: 'GET',
     params: {
       ...params,

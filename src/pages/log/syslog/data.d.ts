@@ -1,8 +1,8 @@
 export interface SysLogListItem {
   id: number;
-  requestParams: string;
-  responseParams: string;
-  method: string;
+  operationParams: string;
+  operationResponse: string;
+  operationUrl: string;
 
 }
 
