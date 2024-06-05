@@ -26,7 +26,6 @@ const handleAdd = async (fields: PostListItem) => {
     return true;
   } catch (error) {
     hide();
-    message.error('添加失败请重试！');
     return false;
   }
 };
@@ -45,7 +44,6 @@ const handleUpdate = async (fields: PostListItem) => {
     return true;
   } catch (error) {
     hide();
-    message.error('更新失败请重试！');
     return false;
   }
 };
@@ -64,7 +62,6 @@ const handleRemove = async (selectedRows: PostListItem[]) => {
     return true;
   } catch (error) {
     hide();
-    message.error('删除失败，请重试');
     return false;
   }
 };

@@ -40,7 +40,6 @@ const handleAdd = async (item: RoleListItem) => {
     return true;
   } catch (error) {
     hide();
-    message.error('添加失败请重试！');
     return false;
   }
 };
@@ -59,7 +58,6 @@ const handleUpdate = async (item: RoleListItem) => {
     return true;
   } catch (error) {
     hide();
-    message.error('更新失败请重试！');
     return false;
   }
 };
@@ -79,7 +77,6 @@ const handleRemove = async (list: RoleListItem[]) => {
     return true;
   } catch (error) {
     hide();
-    message.error('删除失败，请重试');
     return false;
   }
 };

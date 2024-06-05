@@ -19,7 +19,7 @@ import {
 } from '@ant-design/icons';
 import {RequestConfig,} from "@@/plugin-request/request";
 import {RequestInterceptor, RequestOptionsInit} from 'umi-request';
-import {notification} from "antd";
+import {message, notification} from "antd";
 
 const IconMap = {
   SmileOutlined: <SmileOutlined/>,
@@ -161,6 +161,7 @@ const codeMessage = {
  * 异常处理程序
  */
 const errorHandler = (error: any) => {
+  console.log("error：", error)
   const {response} = error;
   if (response && response.status) {
     const errorText = codeMessage[response.status] || response.statusText;
@@ -170,6 +171,7 @@ const errorHandler = (error: any) => {
       message: `请求错误 ${status}: ${url}`,
       description: errorText,
     });
+
   }
 
   if (!response) {
@@ -195,10 +197,10 @@ const addToken: RequestInterceptor = (url: string, options: RequestOptionsInit) 
   // }
 
   console.log("请求地址：" + method + ': ' + url)
-  if(JSON.stringify(data)!=undefined){
+  if (JSON.stringify(data) != undefined) {
     console.log("请求参数：" + JSON.stringify(data))
   }
-  if(JSON.stringify(params)!=undefined){
+  if (JSON.stringify(params) != undefined) {
     console.log("请求参数：" + JSON.stringify(params))
   }
   return {url, options};
@@ -207,8 +209,17 @@ const addToken: RequestInterceptor = (url: string, options: RequestOptionsInit) 
 // 响应拦截
 // @ts-ignore
 const res: ResponseInterceptor = async (response: Response) => {
+  if (response.status === 401) {
+    history.push(loginPath);
+    return response;
+  }
   const resp = await response.clone().json();
   console.log('响应数据: ' + JSON.stringify(resp));
+
+  if (resp.code === '111111') {
+    message.error(resp.message);
+    return {success: false};
+  }
 
   // const {code, success, msg} = resp;
   // let data = resp.data;
@@ -219,6 +230,7 @@ const res: ResponseInterceptor = async (response: Response) => {
   // } else {
   //   return response;
   // }
+
   return response;
 }
 

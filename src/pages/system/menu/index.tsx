@@ -28,7 +28,6 @@ const handleAdd = async (fields: MenuListItem) => {
     return true;
   } catch (error) {
     hide();
-    message.error('添加失败请重试！');
     return false;
   }
 };
@@ -48,7 +47,6 @@ const handleUpdate = async (fields: MenuListItem) => {
     return true;
   } catch (error) {
     hide();
-    message.error('更新失败请重试！');
     return false;
   }
 };
@@ -68,7 +66,6 @@ const handleRemove = async (selectedRows: MenuListItem[]) => {
     return true;
   } catch (error) {
     hide();
-    message.error('删除失败，请重试');
     return false;
   }
 };

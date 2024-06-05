@@ -43,7 +43,6 @@ const handleAdd = async (user: UserListItem) => {
     return true;
   } catch (error) {
     hide();
-    message.error('添加失败请重试！');
     return false;
   }
 };
@@ -62,7 +61,6 @@ const handleUpdate = async (user: UserListItem) => {
     return true;
   } catch (error) {
     hide();
-    message.error('更新失败请重试！');
     return false;
   }
 };
@@ -81,7 +79,6 @@ const handleRemove = async (selectedRows: UserListItem[]) => {
     return true;
   } catch (error) {
     hide();
-    message.error('删除失败，请重试');
     return false;
   }
 };

@@ -25,7 +25,6 @@ const handleRemove = async (selectedRows: LoginLogListItem[]) => {
     return true;
   } catch (error) {
     hide();
-    message.error('删除失败，请重试');
     return false;
   }
 };
