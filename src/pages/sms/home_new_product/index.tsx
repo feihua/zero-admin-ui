@@ -139,31 +139,30 @@ const HomeNewProductList: React.FC = () => {
       title: '操作',
       dataIndex: 'option',
       valueType: 'option',
-      render: (_, record) => (
-        <>
-          <Button
-            type="primary"
-            icon={<EditOutlined/>}
-            onClick={() => {
-              handleUpdateModalVisible(true);
-              setCurrentRow(record);
-            }}
-          >
-            编辑
-          </Button>
-          <Divider type="vertical" />
-          <Button
-            type="primary"
-            danger
-            icon={<DeleteOutlined/>}
-            onClick={() => {
-              showDeleteConfirm(record);
-            }}
-          >
-            删除
-          </Button>
-        </>
-      ),
+      width: 220,
+        render: (_, record) => (
+          <>
+            <a
+              key="sort"
+              onClick={() => {
+                handleUpdateModalVisible(true);
+                setCurrentRow(record);
+              }}
+            >
+              <EditOutlined/> 编辑
+            </a>
+            <Divider type="vertical"/>
+            <a
+              key="delete"
+              style={{color: '#ff4d4f'}}
+              onClick={() => {
+                showDeleteConfirm(record);
+              }}
+            >
+              <DeleteOutlined/> 删除
+            </a>
+          </>
+        ),
     },
   ];
 

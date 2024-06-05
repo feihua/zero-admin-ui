@@ -1,5 +1,12 @@
-import {PlusOutlined, ExclamationCircleOutlined, EditOutlined, DeleteOutlined} from '@ant-design/icons';
-import {Button, Divider, message, Drawer, Modal, Space, Tag, Select} from 'antd';
+import {
+  PlusOutlined,
+  ExclamationCircleOutlined,
+  EditOutlined,
+  DeleteOutlined,
+  DownOutlined,
+  RedoOutlined
+} from '@ant-design/icons';
+import {Button, Divider, message, Drawer, Modal, Space, Tag, Select, Dropdown, MenuProps} from 'antd';
 import React, {useState, useRef} from 'react';
 import {PageContainer, FooterToolbar} from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
@@ -106,6 +113,31 @@ const RoleList: React.FC = () => {
     });
   };
 
+  const items: MenuProps['items'] = [
+    {
+      key: '1',
+      label: (
+        <a>
+          数据权限
+        </a>
+      ),
+      icon: <RedoOutlined/>
+    },
+    {
+      key: '2',
+      label: (
+        <a
+          key="sort"
+          onClick={() => {
+            handleSetUserModalVisible(true);
+          }}
+        >
+          分配用户
+        </a>
+      ),
+      icon: <PlusOutlined/>,
+    },
+  ]
   const columns: ProColumns<RoleListItem>[] = [
     {
       title: '角色编号',
@@ -160,7 +192,6 @@ const RoleList: React.FC = () => {
       valueType: 'textarea',
       hideInSearch: true,
     },
-
     {
       title: '创建者',
       dataIndex: 'createBy',
@@ -189,51 +220,50 @@ const RoleList: React.FC = () => {
       title: '操作',
       dataIndex: 'option',
       valueType: 'option',
+      width: 300,
       render: (_, record) => (
         <>
-          <Button
-            type="primary"
-            icon={<EditOutlined/>}
+          <a
+            key="sort"
             onClick={() => {
               handleUpdateModalVisible(true);
               setCurrentRow(record);
             }}
           >
-            编辑
-          </Button>
+            <EditOutlined/> 编辑
+          </a>
           <Divider type="vertical"/>
-          <Button
-            type="primary"
-            icon={<EditOutlined/>}
+          <a
+            key="sort"
             onClick={() => {
               handleSetMenuModalVisible(true);
               setCurrentRow(record);
             }}
           >
-            分配菜单
-          </Button>
+            <EditOutlined/> 分配菜单
+          </a>
           <Divider type="vertical"/>
-          <Button
-            type="primary"
-            icon={<EditOutlined/>}
-            onClick={() => {
-              handleSetUserModalVisible(true);
-              setCurrentRow(record);
-            }}
-          >
-            分配用户
-          </Button>
-          <Divider type="vertical"/>
-          <Button
-            type="primary"
-            danger
-            icon={<DeleteOutlined/>}
+          <a
+            key="delete"
+            style={{color: '#ff4d4f'}}
             onClick={() => {
               showDeleteConfirm(record);
             }}
           >
-            删除
-          </Button>
+            <DeleteOutlined/> 删除
+          </a>
+          <Divider type="vertical"/>
+          <Dropdown menu={{items}}>
+            <a onClick={(e) => {
+              setCurrentRow(record);
+              return e.preventDefault()
+            }}>
+              <Space>
+                更多
+                <DownOutlined/>
+              </Space>
+            </a>
+          </Dropdown>
         </>
       ),
     },

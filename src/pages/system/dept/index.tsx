@@ -190,29 +190,29 @@ const DeptList: React.FC = () => {
       title: '操作',
       dataIndex: 'option',
       valueType: 'option',
+      width: 220,
       render: (_, record) => (
         <>
-          <Button
-            type="primary"
-            icon={<EditOutlined/>}
+          <a
+            key="sort"
             onClick={() => {
               handleUpdateModalVisible(true);
               setCurrentRow(record);
             }}
           >
-            编辑
-          </Button>
+            <EditOutlined/> 编辑
+          </a>
           <Divider type="vertical"/>
-          <Button
-            type="primary"
-            danger
-            icon={<DeleteOutlined/>}
+          <a
+            key="delete"
+            style={{color: '#ff4d4f'}}
             onClick={() => {
               showDeleteConfirm(record);
             }}
           >
-            删除
-          </Button>
+            <DeleteOutlined/> 删除
+          </a>
+
         </>
       ),
     },

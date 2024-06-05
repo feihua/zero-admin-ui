@@ -1,9 +1,9 @@
 import {EditOutlined} from '@ant-design/icons';
-import {Button, message,} from 'antd';
-import React, {useState, useRef} from 'react';
+import {message,} from 'antd';
+import React, {useRef, useState} from 'react';
 import {PageContainer} from '@ant-design/pro-layout';
+import type {ActionType, ProColumns} from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
-import type {ProColumns, ActionType} from '@ant-design/pro-table';
 import UpdateSettingForm from './components/UpdateSettingForm';
 import type {SettingListItem} from './data.d';
 import {queryOrderSettingList, updateOrderSetting} from './service';
@@ -80,20 +80,22 @@ const OrderSettingList: React.FC = () => {
       title: '操作',
       dataIndex: 'option',
       valueType: 'option',
+      width: 220,
       render: (_, record) => (
         <>
-          <Button
-            type="primary"
-            icon={<EditOutlined/>}
+          <a
+            key="sort"
             onClick={() => {
               handleUpdateModalVisible(true);
               setCurrentRow(record);
             }}
           >
-            编辑
-          </Button>
+            <EditOutlined/> 编辑
+          </a>
+
         </>
       ),
+
     },
   ];
 

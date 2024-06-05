@@ -104,31 +104,31 @@ const SysLogList: React.FC = () => {
       title: '操作',
       dataIndex: 'option',
       valueType: 'option',
+      width: 220,
       render: (_, record) => (
         <>
-          <Button
-            type="primary"
-            icon={<EditOutlined/>}
+          <a
+            key="sort"
             onClick={() => {
-              setCurrentRow(record);
               setShowDetail(true);
+              setCurrentRow(record);
             }}
           >
-            查看响应参数
-          </Button>
+            <EditOutlined/> 查看响应参数
+          </a>
           <Divider type="vertical"/>
-          <Button
-            type="primary"
-            danger
-            icon={<DeleteOutlined/>}
+          <a
+            key="delete"
+            style={{color: '#ff4d4f'}}
             onClick={() => {
               showDeleteConfirm(record);
             }}
           >
-            删除
-          </Button>
+            <DeleteOutlined/> 删除
+          </a>
         </>
       ),
+
     },
   ];
 

@@ -1,5 +1,5 @@
 import {PlusOutlined, ExclamationCircleOutlined, EditOutlined, DeleteOutlined} from '@ant-design/icons';
-import {Button, Divider, message, Drawer, Modal, Tag, Select} from 'antd';
+import {Button, Divider, message, Drawer, Modal, Tag, Select, } from 'antd';
 import React, {useState, useRef} from 'react';
 import {PageContainer, FooterToolbar} from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
@@ -181,40 +181,39 @@ const DictList: React.FC = () => {
       title: '操作',
       dataIndex: 'option',
       valueType: 'option',
+      width: 300,
       render: (_, record) => (
         <>
-          <Button
-            type="primary"
-            icon={<EditOutlined/>}
+          <a
+            key="sort"
             onClick={() => {
               handleUpdateModalVisible(true);
               setCurrentRow(record);
             }}
           >
-            编辑
-          </Button>
+            <EditOutlined/> 编辑
+          </a>
           <Divider type="vertical"/>
-          <Button
-            type="primary"
-            icon={<EditOutlined/>}
+          <a
+            key="sort"
             onClick={() => {
               handleDictItemModalVisible(true);
               setCurrentRow(record);
             }}
           >
-            配置字典项
-          </Button>
+            <EditOutlined/> 配置字典数据
+          </a>
           <Divider type="vertical"/>
-          <Button
-            type="primary"
-            danger
-            icon={<DeleteOutlined/>}
+          <a
+            key="delete"
+            style={{color: '#ff4d4f'}}
             onClick={() => {
               showDeleteConfirm(record);
             }}
           >
-            删除
-          </Button>
+            <DeleteOutlined/> 删除
+          </a>
+
         </>
       ),
     },

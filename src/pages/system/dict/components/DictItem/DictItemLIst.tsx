@@ -9,7 +9,12 @@ import type {ProDescriptionsItemProps} from '@ant-design/pro-descriptions';
 import CreateDictForm from './CreateDictItemForm';
 import UpdateDictForm from './UpdateDictItemForm';
 import type {DictItemListItem} from './data.d';
-import {addDictItem, queryDictItemList, removeDictItem, updateDictItem} from "@/pages/system/dict/components/DictItem/service";
+import {
+  addDictItem,
+  queryDictItemList,
+  removeDictItem,
+  updateDictItem
+} from "@/pages/system/dict/components/DictItem/service";
 
 const {confirm} = Modal;
 
@@ -104,233 +109,234 @@ const DictList: React.FC<DictListProps> = (props) => {
   }, [props.dictItemModalVisible]);
   //DictListItem
   const columns: ProColumns<DictItemListItem>[] = [
-    {
-      title: '字典编号',
-      dataIndex: 'id',
-      hideInSearch: true,
-    },
-    {
-      title: '显示排序',
-      dataIndex: 'dictSort',
-      hideInSearch: true,
-    },
-    {
-      title: '字典标签',
-      dataIndex: 'dictLabel',
-      render: (dom, entity) => {
-        return <a onClick={() => {
-          setCurrentRow(entity);
-          setShowDetail(true);
-        }}>{dom}</a>;
+      {
+        title: '字典编号',
+        dataIndex: 'id',
+        hideInSearch: true,
       },
-    },
-    {
-      title: '字典键值',
-      dataIndex: 'dictValue',
-      hideInSearch: true,
-    },
-    {
-      title: '状态',
-      dataIndex: 'dictStatus',
-      renderFormItem:(text, row, index) => {
-        return <Select
-          value={row.value}
-          options={[
-            { value: '1', label: '正常' },
-            { value: '0', label: '禁用' },
-          ]}
-        />
+      {
+        title: '显示排序',
+        dataIndex: 'dictSort',
+        hideInSearch: true,
+      },
+      {
+        title: '字典标签',
+        dataIndex: 'dictLabel',
+        render: (dom, entity) => {
+          return <a onClick={() => {
+            setCurrentRow(entity);
+            setShowDetail(true);
+          }}>{dom}</a>;
+        },
+      },
+      {
+        title: '字典键值',
+        dataIndex: 'dictValue',
+        hideInSearch: true,
+      },
+      {
+        title: '状态',
+        dataIndex: 'dictStatus',
+        renderFormItem: (text, row, index) => {
+          return <Select
+            value={row.value}
+            options={[
+              {value: '1', label: '正常'},
+              {value: '0', label: '禁用'},
+            ]}
+          />
 
+        },
+        render: (dom, entity) => {
+          switch (entity.dictStatus) {
+            case 1:
+              return <Tag color={'success'}>正常</Tag>;
+            case 0:
+              return <Tag>禁用</Tag>;
+          }
+          return <>未知{entity.dictStatus}</>;
+        },
       },
-      render: (dom, entity) => {
-        switch (entity.dictStatus) {
-          case 1:
-            return <Tag color={'success'}>正常</Tag>;
-          case 0:
-            return <Tag>禁用</Tag>;
-        }
-        return <>未知{entity.dictStatus }</>;
+      {
+        title: '备注',
+        dataIndex: 'remark',
+        valueType: 'textarea',
+        hideInSearch: true,
       },
-    },
-    {
-      title: '备注',
-      dataIndex: 'remark',
-      valueType: 'textarea',
-      hideInSearch: true,
-    },
-    {
-      title: '创建者',
-      dataIndex: 'createBy',
-      hideInSearch: true,
-      hideInTable: true
-    },
-    {
-      title: '创建时间',
-      dataIndex: 'createTime',
-      sorter: true,
-      valueType: 'dateTime',
-      hideInSearch: true,
-      hideInTable: true
-    },
-    {
-      title: '更新者',
-      dataIndex: 'updateBy',
-      hideInSearch: true,
-      hideInTable: true
-    },
-    {
-      title: '更新时间',
-      dataIndex: 'updateTime',
-      sorter: true,
-      valueType: 'dateTime',
-      hideInSearch: true,
-      hideInTable: true
-    },
-    {
-      title: '操作',
-      dataIndex: 'option',
-      valueType: 'option',
-      render: (_, record) => (
-        <>
-          <Button
-            type="primary"
-            icon={<EditOutlined/>}
-            onClick={() => {
-              handleUpdateModalVisible(true);
-              setCurrentRow(record);
-            }}
-          >
-            编辑
-          </Button>
-          <Divider type="vertical"/>
-          <Button
-            type="primary"
-            danger
-            icon={<DeleteOutlined/>}
-            onClick={() => {
-              showDeleteConfirm(record);
-            }}
-          >
-            删除
-          </Button>
-        </>
-      ),
-    },
-  ];
-
-  return (
-      <>
-        <ProTable<DictItemListItem>
-          headerTitle="字典管理"
-          actionRef={actionRef}
-          rowKey="id"
-          search={{
-            labelWidth: 120,
-          }}
-          toolBarRender={() => [
-            <Button type="primary" key="primary" onClick={() => handleModalVisible(true)}>
-              <PlusOutlined/> 新建
-            </Button>,
-          ]}
-          request={(params)=>{
-            return queryDictItemList({...params,dictType:props.dictType})}}
-          columns={columns}
-          rowSelection={{
-            onChange: (_, selectedRows) => setSelectedRows(selectedRows),
-          }}
-          pagination={{pageSize: 10}}
-        />
-        {selectedRowsState?.length > 0 && (
-          <FooterToolbar
-            extra={
-              <div>
-                已选择 <a style={{fontWeight: 600}}>{selectedRowsState.length}</a> 项&nbsp;&nbsp;
-              </div>
-            }
-          >
-            <Button
-              type={"primary"}
-              danger
-              onClick={async () => {
-                await handleRemove(selectedRowsState);
-                setSelectedRows([]);
-                actionRef.current?.reloadAndRest?.();
+      {
+        title: '创建者',
+        dataIndex: 'createBy',
+        hideInSearch: true,
+        hideInTable: true
+      },
+      {
+        title: '创建时间',
+        dataIndex: 'createTime',
+        sorter: true,
+        valueType: 'dateTime',
+        hideInSearch: true,
+        hideInTable: true
+      },
+      {
+        title: '更新者',
+        dataIndex: 'updateBy',
+        hideInSearch: true,
+        hideInTable: true
+      },
+      {
+        title: '更新时间',
+        dataIndex: 'updateTime',
+        sorter: true,
+        valueType: 'dateTime',
+        hideInSearch: true,
+        hideInTable: true
+      },
+      {
+        title: '操作',
+        dataIndex: 'option',
+        valueType: 'option',
+        width: 220,
+        render: (_, record) => (
+          <>
+            <a
+              key="sort"
+              onClick={() => {
+                handleUpdateModalVisible(true);
+                setCurrentRow(record);
               }}
             >
-              批量删除
-            </Button>
-          </FooterToolbar>
-        )}
-
-        <CreateDictForm
-          key={'CreateDictForm'}
-          onSubmit={async (value) => {
-            value.dictType=props.dictType;
-            const success = await handleAdd(value);
-            if (success) {
-              handleModalVisible(false);
-              setCurrentRow(undefined);
-              if (actionRef.current) {
-                actionRef.current.reload();
-              }
-            }
-          }}
-          onCancel={() => {
-            handleModalVisible(false);
-            if (!showDetail) {
-              setCurrentRow(undefined);
-            }
-          }}
-          createModalVisible={createModalVisible}
-        />
-
-        <UpdateDictForm
-          key={'UpdateDictForm'}
-          onSubmit={async (value) => {
-            value.dictType=props.dictType;
-            const success = await handleUpdate(value);
-            if (success) {
-              handleUpdateModalVisible(false);
-              setCurrentRow(undefined);
-              if (actionRef.current) {
-                actionRef.current.reload();
-              }
-            }
-          }}
-          onCancel={() => {
-            handleUpdateModalVisible(false);
-            if (!showDetail) {
-              setCurrentRow(undefined);
-            }
-          }}
-          updateModalVisible={updateModalVisible}
-          currentData={currentRow || {}}
-        />
-
-        <Drawer
-          width={600}
-          visible={showDetail}
-          onClose={() => {
-            setCurrentRow(undefined);
-            setShowDetail(false)
-          }}
-          closable={false}
-        >
-          {currentRow?.id && (
-            <ProDescriptions<DictItemListItem>
-              column={2}
-              title={"字典详情"}
-              request={async () => ({
-                data: currentRow || {},
-              })}
-              params={{
-                id: currentRow?.id,
+              <EditOutlined/> 编辑
+            </a>
+            <Divider type="vertical"/>
+            <a
+              key="delete"
+              style={{color: '#ff4d4f'}}
+              onClick={() => {
+                showDeleteConfirm(record);
               }}
-              columns={columns as ProDescriptionsItemProps<DictItemListItem>[]}
-            />
-          )}
-        </Drawer>
-      </>
+            >
+              <DeleteOutlined/> 删除
+            </a>
+          </>
+        ),
+      },
+    ]
+  ;
+
+  return (
+    <>
+      <ProTable<DictItemListItem>
+        headerTitle="字典管理"
+        actionRef={actionRef}
+        rowKey="id"
+        search={{
+          labelWidth: 120,
+        }}
+        toolBarRender={() => [
+          <Button type="primary" key="primary" onClick={() => handleModalVisible(true)}>
+            <PlusOutlined/> 新建
+          </Button>,
+        ]}
+        request={(params) => {
+          return queryDictItemList({...params, dictType: props.dictType})
+        }}
+        columns={columns}
+        rowSelection={{
+          onChange: (_, selectedRows) => setSelectedRows(selectedRows),
+        }}
+        pagination={{pageSize: 10}}
+      />
+      {selectedRowsState?.length > 0 && (
+        <FooterToolbar
+          extra={
+            <div>
+              已选择 <a style={{fontWeight: 600}}>{selectedRowsState.length}</a> 项&nbsp;&nbsp;
+            </div>
+          }
+        >
+          <Button
+            type={"primary"}
+            danger
+            onClick={async () => {
+              await handleRemove(selectedRowsState);
+              setSelectedRows([]);
+              actionRef.current?.reloadAndRest?.();
+            }}
+          >
+            批量删除
+          </Button>
+        </FooterToolbar>
+      )}
+
+      <CreateDictForm
+        key={'CreateDictForm'}
+        onSubmit={async (value) => {
+          value.dictType = props.dictType;
+          const success = await handleAdd(value);
+          if (success) {
+            handleModalVisible(false);
+            setCurrentRow(undefined);
+            if (actionRef.current) {
+              actionRef.current.reload();
+            }
+          }
+        }}
+        onCancel={() => {
+          handleModalVisible(false);
+          if (!showDetail) {
+            setCurrentRow(undefined);
+          }
+        }}
+        createModalVisible={createModalVisible}
+      />
+
+      <UpdateDictForm
+        key={'UpdateDictForm'}
+        onSubmit={async (value) => {
+          value.dictType = props.dictType;
+          const success = await handleUpdate(value);
+          if (success) {
+            handleUpdateModalVisible(false);
+            setCurrentRow(undefined);
+            if (actionRef.current) {
+              actionRef.current.reload();
+            }
+          }
+        }}
+        onCancel={() => {
+          handleUpdateModalVisible(false);
+          if (!showDetail) {
+            setCurrentRow(undefined);
+          }
+        }}
+        updateModalVisible={updateModalVisible}
+        currentData={currentRow || {}}
+      />
+
+      <Drawer
+        width={600}
+        visible={showDetail}
+        onClose={() => {
+          setCurrentRow(undefined);
+          setShowDetail(false)
+        }}
+        closable={false}
+      >
+        {currentRow?.id && (
+          <ProDescriptions<DictItemListItem>
+            column={2}
+            title={"字典详情"}
+            request={async () => ({
+              data: currentRow || {},
+            })}
+            params={{
+              id: currentRow?.id,
+            }}
+            columns={columns as ProDescriptionsItemProps<DictItemListItem>[]}
+          />
+        )}
+      </Drawer>
+    </>
 
   );
 };

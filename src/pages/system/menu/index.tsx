@@ -1,14 +1,14 @@
-import {PlusOutlined, ExclamationCircleOutlined, EditOutlined, DeleteOutlined} from '@ant-design/icons';
-import {Button, Divider, message, Drawer, Modal, Tag} from 'antd';
-import React, {useState, useRef} from 'react';
+import {DeleteOutlined, EditOutlined, ExclamationCircleOutlined, PlusOutlined} from '@ant-design/icons';
+import {Button, Divider, Drawer, message, Modal, Tag} from 'antd';
+import React, {useRef, useState} from 'react';
 import {PageContainer} from '@ant-design/pro-layout';
+import type {ActionType, ProColumns} from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
-import type {ProColumns, ActionType} from '@ant-design/pro-table';
-import ProDescriptions from '@ant-design/pro-descriptions';
 import type {ProDescriptionsItemProps} from '@ant-design/pro-descriptions';
+import ProDescriptions from '@ant-design/pro-descriptions';
 import UpdateMenuForm from './components/UpdateMenuForm';
 import type {MenuListItem} from './data.d';
-import {queryMenuList, updateMenu, addMenu, removeMenu} from './service';
+import {addMenu, queryMenuList, removeMenu, updateMenu} from './service';
 import {tree} from '@/utils/utils';
 import CreateMenuForm from '@/pages/system/menu/components/CreateMenuForm';
 
@@ -162,7 +162,7 @@ const MenuList: React.FC = () => {
           case 0:
             return <Tag>禁用</Tag>;
         }
-        return <>未知{entity.menuStatus }</>;
+        return <>未知{entity.menuStatus}</>;
       },
     },
     {
@@ -201,29 +201,29 @@ const MenuList: React.FC = () => {
       title: '操作',
       dataIndex: 'option',
       valueType: 'option',
+      width: 220,
       render: (_, record) => (
         <>
-          <Button
-            type="primary"
-            icon={<EditOutlined/>}
+          <a
+            key="sort"
             onClick={() => {
               handleUpdateModalVisible(true);
               setCurrentRow(record);
             }}
           >
-            编辑
-          </Button>
+            <EditOutlined/> 编辑
+          </a>
           <Divider type="vertical"/>
-          <Button
-            type="primary"
-            danger
-            icon={<DeleteOutlined/>}
+          <a
+            key="delete"
+            style={{color: '#ff4d4f'}}
             onClick={() => {
               showDeleteConfirm(record);
             }}
           >
-            删除
-          </Button>
+            <DeleteOutlined/> 删除
+          </a>
+
         </>
       ),
     },

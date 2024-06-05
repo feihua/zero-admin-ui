@@ -1,5 +1,12 @@
-import {DeleteOutlined, EditOutlined, PlusOutlined, ExclamationCircleOutlined} from '@ant-design/icons';
-import {Button, Divider, message, Drawer, Modal, Col, Row, Tree, Tag, Select} from 'antd';
+import {
+  DeleteOutlined,
+  EditOutlined,
+  PlusOutlined,
+  ExclamationCircleOutlined,
+  DownOutlined,
+  RedoOutlined
+} from '@ant-design/icons';
+import {Button, Divider, message, Drawer, Modal, Col, Row, Tree, Tag, Select, Dropdown, Space, MenuProps} from 'antd';
 import React, {useState, useRef, useEffect} from 'react';
 import {PageContainer, FooterToolbar} from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
@@ -107,6 +114,50 @@ const UserList: React.FC = () => {
     });
   };
 
+  const showReSetPasswordConfirm = () => {
+    confirm({
+      title: '重置密码?',
+      icon: <ExclamationCircleOutlined/>,
+      // content: '删除的记录不能恢复,请确认!',
+      onOk() {
+        // handleRemove([item]).then(() => {
+        //   actionRef.current?.reloadAndRest?.();
+        // });
+      },
+      onCancel() {
+      },
+    });
+  };
+
+  const items: MenuProps['items'] = [
+    {
+      key: '1',
+      label: (
+        <a key={'resetPassword'} onClick={()=>{
+          showReSetPasswordConfirm()
+        }}>
+          重置密码
+        </a>
+      ),
+      icon: <RedoOutlined/>
+    },
+    {
+      key: '2',
+      label: (
+        <a
+          key="sort"
+          onClick={() => {
+            handleSetRoleModalVisible(true);
+            // setCurrentRow(record);
+          }}
+        >
+          分配角色
+        </a>
+      ),
+      icon: <PlusOutlined/>,
+    },
+  ]
+
   const columns: ProColumns<UserListItem>[] = [
     {
       title: '编号',
@@ -140,12 +191,12 @@ const UserList: React.FC = () => {
     {
       title: '状态',
       dataIndex: 'userStatus',
-      renderFormItem:(text, row, index) => {
+      renderFormItem: (text, row, index) => {
         return <Select
           value={row.value}
           options={[
-            { value: '1', label: '正常' },
-            { value: '0', label: '禁用' },
+            {value: '1', label: '正常'},
+            {value: '0', label: '禁用'},
           ]}
         />
 
@@ -157,7 +208,7 @@ const UserList: React.FC = () => {
           case 0:
             return <Tag>禁用</Tag>;
         }
-        return <>未知{entity.userStatus }</>;
+        return <>未知{entity.userStatus}</>;
       },
     },
     {
@@ -209,40 +260,40 @@ const UserList: React.FC = () => {
       title: '操作',
       dataIndex: 'option',
       valueType: 'option',
+      width: 220,
       render: (_, record) => (
         <>
-          <Button
-            type="primary"
-            icon={<EditOutlined/>}
+          <a
+            key="sort"
             onClick={() => {
               handleUpdateModalVisible(true);
               setCurrentRow(record);
             }}
           >
-            编辑
-          </Button>
+            <EditOutlined/> 编辑
+          </a>
           <Divider type="vertical"/>
-          <Button
-            type="primary"
-            icon={<EditOutlined/>}
-            onClick={() => {
-              handleSetRoleModalVisible(true);
-              setCurrentRow(record);
-            }}
-          >
-            分配角色
-          </Button>
-          <Divider type="vertical"/>
-          <Button
-            type="primary"
-            danger
-            icon={<DeleteOutlined/>}
+          <a
+            key="delete"
+            style={{color: '#ff4d4f'}}
             onClick={() => {
               showDeleteConfirm(record);
             }}
           >
-            删除
-          </Button>
+            <DeleteOutlined/> 删除
+          </a>
+          <Divider type="vertical"/>
+          <Dropdown menu={{items}}>
+            <a onClick={(e) => {
+              setCurrentRow(record);
+              return e.preventDefault()
+            }}>
+              <Space>
+                更多
+                <DownOutlined/>
+              </Space>
+            </a>
+          </Dropdown>
         </>
       ),
     },

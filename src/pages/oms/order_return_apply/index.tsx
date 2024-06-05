@@ -1,5 +1,5 @@
 import {EditOutlined} from '@ant-design/icons';
-import {Button, Drawer, message} from 'antd';
+import {Divider, Drawer, message} from 'antd';
 import React, {useRef, useState} from 'react';
 import {PageContainer} from '@ant-design/pro-layout';
 import type {ActionType, ProColumns} from '@ant-design/pro-table';
@@ -117,20 +117,23 @@ const ReturnApplyList: React.FC = () => {
       title: '操作',
       dataIndex: 'option',
       valueType: 'option',
+      width: 220,
       render: (_, record) => (
         <>
-          <Button
-            type="primary"
-            icon={<EditOutlined/>}
+          <a
+            key="sort"
             onClick={() => {
               handleDetailModalVisible(true);
               setCurrentRow(record);
             }}
           >
-            查看详情
-          </Button>
+            <EditOutlined/> 查看详情
+          </a>
+          <Divider type="vertical"/>
+
         </>
       ),
+
     },
   ];
 

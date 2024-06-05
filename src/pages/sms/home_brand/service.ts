@@ -33,7 +33,7 @@ export async function updateHomeBrand(params: HomeBrandListItem) {
 }
 
 // 批量更新品牌推荐状态
-export async function updateHomeBrandStatus(params: { dictTypeIds: number[], postStatus: number }) {
+export async function updateHomeBrandStatus(params: { ids: number[], recommendStatus: number }) {
   return request('/api/sms/homeBrand/updateHomeBrandStatus', {
     method: 'POST',
     data: {

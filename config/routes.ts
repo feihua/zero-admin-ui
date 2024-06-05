@@ -149,6 +149,36 @@
         path: '/ums/memberLoginLog/list',
         component: './ums/member_login_log',
       },
+      {
+        name: '积分消费设置',
+        icon: 'table',
+        path: '/ums/integrationConsumeSetting/list',
+        component: './ums/IntegrationConsumeSetting',
+      },
+      {
+        name: '成长规则',
+        icon: 'table',
+        path: '/ums/memberRule/list',
+        component: './ums/MemberRuleSetting',
+      },
+      {
+        name: '会员标签',
+        icon: 'table',
+        path: '/ums/memberTag/list',
+        component: './ums/MemberTag',
+      },
+      {
+        name: '会员任务',
+        icon: 'table',
+        path: '/ums/memberTask/list',
+        component: './ums/MemberTask',
+      },
+      {
+        name: '会员任务',
+        icon: 'table',
+        path: '/ums/statistics/list',
+        component: './ums/Statistics',
+      },
     ],
   },
   {
@@ -217,6 +247,12 @@
         path: '/oms/orderReturnReason/list',
         component: './oms/order_return_reason',
       },
+      {
+        name: '公司地址',
+        icon: 'table',
+        path: '/oms/companyAddress/list',
+        component: './oms/CompanyAddress',
+      },
     ],
   },
   {
@@ -265,6 +301,31 @@
         icon: 'table',
         path: '/sms/coupon/list',
         component: './sms/coupon',
+      },
+      {
+        name: '限时购场次',
+        icon: 'table',
+        path: '/sms/flashPromotionSession/list',
+        component: './sms/FlashPromotionSession',
+      },
+    ],
+  },
+  {
+    path: '/cms',
+    name: '内容管理',
+    icon: 'crown',
+    routes: [
+      {
+        name: '商品专题',
+        icon: 'table',
+        path: '/cms/subject/list',
+        component: './cms/Subject',
+      },
+      {
+        name: '商品优选',
+        icon: 'table',
+        path: '/cms/preferredArea/list',
+        component: './cms/PreferredArea',
       },
     ],
   },
