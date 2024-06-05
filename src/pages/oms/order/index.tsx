@@ -1,5 +1,12 @@
-import {DeleteOutlined, EditOutlined, ExclamationCircleOutlined} from '@ant-design/icons';
-import {Button, Divider, Drawer, message, Modal} from 'antd';
+import {
+  CloseOutlined,
+  DeleteOutlined,
+  EditOutlined,
+  ExclamationCircleOutlined,
+  RiseOutlined,
+  StepForwardOutlined
+} from '@ant-design/icons';
+import {Divider, Drawer, message, Modal} from 'antd';
 import React, {useRef, useState} from 'react';
 import {PageContainer} from '@ant-design/pro-layout';
 import type {ActionType, ProColumns} from '@ant-design/pro-table';
@@ -182,32 +189,60 @@ const OrderList: React.FC = () => {
       valueType: 'option',
       render: (_, record) => (
         <>
-          <Button
-            type="primary"
-            icon={<EditOutlined/>}
+          <a
+            key="1"
             onClick={() => {
               handleUpdateModalVisible(true);
               setCurrentRow(record);
             }}
           >
-            查看订单
-          </Button>
+            <EditOutlined/> 查看订单
+          </a>
           <Divider type="vertical"/>
-          {record.status === 0 && <Button style={{background: 'rgba(254,105,204,0.9)', color: 'white'}} icon={<DeleteOutlined/>} onClick={() => {
-            handleCloseOrderModelVisible(true);
-            setCurrentRow(record);
-          }}>关闭订单</Button>}
-          {record.status === 4 && <Button type="primary" danger icon={<DeleteOutlined/>} onClick={() => {
-            showDeleteConfirm(record);
-          }}>删除订单</Button>}
-          {record.status === 1 && <Button icon={<EditOutlined/>} onClick={() => {
-            handleDeliveryModelVisible(true);
-            setCurrentRow(record);
-          }} style={{background: '#c762ef', color: 'white'}}>订单发货</Button>}
-          {(record.status === 2 || record.status === 3) && <Button icon={<EditOutlined/>} style={{background: 'rgba(103,170,247,0.96)', color: 'white'}} onClick={() => {
-            handleOrderTrackingModalVisible(true);
-            setCurrentRow(record);
-          }}>订单跟踪</Button>}
+          {record.status === 0 && <a
+            key="2"
+            onClick={() => {
+              handleCloseOrderModelVisible(true);
+              setCurrentRow(record);
+            }}
+          >
+            <CloseOutlined/> 关闭订单
+            <Divider type="vertical"/>
+          </a>}
+
+          {record.status === 4 && <a
+            key="3"
+            style={{color: '#ff4d4f'}}
+            onClick={() => {
+              showDeleteConfirm(record);
+              setCurrentRow(record);
+            }}
+          >
+            <DeleteOutlined/> 删除订单
+            <Divider type="vertical"/>
+          </a>}
+
+          {record.status === 1 && <a
+            key="4"
+            onClick={() => {
+              handleDeliveryModelVisible(true);
+              setCurrentRow(record);
+            }}
+          >
+            <StepForwardOutlined/> 订单发货
+            <Divider type="vertical"/>
+          </a>}
+
+          {(record.status === 2 || record.status === 3) && <a
+            key="5"
+            onClick={() => {
+              handleOrderTrackingModalVisible(true);
+              setCurrentRow(record);
+            }}
+          >
+            <RiseOutlined/> 订单跟踪
+          </a>}
+
         </>
       ),
     },
