@@ -7,24 +7,22 @@ export async function addRecommendSubject(params: number[]) {
   return request('/api/sms/homeRecommendSubject/addHomeRecommendSubject', {
     method: 'POST',
     data: {
-      ...params,
+      subjectIds: params,
     },
   });
 }
 
-//
-
 // 删除推荐专题
-export async function removeRecommendSubject(ids: number[]) {
-  return request('/api/sms/homeRecommendSubject/deleteHomeRecommendSubject?ids=[' + ids + "]", {
+export async function removeRecommendSubject(ids: number[], subjectIds: number[]) {
+  return request('/api/sms/homeRecommendSubject/deleteHomeRecommendSubject?ids=[' + ids + "]&subjectIds=[" + subjectIds + ']', {
     method: 'GET',
   });
 }
 
 
-// 更新推荐专题
-export async function updateRecommendSubject(params: RecommendSubjectListItem) {
-  return request('/api/sms/homeRecommendSubject/updateHomeRecommendSubject', {
+// 更新推荐专题排序
+export async function updateRecommendSubjectSort(params: RecommendSubjectListItem) {
+  return request('/api/sms/homeRecommendSubject/updateRecommendSubjectSort', {
     method: 'POST',
     data: {
       ...params,
@@ -33,8 +31,12 @@ export async function updateRecommendSubject(params: RecommendSubjectListItem) {
 }
 
 // 批量更新推荐专题状态
-export async function updateRecommendSubjectStatus(params: { dictTypeIds: number[], postStatus: number }) {
-  return request('/api/sms/homeRecommendSubject/updateHomeRecommendSubjectStatus', {
+export async function updateRecommendSubjectStatus(params: {
+  ids: number[],
+  recommendStatus: number,
+  subjectIds: number[]
+}) {
+  return request('/api/sms/homeRecommendSubject/updateRecommendSubjectStatus', {
     method: 'POST',
     data: {
       ...params,
@@ -45,7 +47,7 @@ export async function updateRecommendSubjectStatus(params: { dictTypeIds: number
 
 
 // 查询推荐专题详情
-export async function queryRecommendSubjectDetail(id: number ) {
+export async function queryRecommendSubjectDetail(id: number) {
   return request('/api/sms/homeRecommendSubject/queryHomeRecommendSubjectDetail', {
     method: 'GET',
   });
@@ -63,11 +65,11 @@ export async function queryRecommendSubjectList(params: RecommendSubjectListPara
 }
 
 
-export async function querySubject(params: SubjectListParams) {
+export async function querySubjectList(params: SubjectListParams) {
   return request('/api/cms/subject/querySubjectList', {
     method: 'GET',
     params: {
-      ...params,
+      ...params, recommendStatus: 0
     },
   });
 }

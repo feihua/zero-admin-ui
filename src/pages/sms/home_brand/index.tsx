@@ -2,7 +2,7 @@ import {
   PlusOutlined,
   ExclamationCircleOutlined,
 } from '@ant-design/icons';
-import {Button, Divider, message, Drawer, Modal, Switch} from 'antd';
+import {Button, Divider, message, Drawer, Modal, Switch, Select} from 'antd';
 import React, {useState, useRef} from 'react';
 import {PageContainer, FooterToolbar} from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
@@ -159,6 +159,16 @@ const HomeBrandList: React.FC = () => {
       title: '是否推荐',
       dataIndex: 'recommendStatus',
       width: 220,
+      renderFormItem:(text, row, index) => {
+        return <Select
+          value={row.value}
+          options={[
+            { value: '1', label: '推荐' },
+            { value: '0', label: '不推荐' },
+          ]}
+        />
+
+      },
       render: (dom, entity) => {
         return (
           <Switch defaultChecked={dom == 1} onChange={(flag) => {

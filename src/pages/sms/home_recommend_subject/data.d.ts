@@ -1,6 +1,8 @@
 export interface RecommendSubjectListItem {
   id: number;
+  subjectId: number;
   subjectName: string;
+  recommendStatus: number;
 }
 
 export interface SubjectListItem {
@@ -8,6 +10,7 @@ export interface SubjectListItem {
   title: string;
   description: string;
   id: number;
+  subjectId: number;
 }
 
 export interface RecommendSubjectListPagination {

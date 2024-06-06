@@ -1,7 +1,7 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {Modal} from 'antd';
 import type {SubjectListItem} from '../data.d';
-import {querySubject} from '@/pages/sms/home_recommend_subject/service';
+import {querySubjectList} from '@/pages/sms/home_recommend_subject/service';
 import type {ActionType, ProColumns} from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
 
@@ -11,7 +11,7 @@ export interface CreateFormProps {
   createModalVisible: boolean;
 }
 
-const CreateRecommendSubjectForm: React.FC<CreateFormProps> = (props) => {
+const CreateForm: React.FC<CreateFormProps> = (props) => {
   const actionRef = useRef<ActionType>();
   const [selectedRowsState, setSelectedRows] = useState<SubjectListItem[]>([]);
 
@@ -62,23 +62,23 @@ const CreateRecommendSubjectForm: React.FC<CreateFormProps> = (props) => {
       {...modalFooter}
       width={800}
     >
-      <ProTable<SubjectListItem>
+      {createModalVisible && <ProTable<SubjectListItem>
         toolBarRender={false}
         actionRef={actionRef}
         rowKey="id"
         search={{
           labelWidth: 65,
         }}
-        request={querySubject}
+        request={querySubjectList}
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows) => setSelectedRows(selectedRows),
         }}
         pagination={{pageSize: 6}}
-      />
+      />}
 
     </Modal>
   );
 };
 
-export default CreateRecommendSubjectForm;
+export default CreateForm;

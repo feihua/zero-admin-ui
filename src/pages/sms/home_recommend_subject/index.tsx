@@ -1,22 +1,23 @@
-import {PlusOutlined, ExclamationCircleOutlined, DeleteOutlined, EditOutlined} from '@ant-design/icons';
-import {Button, Divider, message, Drawer, Modal} from 'antd';
-import React, {useState, useRef} from 'react';
-import {PageContainer, FooterToolbar} from '@ant-design/pro-layout';
+import {DeleteOutlined, EditOutlined, ExclamationCircleOutlined, PlusOutlined} from '@ant-design/icons';
+import {Button, Divider, Drawer, message, Modal, Select, Space, Switch} from 'antd';
+import React, {useRef, useState} from 'react';
+import {PageContainer} from '@ant-design/pro-layout';
+import type {ActionType, ProColumns} from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
-import type {ProColumns, ActionType} from '@ant-design/pro-table';
-import ProDescriptions from '@ant-design/pro-descriptions';
 import type {ProDescriptionsItemProps} from '@ant-design/pro-descriptions';
-import CreateRecommendSubjectForm from './components/CreateRecommendSubjectForm';
-import UpdateRecommendSubjectForm from './components/UpdateRecommendSubjectForm';
+import ProDescriptions from '@ant-design/pro-descriptions';
+import CreateForm from './components/CreateForm';
+import SetSortForm from './components/SetSortForm';
 import type {RecommendSubjectListItem} from './data.d';
 import {
-  queryRecommendSubjectList,
-  updateRecommendSubject,
   addRecommendSubject,
+  queryRecommendSubjectList,
   removeRecommendSubject,
+  updateRecommendSubjectSort,
+  updateRecommendSubjectStatus,
 } from './service';
 
-const { confirm } = Modal;
+const {confirm} = Modal;
 
 /**
  * 添加节点
@@ -35,45 +36,66 @@ const handleAdd = async (subjectIds: number[]) => {
     return true;
   } catch (error) {
     hide();
-    message.error('添加失败请重试！');
     return false;
   }
 };
 
 /**
- * 更新节点
+ * 更新节点排序
  * @param fields
  */
-const handleUpdate = async (fields: RecommendSubjectListItem) => {
+const handleUpdateSubjectSor = async (fields: RecommendSubjectListItem) => {
   const hide = message.loading('正在更新');
   try {
-    await updateRecommendSubject(fields);
+    await updateRecommendSubjectSort(fields);
     hide();
 
     message.success('更新成功');
     return true;
   } catch (error) {
     hide();
-    message.error('更新失败请重试！');
     return false;
   }
 };
 
 /**
  *  删除节点
- * @param selectedRows
+ * @param ids
+ * @param subjectIds
  */
-const handleRemove = async (selectedRows: RecommendSubjectListItem[]) => {
+const handleRemove = async (ids: number[], subjectIds: number[]) => {
   const hide = message.loading('正在删除');
-  if (!selectedRows) return true;
+  if (ids.length === 0) return true;
   try {
-    await removeRecommendSubject(selectedRows.map((row) => row.id));
+    await removeRecommendSubject(ids, subjectIds);
     hide();
     message.success('删除成功，即将刷新');
     return true;
   } catch (error) {
     hide();
-    message.error('删除失败，请重试');
+    return false;
+  }
+};
+
+/**
+ * 更新推荐状态
+ * @param ids
+ * @param recommendStatus
+ * @param subjectIds
+ */
+const handleStatus = async (ids: number[], recommendStatus: number, subjectIds: number[]) => {
+  const hide = message.loading('正在更新品牌推荐状态');
+  if (ids.length == 0) {
+    hide();
+    return true;
+  }
+  try {
+    await updateRecommendSubjectStatus({ids: ids, recommendStatus: recommendStatus, subjectIds: subjectIds});
+    hide();
+    message.success('更新品牌推荐状态成功');
+    return true;
+  } catch (error) {
+    hide();
     return false;
   }
 };
@@ -84,17 +106,29 @@ const RecommendSubjectList: React.FC = () => {
   const [showDetail, setShowDetail] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<RecommendSubjectListItem>();
-  const [selectedRowsState, setSelectedRows] = useState<RecommendSubjectListItem[]>([]);
 
-  const showDeleteConfirm = (item: RecommendSubjectListItem) => {
+  const showDeleteConfirm = (ids: number[], subjectIds: number[]) => {
     confirm({
       title: '是否删除记录?',
       icon: <ExclamationCircleOutlined/>,
       content: '删除的记录不能恢复,请确认!',
       onOk() {
-        handleRemove([item]).then((r) => {
+        handleRemove(ids, subjectIds).then(() => {
           actionRef.current?.reloadAndRest?.();
         });
+      },
+      onCancel() {
+      },
+    });
+  };
+
+  const showStatusConfirm = (item: RecommendSubjectListItem, status: number, subjectIds: number[]) => {
+    confirm({
+      title: `确定${status == 1 ? "推荐" : "不推荐"}${item.subjectName}专题吗？`,
+      icon: <ExclamationCircleOutlined/>,
+      async onOk() {
+        await handleStatus([item.id], status, subjectIds)
+        actionRef.current?.reload?.();
       },
       onCancel() {
       },
@@ -126,9 +160,22 @@ const RecommendSubjectList: React.FC = () => {
     {
       title: '推荐状态',
       dataIndex: 'recommendStatus',
-      valueEnum: {
-        0: {text: '不推荐', status: 'Error'},
-        1: {text: '推荐', status: 'Success'},
+      renderFormItem: (text, row) => {
+        return <Select
+          value={row.value}
+          options={[
+            {value: '1', label: '推荐'},
+            {value: '0', label: '不推荐'},
+          ]}
+        />
+
+      },
+      render: (dom, entity) => {
+        return (
+          <Switch checked={entity.recommendStatus == 1} onChange={(flag) => {
+            showStatusConfirm(entity, flag ? 1 : 0, [entity.subjectId])
+          }}/>
+        );
       },
     },
     {
@@ -141,29 +188,29 @@ const RecommendSubjectList: React.FC = () => {
       dataIndex: 'option',
       valueType: 'option',
       width: 220,
-        render: (_, record) => (
-          <>
-            <a
-              key="sort"
-              onClick={() => {
-                handleUpdateModalVisible(true);
-                setCurrentRow(record);
-              }}
-            >
-              <EditOutlined/> 编辑
-            </a>
-            <Divider type="vertical"/>
-            <a
-              key="delete"
-              style={{color: '#ff4d4f'}}
-              onClick={() => {
-                showDeleteConfirm(record);
-              }}
-            >
-              <DeleteOutlined/> 删除
-            </a>
-          </>
-        ),
+      render: (_, record) => (
+        <>
+          <a
+            key="sort"
+            onClick={() => {
+              handleUpdateModalVisible(true);
+              setCurrentRow(record);
+            }}
+          >
+            <EditOutlined/> 设置排序
+          </a>
+          <Divider type="vertical"/>
+          <a
+            key="delete"
+            style={{color: '#ff4d4f'}}
+            onClick={() => {
+              showDeleteConfirm([record.id], [record.subjectId]);
+            }}
+          >
+            <DeleteOutlined/> 删除
+          </a>
+        </>
+      ),
     },
   ];
 
@@ -177,39 +224,44 @@ const RecommendSubjectList: React.FC = () => {
           labelWidth: 120,
         }}
         toolBarRender={() => [
-          <Button type="primary" onClick={() => handleModalVisible(true)}>
+          <Button type="primary" key={'selectId'} onClick={() => handleModalVisible(true)}>
             <PlusOutlined/> 选择专题
           </Button>,
         ]}
         request={queryRecommendSubjectList}
         columns={columns}
-        rowSelection={{
-          onChange: (_, selectedRows) => setSelectedRows(selectedRows),
+        rowSelection={{}}
+        pagination={{pageSize: 10}}
+        tableAlertRender={({
+                             selectedRowKeys,
+                             selectedRows,
+                             onCleanSelected,
+                           }) => {
+          const ids = selectedRows.map((row) => row.id);
+          const subjectIds = selectedRows.map((row) => row.subjectId);
+          return (
+            <Space size={16}>
+              <span>已选 {selectedRowKeys.length} 项</span>
+              <a onClick={async () => {
+                await handleStatus(ids, 1, subjectIds);
+                onCleanSelected()
+                actionRef.current?.reload?.();
+              }}>设为推荐</a>
+              <a onClick={async () => {
+                await handleStatus(ids, 0, subjectIds);
+                onCleanSelected()
+                actionRef.current?.reload?.();
+              }}>取消推荐</a>
+              <a onClick={async () => {
+                showDeleteConfirm(ids, subjectIds);
+              }} style={{color: '#ff4d4f'}}>批量删除</a>
+            </Space>
+          );
         }}
-        pagination={{ pageSize: 10 }}
       />
-      {selectedRowsState?.length > 0 && (
-        <FooterToolbar
-          extra={
-            <div>
-              已选择 <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a> 项&nbsp;&nbsp;
-            </div>
-          }
-        >
-          <Button
-            onClick={async () => {
-              await handleRemove(selectedRowsState);
-              setSelectedRows([]);
-              actionRef.current?.reloadAndRest?.();
-            }}
-          >
-            批量删除
-          </Button>
-        </FooterToolbar>
-      )}
 
-      <CreateRecommendSubjectForm
-        key={'CreateRecommendSubjectForm'}
+      <CreateForm
+        key={'CreateForm'}
         onSubmit={async (value) => {
           const success = await handleAdd(value);
           if (success) {
@@ -229,10 +281,10 @@ const RecommendSubjectList: React.FC = () => {
         createModalVisible={createModalVisible}
       />
 
-      <UpdateRecommendSubjectForm
-        key={'UpdateRecommendSubjectForm'}
+      <SetSortForm
+        key={'SetSortForm'}
         onSubmit={async (value) => {
-          const success = await handleUpdate(value);
+          const success = await handleUpdateSubjectSor(value);
           if (success) {
             handleUpdateModalVisible(false);
             setCurrentRow(undefined);
@@ -253,7 +305,7 @@ const RecommendSubjectList: React.FC = () => {
 
       <Drawer
         width={600}
-        visible={showDetail}
+        open={showDetail}
         onClose={() => {
           setCurrentRow(undefined);
           setShowDetail(false);

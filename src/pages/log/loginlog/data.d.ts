@@ -1,6 +1,6 @@
 export interface LoginLogListItem {
   id: number;
-
+  loginStatus; string
 }
 
 export interface LoginLogListPagination {

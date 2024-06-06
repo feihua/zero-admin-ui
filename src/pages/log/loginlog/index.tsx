@@ -1,4 +1,4 @@
-import {Button, Card, Col, message, Modal, Row, Statistic} from 'antd';
+import {Button, Card, Col, message, Modal, Row, Select, Statistic, Tag} from 'antd';
 import React, {useEffect, useRef, useState} from 'react';
 import {FooterToolbar, PageContainer} from '@ant-design/pro-layout';
 import type {ActionType, ProColumns} from '@ant-design/pro-table';
@@ -73,7 +73,25 @@ const LoginLogList: React.FC = () => {
     {
       title: '登录状态',
       dataIndex: 'loginStatus',
-      hideInSearch: true,
+      renderFormItem: (text, row, index) => {
+        return <Select
+          value={row.value}
+          options={[
+            {value: 'success', label: '成功'},
+            {value: 'error', label: '失败'},
+          ]}
+        />
+
+      },
+      render: (dom, entity) => {
+        switch (entity.loginStatus) {
+          case 'success':
+            return <Tag color={'success'}>成功</Tag>;
+          case 'error':
+            return <Tag color={'error'}>失败</Tag>;
+        }
+        return <>未知{entity.loginStatus }</>;
+      },
     },
     {
       title: '操作信息',
