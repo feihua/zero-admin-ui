@@ -7,7 +7,7 @@ export async function addHomeNewProduct(params: number[]) {
   return request('/api/sms/homeNewProduct/addHomeNewProduct', {
     method: 'POST',
     data: {
-      ...params,
+      productIds: params,
     },
   });
 }
@@ -15,16 +15,16 @@ export async function addHomeNewProduct(params: number[]) {
 //
 
 // 删除新品推荐
-export async function removeHomeNewProduct(ids: number[]) {
-  return request('/api/sms/homeNewProduct/deleteHomeNewProduct?ids=[' + ids + "]", {
+export async function removeHomeNewProduct(ids: number[], productIds: number[]) {
+  return request('/api/sms/homeNewProduct/deleteHomeNewProduct?ids=[' + ids + "]&productIds=[" + productIds + ']', {
     method: 'GET',
   });
 }
 
 
-// 更新新品推荐
-export async function updateHomeNewProduct(params: HomeNewProductListItem) {
-  return request('/api/sms/homeNewProduct/updateHomeNewProduct', {
+// 更新新品推荐排序
+export async function updateNewProductSort(params: HomeNewProductListItem) {
+  return request('/api/sms/homeNewProduct/updateNewProductSort', {
     method: 'POST',
     data: {
       ...params,
@@ -33,8 +33,8 @@ export async function updateHomeNewProduct(params: HomeNewProductListItem) {
 }
 
 // 批量更新新品推荐状态
-export async function updateHomeNewProductStatus(params: { dictTypeIds: number[], postStatus: number }) {
-  return request('/api/sms/homeNewProduct/updateHomeNewProductStatus', {
+export async function updateHomeNewProductStatus(params: {ids: number[], recommendStatus: number, productIds: number[] }) {
+  return request('/api/sms/homeNewProduct/updateNewProductStatus', {
     method: 'POST',
     data: {
       ...params,

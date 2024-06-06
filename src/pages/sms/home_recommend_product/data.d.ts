@@ -1,5 +1,7 @@
 export interface HomeRecommendProductListItem {
   id: number;
+  productId: number;
+  recommendStatus: number;
   productName: string;
 }
 

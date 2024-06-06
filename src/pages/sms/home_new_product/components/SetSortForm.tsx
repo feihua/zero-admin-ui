@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react';
-import {Form, Input, Modal, Select} from 'antd';
+import {Form, Input, InputNumber, Modal} from 'antd';
 import type {HomeNewProductListItem} from '../data.d';
 
 export interface UpdateFormProps {
@@ -16,9 +16,8 @@ const formLayout = {
   wrapperCol: {span: 13},
 };
 
-const UpdateHomeNewProductForm: React.FC<UpdateFormProps> = (props) => {
+const SetSortForm: React.FC<UpdateFormProps> = (props) => {
   const [form] = Form.useForm();
-  const {Option} = Select;
 
   const {onSubmit, onCancel, updateModalVisible, values} = props;
 
@@ -53,20 +52,8 @@ const UpdateHomeNewProductForm: React.FC<UpdateFormProps> = (props) => {
         <FormItem name="id" label="主键" hidden>
           <Input id="update-id"/>
         </FormItem>
-        <FormItem name="productId" label="商品名称" hidden>
-          <Input id="update-productId"/>
-        </FormItem>
-        <FormItem name="productName" label="商品名称" hidden>
-          <Input id="update-productName"/>
-        </FormItem>
-        <FormItem name="recommendStatus" label="推荐状态">
-          <Select id="recommendStatus" placeholder={'请选择推荐状态'}>
-            <Option value={0}>不推荐</Option>
-            <Option value={1}>推荐</Option>
-          </Select>
-        </FormItem>
         <FormItem name="sort" label="排序">
-          <Input id="update-sort" placeholder={'请输入排序'}/>
+          <InputNumber id="update-sort" placeholder={'请输入排序'}/>
         </FormItem>
       </>
     );
@@ -78,7 +65,7 @@ const UpdateHomeNewProductForm: React.FC<UpdateFormProps> = (props) => {
     <Modal
       forceRender
       destroyOnClose
-      title="修改新鲜好物信息"
+      title="设置排序"
       open={updateModalVisible}
       {...modalFooter}
     >
@@ -89,4 +76,4 @@ const UpdateHomeNewProductForm: React.FC<UpdateFormProps> = (props) => {
   );
 };
 
-export default UpdateHomeNewProductForm;
+export default SetSortForm;

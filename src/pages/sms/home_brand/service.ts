@@ -7,7 +7,7 @@ export async function addHomeBrand(params: number[]) {
   return request('/api/sms/homeBrand/addHomeBrand', {
     method: 'POST',
     data: {
-      ...params,
+      brandIds: params,
     },
   });
 }
@@ -15,16 +15,16 @@ export async function addHomeBrand(params: number[]) {
 //
 
 // 删除品牌推荐
-export async function removeHomeBrand(ids: number[]) {
-  return request('/api/sms/homeBrand/deleteHomeBrand?ids=[' + ids + "]", {
+export async function removeHomeBrand(ids: number[], brandIds: number[]) {
+  return request('/api/sms/homeBrand/deleteHomeBrand?ids=[' + ids + "]&brandIds=[" + brandIds + ']', {
     method: 'GET',
   });
 }
 
 
-// 更新品牌推荐
-export async function updateHomeBrand(params: HomeBrandListItem) {
-  return request('/api/sms/homeBrand/updateHomeBrand', {
+// 更新品牌推荐排序
+export async function updateHomeBrandSort(params: HomeBrandListItem) {
+  return request('/api/sms/homeBrand/updateHomeBrandSort', {
     method: 'POST',
     data: {
       ...params,
@@ -33,7 +33,7 @@ export async function updateHomeBrand(params: HomeBrandListItem) {
 }
 
 // 批量更新品牌推荐状态
-export async function updateHomeBrandStatus(params: { ids: number[], recommendStatus: number }) {
+export async function updateHomeBrandStatus(params: { ids: number[], recommendStatus: number, brandIds: number[] }) {
   return request('/api/sms/homeBrand/updateHomeBrandStatus', {
     method: 'POST',
     data: {

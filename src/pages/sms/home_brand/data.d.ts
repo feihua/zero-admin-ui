@@ -1,5 +1,6 @@
 export interface HomeBrandListItem {
   id: number;
+  brandId: number;
   brandName: string;
   recommendStatus: number;
 }

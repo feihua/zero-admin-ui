@@ -7,7 +7,7 @@ export async function addHomeRecommendProduct(params: number[]) {
   return request('/api/sms/homeRecommendProduct/addHomeRecommendProduct', {
     method: 'POST',
     data: {
-      ...params,
+      productIds: params,
     },
   });
 }
@@ -15,16 +15,16 @@ export async function addHomeRecommendProduct(params: number[]) {
 //
 
 // 删除人气推荐
-export async function removeHomeRecommendProduct(ids: number[]) {
-  return request('/api/sms/homeRecommendProduct/deleteHomeRecommendProduct?ids=[' + ids + "]", {
+export async function removeHomeRecommendProduct(ids: number[], productIds: number[]) {
+  return request('/api/sms/homeRecommendProduct/deleteHomeRecommendProduct?ids=[' + ids + "]&productIds=[" + productIds + ']', {
     method: 'GET',
   });
 }
 
 
-// 更新人气推荐
-export async function updateHomeRecommendProduct(params: HomeRecommendProductListItem) {
-  return request('/api/sms/homeRecommendProduct/updateHomeRecommendProduct', {
+// 更新人气推荐排序
+export async function updateRecommendProductSort(params: HomeRecommendProductListItem) {
+  return request('/api/sms/homeRecommendProduct/updateRecommendProductSort', {
     method: 'POST',
     data: {
       ...params,
@@ -33,8 +33,8 @@ export async function updateHomeRecommendProduct(params: HomeRecommendProductLis
 }
 
 // 批量更新人气推荐状态
-export async function updateHomeRecommendProductStatus(params: { dictTypeIds: number[], postStatus: number }) {
-  return request('/api/sms/homeRecommendProduct/updateHomeRecommendProductStatus', {
+export async function updateHomeRecommendProductStatus(params: { ids: number[], recommendStatus: number, productIds: number[]  }) {
+  return request('/api/sms/homeRecommendProduct/updateRecommendProductStatus', {
     method: 'POST',
     data: {
       ...params,

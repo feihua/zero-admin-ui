@@ -84,7 +84,7 @@ const handleRemove = async (ids: number[], subjectIds: number[]) => {
  * @param subjectIds
  */
 const handleStatus = async (ids: number[], recommendStatus: number, subjectIds: number[]) => {
-  const hide = message.loading('正在更新品牌推荐状态');
+  const hide = message.loading('正在更新专题推荐状态');
   if (ids.length == 0) {
     hide();
     return true;
