@@ -1,13 +1,17 @@
 import React, {useEffect, useState} from 'react';
-import {Col, DatePicker, DatePickerProps, Form, Input, InputNumber, Modal, Row, Select} from 'antd';
+import {Col, DatePicker, Form, Input, InputNumber, Modal, Radio, RadioChangeEvent, Row, Select} from 'antd';
 import type {CouponListItem} from '../data.d';
-import moment from "moment";
+import CategoryForm from "@/pages/sms/coupon/components/CategoryForm";
+import ProductForm from "@/pages/sms/coupon/components/ProductForm";
+import {queryCouponDetail} from "@/pages/sms/coupon/service";
+import moment from "moment/moment";
 
-export interface UpdateFormProps {
+export interface CreateFormProps {
   onCancel: () => void;
   onSubmit: (values: CouponListItem) => void;
   updateModalVisible: boolean;
-  values: Partial<CouponListItem>;
+  id: number;
+
 }
 
 const FormItem = Form.Item;
@@ -17,19 +21,20 @@ const formLayout = {
   wrapperCol: {span: 13},
 };
 
-const UpdateCouponForm: React.FC<UpdateFormProps> = (props) => {
+const UpdateCouponForm: React.FC<CreateFormProps> = (props) => {
   const [form] = Form.useForm();
   const {Option} = Select;
+  const {TextArea} = Input;
+  const [categoryList, setCategoryList] = useState<any[]>([]);
+  const [productList, setProductList] = useState<any[]>([]);
 
-  const [startTime, setStartTime] = useState<string>("");
-  const [endTime, setEndTime] = useState<string>("");
-  const [enableTime, setEnableTime] = useState<string>("");
+  const [value, setValue] = useState(0);
 
   const {
     onSubmit,
     onCancel,
     updateModalVisible,
-    values,
+    id
   } = props;
 
   useEffect(() => {
@@ -37,41 +42,39 @@ const UpdateCouponForm: React.FC<UpdateFormProps> = (props) => {
       form.resetFields();
 
     }
+    if (updateModalVisible) {
+      queryCouponDetail(id).then((res) => {
+        setCategoryList(res.data.productCategoryRelationList)
+        setProductList(res.data.productRelationList)
+        setValue(Number(res.data.useType))
+
+        form.setFieldsValue({
+          ...res.data,
+          enableTime: moment(res.data.enableTime, 'YYYY-MM-DD HH:mm:ss'),
+          startTime: [moment(res.data.startTime, 'YYYY-MM-DD HH:mm:ss'), moment(res.data.endTime, 'YYYY-MM-DD HH:mm:ss')],
+
+        });
+      });
+    }
   }, [props.updateModalVisible]);
 
-  useEffect(() => {
-    if (values) {
-      form.setFieldsValue({
-        ...values,
-      });
-      setEnableTime(values.enableTime || "")
-      setStartTime(values.startTime || "")
-      setEndTime(values.endTime || "")
-    }
-  }, [props.values]);
 
   const handleSubmit = () => {
     if (!form) return;
     form.submit();
   };
 
-  const handleFinish = (item: { [key: string]: any }) => {
+  const handleFinish = (values: CouponListItem) => {
     if (onSubmit) {
-      onSubmit({...item as CouponListItem, startTime, endTime, enableTime});
+      onSubmit({...values, productCategoryRelationList: categoryList, productRelationList: productList},);
     }
   };
 
-  const onChangeStartDate: DatePickerProps['onChange'] = (date, dateString) => {
-    setStartTime(dateString)
-  };
-  const onChangeEndDate: DatePickerProps['onChange'] = (date, dateString) => {
-    setEndTime(dateString)
-  };
 
-  const onChangeEnableTime: DatePickerProps['onChange'] = (date, dateString) => {
-    setEnableTime(dateString)
-  };
-
+  const onChange = (e: RadioChangeEvent) => {
+    setValue(e.target.value);
+    console.log(categoryList)
+  }
   const renderContent = () => {
     return (
       <>
@@ -80,7 +83,7 @@ const UpdateCouponForm: React.FC<UpdateFormProps> = (props) => {
           label="主键"
           hidden
         >
-          <Input id="update-id" placeholder="请输入主键"/>
+          <Input id="update-id"/>
         </FormItem>
         <Row>
           <Col span={12}>
@@ -94,6 +97,7 @@ const UpdateCouponForm: React.FC<UpdateFormProps> = (props) => {
             <FormItem
               name="type"
               label="优惠券类型"
+              initialValue={0}
               rules={[{required: true, message: '请选择优惠券类型!'}]}
             >
               <Select id="type" placeholder={'请选择优惠券类型'}>
@@ -106,57 +110,29 @@ const UpdateCouponForm: React.FC<UpdateFormProps> = (props) => {
             <FormItem
               name="publishCount"
               label="发行数量"
+              initialValue={10}
               rules={[{required: true, message: '请输入发行数量!'}]}
             >
               <InputNumber addonAfter={"张"}/>
             </FormItem>
             <FormItem
-              name="count"
-              label="数量"
-              rules={[{required: true, message: '请输入活动标题!'}]}
-            >
-              <InputNumber addonAfter={"张"}/>
-            </FormItem>
-            <FormItem
               name="perLimit"
-              label="每人限领张数"
+              label="每人限领"
+              initialValue={100}
               rules={[{required: true, message: '请输入每人限领张数!'}]}
             >
               <InputNumber addonAfter="张"/>
             </FormItem>
 
-            <FormItem
-              // name="startTime"
-              label="开始时间"
-              rules={[{required: true, message: '请输入开始时间!'}]}
-            >
-              <DatePicker value={moment(startTime, 'YYYY-MM-DD HH:mm:ss')} onChange={onChangeStartDate} showTime placeholder={'请输入开始时间'}/>
-            </FormItem>
-            <FormItem
-              // name="endTime"
-              label="结束时间"
-              rules={[{required: true, message: '请输入结束时间!'}]}
-            >
-              <DatePicker value={moment(endTime, 'YYYY-MM-DD HH:mm:ss')} onChange={onChangeEndDate} showTime placeholder={'请输入结束时间'}/>
-            </FormItem>
 
           </Col>
           <Col span={12}>
 
-            <FormItem
-              name="useType"
-              label="使用类型"
-              rules={[{required: true, message: '请选择使用类型!'}]}
-            >
-              <Select id="useType" placeholder={'请选择使用类型'}>
-                <Option value={0}>全场通用</Option>
-                <Option value={1}>指定分类</Option>
-                <Option value={2}>指定商品</Option>
-              </Select>
-            </FormItem>
+
             <FormItem
               name="platform"
               label="使用平台"
+              initialValue={0}
               rules={[{required: true, message: '请选择使用平台!'}]}
             >
               <Select id="platform" placeholder={'请选择使用平台'}>
@@ -169,6 +145,7 @@ const UpdateCouponForm: React.FC<UpdateFormProps> = (props) => {
             <FormItem
               name="amount"
               label="金额"
+              initialValue={100}
               rules={[{required: true, message: '请输入金额!'}]}
             >
               <InputNumber prefix="￥" addonAfter="元" stringMode step="0.01"/>
@@ -176,6 +153,7 @@ const UpdateCouponForm: React.FC<UpdateFormProps> = (props) => {
             <FormItem
               name="minPoint"
               label="使用门槛"
+              initialValue={10}
               rules={[{required: true, message: '请输入使用门槛!'}]}
             >
               <InputNumber addonBefore={"满"} prefix="￥" addonAfter="元可用" stringMode step="0.01"/>
@@ -183,6 +161,7 @@ const UpdateCouponForm: React.FC<UpdateFormProps> = (props) => {
             <FormItem
               name="memberLevel"
               label="会员类型"
+              initialValue={0}
               rules={[{required: true, message: '请输入可领取的会员类型!'}]}
             >
               <Select id="memberLevel" placeholder={'请输入可领取的会员类型'}>
@@ -191,30 +170,50 @@ const UpdateCouponForm: React.FC<UpdateFormProps> = (props) => {
                 <Option value={2}>白金会员</Option>
               </Select>
             </FormItem>
-            <FormItem
-              // name="enableTime"
-              label="领取的日期"
-              rules={[{required: true, message: '请输入可以领取的日期!'}]}
-            >
-              <DatePicker value={moment(enableTime, 'YYYY-MM-DD HH:mm:ss')} onChange={onChangeEnableTime} showTime placeholder={'请输入可以领取的日期'}/>
-            </FormItem>
-            <FormItem
-              name="code"
-              label="优惠码"
-              rules={[{required: true, message: '请输入优惠码!'}]}
-            >
-              <Input id="update-code" placeholder={'请输入优惠码'}/>
-            </FormItem>
-          </Col>
-          <Col span={12}>
-            <FormItem
-              name="note"
-              label="备注"
-            >
-              <Input.TextArea rows={2}/>
-            </FormItem>
+
+
           </Col>
         </Row>
+        <FormItem
+          name="enableTime"
+          label="领取的日期"
+          rules={[{required: true, message: '请输入可以领取的日期!'}]}
+        >
+          <DatePicker showTime placeholder={'请输入可以领取的日期'}/>
+        </FormItem>
+        <FormItem
+          name="startTime"
+          label="有效期"
+          rules={[{required: true, message: '请输入开始时间!'}]}
+        >
+          <DatePicker.RangePicker showTime/>
+        </FormItem>
+        <FormItem
+          name="useType"
+          label="使用类型"
+          initialValue={0}
+          rules={[{required: true, message: '请选择使用类型!'}]}
+        >
+          <Radio.Group id="useType" disabled onChange={onChange} value={value}>
+            <Radio value={0}>全场通用</Radio>
+            <Radio value={1}>指定分类</Radio>
+            <Radio value={2}>指定商品</Radio>
+          </Radio.Group>
+        </FormItem>
+        {value === 1 &&
+          <CategoryForm selectIds={categoryList.map((x) => x.id)} onSubmit={(list: any[]) => {
+            setCategoryList(list)
+          }}/>}
+        {value === 2 && <ProductForm selectIds={productList.map((x) => x.id)} onSubmit={(list: any[]) => {
+          setProductList(list)
+        }}/>}
+
+        <FormItem
+          name="note"
+          label="备注"
+        >
+          <TextArea rows={4}/>
+        </FormItem>
       </>
     );
   };
@@ -226,13 +225,14 @@ const UpdateCouponForm: React.FC<UpdateFormProps> = (props) => {
     <Modal
       forceRender
       destroyOnClose
-      title="修改优惠券信息"
+      title="新建"
       open={updateModalVisible}
       {...modalFooter}
-      width={720}
+      width={820}
     >
       <Form
         {...formLayout}
+        labelCol={{flex: '115px'}}
         form={form}
         onFinish={handleFinish}
       >

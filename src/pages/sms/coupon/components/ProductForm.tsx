@@ -1,4 +1,4 @@
-import React, {useRef} from 'react';
+import React, {useRef, useState} from 'react';
 import type {ProductListItem} from '../data.d';
 import type {ActionType, ProColumns} from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
@@ -6,12 +6,13 @@ import {queryProductList} from "@/pages/sms/coupon/service";
 
 export interface CreateFormProps {
   onSubmit: (values: any[]) => void;
+  selectIds: number[];
 }
 
 const ProductForm: React.FC<CreateFormProps> = (props) => {
   const actionRef = useRef<ActionType>();
   const {onSubmit} = props;
-
+  const [selectedRows, setSelectedRows] = useState<number[]>(props.selectIds);
 
   const columns: ProColumns<ProductListItem>[] = [
     {
@@ -55,7 +56,11 @@ const ProductForm: React.FC<CreateFormProps> = (props) => {
       request={queryProductList}
       columns={columns}
       rowSelection={{
-        onChange: (_, selectedRows) => onSubmit(selectedRows),
+        selectedRowKeys: selectedRows,
+        onChange: (_, selectedRows1) => {
+          setSelectedRows(selectedRows1.map((row) => row.id));
+          onSubmit(selectedRows1)
+        },
       }}
       pagination={{pageSize: 6}}
     />

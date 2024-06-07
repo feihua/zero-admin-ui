@@ -1,5 +1,5 @@
-import React, {useRef} from 'react';
-import type {CategoryListItem, ProductListItem} from '../data.d';
+import React, {useRef, useState} from 'react';
+import type {CategoryListItem} from '../data.d';
 import type {ActionType, ProColumns} from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
 import {queryProductCategoryList} from "@/pages/sms/coupon/service";
@@ -7,10 +7,13 @@ import {tree} from "@/utils/utils";
 
 export interface CreateFormProps {
   onSubmit: (values: any[]) => void;
+  selectIds: number[];
 }
 
 const CategoryForm: React.FC<CreateFormProps> = (props) => {
   const actionRef = useRef<ActionType>();
+
+  const [selectedRows, setSelectedRows] = useState<number[]>(props.selectIds);
 
   const {onSubmit} = props;
 
@@ -40,7 +43,7 @@ const CategoryForm: React.FC<CreateFormProps> = (props) => {
   ];
 
   return (
-    <ProTable<ProductListItem>
+    <ProTable<CategoryListItem>
       toolBarRender={false}
       actionRef={actionRef}
       rowKey="id"
@@ -49,7 +52,11 @@ const CategoryForm: React.FC<CreateFormProps> = (props) => {
       postData={(data) => tree(data, 0, 'parentId')}
       columns={columns}
       rowSelection={{
-        onChange: (_, selectedRows) => onSubmit(selectedRows),
+        selectedRowKeys: selectedRows,
+        onChange: (_, selectedRows1) => {
+          setSelectedRows(selectedRows1.map((row) => row.id));
+          onSubmit(selectedRows1)
+        },
       }}
       pagination={false}
     />

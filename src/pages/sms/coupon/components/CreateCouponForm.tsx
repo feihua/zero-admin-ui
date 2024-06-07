@@ -172,10 +172,10 @@ const CreateCouponForm: React.FC<CreateFormProps> = (props) => {
             <Radio value={2}>指定商品</Radio>
           </Radio.Group>
         </FormItem>
-        {value === 1 && <CategoryForm onSubmit={(list: any[]) => {
+        {value === 1 && <CategoryForm selectIds={[]} onSubmit={(list: any[]) => {
           setCategoryList(list)
         }}/>}
-        {value === 2 && <ProductForm onSubmit={(list: any[]) => {
+        {value === 2 && <ProductForm selectIds={[]} onSubmit={(list: any[]) => {
           setProductList(list)
         }}/>}
 

@@ -24,6 +24,14 @@ export async function queryCoupon(params: CouponListParams) {
   });
 }
 
+// 查询优惠券列表详情
+export async function queryCouponDetail(id: number) {
+  return request('/api/sms/coupon/queryCouponDetail?id='+id, {
+    method: 'GET',
+
+  });
+}
+
 export async function removeCoupon(params: { ids: number[] }) {
   return request('/api/sms/coupon/deleteCoupon', {
     method: 'GET',
@@ -48,6 +56,9 @@ export async function addCoupon(params: CouponListItem) {
 export async function updateCoupon(params: CouponListItem) {
   params.amount = Number(params.amount)
   params.minPoint = Number(params.minPoint)
+  params.endTime = moment(params.startTime[0]).format('YYYY-MM-DD HH:mm:ss');
+  params.startTime = moment(params.startTime[1]).format('YYYY-MM-DD HH:mm:ss');
+  params.enableTime = moment(params.enableTime).format('YYYY-MM-DD HH:mm:ss');
   return request('/api/sms/coupon/updateCoupon', {
     method: 'POST',
     data: {

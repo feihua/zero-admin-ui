@@ -240,6 +240,7 @@ const CouponList: React.FC = () => {
           >
             <EyeOutlined/> 查看
           </a>
+          <Divider type="vertical"/>
           <a
             key="sort"
             onClick={() => {
@@ -345,7 +346,7 @@ const CouponList: React.FC = () => {
           }
         }}
         updateModalVisible={updateModalVisible}
-        values={currentRow || {}}
+        id={currentRow?.id || 0}
       />
 
       <Drawer
