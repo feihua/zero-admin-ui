@@ -1,5 +1,5 @@
 import {request} from 'umi';
-import {CouponListParams, CouponListItem, CategoryListParams} from './data.d';
+import {CouponListParams, CouponListItem, CategoryListParams, CouponHistoryListParams} from './data.d';
 import {ProductListParams} from "@/pages/pms/product/data";
 import moment from "moment";
 // import moment from "moment/moment";
@@ -88,7 +88,7 @@ export async function queryProductCategoryList(params: CategoryListParams) {
 }
 
 // 分页优惠券领取列表
-export async function queryCouponHistoryList(params: CategoryListParams) {
+export async function queryCouponHistoryList(params: CouponHistoryListParams) {
 
   return request('/api/sms/couponHistory/queryCouponHistoryList', {
     method: 'GET',

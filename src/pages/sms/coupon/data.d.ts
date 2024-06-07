@@ -45,9 +45,10 @@ export interface CategoryListItem {
 
 export interface CategoryListParams {
 
+
   parentId?: number;
   pageSize?: number;
-  currentPage?: number;
+  current?: number;
   filter?: { [key: string]: any[] };
   sorter?: { [key: string]: any };
 
@@ -60,9 +61,12 @@ export interface CouponHistoryListItem {
 }
 
 export interface CouponHistoryListParams {
-  id: number;
-  useStatus: number;
-
+  id?: number;
+  useStatus?: number;
+  couponId?: number;
+  useType?: number;
+  current?: number;
+  pageSize?: number;
 }
 
 export interface CouponDetailData {

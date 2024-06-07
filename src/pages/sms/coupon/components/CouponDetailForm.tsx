@@ -55,6 +55,7 @@ const CouponDetailForm: React.FC<CreateFormProps> = (props) => {
         let now = moment().format('YYYY-MM-DD HH+mm:ss')
         let date = moment(res.data.endTime).format('YYYY-MM-DD HH+mm:ss')
 
+        actionRef.current?.reloadAndRest?.();
         setFlag(now <= date)
       });
     }
@@ -198,7 +199,9 @@ const CouponDetailForm: React.FC<CreateFormProps> = (props) => {
             labelWidth: 80,
             span: 8
           }}
-          request={queryCouponHistoryList}
+          request={(params)=>{
+            return queryCouponHistoryList({...params,couponId:id})
+          }}
           columns={columns}
           rowSelection={false}
           pagination={{pageSize: 6}}
