@@ -2,7 +2,7 @@ import {
   PlusOutlined,
   ExclamationCircleOutlined,
   DeleteOutlined,
-  EditOutlined,
+  EditOutlined, EyeOutlined,
 } from '@ant-design/icons';
 import {Button, Divider, message, Drawer, Modal} from 'antd';
 import React, {useState, useRef} from 'react';
@@ -15,6 +15,7 @@ import CreateCouponForm from './components/CreateCouponForm';
 import UpdateCouponForm from './components/UpdateCouponForm';
 import type {CouponListItem} from './data.d';
 import {queryCoupon, updateCoupon, addCoupon, removeCoupon} from './service';
+import moment from "moment";
 
 const {confirm} = Modal;
 
@@ -25,13 +26,12 @@ const {confirm} = Modal;
 const handleAdd = async (fields: CouponListItem) => {
   const hide = message.loading('正在添加');
   try {
-    await addCoupon({ ...fields });
+    await addCoupon({...fields});
     hide();
     message.success('添加成功');
     return true;
   } catch (error) {
     hide();
-    message.error('添加失败请重试！');
     return false;
   }
 };
@@ -50,7 +50,6 @@ const handleUpdate = async (fields: CouponListItem) => {
     return true;
   } catch (error) {
     hide();
-    message.error('更新失败请重试！');
     return false;
   }
 };
@@ -71,7 +70,6 @@ const handleRemove = async (selectedRows: CouponListItem[]) => {
     return true;
   } catch (error) {
     hide();
-    message.error('删除失败，请重试');
     return false;
   }
 };
@@ -106,7 +104,7 @@ const CouponList: React.FC = () => {
       hideInSearch: true,
     },
     {
-      title: '优惠券名',
+      title: '优惠券名称',
       dataIndex: 'name',
       render: (dom, entity) => {
         return (
@@ -131,15 +129,7 @@ const CouponList: React.FC = () => {
         3: {text: '注册赠券', status: 'Success'},
       },
     },
-    {
-      title: '使用平台',
-      dataIndex: 'platform',
-      valueEnum: {
-        0: {text: '全部', status: 'Error'},
-        1: {text: '移动', status: 'Success'},
-        2: {text: 'PC', status: 'Success'},
-      },
-    },
+
     {
       title: '使用类型',
       dataIndex: 'useType',
@@ -155,9 +145,18 @@ const CouponList: React.FC = () => {
       hideInSearch: true,
     },
     {
-      title: '金额',
+      title: '面值',
       dataIndex: 'amount',
       hideInSearch: true,
+    },
+    {
+      title: '适用平台',
+      dataIndex: 'platform',
+      valueEnum: {
+        0: {text: '全部', status: 'Error'},
+        1: {text: '移动', status: 'Success'},
+        2: {text: 'PC', status: 'Success'},
+      },
     },
     {
       title: '每人限领张数',
@@ -165,14 +164,22 @@ const CouponList: React.FC = () => {
       hideInSearch: true,
     },
     {
-      title: '开始时间',
-      valueType: 'dateTime',
-      dataIndex: 'startTime',
+      title: '使用门槛',
+      dataIndex: 'minPoint',
+      hideInSearch: true,
     },
     {
-      title: '结束时间',
+      title: '有效期',
       valueType: 'dateTime',
-      dataIndex: 'endTime',
+      dataIndex: 'startTime',
+      render: (dom, entity) => {
+        return (
+          <>
+            {moment(entity.startTime).format('YYYY-MM-DD')}
+            至{moment(entity.startTime).format('YYYY-MM-DD')}
+          </>
+        );
+      },
     },
 
     {
@@ -200,8 +207,20 @@ const CouponList: React.FC = () => {
       hideInTable: true,
     },
     {
-      title: '会员类型',
+      title: '可领取的会员类型',
       dataIndex: 'memberLevel',
+      hideInSearch: true,
+      hideInTable: true,
+    },
+    {
+      title: '可以领取的日期',
+      dataIndex: 'enableTime',
+      hideInSearch: true,
+      hideInTable: true,
+    },
+    {
+      title: '优惠码',
+      dataIndex: 'code',
       hideInSearch: true,
       hideInTable: true,
     },
@@ -210,29 +229,38 @@ const CouponList: React.FC = () => {
       dataIndex: 'option',
       valueType: 'option',
       width: 220,
-        render: (_, record) => (
-          <>
-            <a
-              key="sort"
-              onClick={() => {
-                handleUpdateModalVisible(true);
-                setCurrentRow(record);
-              }}
-            >
-              <EditOutlined/> 编辑
-            </a>
-            <Divider type="vertical"/>
-            <a
-              key="delete"
-              style={{color: '#ff4d4f'}}
-              onClick={() => {
-                showDeleteConfirm(record);
-              }}
-            >
-              <DeleteOutlined/> 删除
-            </a>
-          </>
-        ),
+      render: (_, record) => (
+        <>
+          <a
+            key="eye"
+            onClick={() => {
+              handleUpdateModalVisible(true);
+              setCurrentRow(record);
+            }}
+          >
+            <EyeOutlined/> 查看
+          </a>
+          <a
+            key="sort"
+            onClick={() => {
+              handleUpdateModalVisible(true);
+              setCurrentRow(record);
+            }}
+          >
+            <EditOutlined/> 编辑
+          </a>
+          <Divider type="vertical"/>
+          <a
+            key="delete"
+            style={{color: '#ff4d4f'}}
+            onClick={() => {
+              showDeleteConfirm(record);
+            }}
+          >
+            <DeleteOutlined/> 删除
+          </a>
+        </>
+      ),
     },
   ];
 
@@ -261,7 +289,7 @@ const CouponList: React.FC = () => {
         <FooterToolbar
           extra={
             <div>
-              已选择 <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a> 项&nbsp;&nbsp;
+              已选择 <a style={{fontWeight: 600}}>{selectedRowsState.length}</a> 项&nbsp;&nbsp;
             </div>
           }
         >

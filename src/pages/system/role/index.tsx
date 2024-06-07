@@ -1,28 +1,22 @@
 import {
-  PlusOutlined,
-  ExclamationCircleOutlined,
-  EditOutlined,
   DeleteOutlined,
   DownOutlined,
+  EditOutlined,
+  ExclamationCircleOutlined,
+  PlusOutlined,
   RedoOutlined
 } from '@ant-design/icons';
-import {Button, Divider, message, Drawer, Modal, Space, Tag, Select, Dropdown, MenuProps} from 'antd';
-import React, {useState, useRef} from 'react';
-import {PageContainer, FooterToolbar} from '@ant-design/pro-layout';
+import {Button, Divider, Drawer, Dropdown, MenuProps, message, Modal, Select, Space, Tag} from 'antd';
+import React, {useRef, useState} from 'react';
+import {PageContainer} from '@ant-design/pro-layout';
+import type {ActionType, ProColumns} from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
-import type {ProColumns, ActionType} from '@ant-design/pro-table';
 import ProDescriptions, {ProDescriptionsItemProps} from '@ant-design/pro-descriptions';
 import SetMenuForm from './components/SetMenuForm';
 import CreateRoleForm from './components/CreateRoleForm';
 import UpdateRoleForm from './components/UpdateRoleForm';
 import type {RoleListItem} from './data.d';
-import {
-  queryRoleList,
-  updateRole,
-  addRole,
-  removeRole,
-  updateRoleMenuList,
-} from './service';
+import {addRole, queryRoleList, removeRole, updateRole, updateRoleMenuList,} from './service';
 import SetUserModal from "@/pages/system/role/components/SetUserModal";
 
 const {confirm} = Modal;
@@ -65,13 +59,13 @@ const handleUpdate = async (item: RoleListItem) => {
 
 /**
  *  删除节点
- * @param list
+ * @param ids
  */
-const handleRemove = async (list: RoleListItem[]) => {
+const handleRemove = async (ids: number[]) => {
   const hide = message.loading('正在删除');
-  if (!list) return true;
+  if (ids.length === 0) return true;
   try {
-    await removeRole(list.map((row) => row.id));
+    await removeRole(ids);
     hide();
     message.success('删除成功，即将刷新');
     return true;
@@ -93,15 +87,14 @@ const RoleList: React.FC = () => {
 
   const actionRef = useRef<ActionType>();
 
-  const [selectedRowsState, setSelectedRows] = useState<RoleListItem[]>([]);
 
-  const showDeleteConfirm = (item: RoleListItem) => {
+  const showDeleteConfirm = (ids: number[]) => {
     confirm({
       title: '是否删除记录?',
       icon: <ExclamationCircleOutlined/>,
       content: '删除的记录不能恢复,请确认!',
       onOk() {
-        handleRemove([item]).then(() => {
+        handleRemove(ids).then(() => {
           actionRef.current?.reloadAndRest?.();
         });
       },
@@ -163,12 +156,12 @@ const RoleList: React.FC = () => {
     {
       title: '状态',
       dataIndex: 'roleStatus',
-      renderFormItem:(text, row, index) => {
+      renderFormItem: (text, row, index) => {
         return <Select
           value={row.value}
           options={[
-            { value: '1', label: '正常' },
-            { value: '0', label: '禁用' },
+            {value: '1', label: '正常'},
+            {value: '0', label: '禁用'},
           ]}
         />
 
@@ -180,7 +173,7 @@ const RoleList: React.FC = () => {
           case 0:
             return <Tag>禁用</Tag>;
         }
-        return <>未知{entity.roleStatus }</>;
+        return <>未知{entity.roleStatus}</>;
       },
     },
     {
@@ -244,7 +237,7 @@ const RoleList: React.FC = () => {
             key="delete"
             style={{color: '#ff4d4f'}}
             onClick={() => {
-              showDeleteConfirm(record);
+              showDeleteConfirm([record.id]);
             }}
           >
             <DeleteOutlined/> 删除
@@ -275,61 +268,32 @@ const RoleList: React.FC = () => {
         search={{
           labelWidth: 120,
         }}
+        request={queryRoleList}
+        columns={columns}
+        rowSelection={{}}
+        pagination={{pageSize: 10}}
         tableAlertRender={({
                              selectedRowKeys,
                              selectedRows,
                              onCleanSelected,
                            }) => {
-          console.log(selectedRowKeys, selectedRows);
-          return (
-            <Space size={24}>
-
-              <span>{`容器数量: 个`}</span>
-              <span>{`调用量: 次`}</span>
-            </Space>
-          );
-        }}
-        tableAlertOptionRender={() => {
+          const ids = selectedRows.map((row) => row.id);
           return (
             <Space size={16}>
-              <a>批量删除</a>
-              <a>导出数据</a>
+              <span>已选 {selectedRowKeys.length} 项</span>
+              <Button
+                icon={<DeleteOutlined/>}
+                danger
+                style={{borderRadius: '5px'}}
+                onClick={async () => {
+                  showDeleteConfirm(ids);
+                }}
+              >批量删除</Button>
             </Space>
           );
         }}
-        toolBarRender={() => [
-          <Button key={'new'} type="primary" onClick={() => handleModalVisible(true)}>
-            <PlusOutlined/> 新建
-          </Button>,
-        ]}
-        request={queryRoleList}
-        columns={columns}
-        rowSelection={{
-          onChange: (_, selectedRows) => setSelectedRows(selectedRows),
-        }}
-        pagination={{pageSize: 10}}
       />
-      {selectedRowsState?.length > 0 && (
-        <FooterToolbar
-          extra={
-            <div>
-              已选择 <a style={{fontWeight: 600}}>{selectedRowsState.length}</a> 项&nbsp;&nbsp;
-            </div>
-          }
-        >
-          <Button
-            type={"primary"}
-            danger={true}
-            onClick={async () => {
-              await handleRemove(selectedRowsState);
-              setSelectedRows([]);
-              actionRef.current?.reloadAndRest?.();
-            }}
-          >
-            批量删除
-          </Button>
-        </FooterToolbar>
-      )}
+
 
       <CreateRoleForm
         key={'CreateRoleForm'}

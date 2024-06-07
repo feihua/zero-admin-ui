@@ -1,15 +1,15 @@
-import {PlusOutlined, ExclamationCircleOutlined, EditOutlined, DeleteOutlined} from '@ant-design/icons';
-import {Button, Divider, message, Drawer, Modal, Tag, Select} from 'antd';
-import React, {useState, useRef} from 'react';
-import {PageContainer, FooterToolbar} from '@ant-design/pro-layout';
+import {DeleteOutlined, EditOutlined, ExclamationCircleOutlined, PlusOutlined} from '@ant-design/icons';
+import {Button, Divider, Drawer, message, Modal, Select, Space, Tag} from 'antd';
+import React, {useRef, useState} from 'react';
+import {PageContainer} from '@ant-design/pro-layout';
+import type {ActionType, ProColumns} from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
-import type {ProColumns, ActionType} from '@ant-design/pro-table';
-import ProDescriptions from '@ant-design/pro-descriptions';
 import type {ProDescriptionsItemProps} from '@ant-design/pro-descriptions';
+import ProDescriptions from '@ant-design/pro-descriptions';
 import CreatePostForm from './components/CreatePostForm';
 import UpdatePostForm from './components/UpdatePostForm';
 import type {PostListItem} from './data.d';
-import {queryPostList, updatePost, addPost, removePost} from './service';
+import {addPost, queryPostList, removePost, updatePost} from './service';
 
 const {confirm} = Modal;
 
@@ -50,13 +50,13 @@ const handleUpdate = async (fields: PostListItem) => {
 
 /**
  *  删除节点
- * @param selectedRows
+ * @param ids
  */
-const handleRemove = async (selectedRows: PostListItem[]) => {
+const handleRemove = async (ids: number[]) => {
   const hide = message.loading('正在删除');
-  if (!selectedRows) return true;
+  if (ids.length === 0) return true;
   try {
-    await removePost(selectedRows.map((row) => row.id));
+    await removePost(ids);
     hide();
     message.success('删除成功，即将刷新');
     return true;
@@ -72,15 +72,14 @@ const PostList: React.FC = () => {
   const [showDetail, setShowDetail] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<PostListItem>();
-  const [selectedRowsState, setSelectedRows] = useState<PostListItem[]>([]);
 
-  const showDeleteConfirm = (item: PostListItem) => {
+  const showDeleteConfirm = (ids: number[]) => {
     confirm({
       title: '是否删除记录?',
       icon: <ExclamationCircleOutlined/>,
       content: '删除的记录不能恢复,请确认!',
       onOk() {
-        handleRemove([item]).then(() => {
+        handleRemove(ids).then(() => {
           actionRef.current?.reloadAndRest?.();
         });
       },
@@ -117,12 +116,12 @@ const PostList: React.FC = () => {
     {
       title: '状态',
       dataIndex: 'postStatus',
-      renderFormItem:(text, row, index) => {
+      renderFormItem: (text, row, index) => {
         return <Select
           value={row.value}
           options={[
-            { value: '1', label: '正常' },
-            { value: '0', label: '禁用' },
+            {value: '1', label: '正常'},
+            {value: '0', label: '禁用'},
           ]}
         />
 
@@ -134,7 +133,7 @@ const PostList: React.FC = () => {
           case 0:
             return <Tag>禁用</Tag>;
         }
-        return <>未知{entity.postStatus }</>;
+        return <>未知{entity.postStatus}</>;
       },
     },
     {
@@ -186,7 +185,7 @@ const PostList: React.FC = () => {
             key="delete"
             style={{color: '#ff4d4f'}}
             onClick={() => {
-              showDeleteConfirm(record);
+              showDeleteConfirm([record.id]);
             }}
           >
             <DeleteOutlined/> 删除
@@ -212,32 +211,30 @@ const PostList: React.FC = () => {
         ]}
         request={queryPostList}
         columns={columns}
-        rowSelection={{
-          onChange: (_, selectedRows) => setSelectedRows(selectedRows),
-        }}
+        rowSelection={{}}
         pagination={{pageSize: 10}}
+        tableAlertRender={({
+                             selectedRowKeys,
+                             selectedRows,
+                             onCleanSelected,
+                           }) => {
+          const ids = selectedRows.map((row) => row.id);
+          return (
+            <Space size={16}>
+              <span>已选 {selectedRowKeys.length} 项</span>
+              <Button
+                icon={<DeleteOutlined/>}
+                danger
+                style={{borderRadius: '5px'}}
+                onClick={async () => {
+                  showDeleteConfirm(ids);
+                }}
+              >批量删除</Button>
+            </Space>
+          );
+        }}
       />
-      {selectedRowsState?.length > 0 && (
-        <FooterToolbar
-          extra={
-            <div>
-              已选择 <a style={{fontWeight: 600}}>{selectedRowsState.length}</a> 项&nbsp;&nbsp;
-            </div>
-          }
-        >
-          <Button
-            type="primary"
-            danger
-            onClick={async () => {
-              await handleRemove(selectedRowsState);
-              setSelectedRows([]);
-              actionRef.current?.reloadAndRest?.();
-            }}
-          >
-            批量删除
-          </Button>
-        </FooterToolbar>
-      )}
+
 
       <CreatePostForm
         key={'CreatePostForm'}

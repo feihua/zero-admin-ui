@@ -1,11 +1,11 @@
-import {Button, Card, Col, message, Modal, Row, Select, Statistic, Tag} from 'antd';
+import {Button, Card, Col, message, Modal, Row, Select, Space, Statistic, Tag} from 'antd';
 import React, {useEffect, useRef, useState} from 'react';
-import {FooterToolbar, PageContainer} from '@ant-design/pro-layout';
+import {PageContainer} from '@ant-design/pro-layout';
 import type {ActionType, ProColumns} from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
 import type {LoginLogListItem} from './data.d';
 import {StatisticsLoginLog} from "./data.d";
-import {queryLoginLogList, removeLoginLog, queryStatisticsLoginLog} from './service';
+import {queryLoginLogList, queryStatisticsLoginLog, removeLoginLog} from './service';
 import {DeleteOutlined, ExclamationCircleOutlined} from "@ant-design/icons";
 
 const {confirm} = Modal;
@@ -13,13 +13,13 @@ const {confirm} = Modal;
 
 /**
  *  删除节点
- * @param selectedRows
+ * @param ids
  */
-const handleRemove = async (selectedRows: LoginLogListItem[]) => {
+const handleRemove = async (ids: number[]) => {
   const hide = message.loading('正在删除');
-  if (!selectedRows) return true;
+  if (ids.length === 0) return true;
   try {
-    await removeLoginLog(selectedRows.map((row) => row.id));
+    await removeLoginLog(ids);
     hide();
     message.success('删除成功，即将刷新');
     return true;
@@ -31,16 +31,15 @@ const handleRemove = async (selectedRows: LoginLogListItem[]) => {
 
 const LoginLogList: React.FC = () => {
   const actionRef = useRef<ActionType>();
-  const [selectedRowsState, setSelectedRows] = useState<LoginLogListItem[]>([]);
   const [statisticsLoginLogData, setStatisticsLoginLogData] = useState<StatisticsLoginLog>();
 
-  const showDeleteConfirm = (item: LoginLogListItem) => {
+  const showDeleteConfirm = (ids: number[]) => {
     confirm({
       title: '是否删除记录?',
       icon: <ExclamationCircleOutlined/>,
       content: '删除的记录不能恢复,请确认!',
       onOk() {
-        handleRemove([item]).then(() => {
+        handleRemove(ids).then(() => {
           actionRef.current?.reloadAndRest?.();
         });
       },
@@ -90,7 +89,7 @@ const LoginLogList: React.FC = () => {
           case 'error':
             return <Tag color={'error'}>失败</Tag>;
         }
-        return <>未知{entity.loginStatus }</>;
+        return <>未知{entity.loginStatus}</>;
       },
     },
     {
@@ -116,7 +115,7 @@ const LoginLogList: React.FC = () => {
             key="delete"
             style={{color: '#ff4d4f'}}
             onClick={() => {
-              showDeleteConfirm(record);
+              showDeleteConfirm([record.id]);
             }}
           >
             <DeleteOutlined/> 删除
@@ -131,7 +130,9 @@ const LoginLogList: React.FC = () => {
     queryStatisticsLoginLog().then((res) => {
       if (res.code === '000000') {
         setStatisticsLoginLogData({
-          dayLoginCount: res.data.dayLoginCount, monthLoginCount: res.data.monthLoginCount, weekLoginCount: res.data.weekLoginCount
+          dayLoginCount: res.data.dayLoginCount,
+          monthLoginCount: res.data.monthLoginCount,
+          weekLoginCount: res.data.weekLoginCount
         })
       } else {
         message.error(res.msg);
@@ -184,36 +185,32 @@ const LoginLogList: React.FC = () => {
             }}
             request={queryLoginLogList}
             columns={columns}
-            rowSelection={{
-              onChange: (_, selectedRows) => setSelectedRows(selectedRows),
-            }}
+            rowSelection={{}}
             pagination={{pageSize: 10}}
+            tableAlertRender={({
+                                 selectedRowKeys,
+                                 selectedRows,
+                                 onCleanSelected,
+                               }) => {
+              const ids = selectedRows.map((row) => row.id);
+              return (
+                <Space size={16}>
+                  <span>已选 {selectedRowKeys.length} 项</span>
+                  <Button
+                    icon={<DeleteOutlined/>}
+                    danger
+                    style={{borderRadius: '5px'}}
+                    onClick={async () => {
+                      showDeleteConfirm(ids);
+                    }}
+                  >批量删除</Button>
+                </Space>
+              );
+            }}
           />
         </Col>
       </Row>
 
-      {selectedRowsState?.length > 0 && (
-        <FooterToolbar
-          extra={
-            <div>
-              已选择 <a style={{fontWeight: 600}}>{selectedRowsState.length}</a> 项&nbsp;&nbsp;
-            </div>
-          }
-        >
-          <Button
-            type="primary"
-            danger
-            icon={<DeleteOutlined/>}
-            onClick={async () => {
-              await handleRemove(selectedRowsState);
-              setSelectedRows([]);
-              actionRef.current?.reloadAndRest?.();
-            }}
-          >
-            批量删除
-          </Button>
-        </FooterToolbar>
-      )}
 
     </PageContainer>
   );

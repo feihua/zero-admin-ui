@@ -1,28 +1,22 @@
 import {
   DeleteOutlined,
-  EditOutlined,
-  PlusOutlined,
-  ExclamationCircleOutlined,
   DownOutlined,
+  EditOutlined,
+  ExclamationCircleOutlined,
+  PlusOutlined,
   RedoOutlined
 } from '@ant-design/icons';
-import {Button, Divider, message, Drawer, Modal, Col, Row, Tree, Tag, Select, Dropdown, Space, MenuProps} from 'antd';
-import React, {useState, useRef, useEffect} from 'react';
-import {PageContainer, FooterToolbar} from '@ant-design/pro-layout';
+import {Button, Col, Divider, Drawer, Dropdown, MenuProps, message, Modal, Row, Select, Space, Tag, Tree} from 'antd';
+import React, {useEffect, useRef, useState} from 'react';
+import {PageContainer} from '@ant-design/pro-layout';
+import type {ActionType, ProColumns} from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
-import type {ProColumns, ActionType} from '@ant-design/pro-table';
-import ProDescriptions from '@ant-design/pro-descriptions';
 import type {ProDescriptionsItemProps} from '@ant-design/pro-descriptions';
+import ProDescriptions from '@ant-design/pro-descriptions';
 import CreateUserForm from './components/CreateUserForm';
 import UpdateUserForm from './components/UpdateUserForm';
 import type {UserListItem} from './data.d';
-import {
-  queryUserList,
-  updateUser,
-  addUser,
-  removeUser,
-  updateUserRoleList, queryDeptAndPostList,
-} from './service';
+import {addUser, queryDeptAndPostList, queryUserList, removeUser, updateUser, updateUserRoleList,} from './service';
 import SetRoleModal from "@/pages/system/user/components/SetRoleModal";
 import {DataNode, TreeProps} from 'antd/es/tree';
 import {tree} from "@/utils/utils";
@@ -67,13 +61,13 @@ const handleUpdate = async (user: UserListItem) => {
 
 /**
  *  删除节点
- * @param selectedRows
+ * @param ids
  */
-const handleRemove = async (selectedRows: UserListItem[]) => {
+const handleRemove = async (ids: number[]) => {
   const hide = message.loading('正在删除');
-  if (!selectedRows) return true;
+  if (ids.length === 0) return true;
   try {
-    await removeUser(selectedRows.map((row) => row.id));
+    await removeUser(ids);
     hide();
     message.success('删除成功，即将刷新');
     return true;
@@ -91,18 +85,17 @@ const UserList: React.FC = () => {
   const [showDetail, setShowDetail] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<UserListItem>();
-  const [selectedRowsState, setSelectedRows] = useState<UserListItem[]>([]);
 
   const [deptConf, setDeptConf] = useState<DataNode[]>([]);
   const [deptId, setDeptId] = useState<number>(0);
 
-  const showDeleteConfirm = (item: UserListItem) => {
+  const showDeleteConfirm = (ids: number[]) => {
     confirm({
       title: '是否删除记录?',
       icon: <ExclamationCircleOutlined/>,
       content: '删除的记录不能恢复,请确认!',
       onOk() {
-        handleRemove([item]).then(() => {
+        handleRemove(ids).then(() => {
           actionRef.current?.reloadAndRest?.();
         });
       },
@@ -130,7 +123,7 @@ const UserList: React.FC = () => {
     {
       key: '1',
       label: (
-        <a key={'resetPassword'} onClick={()=>{
+        <a key={'resetPassword'} onClick={() => {
           showReSetPasswordConfirm()
         }}>
           重置密码
@@ -274,7 +267,7 @@ const UserList: React.FC = () => {
             key="delete"
             style={{color: '#ff4d4f'}}
             onClick={() => {
-              showDeleteConfirm(record);
+              showDeleteConfirm([record.id]);
             }}
           >
             <DeleteOutlined/> 删除
@@ -298,8 +291,7 @@ const UserList: React.FC = () => {
 
   useEffect(() => {
     queryDeptAndPostList().then((res) => {
-      let deptList = res.data.deptList
-      setDeptConf(tree(deptList, 0, 'parentId'))
+      setDeptConf(tree(res.data.deptList, 0, 'parentId'))
     });
   }, []);
 
@@ -338,30 +330,29 @@ const UserList: React.FC = () => {
               return queryUserList({...params, deptId: deptId})
             })}
             columns={columns}
-            rowSelection={{
-              onChange: (_, selectedRows) => setSelectedRows(selectedRows),
-            }}
+            rowSelection={{}}
             pagination={{pageSize: 10}}
+            tableAlertRender={({
+                                 selectedRowKeys,
+                                 selectedRows,
+                                 onCleanSelected,
+                               }) => {
+              const ids = selectedRows.map((row) => row.id);
+              return (
+                <Space size={16}>
+                  <span>已选 {selectedRowKeys.length} 项</span>
+                  <Button
+                    icon={<DeleteOutlined/>}
+                    danger
+                    style={{borderRadius: '5px'}}
+                    onClick={async () => {
+                      showDeleteConfirm(ids);
+                    }}
+                  >批量删除</Button>
+                </Space>
+              );
+            }}
           />
-          {selectedRowsState?.length > 0 && (
-            <FooterToolbar
-              extra={
-                <div>
-                  已选择 <a style={{fontWeight: 600}}>{selectedRowsState.length}</a> 项&nbsp;&nbsp;
-                </div>
-              }
-            >
-              <Button
-                onClick={async () => {
-                  await handleRemove(selectedRowsState);
-                  setSelectedRows([]);
-                  actionRef.current?.reloadAndRest?.();
-                }}
-              >
-                批量删除
-              </Button>
-            </FooterToolbar>
-          )}
 
           <CreateUserForm
             key={'CreateUserForm'}

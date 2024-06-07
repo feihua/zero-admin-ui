@@ -1,11 +1,11 @@
-import {PlusOutlined, ExclamationCircleOutlined, EditOutlined, DeleteOutlined} from '@ant-design/icons';
-import {Button, Divider, message, Drawer, Modal, Tag, Select, } from 'antd';
-import React, {useState, useRef} from 'react';
-import {PageContainer, FooterToolbar} from '@ant-design/pro-layout';
+import {DeleteOutlined, EditOutlined, ExclamationCircleOutlined, PlusOutlined} from '@ant-design/icons';
+import {Button, Divider, Drawer, message, Modal, Select, Space, Tag,} from 'antd';
+import React, {useRef, useState} from 'react';
+import {PageContainer} from '@ant-design/pro-layout';
+import type {ActionType, ProColumns} from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
-import type {ProColumns, ActionType} from '@ant-design/pro-table';
-import ProDescriptions from '@ant-design/pro-descriptions';
 import type {ProDescriptionsItemProps} from '@ant-design/pro-descriptions';
+import ProDescriptions from '@ant-design/pro-descriptions';
 import CreateDictForm from './components/CreateDictForm';
 import UpdateDictForm from './components/UpdateDictForm';
 import type {DictTypeListItem} from './data.d';
@@ -51,13 +51,13 @@ const handleUpdate = async (fields: DictTypeListItem) => {
 
 /**
  *  删除节点
- * @param selectedRows
+ * @param ids
  */
-const handleRemove = async (selectedRows: DictTypeListItem[]) => {
+const handleRemove = async (ids: number[]) => {
   const hide = message.loading('正在删除');
-  if (!selectedRows) return true;
+  if (ids.length === 0) return true;
   try {
-    await removeDictType(selectedRows.map((row) => row.id));
+    await removeDictType(ids);
     hide();
     message.success('删除成功，即将刷新');
     return true;
@@ -74,15 +74,14 @@ const DictList: React.FC = () => {
   const [showDetail, setShowDetail] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<DictTypeListItem>();
-  const [selectedRowsState, setSelectedRows] = useState<DictTypeListItem[]>([]);
 
-  const showDeleteConfirm = (item: DictTypeListItem) => {
+  const showDeleteConfirm = (ids: number[]) => {
     confirm({
       title: '是否删除记录?',
       icon: <ExclamationCircleOutlined/>,
       content: '删除的记录不能恢复,请确认!',
       onOk() {
-        handleRemove([item]).then(() => {
+        handleRemove(ids).then(() => {
           actionRef.current?.reloadAndRest?.();
         });
       },
@@ -115,12 +114,12 @@ const DictList: React.FC = () => {
     {
       title: '状态',
       dataIndex: 'dictStatus',
-      renderFormItem:(text, row, index) => {
+      renderFormItem: (text, row, index) => {
         return <Select
           value={row.value}
           options={[
-            { value: '1', label: '正常' },
-            { value: '0', label: '禁用' },
+            {value: '1', label: '正常'},
+            {value: '0', label: '禁用'},
           ]}
         />
 
@@ -132,7 +131,7 @@ const DictList: React.FC = () => {
           case 0:
             return <Tag>禁用</Tag>;
         }
-        return <>未知{entity.dictStatus }</>;
+        return <>未知{entity.dictStatus}</>;
       },
     },
     {
@@ -205,7 +204,7 @@ const DictList: React.FC = () => {
             key="delete"
             style={{color: '#ff4d4f'}}
             onClick={() => {
-              showDeleteConfirm(record);
+              showDeleteConfirm([record.id]);
             }}
           >
             <DeleteOutlined/> 删除
@@ -235,32 +234,29 @@ const DictList: React.FC = () => {
         ]}
         request={queryDictTypeList}
         columns={columns}
-        rowSelection={{
-          onChange: (_, selectedRows) => setSelectedRows(selectedRows),
-        }}
+        rowSelection={{}}
         pagination={{pageSize: 10}}
+        tableAlertRender={({
+                             selectedRowKeys,
+                             selectedRows,
+                             onCleanSelected,
+                           }) => {
+          const ids = selectedRows.map((row) => row.id);
+          return (
+            <Space size={16}>
+              <span>已选 {selectedRowKeys.length} 项</span>
+              <Button
+                icon={<DeleteOutlined/>}
+                danger
+                style={{borderRadius: '5px'}}
+                onClick={async () => {
+                  showDeleteConfirm(ids);
+                }}
+              >批量删除</Button>
+            </Space>
+          );
+        }}
       />
-      {selectedRowsState?.length > 0 && (
-        <FooterToolbar
-          extra={
-            <div>
-              已选择 <a style={{fontWeight: 600}}>{selectedRowsState.length}</a> 项&nbsp;&nbsp;
-            </div>
-          }
-        >
-          <Button
-            type={"primary"}
-            danger
-            onClick={async () => {
-              await handleRemove(selectedRowsState);
-              setSelectedRows([]);
-              actionRef.current?.reloadAndRest?.();
-            }}
-          >
-            批量删除
-          </Button>
-        </FooterToolbar>
-      )}
 
       <CreateDictForm
         key={'CreateDictForm'}
@@ -305,27 +301,27 @@ const DictList: React.FC = () => {
         currentData={currentRow || {}}
       />
 
-    <DictItemModal
-      key={'DictItemModal'}
-      onSubmit={async (value) => {
-        const success = await handleUpdate(value);
-        if (success) {
-          handleDictItemModalVisible(false);
-          setCurrentRow(undefined);
-          if (actionRef.current) {
-            actionRef.current.reload();
+      <DictItemModal
+        key={'DictItemModal'}
+        onSubmit={async (value) => {
+          const success = await handleUpdate(value);
+          if (success) {
+            handleDictItemModalVisible(false);
+            setCurrentRow(undefined);
+            if (actionRef.current) {
+              actionRef.current.reload();
+            }
           }
-        }
-      }}
-      onCancel={() => {
-        handleDictItemModalVisible(false);
-        if (!showDetail) {
-          setCurrentRow(undefined);
-        }
-      }}
-      dictItemModalVisible={dictItemModalVisible}
-      currentData={currentRow || {}}
-    />
+        }}
+        onCancel={() => {
+          handleDictItemModalVisible(false);
+          if (!showDetail) {
+            setCurrentRow(undefined);
+          }
+        }}
+        dictItemModalVisible={dictItemModalVisible}
+        currentData={currentRow || {}}
+      />
       <Drawer
         width={600}
         visible={showDetail}

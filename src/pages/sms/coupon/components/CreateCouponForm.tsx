@@ -1,6 +1,8 @@
-import React, {useEffect} from 'react';
-import {Col, DatePicker, Form, Input, InputNumber, Modal, Row, Select} from 'antd';
+import React, {useEffect, useState} from 'react';
+import {Col, DatePicker, Form, Input, InputNumber, Modal, Radio, RadioChangeEvent, Row, Select} from 'antd';
 import type {CouponListItem} from '../data.d';
+import CategoryForm from "@/pages/sms/coupon/components/CategoryForm";
+import ProductForm from "@/pages/sms/coupon/components/ProductForm";
 
 export interface CreateFormProps {
   onCancel: () => void;
@@ -19,6 +21,8 @@ const CreateCouponForm: React.FC<CreateFormProps> = (props) => {
   const [form] = Form.useForm();
   const {Option} = Select;
   const {TextArea} = Input;
+  const [categoryList, setCategoryList] = useState<any[]>([]);
+  const [productList, setProductList] = useState<any[]>([]);
 
   const {
     onSubmit,
@@ -41,10 +45,15 @@ const CreateCouponForm: React.FC<CreateFormProps> = (props) => {
 
   const handleFinish = (values: CouponListItem) => {
     if (onSubmit) {
-      onSubmit(values);
+      onSubmit({...values, productCategoryRelationList: categoryList, productRelationList: productList},);
     }
   };
 
+  const [value, setValue] = useState(0);
+
+  const onChange = (e: RadioChangeEvent) => {
+    setValue(e.target.value);
+  }
   const renderContent = () => {
     return (
       <>
@@ -79,52 +88,19 @@ const CreateCouponForm: React.FC<CreateFormProps> = (props) => {
               <InputNumber addonAfter={"张"}/>
             </FormItem>
             <FormItem
-              name="count"
-              label="数量"
-              initialValue={10}
-              rules={[{required: true, message: '请输入活动标题!'}]}
-            >
-              <InputNumber addonAfter={"张"}/>
-            </FormItem>
-            <FormItem
               name="perLimit"
-              label="每人限领张数"
+              label="每人限领"
               initialValue={100}
               rules={[{required: true, message: '请输入每人限领张数!'}]}
             >
               <InputNumber addonAfter="张"/>
             </FormItem>
 
-            <FormItem
-              name="startTime"
-              label="开始时间"
-              rules={[{required: true, message: '请输入开始时间!'}]}
-            >
-              <DatePicker showTime placeholder={'请输入开始时间'}/>
-            </FormItem>
-            <FormItem
-              name="endTime"
-              label="结束时间"
-              rules={[{required: true, message: '请输入结束时间!'}]}
-            >
-              <DatePicker showTime placeholder={'请输入结束时间'}/>
-            </FormItem>
 
           </Col>
           <Col span={12}>
 
-            <FormItem
-              name="useType"
-              label="使用类型"
-              initialValue={0}
-              rules={[{required: true, message: '请选择使用类型!'}]}
-            >
-              <Select id="useType" placeholder={'请选择使用类型'}>
-                <Option value={0}>全场通用</Option>
-                <Option value={1}>指定分类</Option>
-                <Option value={2}>指定商品</Option>
-              </Select>
-            </FormItem>
+
             <FormItem
               name="platform"
               label="使用平台"
@@ -166,31 +142,49 @@ const CreateCouponForm: React.FC<CreateFormProps> = (props) => {
                 <Option value={2}>白金会员</Option>
               </Select>
             </FormItem>
-            <FormItem
-              name="enableTime"
-              label="领取的日期"
-              rules={[{required: true, message: '请输入可以领取的日期!'}]}
-            >
-              <DatePicker showTime placeholder={'请输入可以领取的日期'}/>
-            </FormItem>
-            <FormItem
-              name="code"
-              label="优惠码"
-              rules={[{required: true, message: '请输入优惠码!'}]}
-            >
-              <Input id="update-code" placeholder={'请输入优惠码'}/>
-            </FormItem>
-          </Col>
-          <Col span={12}>
-            <FormItem
-              name="note"
-              label="备注"
-            >
-              <TextArea rows={2}/>
-            </FormItem>
+
+
           </Col>
         </Row>
+        <FormItem
+          name="enableTime"
+          label="领取的日期"
+          rules={[{required: true, message: '请输入可以领取的日期!'}]}
+        >
+          <DatePicker showTime/>
+        </FormItem>
+        <FormItem
+          name="startTime"
+          label="有效期"
+          rules={[{required: true, message: '请输入开始时间!'}]}
+        >
+          <DatePicker.RangePicker showTime/>
+        </FormItem>
+        <FormItem
+          name="useType"
+          label="使用类型"
+          initialValue={0}
+          rules={[{required: true, message: '请选择使用类型!'}]}
+        >
+          <Radio.Group id="useType" onChange={onChange} value={value}>
+            <Radio value={0}>全场通用</Radio>
+            <Radio value={1}>指定分类</Radio>
+            <Radio value={2}>指定商品</Radio>
+          </Radio.Group>
+        </FormItem>
+        {value === 1 && <CategoryForm onSubmit={(list: any[]) => {
+          setCategoryList(list)
+        }}/>}
+        {value === 2 && <ProductForm onSubmit={(list: any[]) => {
+          setProductList(list)
+        }}/>}
 
+        <FormItem
+          name="note"
+          label="备注"
+        >
+          <TextArea rows={4}/>
+        </FormItem>
       </>
     );
   };
@@ -202,13 +196,14 @@ const CreateCouponForm: React.FC<CreateFormProps> = (props) => {
     <Modal
       forceRender
       destroyOnClose
-      title="新建优惠券信息"
+      title="新建"
       open={createModalVisible}
       {...modalFooter}
-      width={720}
+      width={820}
     >
       <Form
         {...formLayout}
+        labelCol={{flex: '115px'}}
         form={form}
         onFinish={handleFinish}
       >

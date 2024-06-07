@@ -1,11 +1,10 @@
-import {PlusOutlined, ExclamationCircleOutlined, EditOutlined, DeleteOutlined} from '@ant-design/icons';
-import {Button, Divider, message, Drawer, Modal, Select, Tag} from 'antd';
-import React, {useState, useRef, useEffect} from 'react';
-import {FooterToolbar} from '@ant-design/pro-layout';
+import {DeleteOutlined, EditOutlined, ExclamationCircleOutlined, PlusOutlined} from '@ant-design/icons';
+import {Button, Divider, Drawer, message, Modal, Select, Space, Tag} from 'antd';
+import React, {useEffect, useRef, useState} from 'react';
+import type {ActionType, ProColumns} from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
-import type {ProColumns, ActionType} from '@ant-design/pro-table';
-import ProDescriptions from '@ant-design/pro-descriptions';
 import type {ProDescriptionsItemProps} from '@ant-design/pro-descriptions';
+import ProDescriptions from '@ant-design/pro-descriptions';
 import CreateDictForm from './CreateDictItemForm';
 import UpdateDictForm from './UpdateDictItemForm';
 import type {DictItemListItem} from './data.d';
@@ -57,13 +56,13 @@ const handleUpdate = async (fields: DictItemListItem) => {
 
 /**
  *  删除节点
- * @param selectedRows
+ * @param ids
  */
-const handleRemove = async (selectedRows: DictItemListItem[]) => {
+const handleRemove = async (ids: number[]) => {
   const hide = message.loading('正在删除');
-  if (!selectedRows) return true;
+  if (ids.length === 0) return true;
   try {
-    await removeDictItem(selectedRows.map((row) => row.id));
+    await removeDictItem(ids);
     hide();
     message.success('删除成功，即将刷新');
     return true;
@@ -85,15 +84,14 @@ const DictList: React.FC<DictListProps> = (props) => {
   const [showDetail, setShowDetail] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<DictItemListItem>();
-  const [selectedRowsState, setSelectedRows] = useState<DictItemListItem[]>([]);
 
-  const showDeleteConfirm = (item: DictItemListItem) => {
+  const showDeleteConfirm = (ids: number[]) => {
     confirm({
       title: '是否删除记录?',
       icon: <ExclamationCircleOutlined/>,
       content: '删除的记录不能恢复,请确认!',
       onOk() {
-        handleRemove([item]).then(() => {
+        handleRemove(ids).then(() => {
           actionRef.current?.reloadAndRest?.();
         });
       },
@@ -212,7 +210,7 @@ const DictList: React.FC<DictListProps> = (props) => {
               key="delete"
               style={{color: '#ff4d4f'}}
               onClick={() => {
-                showDeleteConfirm(record);
+                showDeleteConfirm([record.id]);
               }}
             >
               <DeleteOutlined/> 删除
@@ -241,32 +239,30 @@ const DictList: React.FC<DictListProps> = (props) => {
           return queryDictItemList({...params, dictType: props.dictType})
         }}
         columns={columns}
-        rowSelection={{
-          onChange: (_, selectedRows) => setSelectedRows(selectedRows),
-        }}
+        rowSelection={{}}
         pagination={{pageSize: 10}}
+        tableAlertRender={({
+                             selectedRowKeys,
+                             selectedRows,
+                             onCleanSelected,
+                           }) => {
+          const ids = selectedRows.map((row) => row.id);
+          return (
+            <Space size={16}>
+              <span>已选 {selectedRowKeys.length} 项</span>
+              <Button
+                icon={<DeleteOutlined/>}
+                danger
+                style={{borderRadius: '5px'}}
+                onClick={async () => {
+                  showDeleteConfirm(ids);
+                }}
+              >批量删除</Button>
+            </Space>
+          );
+        }}
       />
-      {selectedRowsState?.length > 0 && (
-        <FooterToolbar
-          extra={
-            <div>
-              已选择 <a style={{fontWeight: 600}}>{selectedRowsState.length}</a> 项&nbsp;&nbsp;
-            </div>
-          }
-        >
-          <Button
-            type={"primary"}
-            danger
-            onClick={async () => {
-              await handleRemove(selectedRowsState);
-              setSelectedRows([]);
-              actionRef.current?.reloadAndRest?.();
-            }}
-          >
-            批量删除
-          </Button>
-        </FooterToolbar>
-      )}
+
 
       <CreateDictForm
         key={'CreateDictForm'}
