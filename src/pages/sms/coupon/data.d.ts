@@ -1,3 +1,5 @@
+import CouponDetailForm from "@/pages/sms/coupon/components/CouponDetailForm";
+
 export interface CouponListItem {
   id: number;
   name: string;
@@ -50,3 +52,37 @@ export interface CategoryListParams {
   sorter?: { [key: string]: any };
 
 }
+export interface CouponHistoryListItem {
+  id: number;
+  useStatus: number;
+  getType: number;
+
+}
+
+export interface CouponHistoryListParams {
+  id: number;
+  useStatus: number;
+
+}
+
+export interface CouponDetailData {
+  id:                          number;
+  type:                        number;
+  name:                        string;
+  platform:                    number;
+  count:                       number;
+  amount:                      number;
+  perLimit:                    number;
+  minPoint:                    number;
+  startTime:                   string;
+  endTime:                     string;
+  useType:                     number;
+  note:                        string;
+  publishCount:                number;
+  useCount:                    number;
+  receiveCount:                number;
+  enableTime:                  string;
+  code:                        string;
+  memberLevel:                 number;
+}
+

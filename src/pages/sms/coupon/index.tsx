@@ -16,6 +16,7 @@ import UpdateCouponForm from './components/UpdateCouponForm';
 import type {CouponListItem} from './data.d';
 import {queryCoupon, updateCoupon, addCoupon, removeCoupon} from './service';
 import moment from "moment";
+import CouponDetailForm from "@/pages/sms/coupon/components/CouponDetailForm";
 
 const {confirm} = Modal;
 
@@ -77,6 +78,7 @@ const handleRemove = async (selectedRows: CouponListItem[]) => {
 const CouponList: React.FC = () => {
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
+  const [detailModalVisible, handleDetailModalVisible] = useState<boolean>(false);
   const [showDetail, setShowDetail] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<CouponListItem>();
@@ -234,7 +236,7 @@ const CouponList: React.FC = () => {
           <a
             key="eye"
             onClick={() => {
-              handleUpdateModalVisible(true);
+              handleDetailModalVisible(true);
               setCurrentRow(record);
             }}
           >
@@ -346,6 +348,28 @@ const CouponList: React.FC = () => {
           }
         }}
         updateModalVisible={updateModalVisible}
+        id={currentRow?.id || 0}
+      />
+
+      <CouponDetailForm
+        key={'CouponDetailForm'}
+        onSubmit={async (value) => {
+          const success = await handleUpdate(value);
+          if (success) {
+            handleUpdateModalVisible(false);
+            setCurrentRow(undefined);
+            if (actionRef.current) {
+              actionRef.current.reload();
+            }
+          }
+        }}
+        onCancel={() => {
+          handleDetailModalVisible(false);
+          if (!showDetail) {
+            setCurrentRow(undefined);
+          }
+        }}
+        detailModalVisible={detailModalVisible}
         id={currentRow?.id || 0}
       />
 

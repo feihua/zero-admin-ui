@@ -86,3 +86,14 @@ export async function queryProductCategoryList(params: CategoryListParams) {
     },
   });
 }
+
+// 分页优惠券领取列表
+export async function queryCouponHistoryList(params: CategoryListParams) {
+
+  return request('/api/sms/couponHistory/queryCouponHistoryList', {
+    method: 'GET',
+    params: {
+      ...params,
+    },
+  });
+}
