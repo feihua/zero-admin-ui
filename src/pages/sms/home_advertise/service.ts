@@ -27,6 +27,8 @@ export async function removeHomeAdvertise(ids: number[]) {
 
 // 更新首页轮播广告
 export async function updateHomeAdvertise(params: HomeAdvertiseListItem) {
+  params.startTime = moment(params.startTime).format('YYYY-MM-DD HH:mm:ss');
+  params.endTime = moment(params.endTime).format('YYYY-MM-DD HH:mm:ss');
   return request('/api/sms/homeAdvertise/updateHomeAdvertise', {
     method: 'POST',
     data: {
@@ -36,7 +38,7 @@ export async function updateHomeAdvertise(params: HomeAdvertiseListItem) {
 }
 
 // 批量更新首页轮播广告状态
-export async function updateHomeAdvertiseStatus(params: { dictTypeIds: number[], postStatus: number }) {
+export async function updateHomeAdvertiseStatus(params: { ids: number[], status: number }) {
   return request('/api/sms/homeAdvertise/updateHomeAdvertiseStatus', {
     method: 'POST',
     data: {

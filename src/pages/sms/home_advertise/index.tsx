@@ -4,7 +4,7 @@ import {
   DeleteOutlined,
   EditOutlined,
 } from '@ant-design/icons';
-import {Button, Divider, message, Drawer, Modal} from 'antd';
+import {Button, Divider, message, Drawer, Modal, Switch, Space} from 'antd';
 import React, {useState, useRef} from 'react';
 import {PageContainer, FooterToolbar} from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
@@ -18,7 +18,7 @@ import {
   queryHomeAdvertiseList,
   updateHomeAdvertise,
   addHomeAdvertise,
-  removeHomeAdvertise,
+  removeHomeAdvertise, updateHomeAdvertiseStatus,
 } from './service';
 
 const {confirm} = Modal;
@@ -36,7 +36,6 @@ const handleAdd = async (fields: HomeAdvertiseListItem) => {
     return true;
   } catch (error) {
     hide();
-    message.error('添加失败请重试！');
     return false;
   }
 };
@@ -55,7 +54,6 @@ const handleUpdate = async (fields: HomeAdvertiseListItem) => {
     return true;
   } catch (error) {
     hide();
-    message.error('更新失败请重试！');
     return false;
   }
 };
@@ -68,13 +66,34 @@ const handleRemove = async (selectedRows: HomeAdvertiseListItem[]) => {
   const hide = message.loading('正在删除');
   if (!selectedRows) return true;
   try {
-    await removeHomeAdvertise( selectedRows.map((row) => row.id));
+    await removeHomeAdvertise(selectedRows.map((row) => row.id));
     hide();
     message.success('删除成功，即将刷新');
     return true;
   } catch (error) {
     hide();
-    message.error('删除失败，请重试');
+    return false;
+  }
+};
+
+/**
+ * 更新上线/下线状态
+ * @param ids
+ * @param status
+ */
+const handleStatus = async (ids: number[], status: number) => {
+  const hide = message.loading('正在更新状态');
+  if (ids.length == 0) {
+    hide();
+    return true;
+  }
+  try {
+    await updateHomeAdvertiseStatus({ids: ids, status: status});
+    hide();
+    message.success('更新状态成功');
+    return true;
+  } catch (error) {
+    hide();
     return false;
   }
 };
@@ -87,15 +106,28 @@ const HomeAdvertiseList: React.FC = () => {
   const [currentRow, setCurrentRow] = useState<HomeAdvertiseListItem>();
   const [selectedRowsState, setSelectedRows] = useState<HomeAdvertiseListItem[]>([]);
 
-  const showDeleteConfirm = (item: HomeAdvertiseListItem) => {
+  const showDeleteConfirm = (item: HomeAdvertiseListItem[]) => {
     confirm({
       title: '是否删除记录?',
       icon: <ExclamationCircleOutlined/>,
       content: '删除的记录不能恢复,请确认!',
       onOk() {
-        handleRemove([item]).then((r) => {
+        handleRemove(item).then((r) => {
           actionRef.current?.reloadAndRest?.();
         });
+      },
+      onCancel() {
+      },
+    });
+  };
+
+  const showStatusConfirm = (item: HomeAdvertiseListItem[], status: number) => {
+    confirm({
+      title: `确定${status == 1 ? "上线" : "下线"}${item[0].name}广告吗？`,
+      icon: <ExclamationCircleOutlined/>,
+      async onOk() {
+        await handleStatus(item.map((x) => x.id), status)
+        actionRef.current?.reload?.();
       },
       onCancel() {
       },
@@ -182,6 +214,13 @@ const HomeAdvertiseList: React.FC = () => {
         1: {text: '正常', status: 'Success'},
       },
       hideInSearch: true,
+      render: (dom, entity) => {
+        return (
+          <Switch checked={entity.status == 1} onChange={(flag) => {
+            showStatusConfirm([entity], flag ? 1 : 0)
+          }}/>
+        );
+      },
     },
     {
       title: '操作',
@@ -204,7 +243,7 @@ const HomeAdvertiseList: React.FC = () => {
             key="delete"
             style={{color: '#ff4d4f'}}
             onClick={() => {
-              showDeleteConfirm(record);
+              showDeleteConfirm([record]);
             }}
           >
             <DeleteOutlined/> 删除
@@ -230,10 +269,33 @@ const HomeAdvertiseList: React.FC = () => {
         ]}
         request={queryHomeAdvertiseList}
         columns={columns}
-        rowSelection={{
-          onChange: (_, selectedRows) => setSelectedRows(selectedRows),
-        }}
+        rowSelection={{}}
         pagination={{pageSize: 10}}
+        tableAlertRender={({
+                             selectedRowKeys,
+                             selectedRows,
+                             onCleanSelected,
+                           }) => {
+          const ids = selectedRows.map((row) => row.id);
+          return (
+            <Space size={16}>
+              <span>已选 {selectedRowKeys.length} 项</span>
+              <a onClick={async () => {
+                await handleStatus(ids, 1);
+                onCleanSelected()
+                actionRef.current?.reload?.();
+              }}>批量上线</a>
+              <a onClick={async () => {
+                await handleStatus(ids, 0);
+                onCleanSelected()
+                actionRef.current?.reload?.();
+              }}>批量下线</a>
+              <a onClick={async () => {
+                showDeleteConfirm(selectedRows);
+              }} style={{color: '#ff4d4f'}}>批量删除</a>
+            </Space>
+          );
+        }}
       />
       {selectedRowsState?.length > 0 && (
         <FooterToolbar

@@ -1,7 +1,8 @@
 import React, {useEffect, useState} from 'react';
-import {DatePicker, DatePickerProps, Form, Input, InputNumber, Modal, Select} from 'antd';
+import {DatePicker, Form, Input, InputNumber, Modal, Radio} from 'antd';
 import type {HomeAdvertiseListItem} from '../data.d';
 import moment from "moment/moment";
+import UploadFileComponents from "@/components/common/UploadFileComponents";
 
 export interface UpdateFormProps {
   onCancel: () => void;
@@ -13,16 +14,13 @@ export interface UpdateFormProps {
 const FormItem = Form.Item;
 
 const formLayout = {
-  labelCol: { span: 7 },
-  wrapperCol: { span: 13 },
+  labelCol: {span: 7},
+  wrapperCol: {span: 13},
 };
 
 const UpdateHomeAdvertiseForm: React.FC<UpdateFormProps> = (props) => {
   const [form] = Form.useForm();
-  const {Option} = Select;
-  const [startTime, setStartTime] = useState<string>("");
-  const [endTime, setEndTime] = useState<string>("");
-
+  const [imageUrl, setImageUrl] = useState('');
   const {onSubmit, onCancel, updateModalVisible, values} = props;
 
   useEffect(() => {
@@ -33,11 +31,12 @@ const UpdateHomeAdvertiseForm: React.FC<UpdateFormProps> = (props) => {
 
   useEffect(() => {
     if (values) {
+      setImageUrl(values.pic || "")
       form.setFieldsValue({
         ...values,
+        startTime: moment(values.startTime, 'YYYY-MM-DD HH:mm:ss'),
+        endTime: moment(values.endTime, 'YYYY-MM-DD HH:mm:ss'),
       });
-      setStartTime(values.startTime || "")
-      setEndTime(values.endTime || "")
     }
   }, [props.values]);
 
@@ -48,17 +47,8 @@ const UpdateHomeAdvertiseForm: React.FC<UpdateFormProps> = (props) => {
 
   const handleFinish = (item: { [key: string]: any }) => {
     if (onSubmit) {
-      onSubmit({...item as HomeAdvertiseListItem, startTime, endTime});
+      onSubmit({...item as HomeAdvertiseListItem});
     }
-  };
-
-  const onChangeStartDate: DatePickerProps['onChange'] = (date, dateString) => {
-    console.log(dateString)
-    setStartTime(dateString)
-  };
-  const onChangeEndDate: DatePickerProps['onChange'] = (date, dateString) => {
-    console.log(dateString)
-    setEndTime(dateString)
   };
 
   const renderContent = () => {
@@ -67,37 +57,57 @@ const UpdateHomeAdvertiseForm: React.FC<UpdateFormProps> = (props) => {
         <FormItem name="id" label="主键" hidden>
           <Input id="update-id" placeholder="请输入主键"/>
         </FormItem>
-        <FormItem name="name" label="广告名" rules={[{required: true, message: '请输入广告名!'}]}>
+        <FormItem name="name" label="广告名称" rules={[{required: true, message: '请输入广告名!'}]}>
           <Input id="update-name" placeholder={'请输入广告名'}/>
         </FormItem>
-        <FormItem name="type" label="轮播位置" rules={[{required: true, message: '请选择轮播位置!'}]}>
-          <Select id="type" placeholder={'请选择轮播位置'}>
-            <Option value={0}>PC首页轮播</Option>
-            <Option value={1}>app首页轮播</Option>
-          </Select>
+        <FormItem name="type" label="广告位置" rules={[{required: true, message: '请选择轮播位置!'}]}>
+          <Radio.Group id="type">
+            <Radio value={0}>PC首页轮播</Radio>
+            <Radio value={1}>APP首页轮播</Radio>
+          </Radio.Group>
         </FormItem>
         <FormItem
+          name={'startTime'}
           label="开始时间"
           rules={[{required: true, message: '请输入开始时间!'}]}
         >
-          <DatePicker value={moment(startTime, 'YYYY-MM-DD HH:mm:ss')} onChange={onChangeStartDate} showTime placeholder={'请输入开始时间'}/>
+          <DatePicker showTime
+                      placeholder={'请输入开始时间'}/>
         </FormItem>
         <FormItem
+          name={'endTime'}
           label="结束时间"
           rules={[{required: true, message: '请输入结束时间!'}]}
         >
-          <DatePicker value={moment(endTime, 'YYYY-MM-DD HH:mm:ss')} onChange={onChangeEndDate} showTime placeholder={'请输入结束时间'}/>
+          <DatePicker showTime
+                      placeholder={'请输入结束时间'}/>
         </FormItem>
 
-        <FormItem name="status" label="上下线状态" rules={[{required: true, message: '请选择状态!'}]}>
-          <Select id="status" placeholder={'请选择状态'}>
-            <Option value={0}>停用</Option>
-            <Option value={1}>启用</Option>
-          </Select>
+        <FormItem
+          name="status"
+          label="上线/下线"
+          rules={[{required: true}]}
+        >
+          <Radio.Group id="status">
+            <Radio value={0}>下线</Radio>
+            <Radio value={1}>上线</Radio>
+          </Radio.Group>
+        </FormItem>
+        <FormItem
+          name="pic"
+          label="广告图片"
+          rules={[{required: true}]}
+        >
+          <UploadFileComponents
+            backApi={'http://127.0.0.1:8000/api/sys/upload'} count={1}
+            onSubmit={(url) => {
+              setImageUrl(url)
+            }}
+            defaultImageUrl={imageUrl}/>
         </FormItem>
         <FormItem
           name="sort"
-          label="排序"
+          label="广告排序"
           rules={[{required: true, message: '请输入排序!'}]}
         >
           <InputNumber/>
@@ -107,7 +117,7 @@ const UpdateHomeAdvertiseForm: React.FC<UpdateFormProps> = (props) => {
         </FormItem>
         <FormItem
           name="note"
-          label="备注"
+          label="广告备注"
         >
           <Input.TextArea rows={2}/>
         </FormItem>
@@ -115,7 +125,7 @@ const UpdateHomeAdvertiseForm: React.FC<UpdateFormProps> = (props) => {
     );
   };
 
-  const modalFooter = { okText: '保存', onOk: handleSubmit, onCancel };
+  const modalFooter = {okText: '保存', onOk: handleSubmit, onCancel};
 
   return (
     <Modal
@@ -124,6 +134,7 @@ const UpdateHomeAdvertiseForm: React.FC<UpdateFormProps> = (props) => {
       title="修改广告信息"
       open={updateModalVisible}
       {...modalFooter}
+      width={600}
     >
       <Form {...formLayout} form={form} onFinish={handleFinish}>
         {renderContent()}

@@ -1,8 +1,10 @@
 export interface HomeAdvertiseListItem {
   id: number;
+  status: number;
   name: string;
   startTime: string;
   endTime: string;
+  pic: string;
 }
 
 export interface HomeAdvertiseListPagination {
