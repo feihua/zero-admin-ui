@@ -1,5 +1,6 @@
 export interface FlashPromotionListItem {
   id: number;
+  status: number;
   title: string;
   startDate: string;
   endDate: string;

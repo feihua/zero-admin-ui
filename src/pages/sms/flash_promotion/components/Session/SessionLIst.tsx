@@ -1,23 +1,20 @@
 import {DeleteOutlined, EditOutlined, ExclamationCircleOutlined, PlusOutlined} from '@ant-design/icons';
 import {Button, Divider, Drawer, message, Modal, Select, Space, Switch} from 'antd';
 import React, {useRef, useState} from 'react';
-import {PageContainer} from '@ant-design/pro-layout';
 import type {ActionType, ProColumns} from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
 import type {ProDescriptionsItemProps} from '@ant-design/pro-descriptions';
 import ProDescriptions from '@ant-design/pro-descriptions';
-import CreateFlashForm from './components/CreateFlashForm';
-import UpdateFlashForm from './components/UpdateFlashForm';
-import type {FlashPromotionListItem} from './data.d';
+import CreateDictForm from './CreateSessionForm';
+import UpdateDictForm from './UpdateSessionForm';
+import type {SessionListItem} from './data.d';
 import {
-  addFlashPromotion,
-  queryFlashPromotionList,
-  removeFlashPromotion,
-  updateFlashPromotion,
-  updateFlashPromotionStatus,
-} from './service';
-import moment from "moment";
-import SessionModal from "@/pages/sms/flash_promotion/components/Session/SessionModal";
+  addSession,
+  querySessionList,
+  removeSession,
+  updateSession,
+  updateSessionStatus
+} from "@/pages/sms/flash_promotion/components/Session/service";
 
 const {confirm} = Modal;
 
@@ -25,10 +22,10 @@ const {confirm} = Modal;
  * 添加节点
  * @param fields
  */
-const handleAdd = async (fields: FlashPromotionListItem) => {
+const handleAdd = async (fields: SessionListItem) => {
   const hide = message.loading('正在添加');
   try {
-    await addFlashPromotion({...fields});
+    await addSession({...fields});
     hide();
     message.success('添加成功');
     return true;
@@ -42,10 +39,10 @@ const handleAdd = async (fields: FlashPromotionListItem) => {
  * 更新节点
  * @param fields
  */
-const handleUpdate = async (fields: FlashPromotionListItem) => {
+const handleUpdate = async (fields: SessionListItem) => {
   const hide = message.loading('正在更新');
   try {
-    await updateFlashPromotion(fields);
+    await updateSession(fields);
     hide();
 
     message.success('更新成功');
@@ -56,7 +53,6 @@ const handleUpdate = async (fields: FlashPromotionListItem) => {
   }
 };
 
-
 /**
  *  删除节点
  * @param ids
@@ -65,7 +61,7 @@ const handleRemove = async (ids: number[]) => {
   const hide = message.loading('正在删除');
   if (ids.length === 0) return true;
   try {
-    await removeFlashPromotion(ids);
+    await removeSession(ids);
     hide();
     message.success('删除成功，即将刷新');
     return true;
@@ -87,7 +83,7 @@ const handleStatus = async (ids: number[], status: number) => {
     return true;
   }
   try {
-    await updateFlashPromotionStatus({ids: ids, status: status});
+    await updateSessionStatus({ids: ids, status: status});
     hide();
     message.success('更新品牌推荐状态成功');
     return true;
@@ -95,14 +91,18 @@ const handleStatus = async (ids: number[], status: number) => {
     hide();
     return false;
   }
-};
-const FlashPromotionList: React.FC = () => {
+}
+
+export interface DictListProps {
+  sessionModalVisible: boolean;
+}
+
+const SessionList: React.FC<DictListProps> = (props) => {
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
-  const [sessionModalVisible, handleSessionModalVisible] = useState<boolean>(false);
   const [showDetail, setShowDetail] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
-  const [currentRow, setCurrentRow] = useState<FlashPromotionListItem>();
+  const [currentRow, setCurrentRow] = useState<SessionListItem>();
 
   const showDeleteConfirm = (ids: number[]) => {
     confirm({
@@ -110,7 +110,7 @@ const FlashPromotionList: React.FC = () => {
       icon: <ExclamationCircleOutlined/>,
       content: '删除的记录不能恢复,请确认!',
       onOk() {
-        handleRemove(ids).then((r) => {
+        handleRemove(ids).then(() => {
           actionRef.current?.reloadAndRest?.();
         });
       },
@@ -131,142 +131,96 @@ const FlashPromotionList: React.FC = () => {
       },
     });
   };
-  const columns: ProColumns<FlashPromotionListItem>[] = [
-    {
-      title: '编号',
-      dataIndex: 'id',
-      hideInSearch: true,
-    },
-    {
-      title: '活动标题',
-      dataIndex: 'title',
-      render: (dom, entity) => {
-        return <a onClick={() => {
-          setCurrentRow(entity);
-          setShowDetail(true);
-        }}>{dom}</a>;
+  const columns: ProColumns<SessionListItem>[] = [
+      {
+        title: '编号',
+        dataIndex: 'id',
+        hideInSearch: true,
       },
-    },
-    {
-      title: '活动状态',
-      dataIndex: 'title',
-      hideInSearch: true,
-      render: (dom, entity) => {
-        let now = moment().format('YYYY-MM-DD')
-        let startDate = moment(entity.startDate).format('YYYY-MM-DD')
-        let endDate = moment(entity.endDate).format('YYYY-MM-DD')
+      {
+        title: '秒杀时间段名称',
+        dataIndex: 'name',
+        hideInSearch: true,
+      },
+      {
+        title: '每日开始时间',
+        dataIndex: 'startTime',
+        hideInSearch: true,
+      },
+      {
+        title: '每日结束时间',
+        dataIndex: 'endTime',
+        hideInSearch: true,
+      },
+      {
+        title: '状态',
+        dataIndex: 'status',
+        renderFormItem: (text, row, index) => {
+          return <Select
+            value={row.value}
+            options={[
+              {value: '1', label: '正常'},
+              {value: '0', label: '禁用'},
+            ]}
+          />
 
-        let status
-        if (now < startDate) {
-          status = '活动未开始'
-        } else if (now > endDate) {
-          status = '活动已结束'
-        } else {
-          status = '活动进行中'
-        }
-        return <>
-          {status}
-        </>;
+        },
+        render: (dom, entity) => {
+          return (
+            <Switch checked={entity.status == 1} onChange={(flag) => {
+              showStatusConfirm([entity.id], flag ? 1 : 0)
+            }}/>
+          );
+        },
       },
-    },
-    {
-      title: '开始日期',
-      dataIndex: 'startDate',
-      valueType: 'date'
-    },
-    {
-      title: '结束日期',
-      dataIndex: 'endDate',
-      valueType: 'date'
-    },
-    {
-      title: '上线/下线',
-      dataIndex: 'status',
-      renderFormItem: (text, row) => {
-        return <Select
-          value={row.value}
-          options={[
-            {value: '1', label: '上线'},
-            {value: '0', label: '下线'},
-          ]}
-        />
 
+      {
+        title: '操作',
+        dataIndex: 'option',
+        valueType: 'option',
+        width: 220,
+        render: (_, record) => (
+          <>
+            <a
+              key="sort"
+              onClick={() => {
+                handleUpdateModalVisible(true);
+                setCurrentRow(record);
+              }}
+            >
+              <EditOutlined/> 编辑
+            </a>
+            <Divider type="vertical"/>
+            <a
+              key="delete"
+              style={{color: '#ff4d4f'}}
+              onClick={() => {
+                showDeleteConfirm([record.id]);
+              }}
+            >
+              <DeleteOutlined/> 删除
+            </a>
+          </>
+        ),
       },
-      render: (dom, entity) => {
-        return (
-          <Switch checked={entity.status == 1} onChange={(flag) => {
-            showStatusConfirm([entity.id], flag ? 1 : 0)
-          }}/>
-        );
-      },
-    },
-    {
-      title: '创建时间',
-      dataIndex: 'createTime',
-      hideInSearch: true,
-      hideInTable: true,
-    },
-    {
-      title: '操作',
-      dataIndex: 'option',
-      valueType: 'option',
-      width: 220,
-      render: (_, record) => (
-        <>
-          <a
-            key="set"
-            onClick={() => {
-              handleUpdateModalVisible(true);
-              setCurrentRow(record);
-            }}
-          >
-            <EditOutlined/> 设置商品
-          </a>
-          <Divider type="vertical"/>
-          <a
-            key="sort"
-            onClick={() => {
-              handleUpdateModalVisible(true);
-              setCurrentRow(record);
-            }}
-          >
-            <EditOutlined/> 编辑
-          </a>
-          <Divider type="vertical"/>
-          <a
-            key="delete"
-            style={{color: '#ff4d4f'}}
-            onClick={() => {
-              showDeleteConfirm([record.id]);
-            }}
-          >
-            <DeleteOutlined/> 删除
-          </a>
-        </>
-      ),
-    },
-  ];
+    ]
+  ;
 
   return (
-    <PageContainer>
-      <ProTable<FlashPromotionListItem>
-        headerTitle="秒杀列表"
+    <>
+      <ProTable<SessionListItem>
+        headerTitle="时间段"
         actionRef={actionRef}
         rowKey="id"
-        search={{
-          labelWidth: 100,
-          span:4
-        }}
+        search={false}
         toolBarRender={() => [
-          <Button onClick={() => handleSessionModalVisible(true)}>
-            秒杀时间段列表
-          </Button>,
-          <Divider type="horizontal"/>,
-          <Button type="primary" onClick={() => handleModalVisible(true)}>
-            <PlusOutlined/> 新建活动
+          <Button type="primary" key="primary" onClick={() => handleModalVisible(true)}>
+            <PlusOutlined/> 新建
           </Button>,
         ]}
-        request={queryFlashPromotionList}
+        request={(params) => {
+          return querySessionList({...params})
+        }}
         columns={columns}
         rowSelection={{}}
         pagination={{pageSize: 10}}
@@ -283,12 +237,12 @@ const FlashPromotionList: React.FC = () => {
                 await handleStatus(ids, 1);
                 onCleanSelected()
                 actionRef.current?.reload?.();
-              }}>批量上线</a>
+              }}>启用</a>
               <a onClick={async () => {
                 await handleStatus(ids, 0);
                 onCleanSelected()
                 actionRef.current?.reload?.();
-              }}>批量下线</a>
+              }}>禁用</a>
               <a onClick={async () => {
                 showDeleteConfirm(ids);
               }} style={{color: '#ff4d4f'}}>批量删除</a>
@@ -297,8 +251,9 @@ const FlashPromotionList: React.FC = () => {
         }}
       />
 
-      <CreateFlashForm
-        key={'CreateFlashForm'}
+
+      <CreateDictForm
+        key={'CreateDictForm'}
         onSubmit={async (value) => {
           const success = await handleAdd(value);
           if (success) {
@@ -318,8 +273,8 @@ const FlashPromotionList: React.FC = () => {
         createModalVisible={createModalVisible}
       />
 
-      <UpdateFlashForm
-        key={'UpdateFlashForm'}
+      <UpdateDictForm
+        key={'UpdateDictForm'}
         onSubmit={async (value) => {
           const success = await handleUpdate(value);
           if (success) {
@@ -337,22 +292,12 @@ const FlashPromotionList: React.FC = () => {
           }
         }}
         updateModalVisible={updateModalVisible}
-        values={currentRow || {}}
+        currentData={currentRow || {}}
       />
 
-      <SessionModal
-        key={'DictItemModal'}
-        onCancel={() => {
-          handleSessionModalVisible(false);
-          if (!showDetail) {
-            setCurrentRow(undefined);
-          }
-        }}
-        sessionModalVisible={sessionModalVisible}
-      />
       <Drawer
         width={600}
-        open={showDetail}
+        visible={showDetail}
         onClose={() => {
           setCurrentRow(undefined);
           setShowDetail(false)
@@ -360,21 +305,22 @@ const FlashPromotionList: React.FC = () => {
         closable={false}
       >
         {currentRow?.id && (
-          <ProDescriptions<FlashPromotionListItem>
+          <ProDescriptions<SessionListItem>
             column={2}
-            title={currentRow?.title}
+            title={"字典详情"}
             request={async () => ({
               data: currentRow || {},
             })}
             params={{
               id: currentRow?.id,
             }}
-            columns={columns as ProDescriptionsItemProps<FlashPromotionListItem>[]}
+            columns={columns as ProDescriptionsItemProps<SessionListItem>[]}
           />
         )}
       </Drawer>
-    </PageContainer>
+    </>
+
   );
 };
 
-export default FlashPromotionList;
+export default SessionList;

@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Form, Input, Modal, Select, DatePicker} from 'antd';
+import {DatePicker, Form, Input, Modal, Radio} from 'antd';
 import type {FlashPromotionListItem} from '../data.d';
 
 export interface CreateFormProps {
@@ -19,7 +19,6 @@ const formLayout = {
 
 const CreateFlashForm: React.FC<CreateFormProps> = (props) => {
   const [form] = Form.useForm();
-  const {Option} = Select;
 
   const [startDate, setStartDate] = useState<string>("");
   const [endDate, setEndDate] = useState<string>("");
@@ -76,10 +75,10 @@ const CreateFlashForm: React.FC<CreateFormProps> = (props) => {
           label="上下线状态"
           initialValue={1}
         >
-          <Select id="status" placeholder={'请选择状态'}>
-            <Option value={0}>停用</Option>
-            <Option value={1}>启用</Option>
-          </Select>
+          <Radio.Group id="status">
+            <Radio value={0}>停用</Radio>
+            <Radio value={1}>启用</Radio>
+          </Radio.Group>
         </FormItem>
 
       </>

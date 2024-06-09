@@ -32,7 +32,8 @@ export async function updateFlashPromotion(params: FlashPromotionListItem) {
 }
 
 // 批量更新秒杀活动状态
-export async function updateFlashPromotionStatus(params: { dictTypeIds: number[], postStatus: number }) {
+export async function updateFlashPromotionStatus(params: { ids: number[],
+  status: number }) {
   return request('/api/sms/flashPromotion/updateFlashPromotionStatus', {
     method: 'POST',
     data: {

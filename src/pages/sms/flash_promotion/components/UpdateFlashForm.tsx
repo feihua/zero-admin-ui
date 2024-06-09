@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {DatePicker, DatePickerProps, Form, Input, Modal, Select} from 'antd';
+import {DatePicker, DatePickerProps, Form, Input, Modal, Radio} from 'antd';
 import {FlashPromotionListItem} from '../data.d';
 import moment from "moment";
 
@@ -19,7 +19,6 @@ const formLayout = {
 
 const UpdateFlashForm: React.FC<UpdateFormProps> = (props) => {
   const [form] = Form.useForm();
-  const {Option} = Select;
 
   const [startDate, setStartDate] = useState<string>("");
   const [endDate, setEndDate] = useState<string>("");
@@ -88,7 +87,8 @@ const UpdateFlashForm: React.FC<UpdateFormProps> = (props) => {
           // name="startDate"
           label="开始日期"
         >
-          <DatePicker value={moment(startDate, 'YYYY-MM-DD')} onChange={onChangeStartDate} placeholder={'请输入开始日期'}/>
+          <DatePicker value={moment(startDate, 'YYYY-MM-DD')} onChange={onChangeStartDate}
+                      placeholder={'请输入开始日期'}/>
         </FormItem>
         <FormItem
           // name="endDate"
@@ -101,10 +101,10 @@ const UpdateFlashForm: React.FC<UpdateFormProps> = (props) => {
           name="status"
           label="上下线状态"
         >
-          <Select id="status" placeholder={'请选择状态'}>
-            <Option value={0}>停用</Option>
-            <Option value={1}>启用</Option>
-          </Select>
+          <Radio.Group id="status">
+            <Radio value={0}>停用</Radio>
+            <Radio value={1}>启用</Radio>
+          </Radio.Group>
         </FormItem>
       </>
     );
