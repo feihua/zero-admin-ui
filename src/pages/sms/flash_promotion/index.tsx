@@ -18,6 +18,7 @@ import {
 } from './service';
 import moment from "moment";
 import SessionModal from "@/pages/sms/flash_promotion/components/Session/SessionModal";
+import SessionProductModal from "@/pages/sms/flash_promotion/components/SetProductList/SessionProductModal";
 
 const {confirm} = Modal;
 
@@ -100,6 +101,7 @@ const FlashPromotionList: React.FC = () => {
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
   const [sessionModalVisible, handleSessionModalVisible] = useState<boolean>(false);
+  const [productModalVisible, handleProductModalVisible] = useState<boolean>(false);
   const [showDetail, setShowDetail] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<FlashPromotionListItem>();
@@ -216,7 +218,7 @@ const FlashPromotionList: React.FC = () => {
           <a
             key="set"
             onClick={() => {
-              handleUpdateModalVisible(true);
+              handleProductModalVisible(true);
               setCurrentRow(record);
             }}
           >
@@ -255,7 +257,7 @@ const FlashPromotionList: React.FC = () => {
         rowKey="id"
         search={{
           labelWidth: 100,
-          span:4
+          span: 4
         }}
         toolBarRender={() => [
           <Button onClick={() => handleSessionModalVisible(true)}>
@@ -349,6 +351,18 @@ const FlashPromotionList: React.FC = () => {
           }
         }}
         sessionModalVisible={sessionModalVisible}
+      />
+
+      <SessionProductModal
+        key={'DictItemModal'}
+        onCancel={() => {
+          handleProductModalVisible(false);
+          if (!showDetail) {
+            setCurrentRow(undefined);
+          }
+        }}
+        productModalVisible={productModalVisible}
+        flashPromotionId={currentRow?.id || 0}
       />
       <Drawer
         width={600}
