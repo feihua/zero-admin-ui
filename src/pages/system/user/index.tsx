@@ -6,7 +6,21 @@ import {
   PlusOutlined,
   RedoOutlined
 } from '@ant-design/icons';
-import {Button, Col, Divider, Drawer, Dropdown, MenuProps, message, Modal, Row, Select, Space, Tag, Tree} from 'antd';
+import {
+  Button,
+  Col,
+  Divider,
+  Drawer,
+  Dropdown,
+  MenuProps,
+  message,
+  Modal,
+  Row,
+  Select,
+  Space,
+  Switch,
+  Tree
+} from 'antd';
 import React, {useEffect, useRef, useState} from 'react';
 import {PageContainer} from '@ant-design/pro-layout';
 import type {ActionType, ProColumns} from '@ant-design/pro-table';
@@ -16,7 +30,15 @@ import ProDescriptions from '@ant-design/pro-descriptions';
 import CreateUserForm from './components/CreateUserForm';
 import UpdateUserForm from './components/UpdateUserForm';
 import type {UserListItem} from './data.d';
-import {addUser, queryDeptAndPostList, queryUserList, removeUser, updateUser, updateUserRoleList,} from './service';
+import {
+  addUser,
+  queryDeptAndPostList,
+  queryUserList,
+  removeUser,
+  updateUser,
+  updateUserRoleList,
+  updateUserStatus,
+} from './service';
 import SetRoleModal from "@/pages/system/user/components/SetRoleModal";
 import {DataNode, TreeProps} from 'antd/es/tree';
 import {tree} from "@/utils/utils";
@@ -77,6 +99,28 @@ const handleRemove = async (ids: number[]) => {
   }
 };
 
+/**
+ * 更新状态
+ * @param ids
+ * @param status
+ */
+const handleStatus = async (ids: number[], status: number) => {
+  const hide = message.loading('正在更新品牌推荐状态');
+  if (ids.length == 0) {
+    hide();
+    return true;
+  }
+  try {
+    await updateUserStatus({userIds: ids, userStatus: status});
+    hide();
+    message.success('更新品牌推荐状态成功');
+    return true;
+  } catch (error) {
+    hide();
+    return false;
+  }
+};
+
 // 用户管理
 const UserList: React.FC = () => {
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
@@ -113,6 +157,19 @@ const UserList: React.FC = () => {
         // handleRemove([item]).then(() => {
         //   actionRef.current?.reloadAndRest?.();
         // });
+      },
+      onCancel() {
+      },
+    });
+  };
+
+  const showStatusConfirm = (item: UserListItem[], status: number) => {
+    confirm({
+      title: `确定${status == 1 ? "启用" : "禁用"}用户吗？`,
+      icon: <ExclamationCircleOutlined/>,
+      async onOk() {
+        await handleStatus(item.map((x) => x.id), status)
+        actionRef.current?.reload?.();
       },
       onCancel() {
       },
@@ -192,13 +249,11 @@ const UserList: React.FC = () => {
 
       },
       render: (dom, entity) => {
-        switch (entity.userStatus) {
-          case 1:
-            return <Tag color={'success'}>正常</Tag>;
-          case 0:
-            return <Tag>禁用</Tag>;
-        }
-        return <>未知{entity.userStatus}</>;
+        return (
+          <Switch checked={entity.userStatus == 1} onChange={(flag) => {
+            showStatusConfirm([entity], flag ? 1 : 0)
+          }}/>
+        );
       },
     },
     {

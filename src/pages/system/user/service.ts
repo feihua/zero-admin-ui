@@ -32,7 +32,7 @@ export async function updateUser(params: UserListItem) {
 }
 
 // 批量更新用户信息状态
-export async function updateUserStatus(params: { userIds: number[], postStatus: number }) {
+export async function updateUserStatus(params: { userIds: number[], userStatus: number }) {
   return request('/api/sys/user/updateUserStatus', {
     method: 'POST',
     data: {
