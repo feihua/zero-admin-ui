@@ -1,5 +1,5 @@
 import {DeleteOutlined, EditOutlined, ExclamationCircleOutlined, PlusOutlined} from '@ant-design/icons';
-import {Button, Divider, Drawer, message, Modal, Select, Space, Tag} from 'antd';
+import {Button, Divider, Drawer, message, Modal, Select, Space, Switch} from 'antd';
 import React, {useRef, useState} from 'react';
 import {PageContainer} from '@ant-design/pro-layout';
 import type {ActionType, ProColumns} from '@ant-design/pro-table';
@@ -9,7 +9,7 @@ import ProDescriptions from '@ant-design/pro-descriptions';
 import CreatePostForm from './components/CreatePostForm';
 import UpdatePostForm from './components/UpdatePostForm';
 import type {PostListItem} from './data.d';
-import {addPost, queryPostList, removePost, updatePost} from './service';
+import {addPost, queryPostList, removePost, updatePost, updatePostStatus} from './service';
 
 const {confirm} = Modal;
 
@@ -66,6 +66,28 @@ const handleRemove = async (ids: number[]) => {
   }
 };
 
+/**
+ * 更新状态
+ * @param ids
+ * @param status
+ */
+const handleStatus = async (ids: number[], status: number) => {
+  const hide = message.loading('正在更新状态');
+  if (ids.length == 0) {
+    hide();
+    return true;
+  }
+  try {
+    await updatePostStatus({postIds: ids, postStatus: status});
+    hide();
+    message.success('更新状态成功');
+    return true;
+  } catch (error) {
+    hide();
+    return false;
+  }
+};
+
 const PostList: React.FC = () => {
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
@@ -82,6 +104,19 @@ const PostList: React.FC = () => {
         handleRemove(ids).then(() => {
           actionRef.current?.reloadAndRest?.();
         });
+      },
+      onCancel() {
+      },
+    });
+  };
+
+  const showStatusConfirm = (item: PostListItem[], status: number) => {
+    confirm({
+      title: `确定${status == 1 ? "启用" : "禁用"}岗位吗？`,
+      icon: <ExclamationCircleOutlined/>,
+      async onOk() {
+        await handleStatus(item.map((x) => x.id), status)
+        actionRef.current?.reload?.();
       },
       onCancel() {
       },
@@ -127,13 +162,11 @@ const PostList: React.FC = () => {
 
       },
       render: (dom, entity) => {
-        switch (entity.postStatus) {
-          case 1:
-            return <Tag color={'success'}>正常</Tag>;
-          case 0:
-            return <Tag>禁用</Tag>;
-        }
-        return <>未知{entity.postStatus}</>;
+        return (
+          <Switch checked={entity.postStatus == 1} onChange={(flag) => {
+            showStatusConfirm([entity], flag ? 1 : 0)
+          }}/>
+        );
       },
     },
     {
@@ -223,6 +256,24 @@ const PostList: React.FC = () => {
             <Space size={16}>
               <span>已选 {selectedRowKeys.length} 项</span>
               <Button
+                icon={<EditOutlined/>}
+                style={{borderRadius: '5px'}}
+                onClick={async () => {
+                  await handleStatus(ids, 1);
+                  onCleanSelected()
+                  actionRef.current?.reload?.();
+                }}
+              >批量启用</Button>
+              <Button
+                icon={<EditOutlined/>}
+                style={{borderRadius: '5px'}}
+                onClick={async () => {
+                  await handleStatus(ids, 1);
+                  onCleanSelected()
+                  actionRef.current?.reload?.();
+                }}
+              >批量禁用</Button>
+              <Button
                 icon={<DeleteOutlined/>}
                 danger
                 style={{borderRadius: '5px'}}
@@ -281,7 +332,7 @@ const PostList: React.FC = () => {
 
       <Drawer
         width={600}
-        visible={showDetail}
+        open={showDetail}
         onClose={() => {
           setCurrentRow(undefined);
           setShowDetail(false)

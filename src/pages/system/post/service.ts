@@ -11,8 +11,6 @@ export async function addPost(params: PostListItem) {
   });
 }
 
-//
-
 // 删除岗位信息
 export async function removePost(ids: number[]) {
   return request('/api/sys/post/deletePost?ids=[' + ids + "]", {
@@ -44,7 +42,7 @@ export async function updatePostStatus(params: { postIds: number[], postStatus: 
 
 
 // 查询岗位信息详情
-export async function queryPostDetail(id: number ) {
+export async function queryPostDetail(id: number) {
   return request('/api/sys/post/queryPostDetail', {
     method: 'GET',
   });

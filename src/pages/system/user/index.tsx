@@ -105,7 +105,7 @@ const handleRemove = async (ids: number[]) => {
  * @param status
  */
 const handleStatus = async (ids: number[], status: number) => {
-  const hide = message.loading('正在更新品牌推荐状态');
+  const hide = message.loading('正在更新状态');
   if (ids.length == 0) {
     hide();
     return true;
@@ -113,7 +113,7 @@ const handleStatus = async (ids: number[], status: number) => {
   try {
     await updateUserStatus({userIds: ids, userStatus: status});
     hide();
-    message.success('更新品牌推荐状态成功');
+    message.success('更新状态成功');
     return true;
   } catch (error) {
     hide();
