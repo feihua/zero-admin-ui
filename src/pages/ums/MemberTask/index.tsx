@@ -78,7 +78,7 @@ const handleStatus = async (ids: number[], status: number) => {
     return true;
   }
   try {
-    await updateMemberTaskStatus({postIds: ids, postStatus: status});
+    await updateMemberTaskStatus({ memberTaskIds: ids, memberTaskStatus: status});
     hide();
     message.success('更新状态成功');
     return true;
@@ -187,8 +187,27 @@ const MemberTaskList: React.FC = () => {
     {
       title: '任务类型：0->新手任务；1->日常任务',
       dataIndex: 'taskType',
-      hideInSearch: true,
+      renderFormItem: (text, row, index) => {
+          return <Select
+            value={row.value}
+            options={ [
+              {value: '1', label: '正常'},
+              {value: '0', label: '禁用'},
+            ]}
+          />
+
     },
+    render: (dom, entity) => {
+        switch (entity.taskType) {
+          case 1:
+            return <Tag color={'success'}>正常</Tag>;
+          case 0:
+            return <Tag>禁用</Tag>;
+        }
+        return <>未知{entity.taskType}</>;
+      },
+    },
+    
     {
       title: '更新者',
       dataIndex: 'updateBy',

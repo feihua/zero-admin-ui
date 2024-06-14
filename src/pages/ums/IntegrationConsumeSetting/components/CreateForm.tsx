@@ -55,7 +55,7 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
                 <Radio value={0}>禁用</Radio>
                 <Radio value={1}>正常</Radio>
               </Radio.Group>
-         </FormItem>
+       </FormItem>
         <FormItem
           name="deductionPerAmount"
           label="每一元需要抵扣的积分数量"

@@ -78,7 +78,7 @@ const handleStatus = async (ids: number[], status: number) => {
     return true;
   }
   try {
-    await updateMemberRuleSettingStatus({postIds: ids, postStatus: status});
+    await updateMemberRuleSettingStatus({ memberRuleSettingIds: ids, memberRuleSettingStatus: status});
     hide();
     message.success('更新状态成功');
     return true;
@@ -168,8 +168,27 @@ const MemberRuleSettingList: React.FC = () => {
     {
       title: '类型：0->积分规则；1->成长值规则',
       dataIndex: 'ruleType',
-      hideInSearch: true,
+      renderFormItem: (text, row, index) => {
+          return <Select
+            value={row.value}
+            options={ [
+              {value: '1', label: '正常'},
+              {value: '0', label: '禁用'},
+            ]}
+          />
+
     },
+    render: (dom, entity) => {
+        switch (entity.ruleType) {
+          case 1:
+            return <Tag color={'success'}>正常</Tag>;
+          case 0:
+            return <Tag>禁用</Tag>;
+        }
+        return <>未知{entity.ruleType}</>;
+      },
+    },
+    
     {
       title: '状态：0->禁用；1->启用',
       dataIndex: 'status',

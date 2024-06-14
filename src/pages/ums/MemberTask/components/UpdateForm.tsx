@@ -120,7 +120,10 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
           label="任务类型：0->新手任务；1->日常任务"
           rules={[{required: true, message: '请输入任务类型：0->新手任务；1->日常任务!'}]}
         >
-            <Input id="create-taskType" placeholder={'请输入任务类型：0->新手任务；1->日常任务!'}/>
+                <Radio.Group>
+                  <Radio value={0}>禁用</Radio>
+                  <Radio value={1}>正常</Radio>
+                </Radio.Group>
          </FormItem>
         <FormItem
           name="updateBy"

@@ -78,7 +78,7 @@ const handleStatus = async (ids: number[], status: number) => {
     return true;
   }
   try {
-    await updateMemberStatisticsInfoStatus({postIds: ids, postStatus: status});
+    await updateMemberStatisticsInfoStatus({ memberStatisticsInfoIds: ids, memberStatisticsInfoStatus: status});
     hide();
     message.success('更新状态成功');
     return true;

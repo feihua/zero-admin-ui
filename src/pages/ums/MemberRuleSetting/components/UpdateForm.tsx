@@ -124,7 +124,10 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
           label="类型：0->积分规则；1->成长值规则"
           rules={[{required: true, message: '请输入类型：0->积分规则；1->成长值规则!'}]}
         >
-            <Input id="create-ruleType" placeholder={'请输入类型：0->积分规则；1->成长值规则!'}/>
+                <Radio.Group>
+                  <Radio value={0}>禁用</Radio>
+                  <Radio value={1}>正常</Radio>
+                </Radio.Group>
          </FormItem>
         <FormItem
           name="status"

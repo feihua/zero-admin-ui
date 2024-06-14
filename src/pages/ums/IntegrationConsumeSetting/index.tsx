@@ -78,7 +78,7 @@ const handleStatus = async (ids: number[], status: number) => {
     return true;
   }
   try {
-    await updateIntegrationConsumeSettingStatus({postIds: ids, postStatus: status});
+    await updateIntegrationConsumeSettingStatus({ integrationConsumeSettingIds: ids, integrationConsumeSettingStatus: status});
     hide();
     message.success('更新状态成功');
     return true;
