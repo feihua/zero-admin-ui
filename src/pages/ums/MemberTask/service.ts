@@ -1,9 +1,9 @@
 import {request} from 'umi';
-import type { MemberTaskListParams, MemberTaskListItem } from './data.d';
+import type {MemberTaskListParams, MemberTaskListItem} from './data.d';
 
 // 添加会员任务表
 export async function addMemberTask(params: MemberTaskListItem) {
-  return request('/api/demo/memberTask/addMemberTask', {
+  return request('/api/member/task/addMemberTask', {
     method: 'POST',
     data: {
       ...params,
@@ -13,7 +13,7 @@ export async function addMemberTask(params: MemberTaskListItem) {
 
 // 删除会员任务表
 export async function removeMemberTask(ids: number[]) {
-  return request('/api/demo/memberTask/deleteMemberTask?ids=[' + ids + "]", {
+  return request('/api/member/task/deleteMemberTask?ids=[' + ids + "]", {
     method: 'GET',
   });
 }
@@ -21,7 +21,7 @@ export async function removeMemberTask(ids: number[]) {
 
 // 更新会员任务表
 export async function updateMemberTask(params: MemberTaskListItem) {
-  return request('/api/demo/memberTask/updateMemberTask', {
+  return request('/api/member/task/updateMemberTask', {
     method: 'POST',
     data: {
       ...params,
@@ -31,10 +31,10 @@ export async function updateMemberTask(params: MemberTaskListItem) {
 
 // 批量更新会员任务表状态
 export async function updateMemberTaskStatus(params: { memberTaskIds: number[], memberTaskStatus: number }) {
-  return request('/api/demo/memberTask/updateMemberTaskStatus', {
+  return request('/api/member/task/updateMemberTaskStatus', {
     method: 'POST',
     data: {
-      ...params,
+      ids: params.memberTaskIds, status: params.memberTaskStatus
     },
 
   });
@@ -43,7 +43,7 @@ export async function updateMemberTaskStatus(params: { memberTaskIds: number[], 
 
 // 查询会员任务表详情
 export async function queryMemberTaskDetail(id: number) {
-  return request('/api/demo/memberTask/queryMemberTaskDetail?id=' + id, {
+  return request('/api/member/task/queryMemberTaskDetail?id=' + id, {
     method: 'GET',
   });
 }
@@ -51,7 +51,7 @@ export async function queryMemberTaskDetail(id: number) {
 // 分页查询会员任务表列表
 export async function queryMemberTaskList(params: MemberTaskListParams) {
 
-  return request('/api/demo/memberTask/queryMemberTaskList', {
+  return request('/api/member/task/queryMemberTaskList', {
     method: 'GET',
     params: {
       ...params,

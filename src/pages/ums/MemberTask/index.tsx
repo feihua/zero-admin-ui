@@ -1,5 +1,5 @@
 import {DeleteOutlined, EditOutlined, ExclamationCircleOutlined, PlusOutlined} from '@ant-design/icons';
-import {Button, Divider, Drawer, message, Modal, Select, Space, Switch} from 'antd';
+import {Button, Divider, Drawer, message, Modal, Select, Space, Switch, Tag} from 'antd';
 import React, {useRef, useState} from 'react';
 import {PageContainer} from '@ant-design/pro-layout';
 import type {ActionType, ProColumns} from '@ant-design/pro-table';
@@ -124,30 +124,32 @@ const MemberTaskList: React.FC = () => {
   };
 
   const columns: ProColumns<MemberTaskListItem>[] = [
-    
+
+
     {
-      title: '创建者',
-      dataIndex: 'createBy',
-      hideInSearch: true,
-    },
-    {
-      title: '创建时间',
-      dataIndex: 'createTime',
-      hideInSearch: true,
-    },
-    {
-      title: '',
+      title: 'id',
       dataIndex: 'id',
       hideInSearch: true,
+      hideInTable: true,
     },
     {
-      title: '状态：0->禁用；1->启用',
+      title: '任务名称',
+      dataIndex: 'taskName',
+      render: (dom, entity) => {
+        return <a onClick={() => {
+          setCurrentRow(entity);
+          setShowDetail(true);
+        }}>{dom}</a>;
+      },
+    },
+    {
+      title: '状态',
       dataIndex: 'status',
       renderFormItem: (text, row, index) => {
           return <Select
             value={row.value}
             options={ [
-              {value: '1', label: '正常'},
+              {value: '1', label: '启用'},
               {value: '0', label: '禁用'},
             ]}
           />
@@ -161,7 +163,7 @@ const MemberTaskList: React.FC = () => {
       );
     },
     },
-    
+
     {
       title: '赠送成长值',
       dataIndex: 'taskGrowth',
@@ -172,27 +174,17 @@ const MemberTaskList: React.FC = () => {
       dataIndex: 'taskIntegral',
       hideInSearch: true,
     },
+
+
     {
-      title: '任务名称',
-      dataIndex: 'taskName',
-      hideInSearch: true,
-      render: (dom, entity) => {
-          return <a onClick={() => {
-            setCurrentRow(entity);
-            setShowDetail(true);
-          }}>{dom}</a>;
-        },
-    },
-    
-    {
-      title: '任务类型：0->新手任务；1->日常任务',
+      title: '任务类型',
       dataIndex: 'taskType',
       renderFormItem: (text, row, index) => {
           return <Select
             value={row.value}
             options={ [
-              {value: '1', label: '正常'},
-              {value: '0', label: '禁用'},
+              {value: '1', label: '日常任务'},
+              {value: '0', label: '新手任务'},
             ]}
           />
 
@@ -200,14 +192,23 @@ const MemberTaskList: React.FC = () => {
     render: (dom, entity) => {
         switch (entity.taskType) {
           case 1:
-            return <Tag color={'success'}>正常</Tag>;
+            return <Tag color={'success'}>日常任务</Tag>;
           case 0:
-            return <Tag>禁用</Tag>;
+            return <Tag>新手任务</Tag>;
         }
         return <>未知{entity.taskType}</>;
       },
     },
-    
+    {
+      title: '创建者',
+      dataIndex: 'createBy',
+      hideInSearch: true,
+    },
+    {
+      title: '创建时间',
+      dataIndex: 'createTime',
+      hideInSearch: true,
+    },
     {
       title: '更新者',
       dataIndex: 'updateBy',
@@ -254,7 +255,7 @@ const MemberTaskList: React.FC = () => {
 return (
     <PageContainer>
       <ProTable<MemberTaskListItem>
-        headerTitle="岗位管理"
+        headerTitle="会员任务"
         actionRef={actionRef}
         rowKey="id"
         search={ {
@@ -291,7 +292,7 @@ return (
                 icon={<EditOutlined/>}
                 style={ {borderRadius: '5px'} }
                 onClick={async () => {
-                  await handleStatus(ids, 1);
+                  await handleStatus(ids, 0);
                   onCleanSelected()
                   actionRef.current?.reload?.();
                 }}
@@ -365,7 +366,7 @@ return (
         {currentRow?.id && (
           <ProDescriptions<MemberTaskListItem>
             column={2}
-            title={"岗位详情"}
+            title={"任务详情"}
             request={async () => ({
               data: currentRow || {},
             })}

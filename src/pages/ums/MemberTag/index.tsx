@@ -124,7 +124,22 @@ const MemberTagList: React.FC = () => {
   };
 
   const columns: ProColumns<MemberTagListItem>[] = [
-    
+    {
+      title: 'id',
+      dataIndex: 'id',
+      hideInSearch: true,
+      hideInTable: true,
+    },
+    {
+      title: '标签名称',
+      dataIndex: 'tagName',
+      render: (dom, entity) => {
+        return <a onClick={() => {
+          setCurrentRow(entity);
+          setShowDetail(true);
+        }}>{dom}</a>;
+      },
+    },
     {
       title: '自动打标签完成订单金额',
       dataIndex: 'finishOrderAmount',
@@ -135,19 +150,15 @@ const MemberTagList: React.FC = () => {
       dataIndex: 'finishOrderCount',
       hideInSearch: true,
     },
+
     {
-      title: '',
-      dataIndex: 'id',
-      hideInSearch: true,
-    },
-    {
-      title: '状态：0->禁用；1->启用',
+      title: '状态',
       dataIndex: 'status',
       renderFormItem: (text, row, index) => {
           return <Select
             value={row.value}
             options={ [
-              {value: '1', label: '正常'},
+              {value: '1', label: '启用'},
               {value: '0', label: '禁用'},
             ]}
           />
@@ -161,19 +172,6 @@ const MemberTagList: React.FC = () => {
       );
     },
     },
-    
-    {
-      title: '标签名称',
-      dataIndex: 'tagName',
-      hideInSearch: true,
-      render: (dom, entity) => {
-          return <a onClick={() => {
-            setCurrentRow(entity);
-            setShowDetail(true);
-          }}>{dom}</a>;
-        },
-    },
-    
 
     {
       title: '操作',
@@ -210,7 +208,7 @@ const MemberTagList: React.FC = () => {
 return (
     <PageContainer>
       <ProTable<MemberTagListItem>
-        headerTitle="岗位管理"
+        headerTitle="会员标签"
         actionRef={actionRef}
         rowKey="id"
         search={ {
@@ -247,7 +245,7 @@ return (
                 icon={<EditOutlined/>}
                 style={ {borderRadius: '5px'} }
                 onClick={async () => {
-                  await handleStatus(ids, 1);
+                  await handleStatus(ids, 0);
                   onCleanSelected()
                   actionRef.current?.reload?.();
                 }}
@@ -321,7 +319,7 @@ return (
         {currentRow?.id && (
           <ProDescriptions<MemberTagListItem>
             column={2}
-            title={"岗位详情"}
+            title={"标签详情"}
             request={async () => ({
               data: currentRow || {},
             })}

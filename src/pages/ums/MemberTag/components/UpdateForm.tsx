@@ -1,6 +1,6 @@
 import React, {useEffect} from 'react';
 import {Form, Input, InputNumber, Modal, Radio} from 'antd';
-import type { MemberTagListItem} from '../data.d';
+import type {MemberTagListItem} from '../data.d';
 
 export interface UpdateFormProps {
   onCancel: () => void;
@@ -12,8 +12,8 @@ export interface UpdateFormProps {
 const FormItem = Form.Item;
 
 const formLayout = {
-  labelCol: {span: 7},
-  wrapperCol: {span: 13},
+  labelCol: {span: 9},
+  wrapperCol: {span: 11},
 };
 
 const UpdateForm: React.FC<UpdateFormProps> = (props) => {
@@ -62,45 +62,38 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
           <Input id="update-id"/>
         </FormItem>
 
-        
-        <FormItem
-          name="finishOrderAmount"
-          label="自动打标签完成订单金额"
-          rules={[{required: true, message: '请输入自动打标签完成订单金额!'}]}
-        >
-            <Input id="create-finishOrderAmount" placeholder={'请输入自动打标签完成订单金额!'}/>
-         </FormItem>
-        <FormItem
-          name="finishOrderCount"
-          label="自动打标签完成订单数量"
-          rules={[{required: true, message: '请输入自动打标签完成订单数量!'}]}
-        >
-            <Input id="create-finishOrderCount" placeholder={'请输入自动打标签完成订单数量!'}/>
-         </FormItem>
-        <FormItem
-          name="id"
-          label=""
-          rules={[{required: true, message: '请输入!'}]}
-        >
-            <Input id="create-id" placeholder={'请输入!'}/>
-         </FormItem>
-        <FormItem
-          name="status"
-          label="状态：0->禁用；1->启用"
-          rules={[{required: true, message: '请输入状态：0->禁用；1->启用!'}]}
-        >
-              <Radio.Group>
-                <Radio value={0}>禁用</Radio>
-                <Radio value={1}>正常</Radio>
-              </Radio.Group>
-        </FormItem>
         <FormItem
           name="tagName"
           label="标签名称"
           rules={[{required: true, message: '请输入标签名称!'}]}
         >
-            <Input id="create-tagName" placeholder={'请输入标签名称!'}/>
-         </FormItem>
+          <Input id="create-tagName" placeholder={'请输入标签名称!'}/>
+        </FormItem>
+        <FormItem
+          name="finishOrderAmount"
+          label="自动打标签完成订单金额"
+          rules={[{required: true, message: '请输入自动打标签完成订单金额!'}]}
+        >
+          <InputNumber id="create-finishOrderAmount" placeholder={'请输入自动打标签完成订单金额!'}
+                       style={{width: 255}}/>
+        </FormItem>
+        <FormItem
+          name="finishOrderCount"
+          label="自动打标签完成订单数量"
+          rules={[{required: true, message: '请输入自动打标签完成订单数量!'}]}
+        >
+          <InputNumber id="create-finishOrderCount" placeholder={'请输入自动打标签完成订单数量!'} style={{width: 255}}/>
+        </FormItem>
+        <FormItem
+          name="status"
+          label="状态"
+          rules={[{required: true, message: '请输入状态!'}]}
+        >
+          <Radio.Group>
+            <Radio value={0}>禁用</Radio>
+            <Radio value={1}>启用</Radio>
+          </Radio.Group>
+        </FormItem>
       </>
     );
   };
@@ -115,6 +108,7 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
       title="编辑"
       open={updateModalVisible}
       {...modalFooter}
+      width={680}
     >
       <Form
         {...formLayout}

@@ -133,7 +133,7 @@ const ProductList: React.FC = () => {
           <a
             key="sort"
             onClick={() => {
-              handleUpdateModalVisible(true);
+              handleModalVisible(true);
               setCurrentRow(record);
             }}
           >
