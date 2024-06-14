@@ -8,19 +8,19 @@ import type {ProDescriptionsItemProps} from '@ant-design/pro-descriptions';
 import ProDescriptions from '@ant-design/pro-descriptions';
 import CreateForm from './components/CreateForm';
 import UpdateForm from './components/UpdateForm';
-import type { MemberRuleSettingListItem} from './data.d';
-import {addMemberRuleSetting, queryMemberRuleSettingList, removeMemberRuleSetting, updateMemberRuleSetting, updateMemberRuleSettingStatus} from './service';
+import type { MemberStatisticsInfoListItem} from './data.d';
+import {addMemberStatisticsInfo, queryMemberStatisticsInfoList, removeMemberStatisticsInfo, updateMemberStatisticsInfo, updateMemberStatisticsInfoStatus} from './service';
 
 const {confirm} = Modal;
 
 /**
- * 添加会员积分成长规则表
+ * 添加会员统计信息
  * @param fields
  */
-const handleAdd = async (fields: MemberRuleSettingListItem) => {
+const handleAdd = async (fields: MemberStatisticsInfoListItem) => {
   const hide = message.loading('正在添加');
   try {
-    await addMemberRuleSetting({...fields});
+    await addMemberStatisticsInfo({...fields});
     hide();
     message.success('添加成功');
     return true;
@@ -31,13 +31,13 @@ const handleAdd = async (fields: MemberRuleSettingListItem) => {
 };
 
 /**
- * 更新会员积分成长规则表
+ * 更新会员统计信息
  * @param fields
  */
-const handleUpdate = async (fields: MemberRuleSettingListItem) => {
+const handleUpdate = async (fields: MemberStatisticsInfoListItem) => {
   const hide = message.loading('正在更新');
   try {
-    await updateMemberRuleSetting(fields);
+    await updateMemberStatisticsInfo(fields);
     hide();
 
     message.success('更新成功');
@@ -49,14 +49,14 @@ const handleUpdate = async (fields: MemberRuleSettingListItem) => {
 };
 
 /**
- *  删除会员积分成长规则表
+ *  删除会员统计信息
  * @param ids
  */
 const handleRemove = async (ids: number[]) => {
   const hide = message.loading('正在删除');
   if (ids.length === 0) return true;
   try {
-    await removeMemberRuleSetting(ids);
+    await removeMemberStatisticsInfo(ids);
     hide();
     message.success('删除成功，即将刷新');
     return true;
@@ -67,7 +67,7 @@ const handleRemove = async (ids: number[]) => {
 };
 
 /**
- * 更新会员积分成长规则表状态
+ * 更新会员统计信息状态
  * @param ids
  * @param status
  */
@@ -78,7 +78,7 @@ const handleStatus = async (ids: number[], status: number) => {
     return true;
   }
   try {
-    await updateMemberRuleSettingStatus({postIds: ids, postStatus: status});
+    await updateMemberStatisticsInfoStatus({postIds: ids, postStatus: status});
     hide();
     message.success('更新状态成功');
     return true;
@@ -88,12 +88,12 @@ const handleStatus = async (ids: number[], status: number) => {
   }
 };
 
-const MemberRuleSettingList: React.FC = () => {
+const MemberStatisticsInfoList: React.FC = () => {
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
   const [showDetail, setShowDetail] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
-  const [currentRow, setCurrentRow] = useState<MemberRuleSettingListItem>();
+  const [currentRow, setCurrentRow] = useState<MemberStatisticsInfoListItem>();
 
   const showDeleteConfirm = (ids: number[]) => {
     confirm({
@@ -110,7 +110,7 @@ const MemberRuleSettingList: React.FC = () => {
     });
   };
 
-  const showStatusConfirm = (item: MemberRuleSettingListItem[], status: number) => {
+  const showStatusConfirm = (item: MemberStatisticsInfoListItem[], status: number) => {
     confirm({
       title: `确定${status == 1 ? "启用" : "禁用"}吗？`,
       icon: <ExclamationCircleOutlined/>,
@@ -123,31 +123,51 @@ const MemberRuleSettingList: React.FC = () => {
     });
   };
 
-  const columns: ProColumns<MemberRuleSettingListItem>[] = [
+  const columns: ProColumns<MemberStatisticsInfoListItem>[] = [
     
     {
-      title: '每消费多少元获取1个点',
-      dataIndex: 'consumePerPoint',
+      title: '关注数量',
+      dataIndex: 'attendCount',
       hideInSearch: true,
     },
     {
-      title: '连续签到天数',
-      dataIndex: 'continueSignDay',
+      title: '',
+      dataIndex: 'collectCommentCount',
       hideInSearch: true,
     },
     {
-      title: '连续签到赠送数量',
-      dataIndex: 'continueSignPoint',
+      title: '',
+      dataIndex: 'collectProductCount',
       hideInSearch: true,
     },
     {
-      title: '创建者',
-      dataIndex: 'createBy',
+      title: '',
+      dataIndex: 'collectSubjectCount',
       hideInSearch: true,
     },
     {
-      title: '创建时间',
-      dataIndex: 'createTime',
+      title: '',
+      dataIndex: 'collectTopicCount',
+      hideInSearch: true,
+    },
+    {
+      title: '评价数',
+      dataIndex: 'commentCount',
+      hideInSearch: true,
+    },
+    {
+      title: '累计消费金额',
+      dataIndex: 'consumeAmount',
+      hideInSearch: true,
+    },
+    {
+      title: '优惠券数量',
+      dataIndex: 'couponCount',
+      hideInSearch: true,
+    },
+    {
+      title: '粉丝数量',
+      dataIndex: 'fansCount',
       hideInSearch: true,
     },
     {
@@ -156,50 +176,33 @@ const MemberRuleSettingList: React.FC = () => {
       hideInSearch: true,
     },
     {
-      title: '最低获取点数的订单金额',
-      dataIndex: 'lowOrderAmount',
+      title: '',
+      dataIndex: 'inviteFriendCount',
       hideInSearch: true,
     },
     {
-      title: '每笔订单最高获取点数',
-      dataIndex: 'maxPointPerOrder',
+      title: '登录次数',
+      dataIndex: 'loginCount',
       hideInSearch: true,
     },
     {
-      title: '类型：0->积分规则；1->成长值规则',
-      dataIndex: 'ruleType',
+      title: '',
+      dataIndex: 'memberId',
       hideInSearch: true,
     },
     {
-      title: '状态：0->禁用；1->启用',
-      dataIndex: 'status',
-      renderFormItem: (text, row, index) => {
-          return <Select
-            value={row.value}
-            options={ [
-              {value: '1', label: '正常'},
-              {value: '0', label: '禁用'},
-            ]}
-          />
-
-    },
-    render: (dom, entity) => {
-      return (
-        <Switch checked={entity.status == 1} onChange={(flag) => {
-          showStatusConfirm( [entity], flag ? 1 : 0)
-        }}/>
-      );
-    },
-    },
-    
-    {
-      title: '更新者',
-      dataIndex: 'updateBy',
+      title: '订单数量',
+      dataIndex: 'orderCount',
       hideInSearch: true,
     },
     {
-      title: '更新时间',
-      dataIndex: 'updateTime',
+      title: '最后一次下订单时间',
+      dataIndex: 'recentOrderTime',
+      hideInSearch: true,
+    },
+    {
+      title: '退货数量',
+      dataIndex: 'returnOrderCount',
       hideInSearch: true,
     },
 
@@ -237,7 +240,7 @@ const MemberRuleSettingList: React.FC = () => {
 
 return (
     <PageContainer>
-      <ProTable<MemberRuleSettingListItem>
+      <ProTable<MemberStatisticsInfoListItem>
         headerTitle="岗位管理"
         actionRef={actionRef}
         rowKey="id"
@@ -249,7 +252,7 @@ return (
             <PlusOutlined/> 新增
           </Button>,
         ]}
-        request={queryMemberRuleSettingList}
+        request={queryMemberStatisticsInfoList}
         columns={columns}
         rowSelection={ {} }
         pagination={ {pageSize: 10}}
@@ -347,7 +350,7 @@ return (
         closable={false}
       >
         {currentRow?.id && (
-          <ProDescriptions<MemberRuleSettingListItem>
+          <ProDescriptions<MemberStatisticsInfoListItem>
             column={2}
             title={"岗位详情"}
             request={async () => ({
@@ -356,7 +359,7 @@ return (
             params={ {
               id: currentRow?.id,
             }}
-            columns={columns as ProDescriptionsItemProps<MemberRuleSettingListItem>[]}
+            columns={columns as ProDescriptionsItemProps<MemberStatisticsInfoListItem>[]}
           />
         )}
       </Drawer>
@@ -364,4 +367,4 @@ return (
   );
 };
 
-export default MemberRuleSettingList;
+export default MemberStatisticsInfoList;

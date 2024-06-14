@@ -1,9 +1,9 @@
 import {request} from 'umi';
-import type {PostListParams, PostListItem} from './data.d';
+import type { MemberTaskListParams, MemberTaskListItem } from './data.d';
 
-// 添加岗位信息
-export async function addPost(params: PostListItem) {
-  return request('/api/sys/post/addPost', {
+// 添加会员任务表
+export async function addMemberTask(params: MemberTaskListItem) {
+  return request('/api/demo/memberTask/addMemberTask', {
     method: 'POST',
     data: {
       ...params,
@@ -11,19 +11,17 @@ export async function addPost(params: PostListItem) {
   });
 }
 
-//
-
-// 删除岗位信息
-export async function removePost(ids: number[]) {
-  return request('/api/sys/post/deletePost?ids=[' + ids + "]", {
+// 删除会员任务表
+export async function removeMemberTask(ids: number[]) {
+  return request('/api/demo/memberTask/deleteMemberTask?ids=[' + ids + "]", {
     method: 'GET',
   });
 }
 
 
-// 更新岗位信息
-export async function updatePost(params: PostListItem) {
-  return request('/api/sys/post/updatePost', {
+// 更新会员任务表
+export async function updateMemberTask(params: MemberTaskListItem) {
+  return request('/api/demo/memberTask/updateMemberTask', {
     method: 'POST',
     data: {
       ...params,
@@ -31,9 +29,9 @@ export async function updatePost(params: PostListItem) {
   });
 }
 
-// 批量更新岗位信息状态
-export async function updatePostStatus(params: { postIds: number[], postStatus: number }) {
-  return request('/api/sys/post/updatePostStatus', {
+// 批量更新会员任务表状态
+export async function updateMemberTaskStatus(params: { memberTaskIds: number[], memberTaskStatus: number }) {
+  return request('/api/demo/memberTask/updateMemberTaskStatus', {
     method: 'POST',
     data: {
       ...params,
@@ -43,17 +41,17 @@ export async function updatePostStatus(params: { postIds: number[], postStatus: 
 }
 
 
-// 查询岗位信息详情
-export async function queryPostDetail(id: number ) {
-  return request('/api/sys/post/queryPostDetail', {
+// 查询会员任务表详情
+export async function queryMemberTaskDetail(id: number) {
+  return request('/api/demo/memberTask/queryMemberTaskDetail?id=' + id, {
     method: 'GET',
   });
 }
 
-// 分页查询岗位信息列表
-export async function queryPostList(params: PostListParams) {
+// 分页查询会员任务表列表
+export async function queryMemberTaskList(params: MemberTaskListParams) {
 
-  return request('/api/sys/post/queryPostList', {
+  return request('/api/demo/memberTask/queryMemberTaskList', {
     method: 'GET',
     params: {
       ...params,

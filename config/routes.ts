@@ -177,7 +177,7 @@
         name: '会员任务',
         icon: 'table',
         path: '/ums/statistics/list',
-        component: './ums/Statistics',
+        component: './ums/MemberStatisticsInfo',
       },
     ],
   },

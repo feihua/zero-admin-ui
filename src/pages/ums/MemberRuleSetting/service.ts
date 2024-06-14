@@ -1,9 +1,9 @@
 import {request} from 'umi';
-import type {PostListParams, PostListItem} from './data.d';
+import type { MemberRuleSettingListParams, MemberRuleSettingListItem } from './data.d';
 
-// 添加岗位信息
-export async function addPost(params: PostListItem) {
-  return request('/api/sys/post/addPost', {
+// 添加会员积分成长规则表
+export async function addMemberRuleSetting(params: MemberRuleSettingListItem) {
+  return request('/api/demo/memberRuleSetting/addMemberRuleSetting', {
     method: 'POST',
     data: {
       ...params,
@@ -11,19 +11,17 @@ export async function addPost(params: PostListItem) {
   });
 }
 
-//
-
-// 删除岗位信息
-export async function removePost(ids: number[]) {
-  return request('/api/sys/post/deletePost?ids=[' + ids + "]", {
+// 删除会员积分成长规则表
+export async function removeMemberRuleSetting(ids: number[]) {
+  return request('/api/demo/memberRuleSetting/deleteMemberRuleSetting?ids=[' + ids + "]", {
     method: 'GET',
   });
 }
 
 
-// 更新岗位信息
-export async function updatePost(params: PostListItem) {
-  return request('/api/sys/post/updatePost', {
+// 更新会员积分成长规则表
+export async function updateMemberRuleSetting(params: MemberRuleSettingListItem) {
+  return request('/api/demo/memberRuleSetting/updateMemberRuleSetting', {
     method: 'POST',
     data: {
       ...params,
@@ -31,9 +29,9 @@ export async function updatePost(params: PostListItem) {
   });
 }
 
-// 批量更新岗位信息状态
-export async function updatePostStatus(params: { postIds: number[], postStatus: number }) {
-  return request('/api/sys/post/updatePostStatus', {
+// 批量更新会员积分成长规则表状态
+export async function updateMemberRuleSettingStatus(params: { memberRuleSettingIds: number[], memberRuleSettingStatus: number }) {
+  return request('/api/demo/memberRuleSetting/updateMemberRuleSettingStatus', {
     method: 'POST',
     data: {
       ...params,
@@ -43,17 +41,17 @@ export async function updatePostStatus(params: { postIds: number[], postStatus: 
 }
 
 
-// 查询岗位信息详情
-export async function queryPostDetail(id: number ) {
-  return request('/api/sys/post/queryPostDetail', {
+// 查询会员积分成长规则表详情
+export async function queryMemberRuleSettingDetail(id: number) {
+  return request('/api/demo/memberRuleSetting/queryMemberRuleSettingDetail?id=' + id, {
     method: 'GET',
   });
 }
 
-// 分页查询岗位信息列表
-export async function queryPostList(params: PostListParams) {
+// 分页查询会员积分成长规则表列表
+export async function queryMemberRuleSettingList(params: MemberRuleSettingListParams) {
 
-  return request('/api/sys/post/queryPostList', {
+  return request('/api/demo/memberRuleSetting/queryMemberRuleSettingList', {
     method: 'GET',
     params: {
       ...params,

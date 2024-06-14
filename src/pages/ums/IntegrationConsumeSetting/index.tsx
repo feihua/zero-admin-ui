@@ -1,89 +1,107 @@
-import {PlusOutlined, ExclamationCircleOutlined, EditOutlined, DeleteOutlined} from '@ant-design/icons';
-import {Button, Divider, message, Drawer, Modal, Tag, Select} from 'antd';
-import React, {useState, useRef} from 'react';
-import {PageContainer, FooterToolbar} from '@ant-design/pro-layout';
+import {DeleteOutlined, EditOutlined, ExclamationCircleOutlined, PlusOutlined} from '@ant-design/icons';
+import {Button, Divider, Drawer, message, Modal, Select, Space, Switch} from 'antd';
+import React, {useRef, useState} from 'react';
+import {PageContainer} from '@ant-design/pro-layout';
+import type {ActionType, ProColumns} from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
-import type {ProColumns, ActionType} from '@ant-design/pro-table';
-import ProDescriptions from '@ant-design/pro-descriptions';
 import type {ProDescriptionsItemProps} from '@ant-design/pro-descriptions';
-import CreatePostForm from './components/CreatePostForm';
-import UpdatePostForm from './components/UpdatePostForm';
-import type {PostListItem} from './data.d';
-import {queryPostList, updatePost, addPost, removePost} from './service';
+import ProDescriptions from '@ant-design/pro-descriptions';
+import CreateForm from './components/CreateForm';
+import UpdateForm from './components/UpdateForm';
+import type { IntegrationConsumeSettingListItem} from './data.d';
+import {addIntegrationConsumeSetting, queryIntegrationConsumeSettingList, removeIntegrationConsumeSetting, updateIntegrationConsumeSetting, updateIntegrationConsumeSettingStatus} from './service';
 
 const {confirm} = Modal;
 
 /**
- * 添加节点
+ * 添加积分消费设置
  * @param fields
  */
-const handleAdd = async (fields: PostListItem) => {
+const handleAdd = async (fields: IntegrationConsumeSettingListItem) => {
   const hide = message.loading('正在添加');
   try {
-    await addPost({...fields});
+    await addIntegrationConsumeSetting({...fields});
     hide();
     message.success('添加成功');
     return true;
   } catch (error) {
     hide();
-    message.error('添加失败请重试！');
     return false;
   }
 };
 
 /**
- * 更新节点
+ * 更新积分消费设置
  * @param fields
  */
-const handleUpdate = async (fields: PostListItem) => {
+const handleUpdate = async (fields: IntegrationConsumeSettingListItem) => {
   const hide = message.loading('正在更新');
   try {
-    await updatePost(fields);
+    await updateIntegrationConsumeSetting(fields);
     hide();
 
     message.success('更新成功');
     return true;
   } catch (error) {
     hide();
-    message.error('更新失败请重试！');
     return false;
   }
 };
 
 /**
- *  删除节点
- * @param selectedRows
+ *  删除积分消费设置
+ * @param ids
  */
-const handleRemove = async (selectedRows: PostListItem[]) => {
+const handleRemove = async (ids: number[]) => {
   const hide = message.loading('正在删除');
-  if (!selectedRows) return true;
+  if (ids.length === 0) return true;
   try {
-    await removePost(selectedRows.map((row) => row.id));
+    await removeIntegrationConsumeSetting(ids);
     hide();
     message.success('删除成功，即将刷新');
     return true;
   } catch (error) {
     hide();
-    message.error('删除失败，请重试');
     return false;
   }
 };
 
-const PostList: React.FC = () => {
+/**
+ * 更新积分消费设置状态
+ * @param ids
+ * @param status
+ */
+const handleStatus = async (ids: number[], status: number) => {
+  const hide = message.loading('正在更新状态');
+  if (ids.length == 0) {
+    hide();
+    return true;
+  }
+  try {
+    await updateIntegrationConsumeSettingStatus({postIds: ids, postStatus: status});
+    hide();
+    message.success('更新状态成功');
+    return true;
+  } catch (error) {
+    hide();
+    return false;
+  }
+};
+
+const IntegrationConsumeSettingList: React.FC = () => {
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
   const [showDetail, setShowDetail] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
-  const [currentRow, setCurrentRow] = useState<PostListItem>();
-  const [selectedRowsState, setSelectedRows] = useState<PostListItem[]>([]);
+  const [currentRow, setCurrentRow] = useState<IntegrationConsumeSettingListItem>();
 
-  const showDeleteConfirm = (item: PostListItem) => {
+  const showDeleteConfirm = (ids: number[]) => {
     confirm({
       title: '是否删除记录?',
       icon: <ExclamationCircleOutlined/>,
       content: '删除的记录不能恢复,请确认!',
       onOk() {
-        handleRemove([item]).then(() => {
+        handleRemove(ids).then(() => {
           actionRef.current?.reloadAndRest?.();
         });
       },
@@ -92,159 +110,161 @@ const PostList: React.FC = () => {
     });
   };
 
-  const columns: ProColumns<PostListItem>[] = [
+  const showStatusConfirm = (item: IntegrationConsumeSettingListItem[], status: number) => {
+    confirm({
+      title: `确定${status == 1 ? "启用" : "禁用"}吗？`,
+      icon: <ExclamationCircleOutlined/>,
+      async onOk() {
+        await handleStatus(item.map((x) => x.id), status)
+        actionRef.current?.reload?.();
+      },
+      onCancel() {
+      },
+    });
+  };
+
+  const columns: ProColumns<IntegrationConsumeSettingListItem>[] = [
+    
     {
-      title: '岗位编号',
+      title: '是否可以和优惠券同用；0->不可以；1->可以',
+      dataIndex: 'couponStatus',
+      renderFormItem: (text, row, index) => {
+          return <Select
+            value={row.value}
+            options={ [
+              {value: '1', label: '正常'},
+              {value: '0', label: '禁用'},
+            ]}
+          />
+
+    },
+    render: (dom, entity) => {
+      return (
+        <Switch checked={entity.couponStatus == 1} onChange={(flag) => {
+          showStatusConfirm( [entity], flag ? 1 : 0)
+        }}/>
+      );
+    },
+    },
+    {
+      title: '每一元需要抵扣的积分数量',
+      dataIndex: 'deductionPerAmount',
+      hideInSearch: true,
+    },
+    {
+      title: '',
       dataIndex: 'id',
       hideInSearch: true,
     },
     {
-      title: '岗位编码',
-      dataIndex: 'postCode',
-    },
-    {
-      title: '岗位名称',
-      dataIndex: 'postName',
-      render: (dom, entity) => {
-        return <a onClick={() => {
-          setCurrentRow(entity);
-          setShowDetail(true);
-        }}>{dom}</a>;
-      },
-    },
-    {
-      title: '岗位排序',
-      dataIndex: 'postSort',
+      title: '是否默认：0->否；1->是',
+      dataIndex: 'isDefault',
       hideInSearch: true,
     },
     {
-      title: '状态',
-      dataIndex: 'postStatus',
-      renderFormItem:(text, row, index) => {
-        return <Select
-          value={row.value}
-          options={[
-            { value: '1', label: '正常' },
-            { value: '0', label: '禁用' },
-          ]}
-        />
+      title: '每笔订单最高抵用百分比',
+      dataIndex: 'maxPercentPerOrder',
+      hideInSearch: true,
+    },
+    {
+      title: '每次使用积分最小单位100',
+      dataIndex: 'useUnit',
+      hideInSearch: true,
+    },
 
-      },
-      render: (dom, entity) => {
-        switch (entity.postStatus) {
-          case 1:
-            return <Tag color={'success'}>正常</Tag>;
-          case 0:
-            return <Tag>禁用</Tag>;
-        }
-        return <>未知{entity.postStatus }</>;
-      },
-    },
-    {
-      title: '备注',
-      dataIndex: 'remark',
-      valueType: 'textarea',
-      hideInSearch: true,
-    },
-    {
-      title: '创建者',
-      dataIndex: 'createBy',
-      hideInSearch: true,
-    },
-    {
-      title: '创建时间',
-      dataIndex: 'createTime',
-      valueType: 'dateTime',
-      hideInSearch: true,
-    },
-    {
-      title: '更新者',
-      dataIndex: 'updateBy',
-      hideInSearch: true,
-    },
-    {
-      title: '更新时间',
-      dataIndex: 'updateTime',
-      valueType: 'dateTime',
-      hideInSearch: true,
-    },
     {
       title: '操作',
       dataIndex: 'option',
       valueType: 'option',
+      width: 220,
       render: (_, record) => (
         <>
-          <Button
-            type="primary"
-            icon={<EditOutlined/>}
+          <a
+            key="sort"
             onClick={() => {
               handleUpdateModalVisible(true);
               setCurrentRow(record);
-            }}
+              }
+            }
           >
-            编辑
-          </Button>
+            <EditOutlined/> 编辑
+          </a>
           <Divider type="vertical"/>
-          <Button
-            type="primary"
-            danger
-            icon={<DeleteOutlined/>}
+          <a
+            key="delete"
+            style={ {color: '#ff4d4f'} }
             onClick={() => {
-              showDeleteConfirm(record);
+              showDeleteConfirm( [record.id]);
             }}
           >
-            删除
-          </Button>
+            <DeleteOutlined/> 删除
+          </a>
         </>
       ),
     },
   ];
 
-  return (
+return (
     <PageContainer>
-      <ProTable<PostListItem>
+      <ProTable<IntegrationConsumeSettingListItem>
         headerTitle="岗位管理"
         actionRef={actionRef}
         rowKey="id"
-        search={{
+        search={ {
           labelWidth: 120,
-        }}
+        } }
         toolBarRender={() => [
           <Button type="primary" key="primary" onClick={() => handleModalVisible(true)}>
             <PlusOutlined/> 新增
           </Button>,
         ]}
-        request={queryPostList}
+        request={queryIntegrationConsumeSettingList}
         columns={columns}
-        rowSelection={{
-          onChange: (_, selectedRows) => setSelectedRows(selectedRows),
+        rowSelection={ {} }
+        pagination={ {pageSize: 10}}
+        tableAlertRender={ ({
+                             selectedRowKeys,
+                             selectedRows,
+                             onCleanSelected,
+                           }) => {
+          const ids = selectedRows.map((row) => row.id);
+          return (
+            <Space size={16}>
+              <span>已选 {selectedRowKeys.length} 项</span>
+              <Button
+                icon={<EditOutlined/>}
+                style={ {borderRadius: '5px'}}
+                onClick={async () => {
+                  await handleStatus(ids, 1);
+                  onCleanSelected()
+                  actionRef.current?.reload?.();
+                }}
+              >批量启用</Button>
+              <Button
+                icon={<EditOutlined/>}
+                style={ {borderRadius: '5px'} }
+                onClick={async () => {
+                  await handleStatus(ids, 1);
+                  onCleanSelected()
+                  actionRef.current?.reload?.();
+                }}
+              >批量禁用</Button>
+              <Button
+                icon={<DeleteOutlined/>}
+                danger
+                style={ {borderRadius: '5px'} }
+                onClick={async () => {
+                  showDeleteConfirm(ids);
+                }}
+              >批量删除</Button>
+            </Space>
+          );
         }}
-        pagination={{pageSize: 10}}
       />
-      {selectedRowsState?.length > 0 && (
-        <FooterToolbar
-          extra={
-            <div>
-              已选择 <a style={{fontWeight: 600}}>{selectedRowsState.length}</a> 项&nbsp;&nbsp;
-            </div>
-          }
-        >
-          <Button
-            type="primary"
-            danger
-            onClick={async () => {
-              await handleRemove(selectedRowsState);
-              setSelectedRows([]);
-              actionRef.current?.reloadAndRest?.();
-            }}
-          >
-            批量删除
-          </Button>
-        </FooterToolbar>
-      )}
 
-      <CreatePostForm
-        key={'CreatePostForm'}
+
+      <CreateForm
+        key={'CreateForm'}
         onSubmit={async (value) => {
           const success = await handleAdd(value);
           if (success) {
@@ -264,8 +284,8 @@ const PostList: React.FC = () => {
         createModalVisible={createModalVisible}
       />
 
-      <UpdatePostForm
-        key={'UpdatePostForm'}
+      <UpdateForm
+        key={'UpdateForm'}
         onSubmit={async (value) => {
           const success = await handleUpdate(value);
           if (success) {
@@ -283,12 +303,12 @@ const PostList: React.FC = () => {
           }
         }}
         updateModalVisible={updateModalVisible}
-        currentData={currentRow || {}}
+        currentData={currentRow || {} }
       />
 
       <Drawer
         width={600}
-        visible={showDetail}
+        open={showDetail}
         onClose={() => {
           setCurrentRow(undefined);
           setShowDetail(false)
@@ -296,16 +316,16 @@ const PostList: React.FC = () => {
         closable={false}
       >
         {currentRow?.id && (
-          <ProDescriptions<PostListItem>
+          <ProDescriptions<IntegrationConsumeSettingListItem>
             column={2}
             title={"岗位详情"}
             request={async () => ({
               data: currentRow || {},
             })}
-            params={{
+            params={ {
               id: currentRow?.id,
             }}
-            columns={columns as ProDescriptionsItemProps<PostListItem>[]}
+            columns={columns as ProDescriptionsItemProps<IntegrationConsumeSettingListItem>[]}
           />
         )}
       </Drawer>
@@ -313,4 +333,4 @@ const PostList: React.FC = () => {
   );
 };
 
-export default PostList;
+export default IntegrationConsumeSettingList;

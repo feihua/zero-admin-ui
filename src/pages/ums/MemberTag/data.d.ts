@@ -1,27 +1,33 @@
-export interface PostListItem {
-  id: number;
-  postStatus: number;
-
+export interface MemberTagListItem {
+    finishOrderAmount: number; //自动打标签完成订单金额
+    finishOrderCount: number; //自动打标签完成订单数量
+    id: number; //
+    status: number; //状态：0->禁用；1->启用
+    tagName: string; //标签名称
 
 }
 
-export interface PostListPagination {
+export interface MemberTagListPagination {
   total: number;
   pageSize: number;
   current: number;
 }
 
-export interface PostListData {
-  list: PostListItem[];
-  pagination: Partial<PostListPagination>;
+export interface MemberTagListData {
+  list: MemberTagListItem[];
+  pagination: Partial<MemberTagListPagination>;
 }
 
-export interface PostListParams {
+export interface MemberTagListParams {
+    finishOrderAmount?: number; //自动打标签完成订单金额
+    finishOrderCount?: number; //自动打标签完成订单数量
+    id?: number; //
+    status?: number; //状态：0->禁用；1->启用
+    tagName?: string; //标签名称
 
-  delFlag?: number;
-  pageSize?: number;
-  current?: number;
-  filter?: { [key: string]: any[] };
-  sorter?: { [key: string]: any };
+    pageSize?: number;
+    current?: number;
+    filter?: { [key: string]: any[] };
+    sorter?: { [key: string]: any };
 
 }

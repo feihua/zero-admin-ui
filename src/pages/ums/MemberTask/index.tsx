@@ -1,89 +1,107 @@
-import {PlusOutlined, ExclamationCircleOutlined, EditOutlined, DeleteOutlined} from '@ant-design/icons';
-import {Button, Divider, message, Drawer, Modal, Tag, Select} from 'antd';
-import React, {useState, useRef} from 'react';
-import {PageContainer, FooterToolbar} from '@ant-design/pro-layout';
+import {DeleteOutlined, EditOutlined, ExclamationCircleOutlined, PlusOutlined} from '@ant-design/icons';
+import {Button, Divider, Drawer, message, Modal, Select, Space, Switch} from 'antd';
+import React, {useRef, useState} from 'react';
+import {PageContainer} from '@ant-design/pro-layout';
+import type {ActionType, ProColumns} from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
-import type {ProColumns, ActionType} from '@ant-design/pro-table';
-import ProDescriptions from '@ant-design/pro-descriptions';
 import type {ProDescriptionsItemProps} from '@ant-design/pro-descriptions';
-import CreatePostForm from './components/CreatePostForm';
-import UpdatePostForm from './components/UpdatePostForm';
-import type {PostListItem} from './data.d';
-import {queryPostList, updatePost, addPost, removePost} from './service';
+import ProDescriptions from '@ant-design/pro-descriptions';
+import CreateForm from './components/CreateForm';
+import UpdateForm from './components/UpdateForm';
+import type { MemberTaskListItem} from './data.d';
+import {addMemberTask, queryMemberTaskList, removeMemberTask, updateMemberTask, updateMemberTaskStatus} from './service';
 
 const {confirm} = Modal;
 
 /**
- * 添加节点
+ * 添加会员任务表
  * @param fields
  */
-const handleAdd = async (fields: PostListItem) => {
+const handleAdd = async (fields: MemberTaskListItem) => {
   const hide = message.loading('正在添加');
   try {
-    await addPost({...fields});
+    await addMemberTask({...fields});
     hide();
     message.success('添加成功');
     return true;
   } catch (error) {
     hide();
-    message.error('添加失败请重试！');
     return false;
   }
 };
 
 /**
- * 更新节点
+ * 更新会员任务表
  * @param fields
  */
-const handleUpdate = async (fields: PostListItem) => {
+const handleUpdate = async (fields: MemberTaskListItem) => {
   const hide = message.loading('正在更新');
   try {
-    await updatePost(fields);
+    await updateMemberTask(fields);
     hide();
 
     message.success('更新成功');
     return true;
   } catch (error) {
     hide();
-    message.error('更新失败请重试！');
     return false;
   }
 };
 
 /**
- *  删除节点
- * @param selectedRows
+ *  删除会员任务表
+ * @param ids
  */
-const handleRemove = async (selectedRows: PostListItem[]) => {
+const handleRemove = async (ids: number[]) => {
   const hide = message.loading('正在删除');
-  if (!selectedRows) return true;
+  if (ids.length === 0) return true;
   try {
-    await removePost(selectedRows.map((row) => row.id));
+    await removeMemberTask(ids);
     hide();
     message.success('删除成功，即将刷新');
     return true;
   } catch (error) {
     hide();
-    message.error('删除失败，请重试');
     return false;
   }
 };
 
-const PostList: React.FC = () => {
+/**
+ * 更新会员任务表状态
+ * @param ids
+ * @param status
+ */
+const handleStatus = async (ids: number[], status: number) => {
+  const hide = message.loading('正在更新状态');
+  if (ids.length == 0) {
+    hide();
+    return true;
+  }
+  try {
+    await updateMemberTaskStatus({postIds: ids, postStatus: status});
+    hide();
+    message.success('更新状态成功');
+    return true;
+  } catch (error) {
+    hide();
+    return false;
+  }
+};
+
+const MemberTaskList: React.FC = () => {
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
   const [showDetail, setShowDetail] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
-  const [currentRow, setCurrentRow] = useState<PostListItem>();
-  const [selectedRowsState, setSelectedRows] = useState<PostListItem[]>([]);
+  const [currentRow, setCurrentRow] = useState<MemberTaskListItem>();
 
-  const showDeleteConfirm = (item: PostListItem) => {
+  const showDeleteConfirm = (ids: number[]) => {
     confirm({
       title: '是否删除记录?',
       icon: <ExclamationCircleOutlined/>,
       content: '删除的记录不能恢复,请确认!',
       onOk() {
-        handleRemove([item]).then(() => {
+        handleRemove(ids).then(() => {
           actionRef.current?.reloadAndRest?.();
         });
       },
@@ -92,60 +110,21 @@ const PostList: React.FC = () => {
     });
   };
 
-  const columns: ProColumns<PostListItem>[] = [
-    {
-      title: '岗位编号',
-      dataIndex: 'id',
-      hideInSearch: true,
-    },
-    {
-      title: '岗位编码',
-      dataIndex: 'postCode',
-    },
-    {
-      title: '岗位名称',
-      dataIndex: 'postName',
-      render: (dom, entity) => {
-        return <a onClick={() => {
-          setCurrentRow(entity);
-          setShowDetail(true);
-        }}>{dom}</a>;
+  const showStatusConfirm = (item: MemberTaskListItem[], status: number) => {
+    confirm({
+      title: `确定${status == 1 ? "启用" : "禁用"}吗？`,
+      icon: <ExclamationCircleOutlined/>,
+      async onOk() {
+        await handleStatus(item.map((x) => x.id), status)
+        actionRef.current?.reload?.();
       },
-    },
-    {
-      title: '岗位排序',
-      dataIndex: 'postSort',
-      hideInSearch: true,
-    },
-    {
-      title: '状态',
-      dataIndex: 'postStatus',
-      renderFormItem:(text, row, index) => {
-        return <Select
-          value={row.value}
-          options={[
-            { value: '1', label: '正常' },
-            { value: '0', label: '禁用' },
-          ]}
-        />
+      onCancel() {
+      },
+    });
+  };
 
-      },
-      render: (dom, entity) => {
-        switch (entity.postStatus) {
-          case 1:
-            return <Tag color={'success'}>正常</Tag>;
-          case 0:
-            return <Tag>禁用</Tag>;
-        }
-        return <>未知{entity.postStatus }</>;
-      },
-    },
-    {
-      title: '备注',
-      dataIndex: 'remark',
-      valueType: 'textarea',
-      hideInSearch: true,
-    },
+  const columns: ProColumns<MemberTaskListItem>[] = [
+    
     {
       title: '创建者',
       dataIndex: 'createBy',
@@ -154,7 +133,60 @@ const PostList: React.FC = () => {
     {
       title: '创建时间',
       dataIndex: 'createTime',
-      valueType: 'dateTime',
+      hideInSearch: true,
+    },
+    {
+      title: '',
+      dataIndex: 'id',
+      hideInSearch: true,
+    },
+    {
+      title: '状态：0->禁用；1->启用',
+      dataIndex: 'status',
+      renderFormItem: (text, row, index) => {
+          return <Select
+            value={row.value}
+            options={ [
+              {value: '1', label: '正常'},
+              {value: '0', label: '禁用'},
+            ]}
+          />
+
+    },
+    render: (dom, entity) => {
+      return (
+        <Switch checked={entity.status == 1} onChange={(flag) => {
+          showStatusConfirm( [entity], flag ? 1 : 0)
+        }}/>
+      );
+    },
+    },
+    
+    {
+      title: '赠送成长值',
+      dataIndex: 'taskGrowth',
+      hideInSearch: true,
+    },
+    {
+      title: '赠送积分',
+      dataIndex: 'taskIntegral',
+      hideInSearch: true,
+    },
+    {
+      title: '任务名称',
+      dataIndex: 'taskName',
+      hideInSearch: true,
+      render: (dom, entity) => {
+          return <a onClick={() => {
+            setCurrentRow(entity);
+            setShowDetail(true);
+          }}>{dom}</a>;
+        },
+    },
+    
+    {
+      title: '任务类型：0->新手任务；1->日常任务',
+      dataIndex: 'taskType',
       hideInSearch: true,
     },
     {
@@ -165,9 +197,9 @@ const PostList: React.FC = () => {
     {
       title: '更新时间',
       dataIndex: 'updateTime',
-      valueType: 'dateTime',
       hideInSearch: true,
     },
+
     {
       title: '操作',
       dataIndex: 'option',
@@ -180,16 +212,17 @@ const PostList: React.FC = () => {
             onClick={() => {
               handleUpdateModalVisible(true);
               setCurrentRow(record);
-            }}
+              }
+            }
           >
             <EditOutlined/> 编辑
           </a>
           <Divider type="vertical"/>
           <a
             key="delete"
-            style={{color: '#ff4d4f'}}
+            style={ {color: '#ff4d4f'} }
             onClick={() => {
-              showDeleteConfirm(record);
+              showDeleteConfirm( [record.id]);
             }}
           >
             <DeleteOutlined/> 删除
@@ -199,51 +232,67 @@ const PostList: React.FC = () => {
     },
   ];
 
-  return (
+return (
     <PageContainer>
-      <ProTable<PostListItem>
+      <ProTable<MemberTaskListItem>
         headerTitle="岗位管理"
         actionRef={actionRef}
         rowKey="id"
-        search={{
+        search={ {
           labelWidth: 120,
-        }}
+        } }
         toolBarRender={() => [
           <Button type="primary" key="primary" onClick={() => handleModalVisible(true)}>
             <PlusOutlined/> 新增
           </Button>,
         ]}
-        request={queryPostList}
+        request={queryMemberTaskList}
         columns={columns}
-        rowSelection={{
-          onChange: (_, selectedRows) => setSelectedRows(selectedRows),
+        rowSelection={ {} }
+        pagination={ {pageSize: 10}}
+        tableAlertRender={ ({
+                             selectedRowKeys,
+                             selectedRows,
+                             onCleanSelected,
+                           }) => {
+          const ids = selectedRows.map((row) => row.id);
+          return (
+            <Space size={16}>
+              <span>已选 {selectedRowKeys.length} 项</span>
+              <Button
+                icon={<EditOutlined/>}
+                style={ {borderRadius: '5px'}}
+                onClick={async () => {
+                  await handleStatus(ids, 1);
+                  onCleanSelected()
+                  actionRef.current?.reload?.();
+                }}
+              >批量启用</Button>
+              <Button
+                icon={<EditOutlined/>}
+                style={ {borderRadius: '5px'} }
+                onClick={async () => {
+                  await handleStatus(ids, 1);
+                  onCleanSelected()
+                  actionRef.current?.reload?.();
+                }}
+              >批量禁用</Button>
+              <Button
+                icon={<DeleteOutlined/>}
+                danger
+                style={ {borderRadius: '5px'} }
+                onClick={async () => {
+                  showDeleteConfirm(ids);
+                }}
+              >批量删除</Button>
+            </Space>
+          );
         }}
-        pagination={{pageSize: 10}}
       />
-      {selectedRowsState?.length > 0 && (
-        <FooterToolbar
-          extra={
-            <div>
-              已选择 <a style={{fontWeight: 600}}>{selectedRowsState.length}</a> 项&nbsp;&nbsp;
-            </div>
-          }
-        >
-          <Button
-            type="primary"
-            danger
-            onClick={async () => {
-              await handleRemove(selectedRowsState);
-              setSelectedRows([]);
-              actionRef.current?.reloadAndRest?.();
-            }}
-          >
-            批量删除
-          </Button>
-        </FooterToolbar>
-      )}
 
-      <CreatePostForm
-        key={'CreatePostForm'}
+
+      <CreateForm
+        key={'CreateForm'}
         onSubmit={async (value) => {
           const success = await handleAdd(value);
           if (success) {
@@ -263,8 +312,8 @@ const PostList: React.FC = () => {
         createModalVisible={createModalVisible}
       />
 
-      <UpdatePostForm
-        key={'UpdatePostForm'}
+      <UpdateForm
+        key={'UpdateForm'}
         onSubmit={async (value) => {
           const success = await handleUpdate(value);
           if (success) {
@@ -282,12 +331,12 @@ const PostList: React.FC = () => {
           }
         }}
         updateModalVisible={updateModalVisible}
-        currentData={currentRow || {}}
+        currentData={currentRow || {} }
       />
 
       <Drawer
         width={600}
-        visible={showDetail}
+        open={showDetail}
         onClose={() => {
           setCurrentRow(undefined);
           setShowDetail(false)
@@ -295,16 +344,16 @@ const PostList: React.FC = () => {
         closable={false}
       >
         {currentRow?.id && (
-          <ProDescriptions<PostListItem>
+          <ProDescriptions<MemberTaskListItem>
             column={2}
             title={"岗位详情"}
             request={async () => ({
               data: currentRow || {},
             })}
-            params={{
+            params={ {
               id: currentRow?.id,
             }}
-            columns={columns as ProDescriptionsItemProps<PostListItem>[]}
+            columns={columns as ProDescriptionsItemProps<MemberTaskListItem>[]}
           />
         )}
       </Drawer>
@@ -312,4 +361,4 @@ const PostList: React.FC = () => {
   );
 };
 
-export default PostList;
+export default MemberTaskList;
