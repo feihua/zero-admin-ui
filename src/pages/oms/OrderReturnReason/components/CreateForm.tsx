@@ -1,10 +1,10 @@
 import React, {useEffect} from 'react';
-import {Form, Input, InputNumber, Modal, Select} from 'antd';
-import type {ReturnReasonListItem} from '../data.d';
+import {Form, Input, InputNumber, Modal, Radio} from 'antd';
+import type { OrderReturnReasonListItem} from '../data.d';
 
 export interface CreateFormProps {
   onCancel: () => void;
-  onSubmit: (values: ReturnReasonListItem) => void;
+  onSubmit: (values: OrderReturnReasonListItem) => void;
   createModalVisible: boolean;
 }
 
@@ -15,9 +15,8 @@ const formLayout = {
   wrapperCol: {span: 13},
 };
 
-const CreateReasonForm: React.FC<CreateFormProps> = (props) => {
+const CreateForm: React.FC<CreateFormProps> = (props) => {
   const [form] = Form.useForm();
-  const {Option} = Select;
 
   const {
     onSubmit,
@@ -37,7 +36,7 @@ const CreateReasonForm: React.FC<CreateFormProps> = (props) => {
     form.submit();
   };
 
-  const handleFinish = (values: ReturnReasonListItem) => {
+  const handleFinish = (values: OrderReturnReasonListItem) => {
     if (onSubmit) {
       onSubmit(values);
     }
@@ -46,33 +45,33 @@ const CreateReasonForm: React.FC<CreateFormProps> = (props) => {
   const renderContent = () => {
     return (
       <>
+
         <FormItem
           name="name"
           label="退货类型"
           rules={[{required: true, message: '请输入退货类型!'}]}
         >
-          <Input id="update-name" placeholder={'请输入退货类型'}/>
-        </FormItem>
+            <Input id="create-name" placeholder={'请输入退货类型!'}/>
+         </FormItem>
         <FormItem
           name="sort"
           label="排序"
           initialValue={1}
           rules={[{required: true, message: '请输入排序!'}]}
         >
-          <InputNumber/>
+            <InputNumber style={ {width: 255} }/>
         </FormItem>
         <FormItem
           name="status"
           label="状态"
           initialValue={1}
-          rules={[{required: true, message: '请选择状态!'}]}
+          rules={[{required: true, message: '请输入状态!'}]}
         >
-          <Select id="status" placeholder={'请选择状态'}>
-            <Option value={0}>禁用</Option>
-            <Option value={1}>正常</Option>
-          </Select>
+              <Radio.Group>
+                <Radio value={0}>不启用</Radio>
+                <Radio value={1}>启用</Radio>
+              </Radio.Group>
         </FormItem>
-
       </>
     );
   };
@@ -84,7 +83,7 @@ const CreateReasonForm: React.FC<CreateFormProps> = (props) => {
     <Modal
       forceRender
       destroyOnClose
-      title="新建退货原因"
+      title="新增"
       open={createModalVisible}
       {...modalFooter}
     >
@@ -99,4 +98,4 @@ const CreateReasonForm: React.FC<CreateFormProps> = (props) => {
   );
 };
 
-export default CreateReasonForm;
+export default CreateForm;

@@ -233,7 +233,7 @@
         name: '订单设置',
         icon: 'table',
         path: '/oms/orderSetting/list',
-        component: './oms/order_setting',
+        component: './oms/OrderSetting',
       },
       {
         name: '退货申请',
@@ -245,7 +245,7 @@
         name: '退货原因',
         icon: 'table',
         path: '/oms/orderReturnReason/list',
-        component: './oms/order_return_reason',
+        component: './oms/OrderReturnReason',
       },
       {
         name: '公司地址',

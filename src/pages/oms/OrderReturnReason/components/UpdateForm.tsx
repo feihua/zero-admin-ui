@@ -1,12 +1,12 @@
 import React, {useEffect} from 'react';
-import {Form, Input, InputNumber, Modal, Select} from 'antd';
-import type {ReturnReasonListItem} from '../data.d';
+import {Form, Input, InputNumber, Modal} from 'antd';
+import type {OrderReturnReasonListItem} from '../data.d';
 
 export interface UpdateFormProps {
   onCancel: () => void;
-  onSubmit: (values: ReturnReasonListItem) => void;
+  onSubmit: (values: OrderReturnReasonListItem) => void;
   updateModalVisible: boolean;
-  values: Partial<ReturnReasonListItem>;
+  currentData: Partial<OrderReturnReasonListItem>;
 }
 
 const FormItem = Form.Item;
@@ -16,40 +16,38 @@ const formLayout = {
   wrapperCol: {span: 13},
 };
 
-const UpdateReasonForm: React.FC<UpdateFormProps> = (props) => {
+const UpdateForm: React.FC<UpdateFormProps> = (props) => {
   const [form] = Form.useForm();
-  const {Option} = Select;
 
   const {
     onSubmit,
     onCancel,
     updateModalVisible,
-    values,
+    currentData,
   } = props;
 
   useEffect(() => {
     if (form && !updateModalVisible) {
       form.resetFields();
-
     }
   }, [props.updateModalVisible]);
 
   useEffect(() => {
-    if (values) {
+    if (currentData) {
       form.setFieldsValue({
-        ...values,
+        ...currentData,
       });
     }
-  }, [props.values]);
+  }, [props.currentData]);
 
   const handleSubmit = () => {
     if (!form) return;
     form.submit();
   };
 
-  const handleFinish = (item: { [key: string]: any }) => {
+  const handleFinish = (values: { [key: string]: any }) => {
     if (onSubmit) {
-      onSubmit(item as ReturnReasonListItem);
+      onSubmit(values as OrderReturnReasonListItem);
     }
   };
 
@@ -61,33 +59,23 @@ const UpdateReasonForm: React.FC<UpdateFormProps> = (props) => {
           label="主键"
           hidden
         >
-          <Input id="update-id" placeholder="请输入主键"/>
+          <Input id="update-id"/>
         </FormItem>
+
         <FormItem
           name="name"
           label="退货类型"
           rules={[{required: true, message: '请输入退货类型!'}]}
         >
-          <Input id="update-name" placeholder={'请输入退货类型'}/>
+          <Input id="create-name" placeholder={'请输入退货类型!'}/>
         </FormItem>
         <FormItem
           name="sort"
           label="排序"
           rules={[{required: true, message: '请输入排序!'}]}
         >
-          <InputNumber/>
+          <InputNumber style={{width: 255}}/>
         </FormItem>
-        <FormItem
-          name="status"
-          label="状态"
-          rules={[{required: true, message: '请选择状态!'}]}
-        >
-          <Select id="status" placeholder={'请选择状态'}>
-            <Option value={0}>禁用</Option>
-            <Option value={1}>正常</Option>
-          </Select>
-        </FormItem>
-
       </>
     );
   };
@@ -99,7 +87,7 @@ const UpdateReasonForm: React.FC<UpdateFormProps> = (props) => {
     <Modal
       forceRender
       destroyOnClose
-      title="修改退货原因"
+      title="编辑"
       open={updateModalVisible}
       {...modalFooter}
     >
@@ -114,4 +102,4 @@ const UpdateReasonForm: React.FC<UpdateFormProps> = (props) => {
   );
 };
 
-export default UpdateReasonForm;
+export default UpdateForm;

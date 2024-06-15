@@ -1,8 +1,9 @@
 import {request} from 'umi';
-import type {SettingListParams, SettingListItem} from './data.d';
-// 添加订单设置
-export async function addOrderSetting(params: SettingListItem) {
-  return request('/api/order/setting/addOrderSetting', {
+import type { CompanyAddressListParams, CompanyAddressListItem } from './data.d';
+
+// 添加公司收发货地址表
+export async function addCompanyAddress(params: CompanyAddressListItem) {
+  return request('/api/order/companyAddress/addCompanyAddress', {
     method: 'POST',
     data: {
       ...params,
@@ -10,19 +11,17 @@ export async function addOrderSetting(params: SettingListItem) {
   });
 }
 
-//
-
-// 删除订单设置
-export async function removeOrderSetting(ids: number[]) {
-  return request('/api/order/setting/deleteOrderSetting?ids=[' + ids + "]", {
+// 删除公司收发货地址表
+export async function removeCompanyAddress(ids: number[]) {
+  return request('/api/order/companyAddress/deleteCompanyAddress?ids=[' + ids + "]", {
     method: 'GET',
   });
 }
 
 
-// 更新订单设置
-export async function updateOrderSetting(params: SettingListItem) {
-  return request('/api/order/setting/updateOrderSetting', {
+// 更新公司收发货地址表
+export async function updateCompanyAddress(params: CompanyAddressListItem) {
+  return request('/api/order/companyAddress/updateCompanyAddress', {
     method: 'POST',
     data: {
       ...params,
@@ -30,34 +29,41 @@ export async function updateOrderSetting(params: SettingListItem) {
   });
 }
 
-// 批量更新订单设置状态
-export async function updateOrderSettingStatus(params: { dictTypeIds: number[], postStatus: number }) {
-  return request('/api/order/setting/updateOrderSettingStatus', {
+// 更新公司收发货地址表收货状态
+export async function updateCompanyAddressReceiveStatus(params: { companyAddressId: number, companyAddressStatus: number }) {
+  return request('/api/order/companyAddress/updateCompanyAddressReceiveStatus', {
     method: 'POST',
     data: {
-      ...params,
+      id: params.companyAddressId, receiveStatus: params.companyAddressStatus
+    },
+
+  });
+}
+// 更新公司收发货地址表发货状态
+export async function updateCompanyAddressSendStatus(params: { companyAddressId: number, companyAddressStatus: number }) {
+  return request('/api/order/companyAddress/updateCompanyAddressSendStatus', {
+    method: 'POST',
+    data: {
+      id: params.companyAddressId, sendStatus: params.companyAddressStatus
     },
 
   });
 }
 
-
-// 查询订单设置详情
-export async function queryOrderSettingDetail(id: number ) {
-  return request('/api/order/setting/queryOrderSettingDetail', {
+// 查询公司收发货地址表详情
+export async function queryCompanyAddressDetail(id: number) {
+  return request('/api/order/companyAddress/queryCompanyAddressDetail?id=' + id, {
     method: 'GET',
   });
 }
 
-// 分页查询订单设置列表
-export async function queryOrderSettingList(params: SettingListParams) {
+// 分页查询公司收发货地址表列表
+export async function queryCompanyAddressList(params: CompanyAddressListParams) {
 
-  return request('/api/order/setting/queryOrderSettingList', {
+  return request('/api/order/companyAddress/queryCompanyAddressList', {
     method: 'GET',
     params: {
       ...params,
     },
   });
 }
-
-
