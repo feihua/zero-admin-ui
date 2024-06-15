@@ -3,7 +3,7 @@ import type { MemberRuleSettingListParams, MemberRuleSettingListItem } from './d
 
 // 添加会员积分成长规则表
 export async function addMemberRuleSetting(params: MemberRuleSettingListItem) {
-  return request('/api/demo/memberRuleSetting/addMemberRuleSetting', {
+  return request('/api/member/ruleSetting/addMemberRuleSetting', {
     method: 'POST',
     data: {
       ...params,
@@ -13,7 +13,7 @@ export async function addMemberRuleSetting(params: MemberRuleSettingListItem) {
 
 // 删除会员积分成长规则表
 export async function removeMemberRuleSetting(ids: number[]) {
-  return request('/api/demo/memberRuleSetting/deleteMemberRuleSetting?ids=[' + ids + "]", {
+  return request('/api/member/ruleSetting/deleteMemberRuleSetting?ids=[' + ids + "]", {
     method: 'GET',
   });
 }
@@ -21,7 +21,7 @@ export async function removeMemberRuleSetting(ids: number[]) {
 
 // 更新会员积分成长规则表
 export async function updateMemberRuleSetting(params: MemberRuleSettingListItem) {
-  return request('/api/demo/memberRuleSetting/updateMemberRuleSetting', {
+  return request('/api/member/ruleSetting/updateMemberRuleSetting', {
     method: 'POST',
     data: {
       ...params,
@@ -31,10 +31,10 @@ export async function updateMemberRuleSetting(params: MemberRuleSettingListItem)
 
 // 批量更新会员积分成长规则表状态
 export async function updateMemberRuleSettingStatus(params: { memberRuleSettingIds: number[], memberRuleSettingStatus: number }) {
-  return request('/api/demo/memberRuleSetting/updateMemberRuleSettingStatus', {
+  return request('/api/member/ruleSetting/updateMemberRuleSettingStatus', {
     method: 'POST',
     data: {
-      ...params,
+      ids: params.memberRuleSettingIds, status: params.memberRuleSettingStatus
     },
 
   });
@@ -43,7 +43,7 @@ export async function updateMemberRuleSettingStatus(params: { memberRuleSettingI
 
 // 查询会员积分成长规则表详情
 export async function queryMemberRuleSettingDetail(id: number) {
-  return request('/api/demo/memberRuleSetting/queryMemberRuleSettingDetail?id=' + id, {
+  return request('/api/member/ruleSetting/queryMemberRuleSettingDetail?id=' + id, {
     method: 'GET',
   });
 }
@@ -51,7 +51,7 @@ export async function queryMemberRuleSettingDetail(id: number) {
 // 分页查询会员积分成长规则表列表
 export async function queryMemberRuleSettingList(params: MemberRuleSettingListParams) {
 
-  return request('/api/demo/memberRuleSetting/queryMemberRuleSettingList', {
+  return request('/api/member/ruleSetting/queryMemberRuleSettingList', {
     method: 'GET',
     params: {
       ...params,

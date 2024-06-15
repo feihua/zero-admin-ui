@@ -1,5 +1,5 @@
 import {DeleteOutlined, EditOutlined, ExclamationCircleOutlined, PlusOutlined} from '@ant-design/icons';
-import {Button, Divider, Drawer, message, Modal, Select, Space, Switch} from 'antd';
+import {Button, Divider, Drawer, message, Modal, Select, Space, Switch, Tag} from 'antd';
 import React, {useRef, useState} from 'react';
 import {PageContainer} from '@ant-design/pro-layout';
 import type {ActionType, ProColumns} from '@ant-design/pro-table';
@@ -68,17 +68,14 @@ const handleRemove = async (ids: number[]) => {
 
 /**
  * 更新积分消费设置状态
- * @param ids
+ * @param id
  * @param status
  */
-const handleStatus = async (ids: number[], status: number) => {
+const handleStatus = async (id: number, status: number) => {
   const hide = message.loading('正在更新状态');
-  if (ids.length == 0) {
-    hide();
-    return true;
-  }
+
   try {
-    await updateIntegrationConsumeSettingStatus({ integrationConsumeSettingIds: ids, integrationConsumeSettingStatus: status});
+    await updateIntegrationConsumeSettingStatus({ integrationConsumeSettingId: id, integrationConsumeSettingStatus: status});
     hide();
     message.success('更新状态成功');
     return true;
@@ -110,12 +107,12 @@ const IntegrationConsumeSettingList: React.FC = () => {
     });
   };
 
-  const showStatusConfirm = (item: IntegrationConsumeSettingListItem[], status: number) => {
+  const showStatusConfirm = (ids: number, status: number) => {
     confirm({
-      title: `确定${status == 1 ? "启用" : "禁用"}吗？`,
+      title: `确定${status == 1 ? "默认" : "不是默认"}吗？`,
       icon: <ExclamationCircleOutlined/>,
       async onOk() {
-        await handleStatus(item.map((x) => x.id), status)
+        await handleStatus(ids, status)
         actionRef.current?.reload?.();
       },
       onCancel() {
@@ -124,41 +121,9 @@ const IntegrationConsumeSettingList: React.FC = () => {
   };
 
   const columns: ProColumns<IntegrationConsumeSettingListItem>[] = [
-    
     {
-      title: '是否可以和优惠券同用；0->不可以；1->可以',
-      dataIndex: 'couponStatus',
-      renderFormItem: (text, row, index) => {
-          return <Select
-            value={row.value}
-            options={ [
-              {value: '1', label: '正常'},
-              {value: '0', label: '禁用'},
-            ]}
-          />
-
-    },
-    render: (dom, entity) => {
-      return (
-        <Switch checked={entity.couponStatus == 1} onChange={(flag) => {
-          showStatusConfirm( [entity], flag ? 1 : 0)
-        }}/>
-      );
-    },
-    },
-    {
-      title: '每一元需要抵扣的积分数量',
-      dataIndex: 'deductionPerAmount',
-      hideInSearch: true,
-    },
-    {
-      title: '',
+      title: 'id',
       dataIndex: 'id',
-      hideInSearch: true,
-    },
-    {
-      title: '是否默认：0->否；1->是',
-      dataIndex: 'isDefault',
       hideInSearch: true,
     },
     {
@@ -171,6 +136,58 @@ const IntegrationConsumeSettingList: React.FC = () => {
       dataIndex: 'useUnit',
       hideInSearch: true,
     },
+    {
+      title: '是否可以和优惠券同用',
+      dataIndex: 'couponStatus',
+      renderFormItem: (text, row, index) => {
+          return <Select
+            value={row.value}
+            options={ [
+              {value: '1', label: '可以'},
+              {value: '0', label: '不可以'},
+            ]}
+          />
+
+    },
+    render: (dom, entity) => {
+      switch (entity.couponStatus) {
+        case 1:
+          return <Tag color={'success'}>可以</Tag>;
+        case 0:
+          return <Tag>不可以</Tag>;
+      }
+      return <>未知{entity.couponStatus}</>;
+    },
+    },
+    {
+      title: '每一元需要抵扣的积分数量',
+      dataIndex: 'deductionPerAmount',
+      hideInSearch: true,
+    },
+
+    {
+      title: '是否默认',
+      dataIndex: 'isDefault',
+      hideInSearch: true,
+      renderFormItem: (text, row, index) => {
+        return <Select
+          value={row.value}
+          options={ [
+            {value: '1', label: '是'},
+            {value: '0', label: '否'},
+          ]}
+        />
+
+      },
+      render: (dom, entity) => {
+        return (
+          <Switch checked={entity.isDefault == 1} onChange={(flag) => {
+            showStatusConfirm( entity.id, flag ? 1 : 0)
+          }}/>
+        );
+      },
+    },
+
 
     {
       title: '操作',
@@ -207,7 +224,7 @@ const IntegrationConsumeSettingList: React.FC = () => {
 return (
     <PageContainer>
       <ProTable<IntegrationConsumeSettingListItem>
-        headerTitle="岗位管理"
+        headerTitle="积分消费设置管理"
         actionRef={actionRef}
         rowKey="id"
         search={ {
@@ -225,30 +242,11 @@ return (
         tableAlertRender={ ({
                              selectedRowKeys,
                              selectedRows,
-                             onCleanSelected,
                            }) => {
           const ids = selectedRows.map((row) => row.id);
           return (
             <Space size={16}>
               <span>已选 {selectedRowKeys.length} 项</span>
-              <Button
-                icon={<EditOutlined/>}
-                style={ {borderRadius: '5px'}}
-                onClick={async () => {
-                  await handleStatus(ids, 1);
-                  onCleanSelected()
-                  actionRef.current?.reload?.();
-                }}
-              >批量启用</Button>
-              <Button
-                icon={<EditOutlined/>}
-                style={ {borderRadius: '5px'} }
-                onClick={async () => {
-                  await handleStatus(ids, 1);
-                  onCleanSelected()
-                  actionRef.current?.reload?.();
-                }}
-              >批量禁用</Button>
               <Button
                 icon={<DeleteOutlined/>}
                 danger
@@ -318,7 +316,7 @@ return (
         {currentRow?.id && (
           <ProDescriptions<IntegrationConsumeSettingListItem>
             column={2}
-            title={"岗位详情"}
+            title={"积分消费设置详情"}
             request={async () => ({
               data: currentRow || {},
             })}

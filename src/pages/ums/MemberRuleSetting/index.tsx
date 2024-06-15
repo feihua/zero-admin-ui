@@ -1,5 +1,5 @@
 import {DeleteOutlined, EditOutlined, ExclamationCircleOutlined, PlusOutlined} from '@ant-design/icons';
-import {Button, Divider, Drawer, message, Modal, Select, Space, Switch} from 'antd';
+import {Button, Divider, Drawer, message, Modal, Select, Space, Switch, Tag} from 'antd';
 import React, {useRef, useState} from 'react';
 import {PageContainer} from '@ant-design/pro-layout';
 import type {ActionType, ProColumns} from '@ant-design/pro-table';
@@ -8,8 +8,14 @@ import type {ProDescriptionsItemProps} from '@ant-design/pro-descriptions';
 import ProDescriptions from '@ant-design/pro-descriptions';
 import CreateForm from './components/CreateForm';
 import UpdateForm from './components/UpdateForm';
-import type { MemberRuleSettingListItem} from './data.d';
-import {addMemberRuleSetting, queryMemberRuleSettingList, removeMemberRuleSetting, updateMemberRuleSetting, updateMemberRuleSettingStatus} from './service';
+import type {MemberRuleSettingListItem} from './data.d';
+import {
+  addMemberRuleSetting,
+  queryMemberRuleSettingList,
+  removeMemberRuleSetting,
+  updateMemberRuleSetting,
+  updateMemberRuleSettingStatus
+} from './service';
 
 const {confirm} = Modal;
 
@@ -78,7 +84,7 @@ const handleStatus = async (ids: number[], status: number) => {
     return true;
   }
   try {
-    await updateMemberRuleSettingStatus({ memberRuleSettingIds: ids, memberRuleSettingStatus: status});
+    await updateMemberRuleSettingStatus({memberRuleSettingIds: ids, memberRuleSettingStatus: status});
     hide();
     message.success('更新状态成功');
     return true;
@@ -110,12 +116,13 @@ const MemberRuleSettingList: React.FC = () => {
     });
   };
 
-  const showStatusConfirm = (item: MemberRuleSettingListItem[], status: number) => {
+  const showStatusConfirm = (ids: number[], status: number) => {
     confirm({
       title: `确定${status == 1 ? "启用" : "禁用"}吗？`,
       icon: <ExclamationCircleOutlined/>,
       async onOk() {
-        await handleStatus(item.map((x) => x.id), status)
+        await handleStatus(ids, status)
+        actionRef.current?.clearSelected?.();
         actionRef.current?.reload?.();
       },
       onCancel() {
@@ -124,7 +131,35 @@ const MemberRuleSettingList: React.FC = () => {
   };
 
   const columns: ProColumns<MemberRuleSettingListItem>[] = [
-    
+    {
+      title: 'id',
+      dataIndex: 'id',
+      hideInSearch: true,
+      hideInTable: true,
+    },
+    {
+      title: '类型',
+      dataIndex: 'ruleType',
+      renderFormItem: (text, row, index) => {
+        return <Select
+          value={row.value}
+          options={[
+            {value: '1', label: '成长值规则'},
+            {value: '0', label: '积分规则'},
+          ]}
+        />
+
+      },
+      render: (dom, entity) => {
+        switch (entity.ruleType) {
+          case 1:
+            return <Tag color={'success'}>成长值规则</Tag>;
+          case 0:
+            return <Tag>积分规则</Tag>;
+        }
+        return <>未知{entity.ruleType}</>;
+      },
+    },
     {
       title: '每消费多少元获取1个点',
       dataIndex: 'consumePerPoint',
@@ -140,21 +175,8 @@ const MemberRuleSettingList: React.FC = () => {
       dataIndex: 'continueSignPoint',
       hideInSearch: true,
     },
-    {
-      title: '创建者',
-      dataIndex: 'createBy',
-      hideInSearch: true,
-    },
-    {
-      title: '创建时间',
-      dataIndex: 'createTime',
-      hideInSearch: true,
-    },
-    {
-      title: '',
-      dataIndex: 'id',
-      hideInSearch: true,
-    },
+
+
     {
       title: '最低获取点数的订单金额',
       dataIndex: 'lowOrderAmount',
@@ -165,52 +187,39 @@ const MemberRuleSettingList: React.FC = () => {
       dataIndex: 'maxPointPerOrder',
       hideInSearch: true,
     },
-    {
-      title: '类型：0->积分规则；1->成长值规则',
-      dataIndex: 'ruleType',
-      renderFormItem: (text, row, index) => {
-          return <Select
-            value={row.value}
-            options={ [
-              {value: '1', label: '正常'},
-              {value: '0', label: '禁用'},
-            ]}
-          />
 
-    },
-    render: (dom, entity) => {
-        switch (entity.ruleType) {
-          case 1:
-            return <Tag color={'success'}>正常</Tag>;
-          case 0:
-            return <Tag>禁用</Tag>;
-        }
-        return <>未知{entity.ruleType}</>;
-      },
-    },
-    
+
     {
-      title: '状态：0->禁用；1->启用',
+      title: '状态',
       dataIndex: 'status',
       renderFormItem: (text, row, index) => {
-          return <Select
-            value={row.value}
-            options={ [
-              {value: '1', label: '正常'},
-              {value: '0', label: '禁用'},
-            ]}
-          />
+        return <Select
+          value={row.value}
+          options={[
+            {value: '1', label: '启用'},
+            {value: '0', label: '禁用'},
+          ]}
+        />
 
+      },
+      render: (dom, entity) => {
+        return (
+          <Switch checked={entity.status == 1} onChange={(flag) => {
+            showStatusConfirm([entity.id], flag ? 1 : 0)
+          }}/>
+        );
+      },
     },
-    render: (dom, entity) => {
-      return (
-        <Switch checked={entity.status == 1} onChange={(flag) => {
-          showStatusConfirm( [entity], flag ? 1 : 0)
-        }}/>
-      );
+    {
+      title: '创建者',
+      dataIndex: 'createBy',
+      hideInSearch: true,
     },
+    {
+      title: '创建时间',
+      dataIndex: 'createTime',
+      hideInSearch: true,
     },
-    
     {
       title: '更新者',
       dataIndex: 'updateBy',
@@ -234,7 +243,7 @@ const MemberRuleSettingList: React.FC = () => {
             onClick={() => {
               handleUpdateModalVisible(true);
               setCurrentRow(record);
-              }
+            }
             }
           >
             <EditOutlined/> 编辑
@@ -242,9 +251,9 @@ const MemberRuleSettingList: React.FC = () => {
           <Divider type="vertical"/>
           <a
             key="delete"
-            style={ {color: '#ff4d4f'} }
+            style={{color: '#ff4d4f'}}
             onClick={() => {
-              showDeleteConfirm( [record.id]);
+              showDeleteConfirm([record.id]);
             }}
           >
             <DeleteOutlined/> 删除
@@ -254,15 +263,15 @@ const MemberRuleSettingList: React.FC = () => {
     },
   ];
 
-return (
+  return (
     <PageContainer>
       <ProTable<MemberRuleSettingListItem>
-        headerTitle="岗位管理"
+        headerTitle="会员积分成长规则表管理"
         actionRef={actionRef}
         rowKey="id"
-        search={ {
+        search={{
           labelWidth: 120,
-        } }
+        }}
         toolBarRender={() => [
           <Button type="primary" key="primary" onClick={() => handleModalVisible(true)}>
             <PlusOutlined/> 新增
@@ -270,12 +279,11 @@ return (
         ]}
         request={queryMemberRuleSettingList}
         columns={columns}
-        rowSelection={ {} }
-        pagination={ {pageSize: 10}}
-        tableAlertRender={ ({
+        rowSelection={{}}
+        pagination={{pageSize: 10}}
+        tableAlertRender={({
                              selectedRowKeys,
                              selectedRows,
-                             onCleanSelected,
                            }) => {
           const ids = selectedRows.map((row) => row.id);
           return (
@@ -283,26 +291,22 @@ return (
               <span>已选 {selectedRowKeys.length} 项</span>
               <Button
                 icon={<EditOutlined/>}
-                style={ {borderRadius: '5px'}}
+                style={{borderRadius: '5px'}}
                 onClick={async () => {
-                  await handleStatus(ids, 1);
-                  onCleanSelected()
-                  actionRef.current?.reload?.();
+                  showStatusConfirm(ids, 1)
                 }}
               >批量启用</Button>
               <Button
                 icon={<EditOutlined/>}
-                style={ {borderRadius: '5px'} }
+                style={{borderRadius: '5px'}}
                 onClick={async () => {
-                  await handleStatus(ids, 1);
-                  onCleanSelected()
-                  actionRef.current?.reload?.();
+                  showStatusConfirm(ids, 0)
                 }}
               >批量禁用</Button>
               <Button
                 icon={<DeleteOutlined/>}
                 danger
-                style={ {borderRadius: '5px'} }
+                style={{borderRadius: '5px'}}
                 onClick={async () => {
                   showDeleteConfirm(ids);
                 }}
@@ -353,7 +357,7 @@ return (
           }
         }}
         updateModalVisible={updateModalVisible}
-        currentData={currentRow || {} }
+        currentData={currentRow || {}}
       />
 
       <Drawer
@@ -368,11 +372,11 @@ return (
         {currentRow?.id && (
           <ProDescriptions<MemberRuleSettingListItem>
             column={2}
-            title={"岗位详情"}
+            title={"会员积分成长规则表详情"}
             request={async () => ({
               data: currentRow || {},
             })}
-            params={ {
+            params={{
               id: currentRow?.id,
             }}
             columns={columns as ProDescriptionsItemProps<MemberRuleSettingListItem>[]}

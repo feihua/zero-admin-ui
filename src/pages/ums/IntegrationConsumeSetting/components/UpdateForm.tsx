@@ -12,8 +12,8 @@ export interface UpdateFormProps {
 const FormItem = Form.Item;
 
 const formLayout = {
-  labelCol: {span: 7},
-  wrapperCol: {span: 13},
+  labelCol: {span: 9},
+  wrapperCol: {span: 11},
 };
 
 const UpdateForm: React.FC<UpdateFormProps> = (props) => {
@@ -62,52 +62,40 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
           <Input id="update-id"/>
         </FormItem>
 
-        
         <FormItem
           name="couponStatus"
-          label="是否可以和优惠券同用；0->不可以；1->可以"
-          rules={[{required: true, message: '请输入是否可以和优惠券同用；0->不可以；1->可以!'}]}
+          label="是否可以和优惠券同用"
+          rules={[{required: true, message: '请输入是否可以和优惠券同用!'}]}
         >
-              <Radio.Group>
-                <Radio value={0}>禁用</Radio>
-                <Radio value={1}>正常</Radio>
-              </Radio.Group>
-       </FormItem>
+          <Radio.Group>
+            <Radio value={0}>不可以</Radio>
+            <Radio value={1}>可以</Radio>
+          </Radio.Group>
+        </FormItem>
         <FormItem
           name="deductionPerAmount"
           label="每一元需要抵扣的积分数量"
           rules={[{required: true, message: '请输入每一元需要抵扣的积分数量!'}]}
         >
-            <Input id="create-deductionPerAmount" placeholder={'请输入每一元需要抵扣的积分数量!'}/>
-         </FormItem>
-        <FormItem
-          name="id"
-          label=""
-          rules={[{required: true, message: '请输入!'}]}
-        >
-            <Input id="create-id" placeholder={'请输入!'}/>
-         </FormItem>
-        <FormItem
-          name="isDefault"
-          label="是否默认：0->否；1->是"
-          rules={[{required: true, message: '请输入是否默认：0->否；1->是!'}]}
-        >
-            <Input id="create-isDefault" placeholder={'请输入是否默认：0->否；1->是!'}/>
-         </FormItem>
+          <InputNumber id="create-deductionPerAmount" placeholder={'请输入每一元需要抵扣的积分数量!'}
+                       style={{width: 255}}/>
+        </FormItem>
+
         <FormItem
           name="maxPercentPerOrder"
           label="每笔订单最高抵用百分比"
           rules={[{required: true, message: '请输入每笔订单最高抵用百分比!'}]}
         >
-            <Input id="create-maxPercentPerOrder" placeholder={'请输入每笔订单最高抵用百分比!'}/>
-         </FormItem>
+          <InputNumber id="create-maxPercentPerOrder" placeholder={'请输入每笔订单最高抵用百分比!'}
+                       style={{width: 255}}/>
+        </FormItem>
         <FormItem
           name="useUnit"
           label="每次使用积分最小单位100"
           rules={[{required: true, message: '请输入每次使用积分最小单位100!'}]}
         >
-            <Input id="create-useUnit" placeholder={'请输入每次使用积分最小单位100!'}/>
-         </FormItem>
+          <InputNumber id="create-useUnit" placeholder={'请输入每次使用积分最小单位100!'} style={{width: 255}}/>
+        </FormItem>
       </>
     );
   };
@@ -122,6 +110,7 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
       title="编辑"
       open={updateModalVisible}
       {...modalFooter}
+      width={600}
     >
       <Form
         {...formLayout}

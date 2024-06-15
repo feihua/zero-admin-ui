@@ -1,6 +1,6 @@
 import React, {useEffect} from 'react';
 import {Form, Input, InputNumber, Modal, Radio} from 'antd';
-import type { MemberRuleSettingListItem} from '../data.d';
+import type {MemberRuleSettingListItem} from '../data.d';
 
 export interface UpdateFormProps {
   onCancel: () => void;
@@ -12,8 +12,8 @@ export interface UpdateFormProps {
 const FormItem = Form.Item;
 
 const formLayout = {
-  labelCol: {span: 7},
-  wrapperCol: {span: 13},
+  labelCol: {span: 9},
+  wrapperCol: {span: 11},
 };
 
 const UpdateForm: React.FC<UpdateFormProps> = (props) => {
@@ -45,7 +45,7 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
     form.submit();
   };
 
-  const handleFinish = (values: { [key: string]: any }) => {
+  const handleFinish = (values: Record<string, any>) => {
     if (onSubmit) {
       onSubmit(values as MemberRuleSettingListItem);
     }
@@ -62,97 +62,53 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
           <Input id="update-id"/>
         </FormItem>
 
-        
+
+        <FormItem
+          name="ruleType"
+          label="规则类型"
+          rules={[{required: true, message: '请输入类型!'}]}
+        >
+          <Radio.Group>
+            <Radio value={0}>积分规则</Radio>
+            <Radio value={1}>成长值规则</Radio>
+          </Radio.Group>
+        </FormItem>
         <FormItem
           name="consumePerPoint"
           label="每消费多少元获取1个点"
           rules={[{required: true, message: '请输入每消费多少元获取1个点!'}]}
         >
-            <Input id="create-consumePerPoint" placeholder={'请输入每消费多少元获取1个点!'}/>
-         </FormItem>
+          <InputNumber id="create-consumePerPoint" placeholder={'请输入每消费多少元获取1个点!'} style={{width: 255}}/>
+        </FormItem>
         <FormItem
           name="continueSignDay"
           label="连续签到天数"
           rules={[{required: true, message: '请输入连续签到天数!'}]}
         >
-            <Input id="create-continueSignDay" placeholder={'请输入连续签到天数!'}/>
-         </FormItem>
+          <InputNumber id="create-continueSignDay" placeholder={'请输入连续签到天数!'} style={{width: 255}}/>
+        </FormItem>
         <FormItem
           name="continueSignPoint"
           label="连续签到赠送数量"
           rules={[{required: true, message: '请输入连续签到赠送数量!'}]}
         >
-            <Input id="create-continueSignPoint" placeholder={'请输入连续签到赠送数量!'}/>
-         </FormItem>
-        <FormItem
-          name="createBy"
-          label="创建者"
-          rules={[{required: true, message: '请输入创建者!'}]}
-        >
-            <Input id="create-createBy" placeholder={'请输入创建者!'}/>
-         </FormItem>
-        <FormItem
-          name="createTime"
-          label="创建时间"
-          rules={[{required: true, message: '请输入创建时间!'}]}
-        >
-            <Input id="create-createTime" placeholder={'请输入创建时间!'}/>
-         </FormItem>
-        <FormItem
-          name="id"
-          label=""
-          rules={[{required: true, message: '请输入!'}]}
-        >
-            <Input id="create-id" placeholder={'请输入!'}/>
-         </FormItem>
+          <InputNumber id="create-continueSignPoint" placeholder={'请输入连续签到赠送数量!'} style={{width: 255}}/>
+        </FormItem>
+
         <FormItem
           name="lowOrderAmount"
           label="最低获取点数的订单金额"
           rules={[{required: true, message: '请输入最低获取点数的订单金额!'}]}
         >
-            <Input id="create-lowOrderAmount" placeholder={'请输入最低获取点数的订单金额!'}/>
-         </FormItem>
+          <InputNumber id="create-lowOrderAmount" placeholder={'请输入最低获取点数的订单金额!'} style={{width: 255}}/>
+        </FormItem>
         <FormItem
           name="maxPointPerOrder"
           label="每笔订单最高获取点数"
           rules={[{required: true, message: '请输入每笔订单最高获取点数!'}]}
         >
-            <Input id="create-maxPointPerOrder" placeholder={'请输入每笔订单最高获取点数!'}/>
-         </FormItem>
-        <FormItem
-          name="ruleType"
-          label="类型：0->积分规则；1->成长值规则"
-          rules={[{required: true, message: '请输入类型：0->积分规则；1->成长值规则!'}]}
-        >
-                <Radio.Group>
-                  <Radio value={0}>禁用</Radio>
-                  <Radio value={1}>正常</Radio>
-                </Radio.Group>
-         </FormItem>
-        <FormItem
-          name="status"
-          label="状态：0->禁用；1->启用"
-          rules={[{required: true, message: '请输入状态：0->禁用；1->启用!'}]}
-        >
-              <Radio.Group>
-                <Radio value={0}>禁用</Radio>
-                <Radio value={1}>正常</Radio>
-              </Radio.Group>
+          <InputNumber id="create-maxPointPerOrder" placeholder={'请输入每笔订单最高获取点数!'} style={{width: 255}}/>
         </FormItem>
-        <FormItem
-          name="updateBy"
-          label="更新者"
-          rules={[{required: true, message: '请输入更新者!'}]}
-        >
-            <Input id="create-updateBy" placeholder={'请输入更新者!'}/>
-         </FormItem>
-        <FormItem
-          name="updateTime"
-          label="更新时间"
-          rules={[{required: true, message: '请输入更新时间!'}]}
-        >
-            <Input id="create-updateTime" placeholder={'请输入更新时间!'}/>
-         </FormItem>
       </>
     );
   };
