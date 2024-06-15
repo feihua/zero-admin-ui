@@ -8,8 +8,14 @@ import type {ProDescriptionsItemProps} from '@ant-design/pro-descriptions';
 import ProDescriptions from '@ant-design/pro-descriptions';
 import CreateForm from './components/CreateForm';
 import UpdateForm from './components/UpdateForm';
-import type { MemberTaskListItem} from './data.d';
-import {addMemberTask, queryMemberTaskList, removeMemberTask, updateMemberTask, updateMemberTaskStatus} from './service';
+import type {MemberTaskListItem} from './data.d';
+import {
+  addMemberTask,
+  queryMemberTaskList,
+  removeMemberTask,
+  updateMemberTask,
+  updateMemberTaskStatus
+} from './service';
 
 const {confirm} = Modal;
 
@@ -78,7 +84,7 @@ const handleStatus = async (ids: number[], status: number) => {
     return true;
   }
   try {
-    await updateMemberTaskStatus({ memberTaskIds: ids, memberTaskStatus: status});
+    await updateMemberTaskStatus({memberTaskIds: ids, memberTaskStatus: status});
     hide();
     message.success('更新状态成功');
     return true;
@@ -110,12 +116,13 @@ const MemberTaskList: React.FC = () => {
     });
   };
 
-  const showStatusConfirm = (item: MemberTaskListItem[], status: number) => {
+  const showStatusConfirm = (ids: number[], status: number) => {
     confirm({
       title: `确定${status == 1 ? "启用" : "禁用"}吗？`,
       icon: <ExclamationCircleOutlined/>,
       async onOk() {
-        await handleStatus(item.map((x) => x.id), status)
+        await handleStatus(ids, status)
+        actionRef.current?.clearSelected?.();
         actionRef.current?.reload?.();
       },
       onCancel() {
@@ -142,27 +149,7 @@ const MemberTaskList: React.FC = () => {
         }}>{dom}</a>;
       },
     },
-    {
-      title: '状态',
-      dataIndex: 'status',
-      renderFormItem: (text, row, index) => {
-          return <Select
-            value={row.value}
-            options={ [
-              {value: '1', label: '启用'},
-              {value: '0', label: '禁用'},
-            ]}
-          />
 
-    },
-    render: (dom, entity) => {
-      return (
-        <Switch checked={entity.status == 1} onChange={(flag) => {
-          showStatusConfirm( [entity], flag ? 1 : 0)
-        }}/>
-      );
-    },
-    },
 
     {
       title: '赠送成长值',
@@ -180,16 +167,16 @@ const MemberTaskList: React.FC = () => {
       title: '任务类型',
       dataIndex: 'taskType',
       renderFormItem: (text, row, index) => {
-          return <Select
-            value={row.value}
-            options={ [
-              {value: '1', label: '日常任务'},
-              {value: '0', label: '新手任务'},
-            ]}
-          />
+        return <Select
+          value={row.value}
+          options={[
+            {value: '1', label: '日常任务'},
+            {value: '0', label: '新手任务'},
+          ]}
+        />
 
-    },
-    render: (dom, entity) => {
+      },
+      render: (dom, entity) => {
         switch (entity.taskType) {
           case 1:
             return <Tag color={'success'}>日常任务</Tag>;
@@ -197,6 +184,27 @@ const MemberTaskList: React.FC = () => {
             return <Tag>新手任务</Tag>;
         }
         return <>未知{entity.taskType}</>;
+      },
+    },
+    {
+      title: '状态',
+      dataIndex: 'status',
+      renderFormItem: (text, row, index) => {
+        return <Select
+          value={row.value}
+          options={[
+            {value: '1', label: '启用'},
+            {value: '0', label: '禁用'},
+          ]}
+        />
+
+      },
+      render: (dom, entity) => {
+        return (
+          <Switch checked={entity.status == 1} onChange={(flag) => {
+            showStatusConfirm([entity.id], flag ? 1 : 0)
+          }}/>
+        );
       },
     },
     {
@@ -232,7 +240,7 @@ const MemberTaskList: React.FC = () => {
             onClick={() => {
               handleUpdateModalVisible(true);
               setCurrentRow(record);
-              }
+            }
             }
           >
             <EditOutlined/> 编辑
@@ -240,9 +248,9 @@ const MemberTaskList: React.FC = () => {
           <Divider type="vertical"/>
           <a
             key="delete"
-            style={ {color: '#ff4d4f'} }
+            style={{color: '#ff4d4f'}}
             onClick={() => {
-              showDeleteConfirm( [record.id]);
+              showDeleteConfirm([record.id]);
             }}
           >
             <DeleteOutlined/> 删除
@@ -252,15 +260,15 @@ const MemberTaskList: React.FC = () => {
     },
   ];
 
-return (
+  return (
     <PageContainer>
       <ProTable<MemberTaskListItem>
         headerTitle="会员任务"
         actionRef={actionRef}
         rowKey="id"
-        search={ {
+        search={{
           labelWidth: 120,
-        } }
+        }}
         toolBarRender={() => [
           <Button type="primary" key="primary" onClick={() => handleModalVisible(true)}>
             <PlusOutlined/> 新增
@@ -268,12 +276,11 @@ return (
         ]}
         request={queryMemberTaskList}
         columns={columns}
-        rowSelection={ {} }
-        pagination={ {pageSize: 10}}
-        tableAlertRender={ ({
+        rowSelection={{}}
+        pagination={{pageSize: 10}}
+        tableAlertRender={({
                              selectedRowKeys,
                              selectedRows,
-                             onCleanSelected,
                            }) => {
           const ids = selectedRows.map((row) => row.id);
           return (
@@ -281,26 +288,22 @@ return (
               <span>已选 {selectedRowKeys.length} 项</span>
               <Button
                 icon={<EditOutlined/>}
-                style={ {borderRadius: '5px'}}
-                onClick={async () => {
-                  await handleStatus(ids, 1);
-                  onCleanSelected()
-                  actionRef.current?.reload?.();
+                style={{borderRadius: '5px'}}
+                onClick={() => {
+                  showStatusConfirm(ids, 1);
                 }}
               >批量启用</Button>
               <Button
                 icon={<EditOutlined/>}
-                style={ {borderRadius: '5px'} }
-                onClick={async () => {
-                  await handleStatus(ids, 0);
-                  onCleanSelected()
-                  actionRef.current?.reload?.();
+                style={{borderRadius: '5px'}}
+                onClick={() => {
+                  showStatusConfirm(ids, 0);
                 }}
               >批量禁用</Button>
               <Button
                 icon={<DeleteOutlined/>}
                 danger
-                style={ {borderRadius: '5px'} }
+                style={{borderRadius: '5px'}}
                 onClick={async () => {
                   showDeleteConfirm(ids);
                 }}
@@ -351,7 +354,7 @@ return (
           }
         }}
         updateModalVisible={updateModalVisible}
-        currentData={currentRow || {} }
+        currentData={currentRow || {}}
       />
 
       <Drawer
@@ -370,7 +373,7 @@ return (
             request={async () => ({
               data: currentRow || {},
             })}
-            params={ {
+            params={{
               id: currentRow?.id,
             }}
             columns={columns as ProDescriptionsItemProps<MemberTaskListItem>[]}

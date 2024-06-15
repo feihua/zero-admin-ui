@@ -67,7 +67,7 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
           label="标签名称"
           rules={[{required: true, message: '请输入标签名称!'}]}
         >
-          <Input id="create-tagName" placeholder={'请输入标签名称!'}/>
+          <Input id="create-tagName" placeholder={'请输入标签名称!'} style={{width:253}}/>
         </FormItem>
         <FormItem
           name="finishOrderAmount"
