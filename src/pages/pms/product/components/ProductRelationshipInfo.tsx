@@ -1,9 +1,9 @@
 import React, {useEffect, useState} from 'react';
 import {Card, Col, message, Row, Transfer} from 'antd';
 import type {PrefrenceAreaItem} from "@/pages/pms/product/data";
-import {querySubject} from "@/pages/sms/home_recommend_subject/service";
+import {querySubject} from "@/pages/sms/HomeRecommendSubject/service";
 import {queryPrefrenceArea} from "@/pages/pms/product/service";
-import type {SubjectListItem} from "@/pages/sms/home_recommend_subject/data";
+import type {SubjectListItem} from "@/pages/sms/HomeRecommendSubject/data";
 import type {ProductParams} from "@/pages/pms/product/data";
 
 export interface BaseInfoProps {
