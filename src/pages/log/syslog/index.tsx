@@ -1,5 +1,5 @@
 import {DeleteOutlined, EditOutlined, ExclamationCircleOutlined} from '@ant-design/icons';
-import {Divider, Drawer, message, Modal, Space, Typography} from 'antd';
+import {Divider, Drawer, message, Modal, Space, Tag, Typography} from 'antd';
 import React, {useRef, useState} from 'react';
 import {PageContainer} from '@ant-design/pro-layout';
 import type {ActionType, ProColumns} from '@ant-design/pro-table';
@@ -117,6 +117,15 @@ const SysLogList: React.FC = () => {
     {
       title: '操作状态',
       dataIndex: 'operationStatus',
+      render: (dom, entity) => {
+        switch (entity.operationStatus) {
+          case 1:
+            return <Tag color={'success'}>成功</Tag>;
+          case 0:
+            return <Tag  color={'error'}>失败</Tag>;
+        }
+        return <>未知{entity.operationStatus }</>;
+      },
     },
     {
       title: '执行时间(毫秒)',
