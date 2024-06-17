@@ -65,13 +65,14 @@ const SysLogList: React.FC = () => {
           setShowDetail(true);
         }}>{dom}</a>;
       },
-      hideInTable: true,
+
       hideInSearch: true
     },
 
     {
       title: '操作类型',
       dataIndex: 'operationType',
+      hideInTable: true,
     },
     {
       title: '浏览器',
