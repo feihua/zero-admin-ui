@@ -211,6 +211,7 @@ const addToken: RequestInterceptor = (url: string, options: RequestOptionsInit) 
 const res: ResponseInterceptor = async (response: Response) => {
   if (response.status === 401) {
     history.push(loginPath);
+    localStorage.removeItem("token")
     return response;
   }
   const resp = await response.clone().json();
