@@ -1,6 +1,7 @@
 export interface LevelListItem {
   id: number;
   name: string;
+  levelName: string;
 
 }
 
