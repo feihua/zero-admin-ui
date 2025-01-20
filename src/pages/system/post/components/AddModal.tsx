@@ -2,10 +2,10 @@ import React, {useEffect} from 'react';
 import {Form, Input, InputNumber, Modal, Radio} from 'antd';
 import type {PostListItem} from '../data.d';
 
-export interface CreateFormProps {
+export interface AddModalProps {
   onCancel: () => void;
   onSubmit: (values: PostListItem) => void;
-  createModalVisible: boolean;
+  open: boolean;
 }
 
 const FormItem = Form.Item;
@@ -15,20 +15,14 @@ const formLayout = {
   wrapperCol: {span: 13},
 };
 
-const CreatePostForm: React.FC<CreateFormProps> = (props) => {
+const AddModal: React.FC<AddModalProps> = ({onCancel, onSubmit, open}) => {
   const [form] = Form.useForm();
 
-  const {
-    onSubmit,
-    onCancel,
-    createModalVisible,
-  } = props;
-
   useEffect(() => {
-    if (form && !createModalVisible) {
+    if (open) {
       form.resetFields();
     }
-  }, [props.createModalVisible]);
+  }, [open]);
 
 
   const handleSubmit = () => {
@@ -50,14 +44,14 @@ const CreatePostForm: React.FC<CreateFormProps> = (props) => {
           label="岗位编码"
           rules={[{required: true, message: '请输入岗位编码!'}]}
         >
-          <Input id="update-jobName" placeholder={'请输入岗位编码'}/>
+          <Input id="add-jobCode" placeholder={'请输入岗位编码'}/>
         </FormItem>
         <FormItem
           name="postName"
           label="岗位名称"
           rules={[{required: true, message: '请输入岗位名称!'}]}
         >
-          <Input id="update-jobName" placeholder={'请输入岗位名称'}/>
+          <Input id="add-jobName" placeholder={'请输入岗位名称'}/>
         </FormItem>
         <FormItem
           name="postStatus"
@@ -66,15 +60,15 @@ const CreatePostForm: React.FC<CreateFormProps> = (props) => {
           rules={[{required: true, message: '请选择状态!'}]}
         >
           <Radio.Group>
-            <Radio value={0}>禁用</Radio>
             <Radio value={1}>正常</Radio>
+            <Radio value={0}>禁用</Radio>
           </Radio.Group>
         </FormItem>
         <FormItem
           name="postSort"
           label="岗位排序"
           rules={[{required: true, message: '请输入排序!'}]}
-          initialValue={0}
+          initialValue={1}
         >
           <InputNumber style={{width: 255}}/>
         </FormItem>
@@ -90,25 +84,13 @@ const CreatePostForm: React.FC<CreateFormProps> = (props) => {
   };
 
 
-  const modalFooter = {okText: '保存', onOk: handleSubmit, onCancel};
-
   return (
-    <Modal
-      forceRender
-      destroyOnClose
-      title="新增"
-      open={createModalVisible}
-      {...modalFooter}
-    >
-      <Form
-        {...formLayout}
-        form={form}
-        onFinish={handleFinish}
-      >
+    <Modal forceRender destroyOnClose title="新增" open={open} okText={'保存'} onOk={handleSubmit} onCancel={onCancel}>
+      <Form{...formLayout} form={form} onFinish={handleFinish}>
         {renderContent()}
       </Form>
     </Modal>
   );
 };
 
-export default CreatePostForm;
+export default AddModal;

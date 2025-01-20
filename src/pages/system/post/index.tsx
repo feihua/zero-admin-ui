@@ -6,8 +6,8 @@ import type {ActionType, ProColumns} from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
 import type {ProDescriptionsItemProps} from '@ant-design/pro-descriptions';
 import ProDescriptions from '@ant-design/pro-descriptions';
-import CreatePostForm from './components/CreatePostForm';
-import UpdatePostForm from './components/UpdatePostForm';
+import AddModal from './components/AddModal';
+import UpdateModal from './components/UpdateModal';
 import type {PostListItem} from './data.d';
 import {addPost, queryPostList, removePost, updatePost, updatePostStatus} from './service';
 
@@ -78,7 +78,7 @@ const handleStatus = async (ids: number[], status: number) => {
     return true;
   }
   try {
-    await updatePostStatus({postIds: ids, postStatus: status});
+    await updatePostStatus({ids, status});
     hide();
     message.success('更新状态成功');
     return true;
@@ -268,7 +268,7 @@ const PostList: React.FC = () => {
                 icon={<EditOutlined/>}
                 style={{borderRadius: '5px'}}
                 onClick={async () => {
-                  await handleStatus(ids, 1);
+                  await handleStatus(ids, 0);
                   onCleanSelected()
                   actionRef.current?.reload?.();
                 }}
@@ -287,7 +287,7 @@ const PostList: React.FC = () => {
       />
 
 
-      <CreatePostForm
+      <AddModal
         key={'CreatePostForm'}
         onSubmit={async (value) => {
           const success = await handleAdd(value);
@@ -305,10 +305,10 @@ const PostList: React.FC = () => {
             setCurrentRow(undefined);
           }
         }}
-        createModalVisible={createModalVisible}
+        open={createModalVisible}
       />
 
-      <UpdatePostForm
+      <UpdateModal
         key={'UpdatePostForm'}
         onSubmit={async (value) => {
           const success = await handleUpdate(value);
@@ -326,7 +326,7 @@ const PostList: React.FC = () => {
             setCurrentRow(undefined);
           }
         }}
-        updateModalVisible={updateModalVisible}
+        open={updateModalVisible}
         currentData={currentRow || {}}
       />
 

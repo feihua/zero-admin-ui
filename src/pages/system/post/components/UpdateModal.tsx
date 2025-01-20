@@ -2,10 +2,10 @@ import React, {useEffect} from 'react';
 import {Form, Input, InputNumber, Modal, Radio} from 'antd';
 import type {PostListItem} from '../data.d';
 
-export interface UpdateFormProps {
+export interface UpdateModalProps {
   onCancel: () => void;
   onSubmit: (values: PostListItem) => void;
-  updateModalVisible: boolean;
+  open: boolean;
   currentData: Partial<PostListItem>;
 }
 
@@ -16,21 +16,14 @@ const formLayout = {
   wrapperCol: {span: 13},
 };
 
-const UpdatePostForm: React.FC<UpdateFormProps> = (props) => {
+const UpdateModal: React.FC<UpdateModalProps> = ({onCancel, onSubmit, open, currentData}) => {
   const [form] = Form.useForm();
 
-  const {
-    onSubmit,
-    onCancel,
-    updateModalVisible,
-    currentData,
-  } = props;
-
   useEffect(() => {
-    if (form && !updateModalVisible) {
+    if (form && !open) {
       form.resetFields();
     }
-  }, [props.updateModalVisible]);
+  }, [open]);
 
   useEffect(() => {
     if (currentData) {
@@ -38,7 +31,7 @@ const UpdatePostForm: React.FC<UpdateFormProps> = (props) => {
         ...currentData,
       });
     }
-  }, [props.currentData]);
+  }, [currentData]);
 
   const handleSubmit = () => {
     if (!form) return;
@@ -82,8 +75,8 @@ const UpdatePostForm: React.FC<UpdateFormProps> = (props) => {
           rules={[{required: true, message: '请选择状态!'}]}
         >
           <Radio.Group>
-            <Radio value={0}>禁用</Radio>
             <Radio value={1}>正常</Radio>
+            <Radio value={0}>禁用</Radio>
           </Radio.Group>
         </FormItem>
         <FormItem
@@ -105,25 +98,13 @@ const UpdatePostForm: React.FC<UpdateFormProps> = (props) => {
   };
 
 
-  const modalFooter = {okText: '保存', onOk: handleSubmit, onCancel};
-
   return (
-    <Modal
-      forceRender
-      destroyOnClose
-      title="编辑"
-      open={updateModalVisible}
-      {...modalFooter}
-    >
-      <Form
-        {...formLayout}
-        form={form}
-        onFinish={handleFinish}
-      >
+    <Modal forceRender destroyOnClose title="编辑" open={open} okText={'保存'} onOk={handleSubmit} onCancel={onCancel}>
+      <Form{...formLayout} form={form} onFinish={handleFinish}>
         {renderContent()}
       </Form>
     </Modal>
   );
 };
 
-export default UpdatePostForm;
+export default UpdateModal;

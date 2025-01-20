@@ -30,7 +30,7 @@ export async function updatePost(params: PostListItem) {
 }
 
 // 批量更新岗位信息状态
-export async function updatePostStatus(params: { postIds: number[], postStatus: number }) {
+export async function updatePostStatus(params: { ids: number[], status: number }) {
   return request('/api/sys/post/updatePostStatus', {
     method: 'POST',
     data: {
