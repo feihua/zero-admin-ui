@@ -13,7 +13,7 @@ export async function addMemberTag(params: MemberTagListItem) {
 
 // 删除用户标签表
 export async function removeMemberTag(ids: number[]) {
-  return request('/api/member/tag/deleteMemberTag?ids=[' + ids + "]", {
+  return request('/api/member/tag/deleteMemberTag?ids=' + ids.join(','), {
     method: 'GET',
   });
 }

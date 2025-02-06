@@ -18,7 +18,7 @@ export async function addDept(params: DeptListItem) {
 
 // 删除部门信息
 export async function removeDept(ids: number[]) {
-  return request('/api/sys/dept/deleteDept?ids=[' + ids + "]", {
+  return request('/api/sys/dept/deleteDept?ids=' + ids.join(','), {
     method: 'GET',
   });
 }

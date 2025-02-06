@@ -14,7 +14,7 @@ export async function addOrderSetting(params: SettingListItem) {
 
 // 删除订单设置
 export async function removeOrderSetting(ids: number[]) {
-  return request('/api/order/setting/deleteOrderSetting?ids=[' + ids + "]", {
+  return request('/api/order/setting/deleteOrderSetting?ids=' + ids.join(','), {
     method: 'GET',
   });
 }

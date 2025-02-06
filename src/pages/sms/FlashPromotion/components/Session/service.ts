@@ -18,7 +18,7 @@ export async function addSession(params: SessionListItem) {
 
 // 删除限时购场次
 export async function removeSession(ids: number[]) {
-  return request('/api/sms/flashPromotionSession/deleteFlashPromotionSession?ids=[' + ids + "]", {
+  return request('/api/sms/flashPromotionSession/deleteFlashPromotionSession?ids=' + ids.join(','), {
     method: 'GET',
   });
 }

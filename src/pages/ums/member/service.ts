@@ -3,7 +3,7 @@ import type {MemberListParams, MemberListItem, AddressListParams, LoginLogListPa
 
 // 删除会员信息
 export async function removeMember(ids: number[]) {
-  return request('/api/member/deleteMember?ids=[' + ids + "]", {
+  return request('/api/member/deleteMember?ids=' + ids.join(','), {
     method: 'GET',
   });
 }

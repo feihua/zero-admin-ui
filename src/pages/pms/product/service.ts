@@ -15,7 +15,7 @@ export async function addProduct(params: ProductParams) {
 
 // 删除商品信息
 export async function removeProduct(ids: number[]) {
-  return request('/api/product/deleteProduct?ids=[' + ids + "]", {
+  return request('/api/product/deleteProduct?ids=' + ids.join(','), {
     method: 'GET',
   });
 }

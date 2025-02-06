@@ -15,7 +15,7 @@ export async function addUser(params: UserListItem) {
 
 // 删除用户信息
 export async function removeUser(ids: number[]) {
-  return request('/api/sys/user/deleteUser?ids=[' + ids + "]", {
+  return request('/api/sys/user/deleteUser?ids=' + ids.join(','), {
     method: 'GET',
   });
 }

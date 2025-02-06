@@ -15,7 +15,7 @@ export async function addFlashPromotion(params: FlashPromotionListItem) {
 
 // 删除秒杀活动
 export async function removeFlashPromotion(ids: number[]) {
-  return request('/api/sms/flashPromotion/deleteFlashPromotion?ids=[' + ids + "]", {
+  return request('/api/sms/flashPromotion/deleteFlashPromotion?ids=' + ids.join(','), {
     method: 'GET',
   });
 }

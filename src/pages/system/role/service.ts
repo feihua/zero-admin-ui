@@ -14,7 +14,7 @@ export async function addRole(params: RoleListItem) {
 
 // 删除角色信息
 export async function removeRole(ids: number[]) {
-  return request('/api/sys/role/deleteRole?ids=[' + ids + "]", {
+  return request('/api/sys/role/deleteRole?ids=' + ids.join(','), {
     method: 'GET',
   });
 }

@@ -14,7 +14,7 @@ export async function addLevel(params: LevelListItem) {
 
 // 删除会员等级
 export async function removeLevel(ids: number[]) {
-  return request('/api/member/level/deleteMemberLevel?ids=[' + ids + "]", {
+  return request('/api/member/level/deleteMemberLevel?ids=' + ids.join(','), {
     method: 'GET',
   });
 }

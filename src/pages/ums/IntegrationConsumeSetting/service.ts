@@ -13,7 +13,7 @@ export async function addIntegrationConsumeSetting(params: IntegrationConsumeSet
 
 // 删除积分消费设置
 export async function removeIntegrationConsumeSetting(ids: number[]) {
-  return request('/api/member/integrationConsumeSetting/deleteIntegrationConsumeSetting?ids=[' + ids + "]", {
+  return request('/api/member/integrationConsumeSetting/deleteIntegrationConsumeSetting?ids=' + ids.join(','), {
     method: 'GET',
   });
 }

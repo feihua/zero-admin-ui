@@ -19,7 +19,7 @@ export async function addHomeAdvertise(params: HomeAdvertiseListItem) {
 
 // 删除首页轮播广告
 export async function removeHomeAdvertise(ids: number[]) {
-  return request('/api/sms/homeAdvertise/deleteHomeAdvertise?ids=[' + ids + "]", {
+  return request('/api/sms/homeAdvertise/deleteHomeAdvertise?ids=' + ids.join(','), {
     method: 'GET',
   });
 }

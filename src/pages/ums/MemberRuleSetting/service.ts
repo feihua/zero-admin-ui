@@ -13,7 +13,7 @@ export async function addMemberRuleSetting(params: MemberRuleSettingListItem) {
 
 // 删除会员积分成长规则表
 export async function removeMemberRuleSetting(ids: number[]) {
-  return request('/api/member/ruleSetting/deleteMemberRuleSetting?ids=[' + ids + "]", {
+  return request('/api/member/ruleSetting/deleteMemberRuleSetting?ids=' + ids.join(','), {
     method: 'GET',
   });
 }

@@ -14,7 +14,7 @@ export async function addAttributeCategory(params: AttributeCategoryListItem) {
 
 // 删除商品属性分类
 export async function removeAttributeCategory(ids: number[]) {
-  return request('/api/product/attributeCategory/deleteAttributeCategory?ids=[' + ids + "]", {
+  return request('/api/product/attributeCategory/deleteAttributeCategory?ids=' + ids.join(','), {
     method: 'GET',
   });
 }

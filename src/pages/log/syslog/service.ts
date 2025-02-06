@@ -4,7 +4,7 @@ import type {SysLogListParams} from './data.d';
 
 // 删除操作日志
 export async function removeOperateLog(ids: number[]) {
-  return request('/api/sys/log/deleteOperateLog?ids=[' + ids + "]", {
+  return request('/api/sys/log/deleteOperateLog?ids=' + ids.join(','), {
     method: 'GET',
   });
 }

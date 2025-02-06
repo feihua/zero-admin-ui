@@ -14,7 +14,7 @@ export async function addBrand(params: BrandListItem) {
 
 // 删除商品品牌
 export async function removeBrand(ids: number[]) {
-  return request('/api/product/brand/deleteProductBrand?ids=[' + ids + "]", {
+  return request('/api/product/brand/deleteProductBrand?ids=' + ids.join(','), {
     method: 'GET',
   });
 }

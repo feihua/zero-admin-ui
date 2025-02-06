@@ -15,7 +15,7 @@ export async function addDictType(params: DictTypeListItem) {
 
 // 删除字典类型
 export async function removeDictType(ids: number[]) {
-  return request('/api/sys/dictType/deleteDictType?ids=[' + ids + "]", {
+  return request('/api/sys/dictType/deleteDictType?ids=' + ids.join(','), {
     method: 'GET',
   });
 }

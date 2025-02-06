@@ -13,7 +13,7 @@ export async function addOrderReturnReason(params: OrderReturnReasonListItem) {
 
 // 删除退货原因表
 export async function removeOrderReturnReason(ids: number[]) {
-  return request('/api/order/returnReason/deleteOrderReturnReason?ids=[' + ids + "]", {
+  return request('/api/order/returnReason/deleteOrderReturnReason?ids=' + ids.join(','), {
     method: 'GET',
   });
 }

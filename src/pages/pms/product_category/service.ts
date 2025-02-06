@@ -14,7 +14,7 @@ export async function addProductCategory(params: CategoryListItem) {
 
 // 删除商品分类
 export async function removeProductCategory(ids: number[]) {
-  return request('/api/product/category/deleteProductCategory?ids=[' + ids + "]", {
+  return request('/api/product/category/deleteProductCategory?ids=' + ids.join(','), {
     method: 'GET',
   });
 }

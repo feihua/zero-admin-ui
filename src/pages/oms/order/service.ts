@@ -66,7 +66,7 @@ export async function updateNote(params: OrderListItem) {
 }
 // 删除订单信息
 export async function removeOrder(ids: number[]) {
-  return request('/api/order/deleteOrder?ids=[' + ids + "]", {
+  return request('/api/order/deleteOrder?ids=' + ids.join(','), {
     method: 'GET',
   });
 }

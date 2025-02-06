@@ -13,7 +13,7 @@ export async function addMemberTask(params: MemberTaskListItem) {
 
 // 删除会员任务表
 export async function removeMemberTask(ids: number[]) {
-  return request('/api/member/task/deleteMemberTask?ids=[' + ids + "]", {
+  return request('/api/member/task/deleteMemberTask?ids=' + ids.join(','), {
     method: 'GET',
   });
 }

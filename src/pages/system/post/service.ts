@@ -13,7 +13,7 @@ export async function addPost(params: PostListItem) {
 
 // 删除岗位信息
 export async function removePost(ids: number[]) {
-  return request('/api/sys/post/deletePost?ids=[' + ids + "]", {
+  return request('/api/sys/post/deletePost?ids=' + ids.join(','), {
     method: 'GET',
   });
 }
