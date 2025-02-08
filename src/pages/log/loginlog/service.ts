@@ -11,7 +11,6 @@ export async function queryLoginLogList(params: LoginLogListParams) {
   });
 }
 
-
 // 删除登录日志
 export async function removeLoginLog(ids: number[]) {
   return request('/api/sys/log/deleteLoginLog?ids=' + ids.join(','), {
