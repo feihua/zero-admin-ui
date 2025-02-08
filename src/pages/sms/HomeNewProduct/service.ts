@@ -16,7 +16,7 @@ export async function addHomeNewProduct(params: number[]) {
 
 // 删除新品推荐
 export async function removeHomeNewProduct(ids: number[], productIds: number[]) {
-  return request('/api/sms/homeNewProduct/deleteHomeNewProduct?ids=[' + ids + "]&productIds=[" + productIds + ']', {
+  return request('/api/sms/homeNewProduct/deleteHomeNewProduct?ids=' + ids.join(",") + '&productIds=' + productIds.join(","), {
     method: 'GET',
   });
 }

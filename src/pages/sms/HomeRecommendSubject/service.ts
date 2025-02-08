@@ -14,7 +14,7 @@ export async function addRecommendSubject(params: number[]) {
 
 // 删除推荐专题
 export async function removeRecommendSubject(ids: number[], subjectIds: number[]) {
-  return request('/api/sms/homeRecommendSubject/deleteHomeRecommendSubject?ids=[' + ids + "]&subjectIds=[" + subjectIds + ']', {
+  return request('/api/sms/homeRecommendSubject/deleteHomeRecommendSubject?ids=' + ids.join(",") + '&subjectIds=' + subjectIds.join(","), {
     method: 'GET',
   });
 }
