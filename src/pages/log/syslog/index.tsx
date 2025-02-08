@@ -1,5 +1,5 @@
 import {DeleteOutlined, EditOutlined, ExclamationCircleOutlined} from '@ant-design/icons';
-import {Divider, Drawer, message, Modal, Space, Tag, Typography} from 'antd';
+import {Divider, Drawer, message, Modal, Select, Space, Tag, Typography} from 'antd';
 import React, {useRef, useState} from 'react';
 import {PageContainer} from '@ant-design/pro-layout';
 import type {ActionType, ProColumns} from '@ant-design/pro-table';
@@ -52,7 +52,7 @@ const SysLogList: React.FC = () => {
 
   const columns: ProColumns<SysLogListItem>[] = [
     {
-      title: '日志编号',
+      title: '编号',
       dataIndex: 'id',
       hideInSearch: true
     },
@@ -73,18 +73,57 @@ const SysLogList: React.FC = () => {
       title: '操作类型',
       dataIndex: 'operationType',
       hideInTable: true,
+      hideInSearch: true
     },
     {
       title: '浏览器',
       dataIndex: 'browser',
+      renderFormItem: (text, row, index) => {
+        return <Select
+          value={row.value}
+          placeholder={'请选择浏览器'}
+          options={[
+            {value: 'Chrome', label: 'Chrome'},
+            {value: 'Firefox', label: 'Firefox'},
+            {value: 'Edge', label: 'Edge'},
+          ]}
+        />
+
+      },
     },
     {
       title: '操作系统',
       dataIndex: 'os',
+      renderFormItem: (text, row, index) => {
+        return <Select
+          value={row.value}
+          placeholder={'请选择操作系统'}
+          options={[
+            {value: 'Windows', label: 'Windows'},
+            {value: 'macos', label: 'macos'},
+            {value: 'iphone', label: 'iphone'},
+            {value: 'android', label: 'android'},
+          ]}
+        />
+
+      },
     },
     {
       title: '请求方式',
       dataIndex: 'requestMethod',
+      renderFormItem: (text, row, index) => {
+        return <Select
+          placeholder={'请选择请求方式'}
+          value={row.value}
+          options={[
+            {value: 'POST', label: 'POST'},
+            {value: 'GET', label: 'GET'},
+            {value: 'DELETE', label: 'DELETE'},
+            {value: 'PUT', label: 'PUT'},
+          ]}
+        />
+
+      },
     },
     {
       title: '操作方法',
@@ -118,6 +157,17 @@ const SysLogList: React.FC = () => {
     {
       title: '操作状态',
       dataIndex: 'operationStatus',
+      renderFormItem: (text, row, index) => {
+        return <Select
+          placeholder={'请选择登录状态'}
+          value={row.value}
+          options={[
+            {value: 1, label: '成功'},
+            {value: 0, label: '失败'},
+          ]}
+        />
+
+      },
       render: (dom, entity) => {
         switch (entity.operationStatus) {
           case 1:
