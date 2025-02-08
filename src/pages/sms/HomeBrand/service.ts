@@ -16,7 +16,7 @@ export async function addHomeBrand(params: number[]) {
 
 // 删除品牌推荐
 export async function removeHomeBrand(ids: number[], brandIds: number[]) {
-  return request('/api/sms/homeBrand/deleteHomeBrand?ids=[' + ids + "]&brandIds=[" + brandIds + ']', {
+  return request('/api/sms/homeBrand/deleteHomeBrand?ids=' + ids.join(",") + '&brandIds=' + brandIds.join(","), {
     method: 'GET',
   });
 }
