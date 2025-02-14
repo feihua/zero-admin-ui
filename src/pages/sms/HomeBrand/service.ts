@@ -1,6 +1,6 @@
 import {request} from 'umi';
 import type {HomeBrandListParams, HomeBrandListItem} from './data.d';
-import {BrandListParams} from '@/pages/pms/product_brand/data';
+import {BrandListParams} from '@/pages/pms/Brand/data';
 
 // 添加品牌推荐
 export async function addHomeBrand(params: number[]) {

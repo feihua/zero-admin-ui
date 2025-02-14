@@ -208,7 +208,7 @@
         name: '品牌管理',
         icon: 'table',
         path: '/pms/productBrand/list',
-        component: './pms/product_brand',
+        component: './pms/Brand',
       },
       {
         name: '商品属性',

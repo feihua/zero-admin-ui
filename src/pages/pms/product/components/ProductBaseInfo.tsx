@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import {Cascader, Form, Input, InputNumber, message, Select} from 'antd';
 import type {CategoryListItem} from "@/pages/pms/product_category/data";
-import type {BrandListItem} from "@/pages/pms/product_brand/data";
-import {queryBrandList} from "@/pages/pms/product_brand/service";
+import type {BrandListItem} from "@/pages/pms/Brand/data";
+import {queryBrandList} from "@/pages/pms/Brand/service";
 import {queryProductCategoryList} from "@/pages/pms/product_category/service";
 import {tree} from "@/utils/utils";
 
@@ -64,7 +64,7 @@ const ProductBaseInfo: React.FC<BaseInfoProps> = (props) => {
       </FormItem>
       <FormItem name="brandId" label="商品品牌" rules={[{required: true, message: '请选择商品分类!'}]}>
         <Select id="brandId" placeholder={'请选择商品品牌'}>
-          {brandListItem.map(r => <Select.Option key={r.id} value={r.id}>{r.name}</Select.Option>)}
+          {brandListItem.map(r => <Select.Option key={r.id} value={r.id}>{r.brandName}</Select.Option>)}
         </Select>
       </FormItem>
       <FormItem name="description" label="商品介绍" rules={[{required: true, message: '请输入商品介绍!'}]}>

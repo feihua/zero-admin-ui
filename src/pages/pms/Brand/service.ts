@@ -1,5 +1,6 @@
-import { request } from 'umi';
-import { BrandListParams, BrandListItem } from './data.d';
+import {request} from 'umi';
+import type {BrandListItem, BrandListParams} from './data.d';
+
 // 添加商品品牌
 export async function addBrand(params: BrandListItem) {
   return request('/api/product/brand/addProductBrand', {
@@ -43,7 +44,7 @@ export async function updateBrandStatus(params: { dictTypeIds: number[], postSta
 
 
 // 查询商品品牌详情
-export async function queryBrandDetail(id: number ) {
+export async function queryBrandDetail(id: number) {
   return request('/api/product/brand/queryProductBrandDetail', {
     method: 'GET',
   });

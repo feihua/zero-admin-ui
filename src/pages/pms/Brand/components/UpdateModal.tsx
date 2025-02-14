@@ -2,44 +2,35 @@ import React, {useEffect} from 'react';
 import {Form, Input, InputNumber, Modal, Select} from 'antd';
 import type {BrandListItem} from '../data.d';
 
-export interface UpdateFormProps {
+export interface UpdateProps {
   onCancel: () => void;
   onSubmit: (values: BrandListItem) => void;
-  updateModalVisible: boolean;
-  values: Partial<BrandListItem>;
+  updateVisible: boolean;
+  values?: BrandListItem;
 }
+
 const FormItem = Form.Item;
 
 const formLayout = {
-  labelCol: { span: 7 },
-  wrapperCol: { span: 13 },
+  labelCol: {span: 7},
+  wrapperCol: {span: 13},
 };
 
-const UpdateBrandForm: React.FC<UpdateFormProps> = (props) => {
+const UpdateModal: React.FC<UpdateProps> = ({onSubmit, onCancel, updateVisible, values}) => {
   const [form] = Form.useForm();
 
-  const {onSubmit, onCancel, updateModalVisible, values} = props;
-
   useEffect(() => {
-    if (form && !updateModalVisible) {
-      form.resetFields();
+    if (values && updateVisible) {
+      form.setFieldsValue(values);
     }
-  }, [props.updateModalVisible]);
-
-  useEffect(() => {
-    if (values) {
-      form.setFieldsValue({
-        ...values,
-      });
-    }
-  }, [props.values]);
+  }, [form, updateVisible, values]);
 
   const handleSubmit = () => {
     if (!form) return;
     form.submit();
   };
 
-  const handleFinish = (item: { [key: string]: any }) => {
+  const handleFinish = (item: Record<string, any>) => {
     if (onSubmit) {
       onSubmit(item as BrandListItem);
     }
@@ -66,8 +57,8 @@ const UpdateBrandForm: React.FC<UpdateFormProps> = (props) => {
           rules={[{required: true, message: '请输入品牌制造商!'}]}
         >
           <Select id="factoryStatus">
-            <Select.Option value={0}>不是</Select.Option>
             <Select.Option value={1}>是</Select.Option>
+            <Select.Option value={0}>不是</Select.Option>
           </Select>
         </FormItem>
         <FormItem
@@ -80,11 +71,15 @@ const UpdateBrandForm: React.FC<UpdateFormProps> = (props) => {
             <Select.Option value={1}>是</Select.Option>
           </Select>
         </FormItem>
-        <FormItem name="productCount" label="产品数量" rules={[{required: true, message: '请输入产品数量!'}]}>
-          <InputNumber/>
-        </FormItem>
-        <FormItem name="productCommentCount" label="产品评论数量" rules={[{required: true, message: '请输入产品评论数量!'}]}>
-          <InputNumber/>
+        <FormItem
+          name="recommendStatus"
+          label="是否推荐"
+          rules={[{required: true, message: '请选择是否推荐!'}]}
+        >
+          <Select id="factoryStatus">
+            <Select.Option value={1}>推荐</Select.Option>
+            <Select.Option value={0}>不推荐</Select.Option>
+          </Select>
         </FormItem>
         <FormItem name="logo" label="品牌logo" rules={[{required: true, message: '请输入品牌logo!'}]}>
           <Input id="update-logo" placeholder={'请输入品牌logo'}/>
@@ -99,16 +94,10 @@ const UpdateBrandForm: React.FC<UpdateFormProps> = (props) => {
     );
   };
 
-  const modalFooter = { okText: '保存', onOk: handleSubmit, onCancel };
+  const modalFooter = {okText: '保存', onOk: handleSubmit, onCancel};
 
   return (
-    <Modal
-      forceRender
-      destroyOnClose
-      title="修改品牌"
-      open={updateModalVisible}
-      {...modalFooter}
-    >
+    <Modal forceRender destroyOnClose title="修改品牌" open={updateVisible}{...modalFooter}>
       <Form {...formLayout} form={form} onFinish={handleFinish}>
         {renderContent()}
       </Form>
@@ -116,4 +105,4 @@ const UpdateBrandForm: React.FC<UpdateFormProps> = (props) => {
   );
 };
 
-export default UpdateBrandForm;
+export default UpdateModal;

@@ -1,15 +1,15 @@
-import {PlusOutlined, ExclamationCircleOutlined, EditOutlined, DeleteOutlined} from '@ant-design/icons';
-import {Button, Divider, message, Drawer, Modal} from 'antd';
-import React, {useState, useRef} from 'react';
-import {PageContainer, FooterToolbar} from '@ant-design/pro-layout';
+import {DeleteOutlined, EditOutlined, ExclamationCircleOutlined, PlusOutlined} from '@ant-design/icons';
+import {Button, Divider, Drawer, message, Modal} from 'antd';
+import React, {useRef, useState} from 'react';
+import {FooterToolbar, PageContainer} from '@ant-design/pro-layout';
+import type {ActionType, ProColumns} from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
-import type {ProColumns, ActionType} from '@ant-design/pro-table';
-import ProDescriptions, {ProDescriptionsItemProps} from '@ant-design/pro-descriptions';
-import CreateBrandForm from './components/CreateBrandForm';
-import UpdateBrandForm from './components/UpdateBrandForm';
+import type {ProDescriptionsItemProps} from '@ant-design/pro-descriptions';
+import ProDescriptions from '@ant-design/pro-descriptions';
+import AddModal from './components/AddModal';
+import UpdateModal from './components/UpdateModal';
 import type {BrandListItem} from './data.d';
-import {queryBrandList, updateBrand, addBrand, removeBrand} from './service';
-
+import {addBrand, queryBrandList, removeBrand, updateBrand} from './service';
 
 const {confirm} = Modal;
 
@@ -20,13 +20,12 @@ const {confirm} = Modal;
 const handleAdd = async (fields: BrandListItem) => {
   const hide = message.loading('正在添加');
   try {
-    await addBrand({ ...fields });
+    await addBrand({...fields});
     hide();
     message.success('添加成功');
     return true;
   } catch (error) {
     hide();
-    message.error('添加失败请重试！');
     return false;
   }
 };
@@ -45,7 +44,6 @@ const handleUpdate = async (fields: BrandListItem) => {
     return true;
   } catch (error) {
     hide();
-    message.error('更新失败请重试！');
     return false;
   }
 };
@@ -215,13 +213,13 @@ const ProductBrandList: React.FC = () => {
         rowSelection={{
           onChange: (_, selectedRows) => setSelectedRows(selectedRows),
         }}
-        pagination={{pageSize:10}}
+        pagination={{pageSize: 10}}
       />
       {selectedRowsState?.length > 0 && (
         <FooterToolbar
           extra={
             <div>
-              已选择 <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a> 项&nbsp;&nbsp;
+              已选择 <a style={{fontWeight: 600}}>{selectedRowsState.length}</a> 项&nbsp;&nbsp;
             </div>
           }
         >
@@ -238,7 +236,7 @@ const ProductBrandList: React.FC = () => {
       )}
 
 
-      <CreateBrandForm
+      <AddModal
         key={'CreateBrandForm'}
         onSubmit={async (value) => {
           const success = await handleAdd(value);
@@ -256,10 +254,10 @@ const ProductBrandList: React.FC = () => {
             setCurrentRow(undefined);
           }
         }}
-        createModalVisible={createModalVisible}
+        addVisible={createModalVisible}
       />
 
-      <UpdateBrandForm
+      <UpdateModal
         key={'UpdateBrandForm'}
         onSubmit={async (value) => {
           const success = await handleUpdate(value);
@@ -277,12 +275,12 @@ const ProductBrandList: React.FC = () => {
             setCurrentRow(undefined);
           }
         }}
-        updateModalVisible={updateModalVisible}
-        values={currentRow || {}}
+        updateVisible={updateModalVisible}
+        values={currentRow}
       />
       <Drawer
         width={600}
-        visible={showDetail}
+        open={showDetail}
         onClose={() => {
           setCurrentRow(undefined);
           setShowDetail(false)
