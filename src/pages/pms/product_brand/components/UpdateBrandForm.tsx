@@ -51,7 +51,7 @@ const UpdateBrandForm: React.FC<UpdateFormProps> = (props) => {
         <FormItem name="id" label="id" hidden>
           <Input id="update-id"/>
         </FormItem>
-        <FormItem name="name" label="品牌名" rules={[{required: true, message: '请输入品牌名!'}]}>
+        <FormItem name="brandName" label="品牌名" rules={[{required: true, message: '请输入品牌名!'}]}>
           <Input id="update-name" placeholder={'请输入品牌名'}/>
         </FormItem>
         <FormItem name="firstLetter" label="首字母" rules={[{required: true, message: '请输入首字母!'}]}>

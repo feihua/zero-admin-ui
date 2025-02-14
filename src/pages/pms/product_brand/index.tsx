@@ -101,7 +101,7 @@ const ProductBrandList: React.FC = () => {
     },
     {
       title: '品牌名',
-      dataIndex: 'name',
+      dataIndex: 'brandName',
       render: (dom, entity) => {
         return <a onClick={() => {
           setCurrentRow(entity);

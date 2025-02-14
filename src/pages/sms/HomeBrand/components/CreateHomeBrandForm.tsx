@@ -35,7 +35,7 @@ const CreateHomeBrandForm: React.FC<CreateFormProps> = (props) => {
     },
     {
       title: '品牌名',
-      dataIndex: 'name',
+      dataIndex: 'brandName',
     },
     {
       title: '产品数量',

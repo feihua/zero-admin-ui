@@ -39,7 +39,7 @@ const CreateBrandForm: React.FC<CreateFormProps> = (props) => {
   const renderContent = () => {
     return (
       <>
-        <FormItem name="name" label="品牌名" rules={[{required: true, message: '请输入品牌名!'}]}>
+        <FormItem name="brandName" label="品牌名" rules={[{required: true, message: '请输入品牌名!'}]}>
           <Input id="update-name" placeholder={'请输入品牌名'}/>
         </FormItem>
         <FormItem name="firstLetter" label="首字母" rules={[{required: true, message: '请输入首字母!'}]}>

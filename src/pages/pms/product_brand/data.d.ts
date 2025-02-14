@@ -1,6 +1,6 @@
 export interface BrandListItem {
   id: number;
-  name: string;
+  brandName: string;
 }
 
 export interface BrandListPagination {
