@@ -111,7 +111,7 @@ const handleStatus = async (ids: number[], status: number) => {
     return true;
   }
   try {
-    await updateUserStatus({userIds: ids, userStatus: status});
+    await updateUserStatus({ids: ids, status: status});
     hide();
     message.success('更新状态成功');
     return true;
@@ -264,8 +264,26 @@ const UserList: React.FC = () => {
       hideInTable: true,
     },
     {
-      title: '最近登录时间',
-      dataIndex: 'loginTime',
+      title: '最后登录时间',
+      dataIndex: 'loginDate',
+      hideInSearch: true,
+      hideInTable: true,
+    },
+    {
+      title: '浏览器类型',
+      dataIndex: 'loginBrowser',
+      hideInSearch: true,
+      hideInTable: true,
+    },
+    {
+      title: '操作系统',
+      dataIndex: 'loginOs',
+      hideInSearch: true,
+      hideInTable: true,
+    },
+    {
+      title: '密码最后更新时间',
+      dataIndex: 'pwdUpdateDate',
       hideInSearch: true,
       hideInTable: true,
     },

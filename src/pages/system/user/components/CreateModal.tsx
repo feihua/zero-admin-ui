@@ -88,7 +88,7 @@ const CreateModal: React.FC<CreateFormProps> = (props) => {
           label="用户名"
           rules={[{required: true, message: '请输入用户名'}]}
         >
-          <Input id="update-name" placeholder={'请输入用户名'}/>
+          <Input id="create-name" placeholder={'请输入用户名'}/>
         </FormItem>
 
         <FormItem
@@ -96,28 +96,28 @@ const CreateModal: React.FC<CreateFormProps> = (props) => {
           label="密码"
           rules={[{required: true, message: '请输入密码'}]}
         >
-          <Input.Password id="update-nick_name" placeholder={'请输入密码'}/>
+          <Input.Password id="create-nick_name" placeholder={'请输入密码'}/>
         </FormItem>
         <FormItem
           name="nickName"
           label="昵称"
           rules={[{required: true, message: '请输入昵称'}]}
         >
-          <Input id="update-nick_name" placeholder={'请输入昵称'}/>
+          <Input id="create-nick_name" placeholder={'请输入昵称'}/>
         </FormItem>
         <FormItem
           name="mobile"
           label="手机号"
           rules={[{required: true, message: '请输入手机号'}]}
         >
-          <Input id="update-mobile" placeholder={'请输入手机号'}/>
+          <Input id="create-mobile" placeholder={'请输入手机号'}/>
         </FormItem>
         <FormItem
           name="email"
           label="邮箱"
           rules={[{required: true, message: '请输入邮箱'}]}
         >
-          <Input id="update-email" placeholder={'请输入邮箱'}/>
+          <Input id="create-email" placeholder={'请输入邮箱'}/>
         </FormItem>
         <FormItem
           name="status"
