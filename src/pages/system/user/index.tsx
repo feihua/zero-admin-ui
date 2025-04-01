@@ -347,12 +347,13 @@ const UserList: React.FC = () => {
 
   useEffect(() => {
     queryDeptAndPostList().then((res) => {
-      setDeptListData(tree(res.data.deptList, 0, 'parentId'))
-      setDefaultExpandedKeys(res.data.deptList.map((x: any) => String(x.id)));
+      let deptList = res.data.deptList;
+      setDeptListData(tree(deptList, 0, 'parentId'))
+      setDefaultExpandedKeys(deptList.map((x: any) => String(x.id)));
     });
   }, []);
 
-  const onSelect: TreeProps['onSelect'] = (selectedKeys, info) => {
+  const onSelectDept: TreeProps['onSelect'] = (selectedKeys, info) => {
     setDeptId(Number(selectedKeys[0]))
     if (actionRef.current) {
       actionRef.current.reload();
@@ -365,7 +366,7 @@ const UserList: React.FC = () => {
         <Col span={4} style={{background: 'white', paddingTop: 24, paddingLeft: 24}}>
           <Tree
             showLine
-            onSelect={onSelect}
+            onSelect={onSelectDept}
             treeData={deptListData}
             expandedKeys={defaultExpandedKeys}
           />
