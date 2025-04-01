@@ -130,7 +130,8 @@ const UserList: React.FC = () => {
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<UserListItem>();
 
-  const [deptConf, setDeptConf] = useState<DataNode[]>([]);
+  const [deptListData, setDeptListData] = useState<DataNode[]>([]);
+  const [defaultExpandedKeys, setDefaultExpandedKeys] = useState<string[]>([]);
   const [deptId, setDeptId] = useState<number>(0);
 
   const showDeleteConfirm = (ids: number[]) => {
@@ -346,7 +347,8 @@ const UserList: React.FC = () => {
 
   useEffect(() => {
     queryDeptAndPostList().then((res) => {
-      setDeptConf(tree(res.data.deptList, 0, 'parentId'))
+      setDeptListData(tree(res.data.deptList, 0, 'parentId'))
+      setDefaultExpandedKeys(res.data.deptList.map((x: any) => String(x.id)));
     });
   }, []);
 
@@ -364,7 +366,8 @@ const UserList: React.FC = () => {
           <Tree
             showLine
             onSelect={onSelect}
-            treeData={deptConf}
+            treeData={deptListData}
+            expandedKeys={defaultExpandedKeys}
           />
         </Col>
         <Col span={20}>
