@@ -52,6 +52,7 @@ const SetRoleList: React.FC<SetRoleListProps> = (props) => {
       <ProTable<RoleList>
         headerTitle="角色管理"
         actionRef={actionRef}
+        tableAlertRender={false}
         rowKey="id"
         search={{
           labelWidth: 120,

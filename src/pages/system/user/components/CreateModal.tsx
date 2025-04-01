@@ -17,7 +17,7 @@ const formLayout = {
   wrapperCol: {span: 13},
 };
 
-const CreateUserForm: React.FC<CreateFormProps> = (props) => {
+const CreateModal: React.FC<CreateFormProps> = (props) => {
   const [form] = Form.useForm();
 
   const [jobConf, setJobConf] = useState<JobList[]>([]);
@@ -90,6 +90,14 @@ const CreateUserForm: React.FC<CreateFormProps> = (props) => {
         >
           <Input id="update-name" placeholder={'请输入用户名'}/>
         </FormItem>
+
+        <FormItem
+          name="password"
+          label="密码"
+          rules={[{required: true, message: '请输入密码'}]}
+        >
+          <Input.Password id="update-nick_name" placeholder={'请输入密码'}/>
+        </FormItem>
         <FormItem
           name="nickName"
           label="昵称"
@@ -112,7 +120,7 @@ const CreateUserForm: React.FC<CreateFormProps> = (props) => {
           <Input id="update-email" placeholder={'请输入邮箱'}/>
         </FormItem>
         <FormItem
-          name="userStatus"
+          name="status"
           label="状态"
           initialValue={1}
           rules={[{required: true, message: '请选择状态'}]}
@@ -154,4 +162,4 @@ const CreateUserForm: React.FC<CreateFormProps> = (props) => {
   );
 };
 
-export default CreateUserForm;
+export default CreateModal;

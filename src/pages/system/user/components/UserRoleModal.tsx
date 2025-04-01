@@ -10,7 +10,7 @@ export interface SetRoleModalProps {
 }
 
 // 设置角色弹框
-const SetRoleModal: React.FC<SetRoleModalProps> = (props) => {
+const UserRoleModal: React.FC<SetRoleModalProps> = (props) => {
 
   const {setRoleModalVisible, onCancel} = props;
 
@@ -43,4 +43,4 @@ const SetRoleModal: React.FC<SetRoleModalProps> = (props) => {
   );
 };
 
-export default SetRoleModal;
+export default UserRoleModal;

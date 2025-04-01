@@ -27,8 +27,8 @@ import type {ActionType, ProColumns} from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
 import type {ProDescriptionsItemProps} from '@ant-design/pro-descriptions';
 import ProDescriptions from '@ant-design/pro-descriptions';
-import CreateUserForm from './components/CreateUserForm';
-import UpdateUserForm from './components/UpdateUserForm';
+import CreateModal from './components/CreateModal';
+import UpdateModal from './components/UpdateModal';
 import type {UserListItem} from './data.d';
 import {
   addUser,
@@ -39,7 +39,7 @@ import {
   updateUserRoleList,
   updateUserStatus,
 } from './service';
-import SetRoleModal from "@/pages/system/user/components/SetRoleModal";
+import UserRoleModal from "@/pages/system/user/components/UserRoleModal";
 import {DataNode, TreeProps} from 'antd/es/tree';
 import {tree} from "@/utils/utils";
 
@@ -238,20 +238,20 @@ const UserList: React.FC = () => {
     },
     {
       title: '状态',
-      dataIndex: 'userStatus',
+      dataIndex: 'status',
       renderFormItem: (text, row, index) => {
         return <Select
           value={row.value}
           options={[
-            {value: '1', label: '正常'},
-            {value: '0', label: '禁用'},
+            {value: 1, label: '正常'},
+            {value: 0, label: '禁用'},
           ]}
         />
 
       },
       render: (dom, entity) => {
         return (
-          <Switch checked={entity.userStatus == 1} onChange={(flag) => {
+          <Switch checked={entity.status == 1} onChange={(flag) => {
             showStatusConfirm([entity], flag ? 1 : 0)
           }}/>
         );
@@ -413,7 +413,7 @@ const UserList: React.FC = () => {
             }}
           />
 
-          <CreateUserForm
+          <CreateModal
             key={'CreateUserForm'}
             onSubmit={async (value) => {
               const success = await handleAdd(value);
@@ -434,7 +434,7 @@ const UserList: React.FC = () => {
             createModalVisible={createModalVisible}
           />
 
-          <UpdateUserForm
+          <UpdateModal
             key={'UpdateUserForm'}
             onSubmit={async (value) => {
               const success = await handleUpdate(value);
@@ -456,7 +456,7 @@ const UserList: React.FC = () => {
             values={currentRow || {}}
           />
 
-          <SetRoleModal
+          <UserRoleModal
             key={'SetRoleModal'}
             onSubmit={async (value) => {
               const success = await updateUserRoleList(value);

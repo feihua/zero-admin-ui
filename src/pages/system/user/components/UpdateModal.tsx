@@ -18,7 +18,7 @@ const formLayout = {
   wrapperCol: {span: 13},
 };
 
-const UpdateUserForm: React.FC<UpdateFormProps> = (props) => {
+const UpdateModal: React.FC<UpdateFormProps> = (props) => {
   const [form] = Form.useForm();
   const [jobConf, setJobConf] = useState<JobList[]>([]);
   const [deptConf, setDeptConf] = useState<JobList[]>([]);
@@ -78,6 +78,12 @@ const UpdateUserForm: React.FC<UpdateFormProps> = (props) => {
           <Input id="update-id" placeholder="请输入主键"/>
         </FormItem>
         <FormItem
+          name="userType"
+          hidden
+        >
+          <Input id="update-userType" value={"01"}/>
+        </FormItem>
+        <FormItem
           name="deptId"
           label="部门"
           rules={[{required: true, message: '请选择部门'}]}
@@ -132,7 +138,7 @@ const UpdateUserForm: React.FC<UpdateFormProps> = (props) => {
           <Input id="update-email" placeholder={'请输入邮箱'}/>
         </FormItem>
         <FormItem
-          name="userStatus"
+          name="status"
           label="状态"
           initialValue={1}
           rules={[{required: true, message: '请选择状态'}]}
@@ -174,4 +180,4 @@ const UpdateUserForm: React.FC<UpdateFormProps> = (props) => {
   );
 };
 
-export default UpdateUserForm;
+export default UpdateModal;
