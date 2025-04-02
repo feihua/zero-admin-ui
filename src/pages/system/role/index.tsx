@@ -6,17 +6,17 @@ import {
   PlusOutlined,
   RedoOutlined
 } from '@ant-design/icons';
-import {Button, Divider, Drawer, Dropdown, MenuProps, message, Modal, Select, Space, Tag} from 'antd';
+import {Button, Divider, Drawer, Dropdown, MenuProps, message, Modal, Select, Space, Switch} from 'antd';
 import React, {useRef, useState} from 'react';
 import {PageContainer} from '@ant-design/pro-layout';
 import type {ActionType, ProColumns} from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
 import ProDescriptions, {ProDescriptionsItemProps} from '@ant-design/pro-descriptions';
 import SetMenuForm from './components/SetMenuForm';
-import CreateRoleForm from './components/CreateRoleForm';
-import UpdateRoleForm from './components/UpdateRoleForm';
+import AddRoleModal from './components/AddRoleModal';
+import UpdateRoleModal from './components/UpdateRoleModal';
 import type {RoleListItem} from './data.d';
-import {addRole, queryRoleList, removeRole, updateRole, updateRoleMenuList,} from './service';
+import {addRole, queryRoleList, removeRole, updateRole, updateRoleMenuList, updateRoleStatus,} from './service';
 import SetUserModal from "@/pages/system/role/components/SetUserModal";
 
 const {confirm} = Modal;
@@ -75,6 +75,29 @@ const handleRemove = async (ids: number[]) => {
   }
 };
 
+/**
+ * 更新状态
+ * @param ids
+ * @param status
+ */
+const handleStatus = async (ids: number[], status: number) => {
+  const hide = message.loading('正在更新状态');
+  if (ids.length == 0) {
+    hide();
+    return true;
+  }
+  try {
+    await updateRoleStatus({ids, status});
+    hide();
+    message.success('更新状态成功');
+    return true;
+  } catch (error) {
+    hide();
+    return false;
+  }
+};
+
+
 // 角色管理
 const RoleList: React.FC = () => {
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
@@ -88,6 +111,19 @@ const RoleList: React.FC = () => {
   const actionRef = useRef<ActionType>();
 
 
+  const getDataScope=(type:number)=>{
+    switch (type) {
+      case 1:
+        return '全部数据权限';
+      case 2:
+        return '自定数据权限';
+      case 3:
+        return '本部门数据权限';
+      default:
+        return '本部门及以下数据权限';
+    }
+  }
+
   const showDeleteConfirm = (ids: number[]) => {
     confirm({
       title: '是否删除记录?',
@@ -97,6 +133,19 @@ const RoleList: React.FC = () => {
         handleRemove(ids).then(() => {
           actionRef.current?.reloadAndRest?.();
         });
+      },
+      onCancel() {
+      },
+    });
+  };
+
+  const showStatusConfirm = (item: RoleListItem[], status: number) => {
+    confirm({
+      title: `确定${status == 1 ? "启用" : "禁用"}角色吗？`,
+      icon: <ExclamationCircleOutlined/>,
+      async onOk() {
+        await handleStatus(item.map((x) => x.id), status)
+        actionRef.current?.reload?.();
       },
       onCancel() {
       },
@@ -147,15 +196,30 @@ const RoleList: React.FC = () => {
     {
       title: '权限字符',
       dataIndex: 'roleKey',
-    },
-    {
-      title: '角色排序',
-      dataIndex: 'roleSort',
       hideInSearch: true,
     },
     {
+      title: '数据范围',
+      dataIndex: 'dataScope',
+      renderFormItem: (text, row, index) => {
+        return <Select
+          value={row.value}
+          options={[
+            {value: '1', label: '全部数据权限'},
+            {value: '2', label: '自定数据权限'},
+            {value: '3', label: '本部门数据权限'},
+            {value: '4', label: '本部门及以下数据权限'},
+          ]}
+        />
+
+      },
+      render: (dom, entity) => {
+        return getDataScope(entity.dataScope);
+      },
+    },
+    {
       title: '状态',
-      dataIndex: 'roleStatus',
+      dataIndex: 'status',
       renderFormItem: (text, row, index) => {
         return <Select
           value={row.value}
@@ -167,13 +231,11 @@ const RoleList: React.FC = () => {
 
       },
       render: (dom, entity) => {
-        switch (entity.roleStatus) {
-          case 1:
-            return <Tag color={'success'}>正常</Tag>;
-          case 0:
-            return <Tag>禁用</Tag>;
-        }
-        return <>未知{entity.roleStatus}</>;
+        return (
+          <Switch checked={entity.status == 1} onChange={(flag) => {
+            showStatusConfirm([entity], flag ? 1 : 0)
+          }}/>
+        );
       },
     },
     {
@@ -268,6 +330,11 @@ const RoleList: React.FC = () => {
         search={{
           labelWidth: 120,
         }}
+        toolBarRender={() => [
+          <Button key={'new'} type="primary" onClick={() => handleModalVisible(true)}>
+            <PlusOutlined/> 新建
+          </Button>,
+        ]}
         request={queryRoleList}
         columns={columns}
         rowSelection={{}}
@@ -295,7 +362,7 @@ const RoleList: React.FC = () => {
       />
 
 
-      <CreateRoleForm
+      <AddRoleModal
         key={'CreateRoleForm'}
         onSubmit={async (value) => {
           const success = await handleAdd(value);
@@ -316,7 +383,7 @@ const RoleList: React.FC = () => {
         createModalVisible={createModalVisible}
       />
 
-      <UpdateRoleForm
+      <UpdateRoleModal
         key={'UpdateRoleForm'}
         onSubmit={async (value) => {
           const success = await handleUpdate(value);

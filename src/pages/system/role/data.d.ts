@@ -1,8 +1,9 @@
 export interface RoleListItem {
   id: number;
-  roleStatus: number;
+  status: number;
   roleName: string;
   remark: string;
+  dataScope: number;
 
 }
 

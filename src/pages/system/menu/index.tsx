@@ -112,6 +112,8 @@ const MenuList: React.FC = () => {
     {
       title: '权限标识',
       dataIndex: 'menuPerms',
+      hideInSearch: true,
+      hideInTable: true,
     },
     {
       title: '组件路径',

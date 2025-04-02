@@ -31,7 +31,7 @@ export async function updateRole(params: RoleListItem) {
 }
 
 // 批量更新角色信息状态
-export async function updateRoleStatus(params: { roleIds: number[], postStatus: number }) {
+export async function updateRoleStatus(params: { ids: number[], status: number }) {
   return request('/api/sys/role/updateRoleStatus', {
     method: 'POST',
     data: {
