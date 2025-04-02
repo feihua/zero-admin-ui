@@ -15,7 +15,7 @@ const formLayout = {
   wrapperCol: {span: 13},
 };
 
-const AddModal: React.FC<CreateFormProps> = (props) => {
+const AddItemModal: React.FC<CreateFormProps> = (props) => {
   const [form] = Form.useForm();
 
   const {onSubmit, onCancel, createModalVisible} = props;
@@ -112,4 +112,4 @@ const AddModal: React.FC<CreateFormProps> = (props) => {
   );
 };
 
-export default AddModal;
+export default AddItemModal;

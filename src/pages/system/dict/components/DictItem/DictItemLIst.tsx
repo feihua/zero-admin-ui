@@ -5,8 +5,8 @@ import type {ActionType, ProColumns} from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
 import type {ProDescriptionsItemProps} from '@ant-design/pro-descriptions';
 import ProDescriptions from '@ant-design/pro-descriptions';
-import CreateDictForm from './AddModal';
-import UpdateDictForm from './UpdateModal';
+import CreateDictForm from './AddItemModal';
+import UpdateDictForm from './UpdateItemModal';
 import type {DictItemListItem} from './data.d';
 import {
   addDictItem,
@@ -14,7 +14,6 @@ import {
   removeDictItem,
   updateDictItem, updateDictItemStatus
 } from "@/pages/system/dict/components/DictItem/service";
-import type {PostListItem} from "@/pages/system/post/data";
 
 const {confirm} = Modal;
 
@@ -123,7 +122,7 @@ const DictList: React.FC<DictListProps> = (props) => {
     });
   };
 
-  const showStatusConfirm = (item: PostListItem[], status: number) => {
+  const showStatusConfirm = (item: DictItemListItem[], status: number) => {
     confirm({
       title: `确定${status == 1 ? "启用" : "禁用"}字典数据吗？`,
       icon: <ExclamationCircleOutlined/>,

@@ -3,9 +3,6 @@ import type {DeptListParams, DeptListItem} from './data.d';
 
 // 添加部门信息
 export async function addDept(params: DeptListItem) {
-  if (params.parentIds) {
-    params.parentId = params.parentIds.at(-1)
-  }
   return request('/api/sys/dept/addDept', {
     method: 'POST',
     data: {
@@ -26,9 +23,6 @@ export async function removeDept(ids: number[]) {
 
 // 更新部门信息
 export async function updateDept(params: DeptListItem) {
-  if (params.parentIds) {
-    params.parentId = params.parentIds.at(-1)
-  }
   return request('/api/sys/dept/updateDept', {
     method: 'POST',
     data: {
@@ -38,7 +32,7 @@ export async function updateDept(params: DeptListItem) {
 }
 
 // 批量更新部门信息状态
-export async function updateDeptStatus(params: { deptIds: number[], postStatus: number }) {
+export async function updateDeptStatus(params: { id: number, status: number }) {
   return request('/api/sys/dept/updateDeptStatus', {
     method: 'POST',
     data: {

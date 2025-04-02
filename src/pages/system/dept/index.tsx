@@ -1,14 +1,14 @@
 import {PlusOutlined, ExclamationCircleOutlined, EditOutlined, DeleteOutlined} from '@ant-design/icons';
-import {Button, Divider, message, Drawer, Modal, Tag} from 'antd';
+import {Button, Divider, message, Drawer, Modal, Switch} from 'antd';
 import React, {useState, useRef} from 'react';
 import {PageContainer, FooterToolbar} from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
 import type {ProColumns, ActionType} from '@ant-design/pro-table';
 import ProDescriptions, {ProDescriptionsItemProps} from '@ant-design/pro-descriptions';
-import CreateDeptForm from './components/CreateDeptForm';
-import UpdateDeptForm from './components/UpdateDeptForm';
+import AddModal from './components/AddModal';
+import UpdateModal from './components/UpdateModal';
 import type {DeptListItem} from './data.d';
-import {queryDeptList, updateDept, addDept, removeDept} from './service';
+import {queryDeptList, updateDept, addDept, removeDept, updateDeptStatus} from './service';
 import {tree} from '@/utils/utils';
 
 const {confirm} = Modal;
@@ -67,6 +67,24 @@ const handleRemove = async (selectedRows: DeptListItem[]) => {
   }
 };
 
+/**
+ * 更新状态
+ * @param id
+ * @param status
+ */
+const handleStatus = async (id: number, status: number) => {
+  const hide = message.loading('正在更新状态');
+  try {
+    await updateDeptStatus({id, status});
+    hide();
+    message.success('更新状态成功');
+    return true;
+  } catch (error) {
+    hide();
+    return false;
+  }
+};
+
 const DeptList: React.FC = () => {
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
@@ -84,6 +102,19 @@ const DeptList: React.FC = () => {
         handleRemove([item]).then(() => {
           actionRef.current?.reloadAndRest?.();
         });
+      },
+      onCancel() {
+      },
+    });
+  };
+
+  const showStatusConfirm = (item: DeptListItem, status: number) => {
+    confirm({
+      title: `确定${status == 1 ? "启用" : "禁用"}部门吗？`,
+      icon: <ExclamationCircleOutlined/>,
+      async onOk() {
+        await handleStatus(item.id, status)
+        actionRef.current?.reload?.();
       },
       onCancel() {
       },
@@ -108,29 +139,19 @@ const DeptList: React.FC = () => {
     },
     {
       title: '部门排序',
-      dataIndex: 'deptSort',
+      dataIndex: 'sort',
       hideInSearch: true,
     },
-    // {
-    //   title: '状态',
-    //   dataIndex: 'userStatus',
-    //   hideInTable: true,
-    //   valueEnum: {
-    //     0: {text: '禁用', status: 'Error'},
-    //     1: {text: '正常', status: 'Success'},
-    //   },
-    // },
+
     {
       title: '部门状态',
-      dataIndex: 'deptStatus',
+      dataIndex: 'status',
       render: (dom, entity) => {
-        switch (entity.deptStatus) {
-          case 1:
-            return <Tag color={'success'}>正常</Tag>;
-          case 0:
-            return <Tag>禁用</Tag>;
-        }
-        return <>未知{entity.deptStatus }</>;
+        return (
+          <Switch checked={entity.status == 1} onChange={(flag) => {
+            showStatusConfirm(entity, flag ? 1 : 0)
+          }}/>
+        );
       },
     },
     {
@@ -146,7 +167,7 @@ const DeptList: React.FC = () => {
       hideInTable: true
     },
     {
-      title: '电话号码',
+      title: '联系电话',
       dataIndex: 'phone',
       hideInSearch: true,
       hideInTable: true
@@ -167,8 +188,7 @@ const DeptList: React.FC = () => {
       title: '创建时间',
       dataIndex: 'createTime',
       valueType: 'dateTime',
-      hideInSearch: true,
-      hideInTable: true
+      hideInSearch: true
     },
     {
       title: '更新者',
@@ -255,7 +275,7 @@ const DeptList: React.FC = () => {
         </FooterToolbar>
       )}
 
-      <CreateDeptForm
+      <AddModal
         key={'CreateDeptForm'}
         onSubmit={async (value) => {
           const success = await handleAdd(value);
@@ -277,7 +297,7 @@ const DeptList: React.FC = () => {
         parentId={currentRow?.id || 0}
       />
 
-      <UpdateDeptForm
+      <UpdateModal
         key={'UpdateDeptForm'}
         onSubmit={async (value) => {
           const success = await handleUpdate(value);

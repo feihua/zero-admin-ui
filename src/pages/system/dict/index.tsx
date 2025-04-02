@@ -17,7 +17,6 @@ import {
   updateDictTypeStatus
 } from "@/pages/system/dict/service";
 import DictItemModal from "@/pages/system/dict/components/DictItem/DictItemModal";
-import type {PostListItem} from "@/pages/system/post/data";
 
 const {confirm} = Modal;
 
@@ -119,7 +118,7 @@ const DictList: React.FC = () => {
     });
   };
 
-  const showStatusConfirm = (item: PostListItem[], status: number) => {
+  const showStatusConfirm = (item: DictTypeListItem[], status: number) => {
     confirm({
       title: `确定${status == 1 ? "启用" : "禁用"}字典吗？`,
       icon: <ExclamationCircleOutlined/>,
@@ -259,33 +258,31 @@ const DictList: React.FC = () => {
         }}
         toolBarRender={() => [
           <Button type="primary" key="primary" onClick={() => handleModalVisible(true)}>
-            <PlusOutlined/> 新建
+            <PlusOutlined /> 新建
           </Button>,
           <Button type="primary" key="primary">
-            <PlusOutlined/> 刷新缓存
+            <PlusOutlined /> 刷新缓存
           </Button>,
         ]}
         request={queryDictTypeList}
         columns={columns}
         rowSelection={{}}
-        pagination={{pageSize: 10}}
-        tableAlertRender={({
-                             selectedRowKeys,
-                             selectedRows,
-                             onCleanSelected,
-                           }) => {
+        pagination={{ pageSize: 10 }}
+        tableAlertRender={({ selectedRowKeys, selectedRows, onCleanSelected }) => {
           const ids = selectedRows.map((row) => row.id);
           return (
             <Space size={16}>
               <span>已选 {selectedRowKeys.length} 项</span>
               <Button
-                icon={<DeleteOutlined/>}
+                icon={<DeleteOutlined />}
                 danger
-                style={{borderRadius: '5px'}}
+                style={{ borderRadius: '5px' }}
                 onClick={async () => {
                   showDeleteConfirm(ids);
                 }}
-              >批量删除</Button>
+              >
+                批量删除
+              </Button>
             </Space>
           );
         }}
@@ -293,7 +290,7 @@ const DictList: React.FC = () => {
 
       <AddModal
         key={'CreateDictForm'}
-        onSubmit={async (value) => {
+        onSubmit={async (value: DictTypeListItem) => {
           const success = await handleAdd(value);
           if (success) {
             handleModalVisible(false);
@@ -314,7 +311,7 @@ const DictList: React.FC = () => {
 
       <UpdateModal
         key={'UpdateDictForm'}
-        onSubmit={async (value) => {
+        onSubmit={async (value: DictTypeListItem) => {
           const success = await handleUpdate(value);
           if (success) {
             handleUpdateModalVisible(false);
@@ -360,14 +357,14 @@ const DictList: React.FC = () => {
         visible={showDetail}
         onClose={() => {
           setCurrentRow(undefined);
-          setShowDetail(false)
+          setShowDetail(false);
         }}
         closable={false}
       >
         {currentRow?.id && (
           <ProDescriptions<DictTypeListItem>
             column={2}
-            title={"字典详情"}
+            title={'字典详情'}
             request={async () => ({
               data: currentRow || {},
             })}

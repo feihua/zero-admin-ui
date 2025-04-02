@@ -16,7 +16,7 @@ const formLayout = {
   wrapperCol: {span: 13},
 };
 
-const UpdateModal: React.FC<UpdateFormProps> = (props) => {
+const UpdateItemModal: React.FC<UpdateFormProps> = (props) => {
   const [form] = Form.useForm();
 
   const {onSubmit, onCancel, updateModalVisible, currentData} = props;
@@ -120,4 +120,4 @@ const UpdateModal: React.FC<UpdateFormProps> = (props) => {
   );
 };
 
-export default UpdateModal;
+export default UpdateItemModal;

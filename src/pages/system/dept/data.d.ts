@@ -1,8 +1,7 @@
 export interface DeptListItem {
   id: number;
-  parentIds?: number[];
   parentId?: number;
-  deptStatus?: number;
+  status?: number;
 }
 
 export interface DeptListPagination {

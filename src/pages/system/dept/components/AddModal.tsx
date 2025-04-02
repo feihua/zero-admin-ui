@@ -1,14 +1,14 @@
 import React, {useEffect, useState} from 'react';
-import {Cascader, Form, Input, InputNumber, message, Modal, Radio} from 'antd';
+import {Form, Input, InputNumber, message, Modal, Radio, TreeSelect} from 'antd';
 import type {DeptListItem} from '../data.d';
 import {queryDeptList} from "@/pages/system/dept/service";
 import {tree} from "@/utils/utils";
 
-export interface UpdateFormProps {
+export interface CreateFormProps {
   onCancel: () => void;
   onSubmit: (values: DeptListItem) => void;
-  updateModalVisible: boolean;
-  currentData: Partial<DeptListItem>;
+  createModalVisible: boolean;
+  parentId: number;
 }
 
 const FormItem = Form.Item;
@@ -18,14 +18,14 @@ const formLayout = {
   wrapperCol: {span: 13},
 };
 
-const UpdateDeptForm: React.FC<UpdateFormProps> = (props) => {
+const AddModal: React.FC<CreateFormProps> = (props) => {
   const [form] = Form.useForm();
   const [deptListItem, setDeptListItem] = useState<DeptListItem[]>([]);
 
-  const {onSubmit, onCancel, updateModalVisible, currentData} = props;
+  const {onSubmit, onCancel, createModalVisible} = props;
 
   useEffect(() => {
-    if (form && !updateModalVisible) {
+    if (form && !createModalVisible) {
       form.resetFields();
     } else {
       queryDeptList({}).then((res) => {
@@ -39,73 +39,69 @@ const UpdateDeptForm: React.FC<UpdateFormProps> = (props) => {
           }));
 
           const tree1 = tree(map, 0, 'parentId');
-          tree1.unshift({
-            value: 0,
-            label: '无上级机构',
-          })
           setDeptListItem(tree1);
         } else {
           message.error(res.msg);
         }
       });
     }
-  }, [props.updateModalVisible]);
+  }, [props.createModalVisible]);
 
   useEffect(() => {
-    if (currentData) {
+    if (props.parentId) {
       form.setFieldsValue({
-        ...currentData,
+        parentId: props.parentId,
       });
     }
-  }, [props.currentData]);
+  }, [props.parentId]);
 
   const handleSubmit = () => {
     if (!form) return;
     form.submit();
   };
 
-  const handleFinish = (values: { [key: string]: any }) => {
+  const handleFinish = (values: DeptListItem) => {
     if (onSubmit) {
-      onSubmit(values as DeptListItem);
+      onSubmit(values);
     }
   };
 
   const renderContent = () => {
     return (
       <>
-        <FormItem name="id" label="主键" hidden>
-          <Input id="update-id" placeholder="请输入主键"/>
-        </FormItem>
-        <FormItem name="parentIds" label="部门上级" initialValue={[0]}
-                  rules={[{required: true, message: '请选择部门!'}]}>
-          <Cascader
-            defaultValue={[0]}
-            options={deptListItem}
-            placeholder="请选择部门"
+        <FormItem name="parentId" label="上级部门" rules={[{required: true, message: '请选择部门!'}]}>
+          <TreeSelect
+            showSearch
+            style={{ width: '100%' }}
+            // value={value}
+            dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
+            placeholder="请选择上级部门"
+            allowClear
+            treeDefaultExpandAll
+            // onChange={onChange}
+            treeData={deptListItem}
           />
         </FormItem>
         <FormItem name="deptName" label="部门名称" rules={[{required: true, message: '请输入部门名称'}]}>
-          <Input id="update-name" placeholder={'请输入部门名称'}/>
+          <Input id="create-name" placeholder={'请输入部门名称'}/>
         </FormItem>
-        <FormItem name="deptSort" label="部门排序" initialValue={0}
-                  rules={[{required: true, message: '请输入部门排序'}]}>
+        <FormItem name="sort" label="部门排序" initialValue={1} rules={[{required: true, message: '请输入部门排序'}]}>
           <InputNumber placeholder={'请输入部门排序'} style={{width: 255}}/>
         </FormItem>
-        <FormItem name="deptStatus" label="部门状态" rules={[{required: true, message: '请求选择状态'}]}
-                  initialValue={1}>
-          <Radio.Group id="deptStatus">
+        <FormItem name="status" label="部门状态" rules={[{required: true, message: '请求选择状态'}]} initialValue={1}>
+          <Radio.Group id="status">
             <Radio value={0}>禁用</Radio>
             <Radio value={1}>正常</Radio>
           </Radio.Group>
         </FormItem>
         <FormItem name="email" label="邮箱" rules={[{required: true, message: '请输入邮箱'}]}>
-          <Input id="update-email" placeholder={'请输入邮箱'}/>
+          <Input id="create-email" placeholder={'请输入邮箱'}/>
         </FormItem>
         <FormItem name="leader" label="负责人" rules={[{required: true, message: '请输入负责人'}]}>
-          <Input id="update-leader" placeholder={'请输入负责人'}/>
+          <Input id="create-leader" placeholder={'请输入负责人'}/>
         </FormItem>
         <FormItem name="phone" label="电话号码" rules={[{required: true, message: '请输入电话号码'}]}>
-          <Input id="update-phone" placeholder={'请输入电话号码'}/>
+          <Input id="create-phone" placeholder={'请输入电话号码'}/>
         </FormItem>
         <FormItem
           name="remark"
@@ -123,8 +119,8 @@ const UpdateDeptForm: React.FC<UpdateFormProps> = (props) => {
     <Modal
       forceRender
       destroyOnClose
-      title="编辑"
-      open={updateModalVisible}
+      title="新建"
+      open={createModalVisible}
       {...modalFooter}
     >
       <Form {...formLayout} form={form} onFinish={handleFinish}>
@@ -134,4 +130,4 @@ const UpdateDeptForm: React.FC<UpdateFormProps> = (props) => {
   );
 };
 
-export default UpdateDeptForm;
+export default AddModal;
