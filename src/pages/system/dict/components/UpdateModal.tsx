@@ -1,11 +1,12 @@
 import React, {useEffect} from 'react';
-import {Form, Input, Modal, Radio,} from 'antd';
-import type {DictTypeListItem} from '../data.d';
+import {Form, Input, Modal, Radio} from 'antd';
+import {DictTypeListItem} from '../data.d';
 
-export interface CreateFormProps {
+export interface UpdateFormProps {
   onCancel: () => void;
   onSubmit: (values: DictTypeListItem) => void;
-  createModalVisible: boolean;
+  updateModalVisible: boolean;
+  currentData: Partial<DictTypeListItem>;
 }
 
 const FormItem = Form.Item;
@@ -15,31 +16,42 @@ const formLayout = {
   wrapperCol: {span: 13},
 };
 
-const CreateDictForm: React.FC<CreateFormProps> = (props) => {
+const UpdateModal: React.FC<UpdateFormProps> = (props) => {
   const [form] = Form.useForm();
 
-  const {onSubmit, onCancel, createModalVisible} = props;
+  const {onSubmit, onCancel, updateModalVisible, currentData} = props;
 
   useEffect(() => {
-    if (form && !createModalVisible) {
+    if (form && !updateModalVisible) {
       form.resetFields();
     }
-  }, [props.createModalVisible]);
+  }, [props.updateModalVisible]);
+
+  useEffect(() => {
+    if (currentData) {
+      form.setFieldsValue({
+        ...currentData,
+      });
+    }
+  }, [props.currentData]);
 
   const handleSubmit = () => {
     if (!form) return;
     form.submit();
   };
 
-  const handleFinish = (values: DictTypeListItem) => {
+  const handleFinish = (values: { [key: string]: any }) => {
     if (onSubmit) {
-      onSubmit(values);
+      onSubmit(values as DictTypeListItem);
     }
   };
 
   const renderContent = () => {
     return (
       <>
+        <FormItem name="id" label="主键" hidden>
+          <Input id="update-id" placeholder="请输入主键"/>
+        </FormItem>
         <FormItem
           name="dictName"
           label="字典名称"
@@ -55,25 +67,14 @@ const CreateDictForm: React.FC<CreateFormProps> = (props) => {
           <Input id="update-jobName" placeholder={'请输入字典类型名称'}/>
         </FormItem>
         <FormItem
-          name="dictStatus"
+          name="status"
           label="字典状态"
           initialValue={1}
           rules={[{required: true, message: '请选择状态!'}]}
         >
           <Radio.Group>
-            <Radio value={0}>禁用</Radio>
             <Radio value={1}>正常</Radio>
-          </Radio.Group>
-        </FormItem>
-        <FormItem
-          name="isSystem"
-          label="系统预留"
-          initialValue={1}
-          rules={[{required: true, message: '请选择状态!'}]}
-        >
-          <Radio.Group>
-            <Radio value={0}>否</Radio>
-            <Radio value={1}>是</Radio>
+            <Radio value={0}>禁用</Radio>
           </Radio.Group>
         </FormItem>
         <FormItem
@@ -93,8 +94,8 @@ const CreateDictForm: React.FC<CreateFormProps> = (props) => {
     <Modal
       forceRender
       destroyOnClose
-      title="新建字典"
-      open={createModalVisible}
+      title="修改字典"
+      open={updateModalVisible}
       {...modalFooter}
     >
       <Form {...formLayout} form={form} onFinish={handleFinish}>
@@ -104,4 +105,4 @@ const CreateDictForm: React.FC<CreateFormProps> = (props) => {
   );
 };
 
-export default CreateDictForm;
+export default UpdateModal;

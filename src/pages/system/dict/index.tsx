@@ -1,16 +1,23 @@
 import {DeleteOutlined, EditOutlined, ExclamationCircleOutlined, PlusOutlined} from '@ant-design/icons';
-import {Button, Divider, Drawer, message, Modal, Select, Space, Tag,} from 'antd';
+import {Button, Divider, Drawer, message, Modal, Select, Space, Switch,} from 'antd';
 import React, {useRef, useState} from 'react';
 import {PageContainer} from '@ant-design/pro-layout';
 import type {ActionType, ProColumns} from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
 import type {ProDescriptionsItemProps} from '@ant-design/pro-descriptions';
 import ProDescriptions from '@ant-design/pro-descriptions';
-import CreateDictForm from './components/CreateDictForm';
-import UpdateDictForm from './components/UpdateDictForm';
+import AddModal from './components/AddModal';
+import UpdateModal from './components/UpdateModal';
 import type {DictTypeListItem} from './data.d';
-import {addDictType, queryDictTypeList, removeDictType, updateDictType} from "@/pages/system/dict/service";
+import {
+  addDictType,
+  queryDictTypeList,
+  removeDictType,
+  updateDictType,
+  updateDictTypeStatus
+} from "@/pages/system/dict/service";
 import DictItemModal from "@/pages/system/dict/components/DictItem/DictItemModal";
+import type {PostListItem} from "@/pages/system/post/data";
 
 const {confirm} = Modal;
 
@@ -67,6 +74,28 @@ const handleRemove = async (ids: number[]) => {
   }
 };
 
+/**
+ * 更新状态
+ * @param ids
+ * @param status
+ */
+const handleStatus = async (ids: number[], status: number) => {
+  const hide = message.loading('正在更新状态');
+  if (ids.length == 0) {
+    hide();
+    return true;
+  }
+  try {
+    await updateDictTypeStatus({ids, status});
+    hide();
+    message.success('更新状态成功');
+    return true;
+  } catch (error) {
+    hide();
+    return false;
+  }
+};
+
 const DictList: React.FC = () => {
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
@@ -84,6 +113,19 @@ const DictList: React.FC = () => {
         handleRemove(ids).then(() => {
           actionRef.current?.reloadAndRest?.();
         });
+      },
+      onCancel() {
+      },
+    });
+  };
+
+  const showStatusConfirm = (item: PostListItem[], status: number) => {
+    confirm({
+      title: `确定${status == 1 ? "启用" : "禁用"}字典吗？`,
+      icon: <ExclamationCircleOutlined/>,
+      async onOk() {
+        await handleStatus(item.map((x) => x.id), status)
+        actionRef.current?.reload?.();
       },
       onCancel() {
       },
@@ -113,7 +155,7 @@ const DictList: React.FC = () => {
     },
     {
       title: '状态',
-      dataIndex: 'dictStatus',
+      dataIndex: 'status',
       renderFormItem: (text, row, index) => {
         return <Select
           value={row.value}
@@ -125,23 +167,14 @@ const DictList: React.FC = () => {
 
       },
       render: (dom, entity) => {
-        switch (entity.dictStatus) {
-          case 1:
-            return <Tag color={'success'}>正常</Tag>;
-          case 0:
-            return <Tag>禁用</Tag>;
-        }
-        return <>未知{entity.dictStatus}</>;
+        return (
+          <Switch checked={entity.status == 1} onChange={(flag) => {
+            showStatusConfirm([entity], flag ? 1 : 0)
+          }}/>
+        );
       },
     },
-    {
-      title: '系统预留',
-      dataIndex: 'isSystem',
-      valueEnum: {
-        1: {text: '是', status: 'Success'},
-        0: {text: '否', status: 'Error'},
-      },
-    },
+
     {
       title: '备注',
       dataIndex: 'remark',
@@ -258,7 +291,7 @@ const DictList: React.FC = () => {
         }}
       />
 
-      <CreateDictForm
+      <AddModal
         key={'CreateDictForm'}
         onSubmit={async (value) => {
           const success = await handleAdd(value);
@@ -279,7 +312,7 @@ const DictList: React.FC = () => {
         createModalVisible={createModalVisible}
       />
 
-      <UpdateDictForm
+      <UpdateModal
         key={'UpdateDictForm'}
         onSubmit={async (value) => {
           const success = await handleUpdate(value);

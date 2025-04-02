@@ -32,7 +32,7 @@ export async function updateDictItem(params: DictItemListItem) {
 }
 
 // 批量更新字典类型状态
-export async function updateDictItemStatus(params: { dictItemIds: number[], postStatus: number }) {
+export async function updateDictItemStatus(params: { ids: number[], status: number }) {
   return request('/api/sys/dictItem/updateDictItemStatus', {
     method: 'POST',
     data: {

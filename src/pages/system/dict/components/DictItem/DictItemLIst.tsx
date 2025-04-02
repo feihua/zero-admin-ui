@@ -1,19 +1,20 @@
 import {DeleteOutlined, EditOutlined, ExclamationCircleOutlined, PlusOutlined} from '@ant-design/icons';
-import {Button, Divider, Drawer, message, Modal, Select, Space, Tag} from 'antd';
+import {Button, Divider, Drawer, message, Modal, Select, Space, Switch, Tag} from 'antd';
 import React, {useEffect, useRef, useState} from 'react';
 import type {ActionType, ProColumns} from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
 import type {ProDescriptionsItemProps} from '@ant-design/pro-descriptions';
 import ProDescriptions from '@ant-design/pro-descriptions';
-import CreateDictForm from './CreateDictItemForm';
-import UpdateDictForm from './UpdateDictItemForm';
+import CreateDictForm from './AddModal';
+import UpdateDictForm from './UpdateModal';
 import type {DictItemListItem} from './data.d';
 import {
   addDictItem,
   queryDictItemList,
   removeDictItem,
-  updateDictItem
+  updateDictItem, updateDictItemStatus
 } from "@/pages/system/dict/components/DictItem/service";
+import type {PostListItem} from "@/pages/system/post/data";
 
 const {confirm} = Modal;
 
@@ -73,6 +74,28 @@ const handleRemove = async (ids: number[]) => {
   }
 };
 
+/**
+ * 更新状态
+ * @param ids
+ * @param status
+ */
+const handleStatus = async (ids: number[], status: number) => {
+  const hide = message.loading('正在更新状态');
+  if (ids.length == 0) {
+    hide();
+    return true;
+  }
+  try {
+    await updateDictItemStatus({ids, status});
+    hide();
+    message.success('更新状态成功');
+    return true;
+  } catch (error) {
+    hide();
+    return false;
+  }
+};
+
 export interface DictListProps {
   dictType?: string;
   dictItemModalVisible: boolean;
@@ -100,6 +123,19 @@ const DictList: React.FC<DictListProps> = (props) => {
     });
   };
 
+  const showStatusConfirm = (item: PostListItem[], status: number) => {
+    confirm({
+      title: `确定${status == 1 ? "启用" : "禁用"}字典数据吗？`,
+      icon: <ExclamationCircleOutlined/>,
+      async onOk() {
+        await handleStatus(item.map((x) => x.id), status)
+        actionRef.current?.reload?.();
+      },
+      onCancel() {
+      },
+    });
+  };
+
   useEffect(() => {
     if (props.dictItemModalVisible) {
       actionRef.current?.reloadAndRest?.();
@@ -112,11 +148,7 @@ const DictList: React.FC<DictListProps> = (props) => {
         dataIndex: 'id',
         hideInSearch: true,
       },
-      {
-        title: '显示排序',
-        dataIndex: 'dictSort',
-        hideInSearch: true,
-      },
+
       {
         title: '字典标签',
         dataIndex: 'dictLabel',
@@ -132,9 +164,14 @@ const DictList: React.FC<DictListProps> = (props) => {
         dataIndex: 'dictValue',
         hideInSearch: true,
       },
+    {
+      title: '显示排序',
+      dataIndex: 'dictSort',
+      hideInSearch: true,
+    },
       {
         title: '状态',
-        dataIndex: 'dictStatus',
+        dataIndex: 'status',
         renderFormItem: (text, row, index) => {
           return <Select
             value={row.value}
@@ -146,15 +183,27 @@ const DictList: React.FC<DictListProps> = (props) => {
 
         },
         render: (dom, entity) => {
-          switch (entity.dictStatus) {
-            case 1:
-              return <Tag color={'success'}>正常</Tag>;
-            case 0:
-              return <Tag>禁用</Tag>;
-          }
-          return <>未知{entity.dictStatus}</>;
+          return (
+            <Switch checked={entity.status == 1} onChange={(flag) => {
+              showStatusConfirm([entity], flag ? 1 : 0)
+            }}/>
+          );
         },
       },
+    {
+      title: '是否默认',
+      dataIndex: 'isDefault',
+      hideInSearch: true,
+      render: (dom, entity) => {
+        switch (entity.isDefault) {
+          case 'Y':
+            return <Tag color={'success'}>是</Tag>;
+          case 'N':
+            return <Tag>否</Tag>;
+        }
+        return <>未知{entity.isDefault}</>;
+      },
+    },
       {
         title: '备注',
         dataIndex: 'remark',
