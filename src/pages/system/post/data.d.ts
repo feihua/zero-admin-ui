@@ -1,6 +1,6 @@
 export interface PostListItem {
   id: number;
-  postStatus: number;
+  status: number;
 
 
 }

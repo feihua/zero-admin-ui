@@ -70,7 +70,7 @@ const UpdateModal: React.FC<UpdateModalProps> = ({onCancel, onSubmit, open, curr
           <Input id="update-jobName" placeholder={'请输入岗位名称'}/>
         </FormItem>
         <FormItem
-          name="postStatus"
+          name="status"
           label="岗位状态"
           rules={[{required: true, message: '请选择状态!'}]}
         >
@@ -80,7 +80,7 @@ const UpdateModal: React.FC<UpdateModalProps> = ({onCancel, onSubmit, open, curr
           </Radio.Group>
         </FormItem>
         <FormItem
-          name="postSort"
+          name="sort"
           label="岗位排序"
           rules={[{required: true, message: '请输入排序!'}]}
           initialValue={0}

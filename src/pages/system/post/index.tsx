@@ -145,12 +145,12 @@ const PostList: React.FC = () => {
     },
     {
       title: '岗位排序',
-      dataIndex: 'postSort',
+      dataIndex: 'sort',
       hideInSearch: true,
     },
     {
       title: '状态',
-      dataIndex: 'postStatus',
+      dataIndex: 'status',
       renderFormItem: (text, row, index) => {
         return <Select
           value={row.value}
@@ -163,7 +163,7 @@ const PostList: React.FC = () => {
       },
       render: (dom, entity) => {
         return (
-          <Switch checked={entity.postStatus == 1} onChange={(flag) => {
+          <Switch checked={entity.status == 1} onChange={(flag) => {
             showStatusConfirm([entity], flag ? 1 : 0)
           }}/>
         );
