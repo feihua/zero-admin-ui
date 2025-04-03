@@ -4,7 +4,7 @@ import { AddressListParams } from './data.d';
 
 // 查询询会员地址详情
 export async function queryMemberAddressDetail(id: number ) {
-  return request('/api/member/address/queryMemberAddressDetail', {
+  return request('/api/ums/address/queryMemberAddressDetail', {
     method: 'GET',
   });
 }
@@ -12,7 +12,7 @@ export async function queryMemberAddressDetail(id: number ) {
 // 分页查询询会员地址列表
 export async function queryMemberAddressList(params: AddressListParams) {
 
-  return request('/api/member/address/queryMemberAddressList', {
+  return request('/api/ums/address/queryMemberAddressList', {
     method: 'GET',
     params: {
       ...params,

@@ -2,7 +2,7 @@ import { request } from 'umi';
 import { CategoryListParams, CategoryListItem } from './data.d';
 // 添加商品分类
 export async function addProductCategory(params: CategoryListItem) {
-  return request('/api/product/category/addProductCategory', {
+  return request('/api/pms/category/addProductCategory', {
     method: 'POST',
     data: {
       ...params,
@@ -14,7 +14,7 @@ export async function addProductCategory(params: CategoryListItem) {
 
 // 删除商品分类
 export async function removeProductCategory(ids: number[]) {
-  return request('/api/product/category/deleteProductCategory?ids=' + ids.join(','), {
+  return request('/api/pms/category/deleteProductCategory?ids=' + ids.join(','), {
     method: 'GET',
   });
 }
@@ -22,7 +22,7 @@ export async function removeProductCategory(ids: number[]) {
 
 // 更新商品分类
 export async function updateProductCategory(params: CategoryListItem) {
-  return request('/api/product/category/updateProductCategory', {
+  return request('/api/pms/category/updateProductCategory', {
     method: 'POST',
     data: {
       ...params,
@@ -32,7 +32,7 @@ export async function updateProductCategory(params: CategoryListItem) {
 
 // 批量更新商品分类状态
 export async function updateProductCategoryStatus(params: { dictTypeIds: number[], postStatus: number }) {
-  return request('/api/product/category/updateProductCategoryStatus', {
+  return request('/api/pms/category/updateProductCategoryStatus', {
     method: 'POST',
     data: {
       ...params,
@@ -44,7 +44,7 @@ export async function updateProductCategoryStatus(params: { dictTypeIds: number[
 
 // 查询商品分类详情
 export async function queryProductCategoryDetail(id: number ) {
-  return request('/api/product/category/queryProductCategoryDetail', {
+  return request('/api/pms/category/queryProductCategoryDetail', {
     method: 'GET',
   });
 }
@@ -52,7 +52,7 @@ export async function queryProductCategoryDetail(id: number ) {
 // 分页查询商品分类列表
 export async function queryProductCategoryList(params: CategoryListParams) {
 
-  return request('/api/product/category/queryProductCategoryList', {
+  return request('/api/pms/category/queryProductCategoryList', {
     method: 'GET',
     params: {
       ...params,

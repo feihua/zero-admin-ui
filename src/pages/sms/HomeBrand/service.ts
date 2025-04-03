@@ -64,7 +64,7 @@ export async function queryHomeBrandList(params: HomeBrandListParams) {
 
 
 export async function queryProductBrandList(params?: BrandListParams) {
-  return request('/api/product/brand/queryProductBrandList', {
+  return request('/api/pms/brand/queryProductBrandList', {
     method: 'GET',
     params: {
       ...params,

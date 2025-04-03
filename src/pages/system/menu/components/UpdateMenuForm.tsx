@@ -121,7 +121,7 @@ const UpdateMenuForm: React.FC<UpdateFormProps> = (props) => {
             <Input/>
           </FormItem>
         }
-        {menuType == 2 &&
+        {menuType !== 0 &&
           <FormItem
             label="接口地址"
             name="backgroundUrl"

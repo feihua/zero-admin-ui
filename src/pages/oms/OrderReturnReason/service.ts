@@ -3,7 +3,7 @@ import type { OrderReturnReasonListParams, OrderReturnReasonListItem } from './d
 
 // 添加退货原因表
 export async function addOrderReturnReason(params: OrderReturnReasonListItem) {
-  return request('/api/order/returnReason/addOrderReturnReason', {
+  return request('/api/oms/returnReason/addOrderReturnReason', {
     method: 'POST',
     data: {
       ...params,
@@ -13,7 +13,7 @@ export async function addOrderReturnReason(params: OrderReturnReasonListItem) {
 
 // 删除退货原因表
 export async function removeOrderReturnReason(ids: number[]) {
-  return request('/api/order/returnReason/deleteOrderReturnReason?ids=' + ids.join(','), {
+  return request('/api/oms/returnReason/deleteOrderReturnReason?ids=' + ids.join(','), {
     method: 'GET',
   });
 }
@@ -21,7 +21,7 @@ export async function removeOrderReturnReason(ids: number[]) {
 
 // 更新退货原因表
 export async function updateOrderReturnReason(params: OrderReturnReasonListItem) {
-  return request('/api/order/returnReason/updateOrderReturnReason', {
+  return request('/api/oms/returnReason/updateOrderReturnReason', {
     method: 'POST',
     data: {
       ...params,
@@ -31,7 +31,7 @@ export async function updateOrderReturnReason(params: OrderReturnReasonListItem)
 
 // 批量更新退货原因表状态
 export async function updateOrderReturnReasonStatus(params: { orderReturnReasonIds: number[], orderReturnReasonStatus: number }) {
-  return request('/api/order/returnReason/updateOrderReturnReasonStatus', {
+  return request('/api/oms/returnReason/updateOrderReturnReasonStatus', {
     method: 'POST',
     data: {
       ids: params.orderReturnReasonIds, status: params.orderReturnReasonStatus
@@ -43,7 +43,7 @@ export async function updateOrderReturnReasonStatus(params: { orderReturnReasonI
 
 // 查询退货原因表详情
 export async function queryOrderReturnReasonDetail(id: number) {
-  return request('/api/order/returnReason/queryOrderReturnReasonDetail?id=' + id, {
+  return request('/api/oms/returnReason/queryOrderReturnReasonDetail?id=' + id, {
     method: 'GET',
   });
 }
@@ -51,7 +51,7 @@ export async function queryOrderReturnReasonDetail(id: number) {
 // 分页查询退货原因表列表
 export async function queryOrderReturnReasonList(params: OrderReturnReasonListParams) {
 
-  return request('/api/order/returnReason/queryOrderReturnReasonList', {
+  return request('/api/oms/returnReason/queryOrderReturnReasonList', {
     method: 'GET',
     params: {
       ...params,

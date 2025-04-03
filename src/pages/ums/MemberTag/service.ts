@@ -3,7 +3,7 @@ import type { MemberTagListParams, MemberTagListItem } from './data.d';
 
 // 添加用户标签表
 export async function addMemberTag(params: MemberTagListItem) {
-  return request('/api/member/tag/addMemberTag', {
+  return request('/api/ums/tag/addMemberTag', {
     method: 'POST',
     data: {
       ...params,
@@ -13,7 +13,7 @@ export async function addMemberTag(params: MemberTagListItem) {
 
 // 删除用户标签表
 export async function removeMemberTag(ids: number[]) {
-  return request('/api/member/tag/deleteMemberTag?ids=' + ids.join(','), {
+  return request('/api/ums/tag/deleteMemberTag?ids=' + ids.join(','), {
     method: 'GET',
   });
 }
@@ -21,7 +21,7 @@ export async function removeMemberTag(ids: number[]) {
 
 // 更新用户标签表
 export async function updateMemberTag(params: MemberTagListItem) {
-  return request('/api/member/tag/updateMemberTag', {
+  return request('/api/ums/tag/updateMemberTag', {
     method: 'POST',
     data: {
       ...params,
@@ -31,7 +31,7 @@ export async function updateMemberTag(params: MemberTagListItem) {
 
 // 批量更新用户标签表状态
 export async function updateMemberTagStatus(params: { memberTagIds: number[], memberTagStatus: number }) {
-  return request('/api/member/tag/updateMemberTagStatus', {
+  return request('/api/ums/tag/updateMemberTagStatus', {
     method: 'POST',
     data: {
       ids: params.memberTagIds, status: params.memberTagStatus
@@ -43,7 +43,7 @@ export async function updateMemberTagStatus(params: { memberTagIds: number[], me
 
 // 查询用户标签表详情
 export async function queryMemberTagDetail(id: number) {
-  return request('/api/member/tag/queryMemberTagDetail?id=' + id, {
+  return request('/api/ums/tag/queryMemberTagDetail?id=' + id, {
     method: 'GET',
   });
 }
@@ -51,7 +51,7 @@ export async function queryMemberTagDetail(id: number) {
 // 分页查询用户标签表列表
 export async function queryMemberTagList(params: MemberTagListParams) {
 
-  return request('/api/member/tag/queryMemberTagList', {
+  return request('/api/ums/tag/queryMemberTagList', {
     method: 'GET',
     params: {
       ...params,

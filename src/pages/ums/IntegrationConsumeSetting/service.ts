@@ -3,7 +3,7 @@ import type { IntegrationConsumeSettingListParams, IntegrationConsumeSettingList
 
 // 添加积分消费设置
 export async function addIntegrationConsumeSetting(params: IntegrationConsumeSettingListItem) {
-  return request('/api/member/integrationConsumeSetting/addIntegrationConsumeSetting', {
+  return request('/api/ums/integrationConsumeSetting/addIntegrationConsumeSetting', {
     method: 'POST',
     data: {
       ...params,
@@ -13,7 +13,7 @@ export async function addIntegrationConsumeSetting(params: IntegrationConsumeSet
 
 // 删除积分消费设置
 export async function removeIntegrationConsumeSetting(ids: number[]) {
-  return request('/api/member/integrationConsumeSetting/deleteIntegrationConsumeSetting?ids=' + ids.join(','), {
+  return request('/api/ums/integrationConsumeSetting/deleteIntegrationConsumeSetting?ids=' + ids.join(','), {
     method: 'GET',
   });
 }
@@ -21,7 +21,7 @@ export async function removeIntegrationConsumeSetting(ids: number[]) {
 
 // 更新积分消费设置
 export async function updateIntegrationConsumeSetting(params: IntegrationConsumeSettingListItem) {
-  return request('/api/member/integrationConsumeSetting/updateIntegrationConsumeSetting', {
+  return request('/api/ums/integrationConsumeSetting/updateIntegrationConsumeSetting', {
     method: 'POST',
     data: {
       ...params,
@@ -31,7 +31,7 @@ export async function updateIntegrationConsumeSetting(params: IntegrationConsume
 
 // 批量更新积分消费设置状态
 export async function updateIntegrationConsumeSettingStatus(params: { integrationConsumeSettingId: number, integrationConsumeSettingStatus: number }) {
-  return request('/api/member/integrationConsumeSetting/updateIntegrationConsumeSettingStatus', {
+  return request('/api/ums/integrationConsumeSetting/updateIntegrationConsumeSettingStatus', {
     method: 'POST',
     data: {
       id: params.integrationConsumeSettingId, isDefault: params.integrationConsumeSettingStatus
@@ -43,7 +43,7 @@ export async function updateIntegrationConsumeSettingStatus(params: { integratio
 
 // 查询积分消费设置详情
 export async function queryIntegrationConsumeSettingDetail(id: number) {
-  return request('/api/member/integrationConsumeSetting/queryIntegrationConsumeSettingDetail?id=' + id, {
+  return request('/api/ums/integrationConsumeSetting/queryIntegrationConsumeSettingDetail?id=' + id, {
     method: 'GET',
   });
 }
@@ -51,7 +51,7 @@ export async function queryIntegrationConsumeSettingDetail(id: number) {
 // 分页查询积分消费设置列表
 export async function queryIntegrationConsumeSettingList(params: IntegrationConsumeSettingListParams) {
 
-  return request('/api/member/integrationConsumeSetting/queryIntegrationConsumeSettingList', {
+  return request('/api/ums/integrationConsumeSetting/queryIntegrationConsumeSettingList', {
     method: 'GET',
     params: {
       ...params,

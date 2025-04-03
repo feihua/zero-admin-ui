@@ -2,7 +2,7 @@ import {request} from 'umi';
 import type {AttributeCategoryListParams, AttributeCategoryListItem} from './data.d';
 // 添加商品属性分类
 export async function addAttributeCategory(params: AttributeCategoryListItem) {
-  return request('/api/product/attributeCategory/addAttributeCategory', {
+  return request('/api/pms/attributeCategory/addAttributeCategory', {
     method: 'POST',
     data: {
       ...params,
@@ -14,7 +14,7 @@ export async function addAttributeCategory(params: AttributeCategoryListItem) {
 
 // 删除商品属性分类
 export async function removeAttributeCategory(ids: number[]) {
-  return request('/api/product/attributeCategory/deleteAttributeCategory?ids=' + ids.join(','), {
+  return request('/api/pms/attributeCategory/deleteAttributeCategory?ids=' + ids.join(','), {
     method: 'GET',
   });
 }
@@ -22,7 +22,7 @@ export async function removeAttributeCategory(ids: number[]) {
 
 // 更新商品属性分类
 export async function updateAttributeCategory(params: AttributeCategoryListItem) {
-  return request('/api/product/attributeCategory/updateAttributeCategory', {
+  return request('/api/pms/attributeCategory/updateAttributeCategory', {
     method: 'POST',
     data: {
       ...params,
@@ -32,7 +32,7 @@ export async function updateAttributeCategory(params: AttributeCategoryListItem)
 
 // 批量更新商品属性分类状态
 export async function updateAttributeCategoryStatus(params: { dictTypeIds: number[], postStatus: number }) {
-  return request('/api/product/attributeCategory/updateAttributeCategoryStatus', {
+  return request('/api/pms/attributeCategory/updateAttributeCategoryStatus', {
     method: 'POST',
     data: {
       ...params,
@@ -44,7 +44,7 @@ export async function updateAttributeCategoryStatus(params: { dictTypeIds: numbe
 
 // 查询商品属性分类详情
 export async function queryAttributeCategoryDetail(id: number ) {
-  return request('/api/product/attributeCategory/queryAttributeCategoryDetail', {
+  return request('/api/pms/attributeCategory/queryAttributeCategoryDetail', {
     method: 'GET',
   });
 }
@@ -52,7 +52,7 @@ export async function queryAttributeCategoryDetail(id: number ) {
 // 分页查询商品属性分类列表
 export async function queryAttributeCategoryList(params: AttributeCategoryListParams) {
 
-  return request('/api/product/attributeCategory/queryAttributeCategoryList', {
+  return request('/api/pms/attributeCategory/queryAttributeCategoryList', {
     method: 'GET',
     params: {
       ...params,

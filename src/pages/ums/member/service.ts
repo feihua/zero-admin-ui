@@ -3,7 +3,7 @@ import type {MemberListParams, MemberListItem, AddressListParams, LoginLogListPa
 
 // 删除会员信息
 export async function removeMember(ids: number[]) {
-  return request('/api/member/deleteMember?ids=' + ids.join(','), {
+  return request('/api/ums/member/deleteMember?ids=' + ids.join(','), {
     method: 'GET',
   });
 }
@@ -11,7 +11,7 @@ export async function removeMember(ids: number[]) {
 
 // 更新会员信息
 export async function updateMember(params: MemberListItem) {
-  return request('/api/member/updateMember', {
+  return request('/api/ums/member/updateMember', {
     method: 'POST',
     data: {
       ...params,
@@ -21,7 +21,7 @@ export async function updateMember(params: MemberListItem) {
 
 // 批量更新会员信息状态
 export async function updateMemberStatus(params: { dictTypeIds: number[], postStatus: number }) {
-  return request('/api/member/updateMemberStatus', {
+  return request('/api/ums/member/updateMemberStatus', {
     method: 'POST',
     data: {
       ...params,
@@ -33,7 +33,7 @@ export async function updateMemberStatus(params: { dictTypeIds: number[], postSt
 
 // 查询会员信息详情
 export async function queryMemberDetail(id: number ) {
-  return request('/api/member/queryMemberDetail', {
+  return request('/api/ums/member/queryMemberDetail', {
     method: 'GET',
   });
 }
@@ -41,7 +41,7 @@ export async function queryMemberDetail(id: number ) {
 // 分页查询会员信息列表
 export async function queryMemberList(params: MemberListParams) {
 
-  return request('/api/member/queryMemberList', {
+  return request('/api/ums/member/queryMemberList', {
     method: 'GET',
     params: {
       ...params,
@@ -52,7 +52,7 @@ export async function queryMemberList(params: MemberListParams) {
 // 分页查询询会员地址列表
 export async function queryMemberAddressList(params: AddressListParams) {
 
-  return request('/api/member/address/queryMemberAddressList', {
+  return request('/api/ums/member/address/queryMemberAddressList', {
     method: 'GET',
     params: {
       ...params,
@@ -65,7 +65,7 @@ export async function queryMemberAddressList(params: AddressListParams) {
 // 查询会员的登录日志
 export async function queryLoginLogList(params: LoginLogListParams) {
 
-  return request('/api/member/queryMemberLoginLogList', {
+  return request('/api/ums/member/queryMemberLoginLogList', {
     method: 'GET',
     params: {
       ...params,

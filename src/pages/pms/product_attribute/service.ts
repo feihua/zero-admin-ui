@@ -3,7 +3,7 @@ import type {AttributeListParams, AttributeListItem} from './data.d';
 
 // 添加商品属性
 export async function addAttribute(params: AttributeListItem) {
-  return request('/api/product/attribute/addAttribute', {
+  return request('/api/pms/attribute/addAttribute', {
     method: 'POST',
     data: {
       ...params,
@@ -13,14 +13,14 @@ export async function addAttribute(params: AttributeListItem) {
 
 // 删除商品属性
 export async function removeAttribute(ids: number[]) {
-  return request('/api/product/attribute/deleteAttribute?ids=' + ids.join(','), {
+  return request('/api/pms/attribute/deleteAttribute?ids=' + ids.join(','), {
     method: 'GET',
   });
 }
 
 // 更新商品属性
 export async function updateAttribute(params: AttributeListItem) {
-  return request('/api/product/attribute/updateAttribute', {
+  return request('/api/pms/attribute/updateAttribute', {
     method: 'POST',
     data: {
       ...params,
@@ -30,7 +30,7 @@ export async function updateAttribute(params: AttributeListItem) {
 
 // 批量更新商品属性状态
 export async function updateAttributeStatus(params: { dictTypeIds: number[], postStatus: number }) {
-  return request('/api/product/attribute/updateAttributeStatus', {
+  return request('/api/pms/attribute/updateAttributeStatus', {
     method: 'POST',
     data: {
       ...params,
@@ -42,7 +42,7 @@ export async function updateAttributeStatus(params: { dictTypeIds: number[], pos
 
 // 查询商品属性详情
 export async function queryAttributeDetail(id: number ) {
-  return request('/api/product/attribute/queryAttributeDetail', {
+  return request('/api/pms/attribute/queryAttributeDetail', {
     method: 'GET',
   });
 }
@@ -50,7 +50,7 @@ export async function queryAttributeDetail(id: number ) {
 // 分页查询商品属性列表
 export async function queryAttributeList(params: AttributeListParams) {
 
-  return request('/api/product/attribute/queryAttributeList', {
+  return request('/api/pms/attribute/queryAttributeList', {
     method: 'GET',
     params: {
       ...params,

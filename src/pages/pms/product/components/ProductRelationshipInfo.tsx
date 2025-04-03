@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {Card, Col, message, Row, Transfer} from 'antd';
 import type {PrefrenceAreaItem} from "@/pages/pms/product/data";
-import {querySubject} from "@/pages/sms/HomeRecommendSubject/service";
+import {querySubjectList} from "@/pages/sms/HomeRecommendSubject/service";
 import {queryPrefrenceArea} from "@/pages/pms/product/service";
 import type {SubjectListItem} from "@/pages/sms/HomeRecommendSubject/data";
 import type {ProductParams} from "@/pages/pms/product/data";
@@ -28,7 +28,7 @@ const ProductRelationshipInfo: React.FC<BaseInfoProps> = (props) => {
 
   useEffect(() => {
     if (props.visible) {
-      querySubject({pageSize: 100, current: 1}).then((res) => {
+      querySubjectList({pageSize: 100, current: 1}).then((res) => {
         if (res.code === '000000') {
           setSubjectList(res.data.map((item: SubjectListItem) => ({
             key: item.id,

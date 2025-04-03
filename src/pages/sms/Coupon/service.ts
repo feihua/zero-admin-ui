@@ -68,7 +68,7 @@ export async function updateCoupon(params: CouponListItem) {
 }
 
 export async function queryProductList(params?: ProductListParams) {
-  return request('/api/product/queryProductList', {
+  return request('/api/pms/product/queryProductList', {
     method: 'GET',
     params: {
       ...params,
@@ -79,7 +79,7 @@ export async function queryProductList(params?: ProductListParams) {
 // 分页查询商品分类列表
 export async function queryProductCategoryList(params: CategoryListParams) {
 
-  return request('/api/product/category/queryProductCategoryList', {
+  return request('/api/pms/product/category/queryProductCategoryList', {
     method: 'GET',
     params: {
       ...params,

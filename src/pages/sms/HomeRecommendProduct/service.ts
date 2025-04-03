@@ -64,7 +64,7 @@ export async function queryHomeRecommendProductList(params: HomeRecommendProduct
 
 
 export async function queryProduct(params?: ProductListParams) {
-  return request('/api/product/queryProductList', {
+  return request('/api/pms/product/queryProductList', {
     method: 'GET',
     params: {
       ...params,
