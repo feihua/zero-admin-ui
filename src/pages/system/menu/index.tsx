@@ -21,7 +21,6 @@ const {confirm} = Modal;
 const handleAdd = async (fields: MenuListItem) => {
   const hide = message.loading('正在添加');
   try {
-    fields.type = Number(fields.type);
     await addMenu({...fields});
     hide();
     message.success('添加成功');
@@ -39,7 +38,6 @@ const handleAdd = async (fields: MenuListItem) => {
 const handleUpdate = async (fields: MenuListItem) => {
   const hide = message.loading('正在更新');
   try {
-    fields.type = Number(fields.type);
     await updateMenu(fields);
     hide();
 
@@ -56,11 +54,11 @@ const handleUpdate = async (fields: MenuListItem) => {
  *  删除节点
  * @param selectedRows
  */
-const handleRemove = async (selectedRows: MenuListItem[]) => {
+const handleRemove = async (selectedRows: MenuListItem) => {
   const hide = message.loading('正在删除');
   if (!selectedRows) return true;
   try {
-    await removeMenu(selectedRows.map((row) => row.id));
+    await removeMenu(selectedRows.id);
     hide();
     message.success('删除成功，即将刷新');
     return true;
@@ -83,7 +81,7 @@ const MenuList: React.FC = () => {
       icon: <ExclamationCircleOutlined/>,
       content: '删除的记录不能恢复,请确认!',
       onOk() {
-        handleRemove([item]).then(() => {
+        handleRemove(item).then(() => {
           actionRef.current?.reloadAndRest?.();
         });
       },
@@ -165,7 +163,20 @@ const MenuList: React.FC = () => {
       },
     },
     {
-      title: '备注信息',
+      title: '显示状态',
+      dataIndex: 'isVisible',
+      render: (dom, entity) => {
+        switch (entity.isVisible) {
+          case 1:
+            return <Tag color={'success'}>显示</Tag>;
+          case 0:
+            return <Tag>隐藏</Tag>;
+        }
+        return <>未知{entity.menuStatus}</>;
+      },
+    },
+    {
+      title: '备注',
       dataIndex: 'remark',
       hideInSearch: true,
       hideInTable: true,
@@ -247,6 +258,7 @@ const MenuList: React.FC = () => {
         }}
         postData={(data) => tree(data, 0, 'parentId')}
         pagination={false}
+        tableAlertRender={false}
       />
 
       <CreateMenuForm

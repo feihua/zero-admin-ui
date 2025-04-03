@@ -34,10 +34,6 @@ const CreateMenuForm: React.FC<CreateFormProps> = (props) => {
       queryMenuList({}).then((res) => {
         if (res.code === '000000') {
           const tree1 = tree(res.data, 0, 'parentId');
-          tree1.unshift({
-            id: 0,
-            name: '无上级菜单',
-          })
           setTreeData(tree1);
         } else {
           message.error(res.msg);
@@ -64,10 +60,6 @@ const CreateMenuForm: React.FC<CreateFormProps> = (props) => {
     if (t === 0) {
       setMenuName('目录名称');
     } else if (t === 1) {
-      treeData.unshift({
-        id: 0,
-        name: '无上级菜单',
-      })
       setTreeData(treeData)
       setMenuName('菜单名称');
     } else {
@@ -81,8 +73,8 @@ const CreateMenuForm: React.FC<CreateFormProps> = (props) => {
     return (
       <>
         <FormItem
-          label="类型"
-          name="type"
+          label="菜单类型"
+          name="menuType"
           initialValue={1}
         >
           <Radio.Group onChange={onChange}>
@@ -92,7 +84,7 @@ const CreateMenuForm: React.FC<CreateFormProps> = (props) => {
           </Radio.Group>
         </FormItem>
         {menuType !== 0 && <FormItem
-          label="上级"
+          label="上级菜单"
           name="parentId"
           rules={[{required: true, message: '请选择上级菜单!'}]}
         >
@@ -101,28 +93,28 @@ const CreateMenuForm: React.FC<CreateFormProps> = (props) => {
             dropdownStyle={{maxHeight: 400, overflow: 'auto'}}
             treeData={treeData}
             placeholder="请选择上级"
-            fieldNames={{label: 'name', value: 'id', children: 'children'}}
+            fieldNames={{label: 'menuName', value: 'id', children: 'children'}}
             allowClear
           />
         </FormItem>
         }
         <FormItem
           label={menuName}
-          name="name"
+          name="menuName"
           rules={[{required: true, message: '请输入菜单名称!'}]}
         >
           <Input/>
         </FormItem>
         {menuType !== 2 &&
           <FormItem
-            label="路径"
-            name="url"
+            label="组件路径"
+            name="menuPath"
             rules={[{required: true, message: '请输入路径!'}]}
           >
             <Input/>
           </FormItem>
         }
-        {menuType !== 0 &&
+        {menuType == 2 &&
           <FormItem
             label="接口地址"
             name="backgroundUrl"
@@ -132,16 +124,16 @@ const CreateMenuForm: React.FC<CreateFormProps> = (props) => {
           </FormItem>
         }
         <FormItem
-          label="排序"
-          name="orderNum"
+          label="显示排序"
+          name="menuSort"
           initialValue={1}
           rules={[{required: true, message: '请输入排序!'}]}>
           <InputNumber style={{width: 255}}/>
         </FormItem>
         {menuType !== 2 &&
           <FormItem
-            label="图标"
-            name="icon"
+            label="菜单图标"
+            name="menuIcon"
             initialValue={"Setting"}
             rules={[{required: true, message: '请输入图标!'}]}
           >
@@ -149,10 +141,20 @@ const CreateMenuForm: React.FC<CreateFormProps> = (props) => {
           </FormItem>
         }
         <FormItem
-          label="状态"
-          name="delFlag"
+          label="菜单状态"
+          name="menuStatus"
           initialValue={1}
           rules={[{required: true, message: '请选择状态!'}]}>
+          <Radio.Group>
+            <Radio value={1}>正常</Radio>
+            <Radio value={0}>禁用</Radio>
+          </Radio.Group>
+        </FormItem>
+        <FormItem
+          label="显示状态"
+          name="isVisible"
+          initialValue={1}
+          rules={[{required: true, message: '请选择是否可见!'}]}>
           <Radio.Group>
             <Radio value={1}>正常</Radio>
             <Radio value={0}>禁用</Radio>

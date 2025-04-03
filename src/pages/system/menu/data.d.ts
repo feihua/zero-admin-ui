@@ -1,8 +1,9 @@
 export interface MenuListItem {
   id: number;
   menuStatus?: number;
-  type?: number;
-  name: string;
+  isVisible?: number;
+  menuType?: number;
+  menuName: string;
 
 }
 
