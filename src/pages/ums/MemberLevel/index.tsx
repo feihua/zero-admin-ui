@@ -1,23 +1,28 @@
-import {DeleteOutlined, EditOutlined, ExclamationCircleOutlined, PlusOutlined} from '@ant-design/icons';
-import {Button, Divider, Drawer, message, Modal, Select, Space, Switch} from 'antd';
-import React, {useRef, useState} from 'react';
-import {PageContainer} from '@ant-design/pro-layout';
-import type {ActionType, ProColumns} from '@ant-design/pro-table';
+import {
+  DeleteOutlined,
+  EditOutlined,
+  ExclamationCircleOutlined,
+  PlusOutlined,
+} from '@ant-design/icons';
+import { Button, Divider, Drawer, message, Modal, Select, Switch } from 'antd';
+import React, { useRef, useState } from 'react';
+import { PageContainer } from '@ant-design/pro-layout';
+import type { ActionType, ProColumns } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
-import type {ProDescriptionsItemProps} from '@ant-design/pro-descriptions';
+import type { ProDescriptionsItemProps } from '@ant-design/pro-descriptions';
 import ProDescriptions from '@ant-design/pro-descriptions';
 import AddModal from './components/AddModal';
 import UpdateModal from './components/UpdateModal';
-import type {MemberLevelListItem} from './data.d';
+import type { MemberLevelListItem } from './data.d';
 import {
   addMemberLevel,
   queryMemberLevelList,
   removeMemberLevel,
   updateMemberLevel,
-  updateMemberLevelStatus
+  updateMemberLevelStatus,
 } from './service';
 
-const {confirm} = Modal;
+const { confirm } = Modal;
 
 /**
  * 添加会员等级
@@ -26,7 +31,7 @@ const {confirm} = Modal;
 const handleAdd = async (fields: MemberLevelListItem) => {
   const hide = message.loading('正在添加');
   try {
-    await addMemberLevel({...fields});
+    await addMemberLevel({ ...fields });
     hide();
     message.success('添加成功');
     return true;
@@ -74,17 +79,13 @@ const handleRemove = async (ids: number[]) => {
 
 /**
  * 更新会员等级状态
- * @param ids
+ * @param id
  * @param status
  */
-const handleStatus = async (ids: number[], status: number) => {
+const handleStatus = async (id: number, status: number) => {
   const hide = message.loading('正在更新状态');
-  if (ids.length == 0) {
-    hide();
-    return true;
-  }
   try {
-    await updateMemberLevelStatus({memberLevelIds: ids, memberLevelStatus: status});
+    await updateMemberLevelStatus({ id: id, isEnabled: status });
     hide();
     message.success('更新状态成功');
     return true;
@@ -104,34 +105,31 @@ const MemberLevelList: React.FC = () => {
   const showDeleteConfirm = (ids: number[]) => {
     confirm({
       title: '是否删除记录?',
-      icon: <ExclamationCircleOutlined/>,
+      icon: <ExclamationCircleOutlined />,
       content: '删除的记录不能恢复,请确认!',
       onOk() {
         handleRemove(ids).then(() => {
           actionRef.current?.reloadAndRest?.();
         });
       },
-      onCancel() {
-      },
+      onCancel() {},
     });
   };
 
-  const showStatusConfirm = (ids: number[], status: number) => {
+  const showStatusConfirm = (id: number, status: number) => {
     confirm({
-      title: `确定${status == 1 ? "启用" : "禁用"}吗？`,
-      icon: <ExclamationCircleOutlined/>,
+      title: `确定${status == 1 ? '启用' : '禁用'}吗？`,
+      icon: <ExclamationCircleOutlined />,
       async onOk() {
-        await handleStatus(ids, status)
+        await handleStatus(id, status);
         actionRef.current?.clearSelected?.();
         actionRef.current?.reload?.();
       },
-      onCancel() {
-      },
+      onCancel() {},
     });
   };
 
   const columns: ProColumns<MemberLevelListItem>[] = [
-
     {
       title: '主键ID',
       dataIndex: 'id',
@@ -141,10 +139,16 @@ const MemberLevelList: React.FC = () => {
       title: '等级名称',
       dataIndex: 'name',
       render: (dom, entity) => {
-        return <a onClick={() => {
-          setCurrentRow(entity);
-          setShowDetail(true);
-        }}>{dom}</a>;
+        return (
+          <a
+            onClick={() => {
+              setCurrentRow(entity);
+              setShowDetail(true);
+            }}
+          >
+            {dom}
+          </a>
+        );
       },
     },
 
@@ -167,17 +171,50 @@ const MemberLevelList: React.FC = () => {
       title: '是否免运费',
       dataIndex: 'freeFreight',
       hideInSearch: true,
+      render: (dom, entity) => {
+        return entity.freeFreight === 1 ? '是' : '否';
+      },
     },
     {
       title: '是否可评论获取奖励',
       dataIndex: 'commentExtra',
       hideInSearch: true,
+      render: (dom, entity) => {
+        return entity.commentExtra === 1 ? '是' : '否';
+      },
     },
     {
       title: '会员特权JSON',
       dataIndex: 'privileges',
       hideInSearch: true,
-      hideInTable: true
+      hideInTable: true,
+    },
+
+    {
+      title: '是否启用',
+      dataIndex: 'isEnabled',
+      hideInSearch: true,
+      renderFormItem: (text, row, index) => {
+        return (
+          <Select
+            value={row.value}
+            options={[
+              { value: '1', label: '是' },
+              { value: '0', label: '否' },
+            ]}
+          />
+        );
+      },
+      render: (dom, entity) => {
+        return (
+          <Switch
+            checked={entity.isEnabled == 1}
+            onChange={(flag) => {
+              showStatusConfirm(entity.id, flag ? 1 : 0);
+            }}
+          />
+        );
+      },
     },
     {
       title: '备注',
@@ -185,31 +222,10 @@ const MemberLevelList: React.FC = () => {
       hideInSearch: true,
     },
     {
-      title: '是否启用',
-      dataIndex: 'isEnabled',
-      renderFormItem: (text, row, index) => {
-        return <Select
-          value={row.value}
-          options={[
-            {value: '1', label: '是'},
-            {value: '0', label: '否'},
-          ]}
-        />
-
-      },
-      render: (dom, entity) => {
-        return (
-          <Switch checked={entity.isEnabled == 1} onChange={(flag) => {
-            showStatusConfirm([entity.id], flag ? 1 : 0)
-          }}/>
-        );
-      },
-    },
-    {
       title: '创建人ID',
       dataIndex: 'createBy',
       hideInSearch: true,
-      hideInTable: true
+      hideInTable: true,
     },
     {
       title: '创建时间',
@@ -220,15 +236,14 @@ const MemberLevelList: React.FC = () => {
       title: '更新人ID',
       dataIndex: 'updateBy',
       hideInSearch: true,
-      hideInTable: true
+      hideInTable: true,
     },
     {
       title: '更新时间',
       dataIndex: 'updateTime',
       hideInSearch: true,
-      hideInTable: true
+      hideInTable: true,
     },
-
 
     {
       title: '操作',
@@ -242,20 +257,19 @@ const MemberLevelList: React.FC = () => {
             onClick={() => {
               handleUpdateVisible(true);
               setCurrentRow(record);
-            }
-            }
+            }}
           >
-            <EditOutlined/> 编辑
+            <EditOutlined /> 编辑
           </a>
-          <Divider type="vertical"/>
+          <Divider type="vertical" />
           <a
             key="delete"
-            style={{color: '#ff4d4f'}}
+            style={{ color: '#ff4d4f' }}
             onClick={() => {
               showDeleteConfirm([record.id]);
             }}
           >
-            <DeleteOutlined/> 删除
+            <DeleteOutlined /> 删除
           </a>
         </>
       ),
@@ -273,48 +287,15 @@ const MemberLevelList: React.FC = () => {
         }}
         toolBarRender={() => [
           <Button type="primary" key="primary" onClick={() => handleAddVisible(true)}>
-            <PlusOutlined/> 新增
+            <PlusOutlined /> 新增
           </Button>,
         ]}
         request={queryMemberLevelList}
         columns={columns}
         rowSelection={{}}
-        pagination={{pageSize: 10}}
-        tableAlertRender={({
-                             selectedRowKeys,
-                             selectedRows,
-                           }) => {
-          const ids = selectedRows.map((row) => row.id);
-          return (
-            <Space size={16}>
-              <span>已选 {selectedRowKeys.length} 项</span>
-              <Button
-                icon={<EditOutlined/>}
-                style={{borderRadius: '5px'}}
-                onClick={async () => {
-                  showStatusConfirm(ids, 1)
-                }}
-              >批量启用</Button>
-              <Button
-                icon={<EditOutlined/>}
-                style={{borderRadius: '5px'}}
-                onClick={async () => {
-                  showStatusConfirm(ids, 0)
-                }}
-              >批量禁用</Button>
-              <Button
-                icon={<DeleteOutlined/>}
-                danger
-                style={{borderRadius: '5px'}}
-                onClick={async () => {
-                  showDeleteConfirm(ids);
-                }}
-              >批量删除</Button>
-            </Space>
-          );
-        }}
+        pagination={{ pageSize: 10 }}
+        tableAlertRender={false}
       />
-
 
       <AddModal
         key={'AddModal'}
@@ -364,14 +345,14 @@ const MemberLevelList: React.FC = () => {
         open={showDetail}
         onClose={() => {
           setCurrentRow(undefined);
-          setShowDetail(false)
+          setShowDetail(false);
         }}
         closable={false}
       >
         {currentRow?.id && (
           <ProDescriptions<MemberLevelListItem>
             column={2}
-            title={"会员等级详情"}
+            title={'会员等级详情'}
             request={async () => ({
               data: currentRow || {},
             })}

@@ -135,7 +135,7 @@
         name: '会员等级',
         icon: 'table',
         path: '/ums/memberLevel/list',
-        component: './ums/member_level',
+        component: './ums/MemberLevel',
       },
       {
         name: '会员地址',

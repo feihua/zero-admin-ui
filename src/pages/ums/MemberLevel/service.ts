@@ -13,7 +13,7 @@ export async function addMemberLevel(params: MemberLevelListItem) {
 
 // 删除会员等级
 export async function removeMemberLevel(ids: number[]) {
-  return request('/api/ums/level/deleteMemberLevel?ids=[' + ids + "]", {
+  return request('/api/ums/level/deleteMemberLevel?ids=' + ids.join(','), {
     method: 'GET',
   });
 }
@@ -30,7 +30,7 @@ export async function updateMemberLevel(params: MemberLevelListItem) {
 }
 
 // 批量更新会员等级状态
-export async function updateMemberLevelStatus(params: { memberLevelIds: number[], memberLevelStatus: number }) {
+export async function updateMemberLevelStatus(params: { id: number, isEnabled: number }) {
   return request('/api/ums/level/updateMemberLevelStatus', {
     method: 'POST',
     data: {

@@ -58,7 +58,7 @@ const AddModal: React.FC<AddModalProps> = (props) => {
           label="等级"
           rules={[{required: true, message: '请输入等级!'}]}
         >
-          <Input id="create-level" placeholder={'请输入等级!'}/>
+          <InputNumber id="create-level" placeholder={'请输入等级!'} style={{width: 255}}/>
         </FormItem>
         <FormItem
           name="growthPoint"
@@ -77,6 +77,7 @@ const AddModal: React.FC<AddModalProps> = (props) => {
         <FormItem
           name="freeFreight"
           label="是否免运费"
+          initialValue={1}
           rules={[{required: true, message: '请输入是否免运费!'}]}
         >
           <Radio.Group id="freeFreight">
@@ -86,7 +87,8 @@ const AddModal: React.FC<AddModalProps> = (props) => {
         </FormItem>
         <FormItem
           name="commentExtra"
-          label="是否可评论获取奖励"
+          label="可评论获取奖励"
+          initialValue={1}
           rules={[{required: true, message: '请输入是否可评论获取奖励!'}]}
         >
           <Radio.Group id="commentExtra">
@@ -104,6 +106,7 @@ const AddModal: React.FC<AddModalProps> = (props) => {
         <FormItem
           name="isEnabled"
           label="是否启用"
+          initialValue={1}
           rules={[{required: true, message: '请选择是否启用!'}]}
         >
           <Radio.Group id="isEnabled">

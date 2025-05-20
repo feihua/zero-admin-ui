@@ -74,7 +74,7 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
           label="等级"
           rules={[{required: true, message: '请输入等级!'}]}
         >
-          <Input id="update-level" placeholder={'请输入等级!'}/>
+          <InputNumber id="update-level" placeholder={'请输入等级!'}  style={{width: 255}}/>
         </FormItem>
         <FormItem
           name="growthPoint"
@@ -102,7 +102,7 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
         </FormItem>
         <FormItem
           name="commentExtra"
-          label="是否可评论获取奖励"
+          label="可评论获取奖励"
           rules={[{required: true, message: '请输入是否可评论获取奖励!'}]}
         >
           <Radio.Group id="commentExtra">
