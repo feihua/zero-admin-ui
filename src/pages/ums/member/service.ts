@@ -52,7 +52,7 @@ export async function queryMemberList(params: MemberListParams) {
 // 分页查询询会员地址列表
 export async function queryMemberAddressList(params: AddressListParams) {
 
-  return request('/api/ums/member/address/queryMemberAddressList', {
+  return request('/api/ums/address/queryMemberAddressList', {
     method: 'GET',
     params: {
       ...params,
