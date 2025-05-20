@@ -105,7 +105,7 @@ const ProductPromotionalInfo: React.FC<BaseInfoProps> = (props) => {
       )}
       {promotionTypes === 2 && (
         <div>
-          {levelListItem.map(r => <FormItem name={r.levelName} key={r.id} label={r.levelName} style={{textAlign: "left"}}>
+          {levelListItem.map(r => <FormItem name={r.name} key={r.id} label={r.name} style={{textAlign: "left"}}>
             <InputNumber addonAfter={'元'}/>
           </FormItem>)}
         </div>
