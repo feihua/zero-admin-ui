@@ -129,7 +129,7 @@
         name: '会员列表',
         icon: 'table',
         path: '/ums/member/list',
-        component: './ums/member',
+        component: './ums/MemberInfo',
       },
       {
         name: '会员等级',
@@ -137,18 +137,18 @@
         path: '/ums/memberLevel/list',
         component: './ums/MemberLevel',
       },
-      {
-        name: '会员地址',
-        icon: 'table',
-        path: '/ums/memberAddress/list',
-        component: './ums/member_address',
-      },
-      {
-        name: '登录记录',
-        icon: 'table',
-        path: '/ums/memberLoginLog/list',
-        component: './ums/member_login_log',
-      },
+      // {
+      //   name: '会员地址',
+      //   icon: 'table',
+      //   path: '/ums/memberAddress/list',
+      //   component: './ums/member_address',
+      // },
+      // {
+      //   name: '登录记录',
+      //   icon: 'table',
+      //   path: '/ums/memberLoginLog/list',
+      //   component: './ums/member_login_log',
+      // },
       {
         name: '积分消费设置',
         icon: 'table',

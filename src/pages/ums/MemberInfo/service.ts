@@ -1,9 +1,9 @@
 import {request} from 'umi';
-import type { MemberInfoListParams, MemberInfoListItem } from './data.d';
+import { MemberInfoListParams, MemberInfoListItem, AddressListParams, LoginLogListParams } from './data.d';
 
 // 添加会员信息
 export async function addMemberInfo(params: MemberInfoListItem) {
-  return request('/api/demo/memberInfo/addMemberInfo', {
+  return request('/api/ums/member/addMember', {
     method: 'POST',
     data: {
       ...params,
@@ -13,7 +13,7 @@ export async function addMemberInfo(params: MemberInfoListItem) {
 
 // 删除会员信息
 export async function removeMemberInfo(ids: number[]) {
-  return request('/api/demo/memberInfo/deleteMemberInfo?ids=[' + ids + "]", {
+  return request('/api/ums/member/deleteMember?ids=' + ids.join(','), {
     method: 'GET',
   });
 }
@@ -21,7 +21,7 @@ export async function removeMemberInfo(ids: number[]) {
 
 // 更新会员信息
 export async function updateMemberInfo(params: MemberInfoListItem) {
-  return request('/api/demo/memberInfo/updateMemberInfo', {
+  return request('/api/ums/member/updateMember', {
     method: 'POST',
     data: {
       ...params,
@@ -30,8 +30,8 @@ export async function updateMemberInfo(params: MemberInfoListItem) {
 }
 
 // 批量更新会员信息状态
-export async function updateMemberInfoStatus(params: { memberInfoIds: number[], memberInfoStatus: number }) {
-  return request('/api/demo/memberInfo/updateMemberInfoStatus', {
+export async function updateMemberInfoStatus(params: { ids: number[], isEnabled: number }) {
+  return request('/api/ums/member/updateMemberStatus', {
     method: 'POST',
     data: {
       ...params,
@@ -43,7 +43,7 @@ export async function updateMemberInfoStatus(params: { memberInfoIds: number[], 
 
 // 查询会员信息详情
 export async function queryMemberInfoDetail(id: number) {
-  return request('/api/demo/memberInfo/queryMemberInfoDetail?id=' + id, {
+  return request('/api/ums/member/queryMemberDetail?id=' + id, {
     method: 'GET',
   });
 }
@@ -51,10 +51,35 @@ export async function queryMemberInfoDetail(id: number) {
 // 分页查询会员信息列表
 export async function queryMemberInfoList(params: MemberInfoListParams) {
 
-  return request('/api/demo/memberInfo/queryMemberInfoList', {
+  return request('/api/ums/member/queryMemberList', {
     method: 'GET',
     params: {
       ...params,
     },
   });
 }
+
+// 分页查询询会员地址列表
+export async function queryMemberAddressList(params: AddressListParams) {
+
+  return request('/api/ums/address/queryMemberAddressList', {
+    method: 'GET',
+    params: {
+      ...params,
+    },
+  });
+}
+
+
+
+// 查询会员的登录日志
+export async function queryLoginLogList(params: LoginLogListParams) {
+
+  return request('/api/ums/member/queryMemberLoginLogList', {
+    method: 'GET',
+    params: {
+      ...params,
+    },
+  });
+}
+
