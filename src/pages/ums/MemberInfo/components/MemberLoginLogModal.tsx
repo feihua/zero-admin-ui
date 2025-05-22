@@ -79,7 +79,14 @@ const MemberLogModal: React.FC<CreateFormProps> = (props) => {
         actionRef={actionRef}
         rowKey="id"
         search={false}
-        request={(params) => {
+        request={async (params) => {
+          if (!logModalVisible) {
+            return {
+              data: [],
+              success: true,
+              total: 0,
+            };
+          }
           return queryLoginLogList({
             ...params,
             memberId,

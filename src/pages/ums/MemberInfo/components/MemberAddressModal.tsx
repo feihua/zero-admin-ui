@@ -113,7 +113,14 @@ const MemberAddressModal: React.FC<CreateFormProps> = (props) => {
         actionRef={actionRef}
         rowKey="id"
         search={false}
-        request={(params) => {
+        request={async (params) => {
+          if (!addressModalVisible) {
+            return {
+              data: [],
+              success: true,
+              total: 0,
+            };
+          }
           return queryMemberAddressList({
             ...params,
             memberId,

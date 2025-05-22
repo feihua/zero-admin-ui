@@ -137,7 +137,14 @@ const MemberGrowthModal: React.FC<GrowthProps> = (props) => {
         actionRef={actionRef}
         rowKey="id"
         search={false}
-        request={(params) => {
+        request={async (params) => {
+          if (!visible) {
+            return {
+              data: [],
+              success: true,
+              total: 0,
+            };
+          }
           return queryMemberGrowthLogList({
             ...params,
             memberId,
