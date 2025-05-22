@@ -1,6 +1,7 @@
 import React, {useEffect} from 'react';
 import {DatePicker, Form, Input, InputNumber, Modal, Radio, Select} from 'antd';
 import type { MemberTaskListItem} from '../data.d';
+import moment from 'moment';
 
 export interface UpdateModalProps {
   onCancel: () => void;
@@ -36,6 +37,9 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
     if (currentData) {
       form.setFieldsValue({
         ...currentData,
+        startTime: moment(currentData.startTime, 'YYYY-MM-DD HH:mm:ss'),
+        endTime: moment(currentData.endTime, 'YYYY-MM-DD HH:mm:ss'),
+
       });
     }
   }, [props.currentData]);
@@ -113,8 +117,8 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
         </FormItem>
         <FormItem
           name="rewardType"
-          label="奖励类型：0-积分成长值，1-优惠券，2-抽奖次数"
-          rules={[{required: true, message: '请输入奖励类型：0-积分成长值，1-优惠券，2-抽奖次数!'}]}
+          label="奖励类型"
+          rules={[{required: true, message: '请输入奖励类型!'}]}
         >
           <Select id="rewardType" placeholder={'请选择奖励类型'}>
             <Select.Option value={0}>积分成长值</Select.Option>
@@ -151,8 +155,8 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
         </FormItem>
         <FormItem
           name="status"
-          label="状态：0-禁用，1-启用"
-          rules={[{required: true, message: '请输入状态：0-禁用，1-启用!'}]}
+          label="状态"
+          rules={[{required: true, message: '请输入状态!'}]}
         >
           <Radio.Group>
             <Radio value={1}>正常</Radio>

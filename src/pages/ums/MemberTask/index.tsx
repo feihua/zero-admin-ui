@@ -1,5 +1,5 @@
 import {DeleteOutlined, EditOutlined, ExclamationCircleOutlined, PlusOutlined} from '@ant-design/icons';
-import {Button, Divider, Drawer, message, Modal, Select, Space, Switch} from 'antd';
+import { Button, Divider, Drawer, message, Modal, Select, Space, Switch } from 'antd';
 import React, {useRef, useState} from 'react';
 import {PageContainer} from '@ant-design/pro-layout';
 import type {ActionType, ProColumns} from '@ant-design/pro-table';
@@ -78,7 +78,7 @@ const handleStatus = async (ids: number[], status: number) => {
     return true;
   }
   try {
-    await updateMemberTaskStatus({ memberTaskIds: ids, memberTaskStatus: status});
+    await updateMemberTaskStatus({ ids: ids, status: status});
     hide();
     message.success('更新状态成功');
     return true;
@@ -125,7 +125,7 @@ const MemberTaskList: React.FC = () => {
   };
 
   const columns: ProColumns<MemberTaskListItem>[] = [
-    
+
     {
       title: '主键ID',
       dataIndex: 'id',
@@ -142,7 +142,7 @@ const MemberTaskList: React.FC = () => {
           }}>{dom}</a>;
         },
     },
-    
+
     {
       title: '任务描述',
       dataIndex: 'taskDesc',
@@ -159,75 +159,85 @@ const MemberTaskList: React.FC = () => {
       hideInSearch: true,
     },
     {
-      title: '任务类型：0-新手任务，1-日常任务，2-周常任务，3-月常任务',
+      title: '任务类型',
       dataIndex: 'taskType',
       renderFormItem: (text, row, index) => {
           return <Select
             value={row.value}
             options={ [
-              {value: '1', label: '正常'},
-              {value: '0', label: '禁用'},
+              {value: '0', label: '新手任务'},
+              {value: '1', label: '日常任务'},
+              {value: '2', label: '周常任务'},
+              {value: '3', label: '月常任务'},
             ]}
           />
 
     },
     render: (dom, entity) => {
         switch (entity.taskType) {
-          case 1:
-            return <Tag color={'success'}>正常</Tag>;
           case 0:
-            return <Tag>禁用</Tag>;
+            return '新手任务';
+          case 1:
+            return '日常任务'
+          case 2:
+            return '周常任务'
+          case 3:
+            return '月常任务'
         }
         return <>未知{entity.taskType}</>;
       },
     },
-    
+
     {
       title: '需要完成次数',
       dataIndex: 'completeCount',
       hideInSearch: true,
     },
     {
-      title: '奖励类型：0-积分成长值，1-优惠券，2-抽奖次数',
+      title: '奖励类型',
       dataIndex: 'rewardType',
       renderFormItem: (text, row, index) => {
           return <Select
             value={row.value}
             options={ [
-              {value: '1', label: '正常'},
-              {value: '0', label: '禁用'},
+              {value: 0, label: '积分成长值'},
+              {value: 1, label: '优惠券'},
+              {value: 2, label: '抽奖次数'},
             ]}
           />
 
     },
     render: (dom, entity) => {
         switch (entity.rewardType) {
-          case 1:
-            return <Tag color={'success'}>正常</Tag>;
           case 0:
-            return <Tag>禁用</Tag>;
+            return '积分成长值';
+          case 1:
+            return '优惠券';
+          case 2:
+            return '抽奖次数';
         }
         return <>未知{entity.rewardType}</>;
       },
     },
-    
+
     {
       title: '奖励参数JSON',
       dataIndex: 'rewardParams',
       hideInSearch: true,
+      hideInTable: true,
     },
     {
-      title: '任务开始时间',
+      title: '开始时间',
       dataIndex: 'startTime',
       hideInSearch: true,
     },
     {
-      title: '任务结束时间',
+      title: '结束时间',
       dataIndex: 'endTime',
       hideInSearch: true,
     },
     {
-      title: '状态：0-禁用，1-启用',
+      title: '状态',
       dataIndex: 'status',
       renderFormItem: (text, row, index) => {
           return <Select
@@ -247,7 +257,7 @@ const MemberTaskList: React.FC = () => {
       );
     },
     },
-    
+
     {
       title: '排序',
       dataIndex: 'sort',
@@ -257,7 +267,9 @@ const MemberTaskList: React.FC = () => {
       title: '创建人ID',
       dataIndex: 'createBy',
       hideInSearch: true,
+      hideInTable: true,
     },
+
     {
       title: '创建时间',
       dataIndex: 'createTime',
@@ -267,16 +279,13 @@ const MemberTaskList: React.FC = () => {
       title: '更新人ID',
       dataIndex: 'updateBy',
       hideInSearch: true,
+      hideInTable: true,
     },
     {
       title: '更新时间',
       dataIndex: 'updateTime',
       hideInSearch: true,
-    },
-    {
-      title: '是否删除',
-      dataIndex: 'isDeleted',
-      hideInSearch: true,
+      hideInTable: true,
     },
 
     {
@@ -314,7 +323,7 @@ const MemberTaskList: React.FC = () => {
 return (
     <PageContainer>
       <ProTable<MemberTaskListItem>
-        headerTitle="会员任务管理"
+        headerTitle="会员任务"
         actionRef={actionRef}
         rowKey="id"
         search={ {

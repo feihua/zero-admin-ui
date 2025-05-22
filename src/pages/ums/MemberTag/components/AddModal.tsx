@@ -11,8 +11,8 @@ export interface AddModalProps {
 const FormItem = Form.Item;
 
 const formLayout = {
-  labelCol: {span: 7},
-  wrapperCol: {span: 13},
+  labelCol: {span: 10},
+  wrapperCol: {span: 10},
 };
 
 const AddModal: React.FC<AddModalProps> = (props) => {
@@ -65,18 +65,19 @@ const AddModal: React.FC<AddModalProps> = (props) => {
           label="自动打标签完成订单数量"
           rules={[{required: true, message: '请输入自动打标签完成订单数量!'}]}
         >
-            <InputNumber id="create-finishOrderCount" placeholder={'请输入自动打标签完成订单数量!'} style={{width: 255}}/>
+            <InputNumber id="create-finishOrderCount" placeholder={'请输入自动打标签完成订单数量!'} style={{width: 230}}/>
          </FormItem>
         <FormItem
           name="finishOrderAmount"
           label="自动打标签完成订单金额"
           rules={[{required: true, message: '请输入自动打标签完成订单金额!'}]}
         >
-            <InputNumber id="create-finishOrderAmount" placeholder={'请输入自动打标签完成订单金额!'} style={{width: 255}}/>
+            <InputNumber id="create-finishOrderAmount" placeholder={'请输入自动打标签完成订单金额!'} style={{width: 230}}/>
          </FormItem>
         <FormItem
           name="status"
-          label="状态：0-禁用，1-启用"
+          label="状态"
+          initialValue={1}
           rules={[{required: true, message: '请输入状态：0-禁用，1-启用!'}]}
         >
               <Radio.Group>
@@ -99,6 +100,7 @@ const AddModal: React.FC<AddModalProps> = (props) => {
       title="新增"
       open={addVisible}
       {...modalFooter}
+      width={600}
     >
       <Form
         {...formLayout}

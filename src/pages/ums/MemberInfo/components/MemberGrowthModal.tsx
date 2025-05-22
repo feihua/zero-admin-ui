@@ -38,7 +38,7 @@ const MemberGrowthModal: React.FC<GrowthProps> = (props) => {
       hideInSearch: true,
     },
     {
-      title: '变更类型：1-添加成长值，2-减少成长值',
+      title: '变更类型',
       dataIndex: 'changeType',
       renderFormItem: (text, row, index) => {
         return <Select
@@ -67,7 +67,7 @@ const MemberGrowthModal: React.FC<GrowthProps> = (props) => {
       hideInSearch: true,
     },
     {
-      title: '来源类型：0-其他，1-订单，2-活动，3-签到，4-管理员修改',
+      title: '来源类型',
       dataIndex: 'sourceType',
       renderFormItem: (text, row, index) => {
         return <Select

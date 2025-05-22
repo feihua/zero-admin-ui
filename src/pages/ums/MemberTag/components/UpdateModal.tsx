@@ -12,8 +12,8 @@ export interface UpdateModalProps {
 const FormItem = Form.Item;
 
 const formLayout = {
-  labelCol: {span: 7},
-  wrapperCol: {span: 13},
+  labelCol: {span: 10},
+  wrapperCol: {span: 10},
 };
 
 const UpdateModal: React.FC<UpdateModalProps> = (props) => {
@@ -93,7 +93,7 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
         </FormItem>
         <FormItem
           name="status"
-          label="状态：0-禁用，1-启用"
+          label="状态"
           rules={[{required: true, message: '请输入状态：0-禁用，1-启用!'}]}
         >
           <Radio.Group>
@@ -115,6 +115,7 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
       title="编辑"
       open={updateVisible}
       {...modalFooter}
+      width={600}
     >
       <Form
         {...formLayout}

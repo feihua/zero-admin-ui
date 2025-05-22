@@ -78,7 +78,7 @@ const handleStatus = async (ids: number[], status: number) => {
     return true;
   }
   try {
-    await updateMemberTagStatus({ memberTagIds: ids, memberTagStatus: status});
+    await updateMemberTagStatus({ ids: ids, status: status});
     hide();
     message.success('更新状态成功');
     return true;
@@ -125,7 +125,7 @@ const MemberTagList: React.FC = () => {
   };
 
   const columns: ProColumns<MemberTagListItem>[] = [
-    
+
     {
       title: '主键ID',
       dataIndex: 'id',
@@ -134,7 +134,6 @@ const MemberTagList: React.FC = () => {
     {
       title: '标签名称',
       dataIndex: 'tagName',
-      hideInSearch: true,
       render: (dom, entity) => {
           return <a onClick={() => {
             setCurrentRow(entity);
@@ -142,7 +141,7 @@ const MemberTagList: React.FC = () => {
           }}>{dom}</a>;
         },
     },
-    
+
     {
       title: '标签描述',
       dataIndex: 'description',
@@ -159,7 +158,7 @@ const MemberTagList: React.FC = () => {
       hideInSearch: true,
     },
     {
-      title: '状态：0-禁用，1-启用',
+      title: '状态',
       dataIndex: 'status',
       renderFormItem: (text, row, index) => {
           return <Select
@@ -179,11 +178,12 @@ const MemberTagList: React.FC = () => {
       );
     },
     },
-    
+
     {
       title: '创建人ID',
       dataIndex: 'createBy',
       hideInSearch: true,
+      hideInTable: true,
     },
     {
       title: '创建时间',
@@ -194,17 +194,14 @@ const MemberTagList: React.FC = () => {
       title: '更新人ID',
       dataIndex: 'updateBy',
       hideInSearch: true,
+      hideInTable: true,
     },
     {
       title: '更新时间',
       dataIndex: 'updateTime',
       hideInSearch: true,
     },
-    {
-      title: '是否删除',
-      dataIndex: 'isDeleted',
-      hideInSearch: true,
-    },
+
 
     {
       title: '操作',
@@ -241,7 +238,7 @@ const MemberTagList: React.FC = () => {
 return (
     <PageContainer>
       <ProTable<MemberTagListItem>
-        headerTitle="用户标签管理"
+        headerTitle="用户标签"
         actionRef={actionRef}
         rowKey="id"
         search={ {

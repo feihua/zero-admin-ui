@@ -1,8 +1,11 @@
 import {request} from 'umi';
 import type { MemberTaskListParams, MemberTaskListItem } from './data.d';
+import moment from 'moment/moment';
 
 // 添加会员任务
 export async function addMemberTask(params: MemberTaskListItem) {
+  params.startTime = moment(params.startTime).format('YYYY-MM-DD HH:mm:ss');
+  params.endTime = moment(params.endTime).format('YYYY-MM-DD HH:mm:ss');
   return request('/api/ums/task/addMemberTask', {
     method: 'POST',
     data: {
@@ -13,7 +16,7 @@ export async function addMemberTask(params: MemberTaskListItem) {
 
 // 删除会员任务
 export async function removeMemberTask(ids: number[]) {
-  return request('/api/ums/task/deleteMemberTask?ids=[' + ids + "]", {
+  return request('/api/ums/task/deleteMemberTask?ids=' + ids.join(','), {
     method: 'GET',
   });
 }
@@ -21,6 +24,8 @@ export async function removeMemberTask(ids: number[]) {
 
 // 更新会员任务
 export async function updateMemberTask(params: MemberTaskListItem) {
+  params.startTime = moment(params.startTime).format('YYYY-MM-DD HH:mm:ss');
+  params.endTime = moment(params.endTime).format('YYYY-MM-DD HH:mm:ss');
   return request('/api/ums/task/updateMemberTask', {
     method: 'POST',
     data: {
@@ -30,7 +35,7 @@ export async function updateMemberTask(params: MemberTaskListItem) {
 }
 
 // 批量更新会员任务状态
-export async function updateMemberTaskStatus(params: { memberTaskIds: number[], memberTaskStatus: number }) {
+export async function updateMemberTaskStatus(params: { ids: number[], status: number }) {
   return request('/api/ums/task/updateMemberTaskStatus', {
     method: 'POST',
     data: {
