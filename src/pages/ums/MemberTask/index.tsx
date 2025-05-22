@@ -1,26 +1,20 @@
 import {DeleteOutlined, EditOutlined, ExclamationCircleOutlined, PlusOutlined} from '@ant-design/icons';
-import {Button, Divider, Drawer, message, Modal, Select, Space, Switch, Tag} from 'antd';
+import {Button, Divider, Drawer, message, Modal, Select, Space, Switch} from 'antd';
 import React, {useRef, useState} from 'react';
 import {PageContainer} from '@ant-design/pro-layout';
 import type {ActionType, ProColumns} from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
 import type {ProDescriptionsItemProps} from '@ant-design/pro-descriptions';
 import ProDescriptions from '@ant-design/pro-descriptions';
-import CreateForm from './components/CreateForm';
-import UpdateForm from './components/UpdateForm';
-import type {MemberTaskListItem} from './data.d';
-import {
-  addMemberTask,
-  queryMemberTaskList,
-  removeMemberTask,
-  updateMemberTask,
-  updateMemberTaskStatus
-} from './service';
+import AddModal from './components/AddModal';
+import UpdateModal from './components/UpdateModal';
+import type { MemberTaskListItem} from './data.d';
+import {addMemberTask, queryMemberTaskList, removeMemberTask, updateMemberTask, updateMemberTaskStatus} from './service';
 
 const {confirm} = Modal;
 
 /**
- * 添加会员任务表
+ * 添加会员任务
  * @param fields
  */
 const handleAdd = async (fields: MemberTaskListItem) => {
@@ -37,7 +31,7 @@ const handleAdd = async (fields: MemberTaskListItem) => {
 };
 
 /**
- * 更新会员任务表
+ * 更新会员任务
  * @param fields
  */
 const handleUpdate = async (fields: MemberTaskListItem) => {
@@ -55,7 +49,7 @@ const handleUpdate = async (fields: MemberTaskListItem) => {
 };
 
 /**
- *  删除会员任务表
+ *  删除会员任务
  * @param ids
  */
 const handleRemove = async (ids: number[]) => {
@@ -73,7 +67,7 @@ const handleRemove = async (ids: number[]) => {
 };
 
 /**
- * 更新会员任务表状态
+ * 更新会员任务状态
  * @param ids
  * @param status
  */
@@ -84,7 +78,7 @@ const handleStatus = async (ids: number[], status: number) => {
     return true;
   }
   try {
-    await updateMemberTaskStatus({memberTaskIds: ids, memberTaskStatus: status});
+    await updateMemberTaskStatus({ memberTaskIds: ids, memberTaskStatus: status});
     hide();
     message.success('更新状态成功');
     return true;
@@ -95,8 +89,8 @@ const handleStatus = async (ids: number[], status: number) => {
 };
 
 const MemberTaskList: React.FC = () => {
-  const [createModalVisible, handleModalVisible] = useState<boolean>(false);
-  const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
+  const [addVisible, handleAddVisible] = useState<boolean>(false);
+  const [updateVisible, handleUpdateVisible] = useState<boolean>(false);
   const [showDetail, setShowDetail] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<MemberTaskListItem>();
@@ -131,26 +125,29 @@ const MemberTaskList: React.FC = () => {
   };
 
   const columns: ProColumns<MemberTaskListItem>[] = [
-
-
+    
     {
-      title: 'id',
+      title: '主键ID',
       dataIndex: 'id',
       hideInSearch: true,
-      hideInTable: true,
     },
     {
       title: '任务名称',
       dataIndex: 'taskName',
+      hideInSearch: true,
       render: (dom, entity) => {
-        return <a onClick={() => {
-          setCurrentRow(entity);
-          setShowDetail(true);
-        }}>{dom}</a>;
-      },
+          return <a onClick={() => {
+            setCurrentRow(entity);
+            setShowDetail(true);
+          }}>{dom}</a>;
+        },
     },
-
-
+    
+    {
+      title: '任务描述',
+      dataIndex: 'taskDesc',
+      hideInSearch: true,
+    },
     {
       title: '赠送成长值',
       dataIndex: 'taskGrowth',
@@ -161,54 +158,103 @@ const MemberTaskList: React.FC = () => {
       dataIndex: 'taskIntegral',
       hideInSearch: true,
     },
-
-
     {
-      title: '任务类型',
+      title: '任务类型：0-新手任务，1-日常任务，2-周常任务，3-月常任务',
       dataIndex: 'taskType',
       renderFormItem: (text, row, index) => {
-        return <Select
-          value={row.value}
-          options={[
-            {value: '1', label: '日常任务'},
-            {value: '0', label: '新手任务'},
-          ]}
-        />
+          return <Select
+            value={row.value}
+            options={ [
+              {value: '1', label: '正常'},
+              {value: '0', label: '禁用'},
+            ]}
+          />
 
-      },
-      render: (dom, entity) => {
+    },
+    render: (dom, entity) => {
         switch (entity.taskType) {
           case 1:
-            return <Tag color={'success'}>日常任务</Tag>;
+            return <Tag color={'success'}>正常</Tag>;
           case 0:
-            return <Tag>新手任务</Tag>;
+            return <Tag>禁用</Tag>;
         }
         return <>未知{entity.taskType}</>;
       },
     },
+    
     {
-      title: '状态',
-      dataIndex: 'status',
-      renderFormItem: (text, row, index) => {
-        return <Select
-          value={row.value}
-          options={[
-            {value: '1', label: '启用'},
-            {value: '0', label: '禁用'},
-          ]}
-        />
-
-      },
-      render: (dom, entity) => {
-        return (
-          <Switch checked={entity.status == 1} onChange={(flag) => {
-            showStatusConfirm([entity.id], flag ? 1 : 0)
-          }}/>
-        );
-      },
+      title: '需要完成次数',
+      dataIndex: 'completeCount',
+      hideInSearch: true,
     },
     {
-      title: '创建者',
+      title: '奖励类型：0-积分成长值，1-优惠券，2-抽奖次数',
+      dataIndex: 'rewardType',
+      renderFormItem: (text, row, index) => {
+          return <Select
+            value={row.value}
+            options={ [
+              {value: '1', label: '正常'},
+              {value: '0', label: '禁用'},
+            ]}
+          />
+
+    },
+    render: (dom, entity) => {
+        switch (entity.rewardType) {
+          case 1:
+            return <Tag color={'success'}>正常</Tag>;
+          case 0:
+            return <Tag>禁用</Tag>;
+        }
+        return <>未知{entity.rewardType}</>;
+      },
+    },
+    
+    {
+      title: '奖励参数JSON',
+      dataIndex: 'rewardParams',
+      hideInSearch: true,
+    },
+    {
+      title: '任务开始时间',
+      dataIndex: 'startTime',
+      hideInSearch: true,
+    },
+    {
+      title: '任务结束时间',
+      dataIndex: 'endTime',
+      hideInSearch: true,
+    },
+    {
+      title: '状态：0-禁用，1-启用',
+      dataIndex: 'status',
+      renderFormItem: (text, row, index) => {
+          return <Select
+            value={row.value}
+            options={ [
+              {value: '1', label: '正常'},
+              {value: '0', label: '禁用'},
+            ]}
+          />
+
+    },
+    render: (dom, entity) => {
+      return (
+        <Switch checked={entity.status == 1} onChange={(flag) => {
+          showStatusConfirm( [entity.id], flag ? 1 : 0)
+        }}/>
+      );
+    },
+    },
+    
+    {
+      title: '排序',
+      dataIndex: 'sort',
+      hideInSearch: true,
+    },
+    {
+      title: '创建人ID',
       dataIndex: 'createBy',
       hideInSearch: true,
     },
@@ -218,13 +264,18 @@ const MemberTaskList: React.FC = () => {
       hideInSearch: true,
     },
     {
-      title: '更新者',
+      title: '更新人ID',
       dataIndex: 'updateBy',
       hideInSearch: true,
     },
     {
       title: '更新时间',
       dataIndex: 'updateTime',
+      hideInSearch: true,
+    },
+    {
+      title: '是否删除',
+      dataIndex: 'isDeleted',
       hideInSearch: true,
     },
 
@@ -238,9 +289,9 @@ const MemberTaskList: React.FC = () => {
           <a
             key="sort"
             onClick={() => {
-              handleUpdateModalVisible(true);
+              handleUpdateVisible(true);
               setCurrentRow(record);
-            }
+              }
             }
           >
             <EditOutlined/> 编辑
@@ -248,9 +299,9 @@ const MemberTaskList: React.FC = () => {
           <Divider type="vertical"/>
           <a
             key="delete"
-            style={{color: '#ff4d4f'}}
+            style={ {color: '#ff4d4f'} }
             onClick={() => {
-              showDeleteConfirm([record.id]);
+              showDeleteConfirm( [record.id]);
             }}
           >
             <DeleteOutlined/> 删除
@@ -260,25 +311,25 @@ const MemberTaskList: React.FC = () => {
     },
   ];
 
-  return (
+return (
     <PageContainer>
       <ProTable<MemberTaskListItem>
-        headerTitle="会员任务"
+        headerTitle="会员任务管理"
         actionRef={actionRef}
         rowKey="id"
-        search={{
+        search={ {
           labelWidth: 120,
-        }}
+        } }
         toolBarRender={() => [
-          <Button type="primary" key="primary" onClick={() => handleModalVisible(true)}>
+          <Button type="primary" key="primary" onClick={() => handleAddVisible(true)}>
             <PlusOutlined/> 新增
           </Button>,
         ]}
         request={queryMemberTaskList}
         columns={columns}
-        rowSelection={{}}
-        pagination={{pageSize: 10}}
-        tableAlertRender={({
+        rowSelection={ {} }
+        pagination={ {pageSize: 10}}
+        tableAlertRender={ ({
                              selectedRowKeys,
                              selectedRows,
                            }) => {
@@ -288,22 +339,22 @@ const MemberTaskList: React.FC = () => {
               <span>已选 {selectedRowKeys.length} 项</span>
               <Button
                 icon={<EditOutlined/>}
-                style={{borderRadius: '5px'}}
-                onClick={() => {
-                  showStatusConfirm(ids, 1);
+                style={ {borderRadius: '5px'}}
+                onClick={async () => {
+                  showStatusConfirm(ids, 1)
                 }}
               >批量启用</Button>
               <Button
                 icon={<EditOutlined/>}
-                style={{borderRadius: '5px'}}
-                onClick={() => {
-                  showStatusConfirm(ids, 0);
+                style={ {borderRadius: '5px'} }
+                onClick={async () => {
+                  showStatusConfirm(ids, 0)
                 }}
               >批量禁用</Button>
               <Button
                 icon={<DeleteOutlined/>}
                 danger
-                style={{borderRadius: '5px'}}
+                style={ {borderRadius: '5px'} }
                 onClick={async () => {
                   showDeleteConfirm(ids);
                 }}
@@ -314,12 +365,12 @@ const MemberTaskList: React.FC = () => {
       />
 
 
-      <CreateForm
-        key={'CreateForm'}
+      <AddModal
+        key={'AddModal'}
         onSubmit={async (value) => {
           const success = await handleAdd(value);
           if (success) {
-            handleModalVisible(false);
+            handleAddVisible(false);
             setCurrentRow(undefined);
             if (actionRef.current) {
               actionRef.current.reload();
@@ -327,20 +378,20 @@ const MemberTaskList: React.FC = () => {
           }
         }}
         onCancel={() => {
-          handleModalVisible(false);
+          handleAddVisible(false);
           if (!showDetail) {
             setCurrentRow(undefined);
           }
         }}
-        createModalVisible={createModalVisible}
+        addVisible={addVisible}
       />
 
-      <UpdateForm
-        key={'UpdateForm'}
+      <UpdateModal
+        key={'UpdateModal'}
         onSubmit={async (value) => {
           const success = await handleUpdate(value);
           if (success) {
-            handleUpdateModalVisible(false);
+            handleUpdateVisible(false);
             setCurrentRow(undefined);
             if (actionRef.current) {
               actionRef.current.reload();
@@ -348,13 +399,13 @@ const MemberTaskList: React.FC = () => {
           }
         }}
         onCancel={() => {
-          handleUpdateModalVisible(false);
+          handleUpdateVisible(false);
           if (!showDetail) {
             setCurrentRow(undefined);
           }
         }}
-        updateModalVisible={updateModalVisible}
-        currentData={currentRow || {}}
+        updateVisible={updateVisible}
+        currentData={currentRow || {} }
       />
 
       <Drawer
@@ -369,11 +420,11 @@ const MemberTaskList: React.FC = () => {
         {currentRow?.id && (
           <ProDescriptions<MemberTaskListItem>
             column={2}
-            title={"任务详情"}
+            title={"会员任务详情"}
             request={async () => ({
               data: currentRow || {},
             })}
-            params={{
+            params={ {
               id: currentRow?.id,
             }}
             columns={columns as ProDescriptionsItemProps<MemberTaskListItem>[]}

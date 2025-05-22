@@ -119,3 +119,88 @@ export interface LoginLogListParams {
   sorter?: { [key: string]: any };
 
 }
+export interface MemberGrowthLogListItem {
+  id: number; //
+  memberId: number; //会员ID
+  changeType: number; //变更类型：1-添加成长值，2-减少成长值
+  changeGrowth: number; //变更成长值
+  sourceType: number; //来源类型：0-其他，1-订单，2-活动，3-签到，4-管理员修改
+  description: string; //描述
+  operateMan: string; //操作人员
+  operateNote: string; //操作备注
+  createTime: string; //创建时间
+
+}
+
+export interface MemberGrowthLogListParams {
+  id?: number; //
+  memberId?: number; //会员ID
+  changeType?: number; //变更类型：1-添加成长值，2-减少成长值
+  changeGrowth?: number; //变更成长值
+  sourceType?: number; //来源类型：0-其他，1-订单，2-活动，3-签到，4-管理员修改
+  description?: string; //描述
+  operateMan?: string; //操作人员
+  operateNote?: string; //操作备注
+  createTime?: string; //创建时间
+
+  pageSize?: number;
+  current?: number;
+  filter?: { [key: string]: any[] };
+  sorter?: { [key: string]: any };
+
+}
+
+export interface MemberPointsLogListItem {
+  id: number; //
+  memberId: number; //会员ID
+  changeType: number; //变更类型：1-添加积分，2-减少积分
+  changePoints: number; //变更积分
+  sourceType: number; //来源类型：0-其他，1-订单，2-活动，3-签到，4-管理员修改
+  description: string; //描述
+  operateMan: string; //操作人员
+  operateNote: string; //操作备注
+  createTime: string; //创建时间
+
+}
+
+export interface MemberPointsLogListParams {
+  id?: number; //
+  memberId?: number; //会员ID
+  changeType?: number; //变更类型：1-添加积分，2-减少积分
+  changePoints?: number; //变更积分
+  sourceType?: number; //来源类型：0-其他，1-订单，2-活动，3-签到，4-管理员修改
+  description?: string; //描述
+  operateMan?: string; //操作人员
+  operateNote?: string; //操作备注
+  createTime?: string; //创建时间
+
+  pageSize?: number;
+  current?: number;
+  filter?: { [key: string]: any[] };
+  sorter?: { [key: string]: any };
+
+}
+export interface MemberSignLogListItem {
+  id: number; //
+  memberId: number; //会员ID
+  signDate: string; //签到日期
+  continueDays: number; //连续签到天数
+  points: number; //获得积分
+  createTime: string; //
+
+}
+
+export interface MemberSignLogListParams {
+  id?: number; //
+  memberId?: number; //会员ID
+  signDate?: string; //签到日期
+  continueDays?: number; //连续签到天数
+  points?: number; //获得积分
+  createTime?: string; //
+
+  pageSize?: number;
+  current?: number;
+  filter?: { [key: string]: any[] };
+  sorter?: { [key: string]: any };
+
+}

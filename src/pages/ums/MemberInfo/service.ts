@@ -1,5 +1,11 @@
 import {request} from 'umi';
-import { MemberInfoListParams, MemberInfoListItem, AddressListParams, LoginLogListParams } from './data.d';
+import {
+  MemberInfoListParams,
+  MemberInfoListItem,
+  AddressListParams,
+  LoginLogListParams,
+  MemberGrowthLogListParams, MemberPointsLogListParams, MemberSignLogListParams
+} from './data.d';
 
 // 添加会员信息
 export async function addMemberInfo(params: MemberInfoListItem) {
@@ -83,3 +89,34 @@ export async function queryLoginLogList(params: LoginLogListParams) {
   });
 }
 
+// 分页查询会员成长值记录列表
+export async function queryMemberGrowthLogList(params: MemberGrowthLogListParams) {
+
+  return request('/api/ums/growthLog/queryMemberGrowthLogList', {
+    method: 'GET',
+    params: {
+      ...params,
+    },
+  });
+}
+// 分页查询会员积分记录列表
+export async function queryMemberPointsLogList(params: MemberPointsLogListParams) {
+
+  return request('/api/ums/pointsLog/queryMemberPointsLogList', {
+    method: 'GET',
+    params: {
+      ...params,
+    },
+  });
+}
+
+// 分页查询会员签到记录列表
+export async function queryMemberSignLogList(params: MemberSignLogListParams) {
+
+  return request('/api/ums/sign/queryMemberSignLogList', {
+    method: 'GET',
+    params: {
+      ...params,
+    },
+  });
+}

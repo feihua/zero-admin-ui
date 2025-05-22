@@ -6,15 +6,15 @@ import type {ActionType, ProColumns} from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
 import type {ProDescriptionsItemProps} from '@ant-design/pro-descriptions';
 import ProDescriptions from '@ant-design/pro-descriptions';
-import CreateForm from './components/CreateForm';
-import UpdateForm from './components/UpdateForm';
-import type {MemberTagListItem} from './data.d';
+import AddModal from './components/AddModal';
+import UpdateModal from './components/UpdateModal';
+import type { MemberTagListItem} from './data.d';
 import {addMemberTag, queryMemberTagList, removeMemberTag, updateMemberTag, updateMemberTagStatus} from './service';
 
 const {confirm} = Modal;
 
 /**
- * 添加用户标签表
+ * 添加用户标签
  * @param fields
  */
 const handleAdd = async (fields: MemberTagListItem) => {
@@ -31,7 +31,7 @@ const handleAdd = async (fields: MemberTagListItem) => {
 };
 
 /**
- * 更新用户标签表
+ * 更新用户标签
  * @param fields
  */
 const handleUpdate = async (fields: MemberTagListItem) => {
@@ -49,7 +49,7 @@ const handleUpdate = async (fields: MemberTagListItem) => {
 };
 
 /**
- *  删除用户标签表
+ *  删除用户标签
  * @param ids
  */
 const handleRemove = async (ids: number[]) => {
@@ -67,7 +67,7 @@ const handleRemove = async (ids: number[]) => {
 };
 
 /**
- * 更新用户标签表状态
+ * 更新用户标签状态
  * @param ids
  * @param status
  */
@@ -78,7 +78,7 @@ const handleStatus = async (ids: number[], status: number) => {
     return true;
   }
   try {
-    await updateMemberTagStatus({memberTagIds: ids, memberTagStatus: status});
+    await updateMemberTagStatus({ memberTagIds: ids, memberTagStatus: status});
     hide();
     message.success('更新状态成功');
     return true;
@@ -89,8 +89,8 @@ const handleStatus = async (ids: number[], status: number) => {
 };
 
 const MemberTagList: React.FC = () => {
-  const [createModalVisible, handleModalVisible] = useState<boolean>(false);
-  const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
+  const [addVisible, handleAddVisible] = useState<boolean>(false);
+  const [updateVisible, handleUpdateVisible] = useState<boolean>(false);
   const [showDetail, setShowDetail] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<MemberTagListItem>();
@@ -123,26 +123,29 @@ const MemberTagList: React.FC = () => {
       },
     });
   };
+
   const columns: ProColumns<MemberTagListItem>[] = [
+    
     {
-      title: 'id',
+      title: '主键ID',
       dataIndex: 'id',
       hideInSearch: true,
-      hideInTable: true,
     },
     {
       title: '标签名称',
       dataIndex: 'tagName',
+      hideInSearch: true,
       render: (dom, entity) => {
-        return <a onClick={() => {
-          setCurrentRow(entity);
-          setShowDetail(true);
-        }}>{dom}</a>;
-      },
+          return <a onClick={() => {
+            setCurrentRow(entity);
+            setShowDetail(true);
+          }}>{dom}</a>;
+        },
     },
+    
     {
-      title: '自动打标签完成订单金额',
-      dataIndex: 'finishOrderAmount',
+      title: '标签描述',
+      dataIndex: 'description',
       hideInSearch: true,
     },
     {
@@ -150,27 +153,57 @@ const MemberTagList: React.FC = () => {
       dataIndex: 'finishOrderCount',
       hideInSearch: true,
     },
-
     {
-      title: '状态',
+      title: '自动打标签完成订单金额',
+      dataIndex: 'finishOrderAmount',
+      hideInSearch: true,
+    },
+    {
+      title: '状态：0-禁用，1-启用',
       dataIndex: 'status',
       renderFormItem: (text, row, index) => {
-        return <Select
-          value={row.value}
-          options={[
-            {value: '1', label: '启用'},
-            {value: '0', label: '禁用'},
-          ]}
-        />
+          return <Select
+            value={row.value}
+            options={ [
+              {value: '1', label: '正常'},
+              {value: '0', label: '禁用'},
+            ]}
+          />
 
-      },
-      render: (dom, entity) => {
-        return (
-          <Switch checked={entity.status == 1} onChange={(flag) => {
-            showStatusConfirm([entity.id], flag ? 1 : 0)
-          }}/>
-        );
-      },
+    },
+    render: (dom, entity) => {
+      return (
+        <Switch checked={entity.status == 1} onChange={(flag) => {
+          showStatusConfirm( [entity.id], flag ? 1 : 0)
+        }}/>
+      );
+    },
+    },
+    
+    {
+      title: '创建人ID',
+      dataIndex: 'createBy',
+      hideInSearch: true,
+    },
+    {
+      title: '创建时间',
+      dataIndex: 'createTime',
+      hideInSearch: true,
+    },
+    {
+      title: '更新人ID',
+      dataIndex: 'updateBy',
+      hideInSearch: true,
+    },
+    {
+      title: '更新时间',
+      dataIndex: 'updateTime',
+      hideInSearch: true,
+    },
+    {
+      title: '是否删除',
+      dataIndex: 'isDeleted',
+      hideInSearch: true,
     },
 
     {
@@ -183,9 +216,9 @@ const MemberTagList: React.FC = () => {
           <a
             key="sort"
             onClick={() => {
-              handleUpdateModalVisible(true);
+              handleUpdateVisible(true);
               setCurrentRow(record);
-            }
+              }
             }
           >
             <EditOutlined/> 编辑
@@ -193,9 +226,9 @@ const MemberTagList: React.FC = () => {
           <Divider type="vertical"/>
           <a
             key="delete"
-            style={{color: '#ff4d4f'}}
+            style={ {color: '#ff4d4f'} }
             onClick={() => {
-              showDeleteConfirm([record.id]);
+              showDeleteConfirm( [record.id]);
             }}
           >
             <DeleteOutlined/> 删除
@@ -205,25 +238,25 @@ const MemberTagList: React.FC = () => {
     },
   ];
 
-  return (
+return (
     <PageContainer>
       <ProTable<MemberTagListItem>
-        headerTitle="会员标签"
+        headerTitle="用户标签管理"
         actionRef={actionRef}
         rowKey="id"
-        search={{
+        search={ {
           labelWidth: 120,
-        }}
+        } }
         toolBarRender={() => [
-          <Button type="primary" key="primary" onClick={() => handleModalVisible(true)}>
+          <Button type="primary" key="primary" onClick={() => handleAddVisible(true)}>
             <PlusOutlined/> 新增
           </Button>,
         ]}
         request={queryMemberTagList}
         columns={columns}
-        rowSelection={{}}
-        pagination={{pageSize: 10}}
-        tableAlertRender={({
+        rowSelection={ {} }
+        pagination={ {pageSize: 10}}
+        tableAlertRender={ ({
                              selectedRowKeys,
                              selectedRows,
                            }) => {
@@ -233,14 +266,14 @@ const MemberTagList: React.FC = () => {
               <span>已选 {selectedRowKeys.length} 项</span>
               <Button
                 icon={<EditOutlined/>}
-                style={{borderRadius: '5px'}}
+                style={ {borderRadius: '5px'}}
                 onClick={async () => {
                   showStatusConfirm(ids, 1)
                 }}
               >批量启用</Button>
               <Button
                 icon={<EditOutlined/>}
-                style={{borderRadius: '5px'}}
+                style={ {borderRadius: '5px'} }
                 onClick={async () => {
                   showStatusConfirm(ids, 0)
                 }}
@@ -248,7 +281,7 @@ const MemberTagList: React.FC = () => {
               <Button
                 icon={<DeleteOutlined/>}
                 danger
-                style={{borderRadius: '5px'}}
+                style={ {borderRadius: '5px'} }
                 onClick={async () => {
                   showDeleteConfirm(ids);
                 }}
@@ -259,12 +292,12 @@ const MemberTagList: React.FC = () => {
       />
 
 
-      <CreateForm
-        key={'CreateForm'}
+      <AddModal
+        key={'AddModal'}
         onSubmit={async (value) => {
           const success = await handleAdd(value);
           if (success) {
-            handleModalVisible(false);
+            handleAddVisible(false);
             setCurrentRow(undefined);
             if (actionRef.current) {
               actionRef.current.reload();
@@ -272,20 +305,20 @@ const MemberTagList: React.FC = () => {
           }
         }}
         onCancel={() => {
-          handleModalVisible(false);
+          handleAddVisible(false);
           if (!showDetail) {
             setCurrentRow(undefined);
           }
         }}
-        createModalVisible={createModalVisible}
+        addVisible={addVisible}
       />
 
-      <UpdateForm
-        key={'UpdateForm'}
+      <UpdateModal
+        key={'UpdateModal'}
         onSubmit={async (value) => {
           const success = await handleUpdate(value);
           if (success) {
-            handleUpdateModalVisible(false);
+            handleUpdateVisible(false);
             setCurrentRow(undefined);
             if (actionRef.current) {
               actionRef.current.reload();
@@ -293,13 +326,13 @@ const MemberTagList: React.FC = () => {
           }
         }}
         onCancel={() => {
-          handleUpdateModalVisible(false);
+          handleUpdateVisible(false);
           if (!showDetail) {
             setCurrentRow(undefined);
           }
         }}
-        updateModalVisible={updateModalVisible}
-        currentData={currentRow || {}}
+        updateVisible={updateVisible}
+        currentData={currentRow || {} }
       />
 
       <Drawer
@@ -314,11 +347,11 @@ const MemberTagList: React.FC = () => {
         {currentRow?.id && (
           <ProDescriptions<MemberTagListItem>
             column={2}
-            title={"标签详情"}
+            title={"用户标签详情"}
             request={async () => ({
               data: currentRow || {},
             })}
-            params={{
+            params={ {
               id: currentRow?.id,
             }}
             columns={columns as ProDescriptionsItemProps<MemberTagListItem>[]}

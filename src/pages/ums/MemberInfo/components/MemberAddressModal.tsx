@@ -1,8 +1,8 @@
 import React, {useEffect, useRef} from 'react';
-import { message, MessageArgsProps, Modal } from 'antd';
-import type { AddressListItem } from '../data.d';
-import { queryMemberAddressList } from '../service';
-import type { ActionType, ProColumns } from '@ant-design/pro-table';
+import {message, Modal} from 'antd';
+import type {AddressListItem} from '../data.d';
+import {queryMemberAddressList} from '../service';
+import type {ActionType, ProColumns} from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
 
 export interface CreateFormProps {
@@ -14,7 +14,7 @@ export interface CreateFormProps {
 const MemberAddressModal: React.FC<CreateFormProps> = (props) => {
   const actionRef = useRef<ActionType>();
 
-  const { onCancel,addressModalVisible, memberId } = props;
+  const {onCancel, addressModalVisible, memberId} = props;
 
   useEffect(() => {
     if (addressModalVisible) {
@@ -116,38 +116,23 @@ const MemberAddressModal: React.FC<CreateFormProps> = (props) => {
         request={(params) => {
           return queryMemberAddressList({
             ...params,
-            memberId: memberId,
-          }).then(
-            (res: {
-              code: string;
-              data: any;
-              total: any;
-              pageSize: any;
-              current: any;
-              msg:
-                | boolean
-                | React.ReactChild
-                | React.ReactFragment
-                | React.ReactPortal
-                | MessageArgsProps
-                | null
-                | undefined;
-            }) => {
-              if (res.code === '000000') {
-                return {
-                  data: res.data,
-                  total: res.total,
-                  pageSize: res.pageSize,
-                  current: res.current,
-                };
-              } else {
-                return message.error(res.msg);
-              }
-            },
-          );
+            memberId,
+          }).then((res) => {
+            console.log(res)
+            if (res.code === '000000') {
+              return {
+                data: res.data,
+                total: res.total,
+                pageSize: res.pageSize,
+                current: res.current,
+              };
+            } else {
+              return message.error(res.msg);
+            }
+          });
         }}
         columns={columns}
-        pagination={{ pageSize: 6 }}
+        pagination={{pageSize: 6}}
       />
     </Modal>
   );

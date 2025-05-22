@@ -1,20 +1,18 @@
-import {
-  DownOutlined,
-  ExclamationCircleOutlined,
-  PlusOutlined,
-  RedoOutlined,
-} from '@ant-design/icons';
-import { Drawer, Dropdown, MenuProps, message, Modal, Select, Space, Switch } from 'antd';
+import {DownOutlined, ExclamationCircleOutlined, PlusOutlined, RedoOutlined,} from '@ant-design/icons';
+import {Drawer, Dropdown, MenuProps, message, Modal, Select, Space, Switch} from 'antd';
 import React, {useRef, useState} from 'react';
 import {PageContainer} from '@ant-design/pro-layout';
 import type {ActionType, ProColumns} from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
 import type {ProDescriptionsItemProps} from '@ant-design/pro-descriptions';
 import ProDescriptions from '@ant-design/pro-descriptions';
-import type { MemberInfoListItem} from './data.d';
+import type {MemberInfoListItem} from './data.d';
 import {queryMemberInfoList, updateMemberInfoStatus} from './service';
 import MemberAddressModal from '@/pages/ums/MemberInfo/components/MemberAddressModal';
 import MemberLogModal from '@/pages/ums/MemberInfo/components/MemberLoginLogModal';
+import MemberGrowthModal from "@/pages/ums/MemberInfo/components/MemberGrowthModal";
+import MemberPointsModal from "@/pages/ums/MemberInfo/components/MemberPointsModal";
+import MemberSignModal from "@/pages/ums/MemberInfo/components/MemberSignModal";
 
 const {confirm} = Modal;
 
@@ -27,7 +25,7 @@ const {confirm} = Modal;
 const handleStatus = async (ids: number[], status: number) => {
   const hide = message.loading('正在更新状态');
   try {
-    await updateMemberInfoStatus({ ids: ids, isEnabled: status});
+    await updateMemberInfoStatus({ids: ids, isEnabled: status});
     hide();
     message.success('更新状态成功');
     return true;
@@ -43,6 +41,9 @@ const MemberInfoList: React.FC = () => {
   const [currentRow, setCurrentRow] = useState<MemberInfoListItem>();
   const [addressModalVisible, handleAddressModalVisible] = useState<boolean>(false);
   const [logModalVisible, handleLogModalVisible] = useState<boolean>(false);
+  const [growthModalVisible, handleGrowthModalVisible] = useState<boolean>(false);
+  const [pointsModalVisible, handlePointsModalVisible] = useState<boolean>(false);
+  const [signModalVisible, handleSignModalVisible] = useState<boolean>(false);
 
 
   const showStatusConfirm = (ids: number[], status: number) => {
@@ -73,6 +74,48 @@ const MemberInfoList: React.FC = () => {
     },
     {
       key: '2',
+      label: (
+        <a
+          key="sort"
+          onClick={() => {
+            handleGrowthModalVisible(true);
+          }}
+        >
+          会员成长值
+        </a>
+      ),
+      icon: <PlusOutlined/>,
+    },
+    {
+      key: '3',
+      label: (
+        <a
+          key="sort"
+          onClick={() => {
+            handlePointsModalVisible(true);
+          }}
+        >
+          会员积分
+        </a>
+      ),
+      icon: <PlusOutlined/>,
+    },
+    {
+      key: '4',
+      label: (
+        <a
+          key="sort"
+          onClick={() => {
+            handleSignModalVisible(true);
+          }}
+        >
+          会员签到
+        </a>
+      ),
+      icon: <PlusOutlined/>,
+    },
+    {
+      key: '5',
       label: (
         <a
           key="sort"
@@ -109,11 +152,11 @@ const MemberInfoList: React.FC = () => {
       title: '昵称',
       dataIndex: 'nickname',
       render: (dom, entity) => {
-          return <a onClick={() => {
-            setCurrentRow(entity);
-            setShowDetail(true);
-          }}>{dom}</a>;
-        },
+        return <a onClick={() => {
+          setCurrentRow(entity);
+          setShowDetail(true);
+        }}>{dom}</a>;
+      },
     },
 
     {
@@ -125,7 +168,7 @@ const MemberInfoList: React.FC = () => {
       dataIndex: 'source',
       hideInSearch: true,
       render: (dom, entity) => {
-        return entity.source === 0 ? 'PC' : entity.source === 1 ? 'APP':'小程序';
+        return entity.source === 0 ? 'PC' : entity.source === 1 ? 'APP' : '小程序';
       },
     },
     {
@@ -145,7 +188,7 @@ const MemberInfoList: React.FC = () => {
       dataIndex: 'gender',
       hideInSearch: true,
       render: (dom, entity) => {
-        return entity.gender === 0 ? '未知' : entity.gender === 1 ? '男':'女';
+        return entity.gender === 0 ? '未知' : entity.gender === 1 ? '男' : '女';
       },
     },
     {
@@ -213,8 +256,8 @@ const MemberInfoList: React.FC = () => {
           <Select
             value={row.value}
             options={[
-              { value: '1', label: '是' },
-              { value: '0', label: '否' },
+              {value: '1', label: '是'},
+              {value: '0', label: '否'},
             ]}
           />
         );
@@ -270,20 +313,20 @@ const MemberInfoList: React.FC = () => {
     },
   ];
 
-return (
+  return (
     <PageContainer>
       <ProTable<MemberInfoListItem>
         headerTitle="会员信息管理"
         actionRef={actionRef}
         rowKey="id"
-        search={ {
+        search={{
           labelWidth: 120,
-        } }
+        }}
         toolBarRender={false}
         request={queryMemberInfoList}
         columns={columns}
-        rowSelection={ {} }
-        pagination={ {pageSize: 10}}
+        rowSelection={{}}
+        pagination={{pageSize: 10}}
         tableAlertRender={false}
       />
 
@@ -309,7 +352,43 @@ return (
           }
         }}
         logModalVisible={logModalVisible}
-        memberId={currentRow?.memberId||  0}
+        memberId={currentRow?.memberId || 0}
+      />
+
+      <MemberGrowthModal
+        key={'MemberGrowthModal'}
+        onCancel={() => {
+          handleGrowthModalVisible(false);
+          if (!showDetail) {
+            setCurrentRow(undefined);
+          }
+        }}
+        visible={growthModalVisible}
+        memberId={currentRow?.memberId || 0}
+      />
+
+      <MemberPointsModal
+        key={'MemberPointsModal'}
+        onCancel={() => {
+          handlePointsModalVisible(false);
+          if (!showDetail) {
+            setCurrentRow(undefined);
+          }
+        }}
+        visible={pointsModalVisible}
+        memberId={currentRow?.memberId || 0}
+      />
+
+      <MemberSignModal
+        key={'MemberSignModal'}
+        onCancel={() => {
+          handleSignModalVisible(false);
+          if (!showDetail) {
+            setCurrentRow(undefined);
+          }
+        }}
+        visible={signModalVisible}
+        memberId={currentRow?.memberId || 0}
       />
       <Drawer
         width={600}
@@ -327,7 +406,7 @@ return (
             request={async () => ({
               data: currentRow || {},
             })}
-            params={ {
+            params={{
               id: currentRow?.id,
             }}
             columns={columns as ProDescriptionsItemProps<MemberInfoListItem>[]}
