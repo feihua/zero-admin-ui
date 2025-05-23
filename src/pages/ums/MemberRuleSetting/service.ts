@@ -30,7 +30,7 @@ export async function updateMemberRuleSetting(params: MemberRuleSettingListItem)
 }
 
 // 批量更新会员积分成长规则状态
-export async function updateMemberRuleSettingStatus(params: { memberRuleSettingIds: number[], memberRuleSettingStatus: number }) {
+export async function updateMemberRuleSettingStatus(params: { id: number, status: number }) {
   return request('/api/ums/ruleSetting/updateMemberRuleSettingStatus', {
     method: 'POST',
     data: {

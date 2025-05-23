@@ -73,17 +73,14 @@ const handleRemove = async (id: number) => {
 
 /**
  * 更新会员积分成长规则状态
- * @param ids
+ * @param id
  * @param status
  */
-const handleStatus = async (ids: number[], status: number) => {
+const handleStatus = async (id: number, status: number) => {
     const hide = message.loading('正在更新状态');
-    if (ids.length == 0) {
-        hide();
-        return true;
-    }
+
     try {
-        await updateMemberRuleSettingStatus({memberRuleSettingIds: ids, memberRuleSettingStatus: status});
+        await updateMemberRuleSettingStatus({id: id, status: status});
         hide();
         message.success('更新状态成功');
         return true;
@@ -115,12 +112,12 @@ const MemberRuleSettingList: React.FC = () => {
         });
     };
 
-    const showStatusConfirm = (ids: number[], status: number) => {
+    const showStatusConfirm = (id: number, status: number) => {
         confirm({
             title: `确定${status == 1 ? "启用" : "禁用"}吗？`,
             icon: <ExclamationCircleOutlined/>,
             async onOk() {
-                await handleStatus(ids, status)
+                await handleStatus(id, status)
                 actionRef.current?.clearSelected?.();
                 actionRef.current?.reload?.();
             },
@@ -191,7 +188,7 @@ const MemberRuleSettingList: React.FC = () => {
             render: (dom, entity) => {
                 return (
                     <Switch checked={entity.status == 1} onChange={(flag) => {
-                        showStatusConfirm([entity.id], flag ? 1 : 0)
+                        showStatusConfirm(entity.id, flag ? 1 : 0)
                     }}/>
                 );
             },
@@ -243,7 +240,7 @@ const MemberRuleSettingList: React.FC = () => {
                         key="delete"
                         style={{color: '#ff4d4f'}}
                         onClick={() => {
-                            showDeleteConfirm([record.id]);
+                            showDeleteConfirm(record.id);
                         }}
                     >
                         <DeleteOutlined/> 删除

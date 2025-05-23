@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react';
-import {Form, InputNumber, Modal, Radio} from 'antd';
+import { Form, InputNumber, Modal, Radio, Select } from 'antd';
 import type {MemberRuleSettingListItem} from '../data.d';
 
 export interface AddModalProps {
@@ -11,8 +11,8 @@ export interface AddModalProps {
 const FormItem = Form.Item;
 
 const formLayout = {
-  labelCol: {span: 7},
-  wrapperCol: {span: 13},
+  labelCol: {span: 10},
+  wrapperCol: {span: 10},
 };
 
 const AddModal: React.FC<AddModalProps> = (props) => {
@@ -72,10 +72,10 @@ const AddModal: React.FC<AddModalProps> = (props) => {
           label="类型"
           rules={[{required: true, message: '请输入类型!'}]}
         >
-          <Radio.Group>
-            <Radio value={0}>积分规则</Radio>
-            <Radio value={1}>成长值规则</Radio>
-          </Radio.Group>
+          <Select id="rewardType" placeholder={'请输入类型'}  style={{width: 255}}>
+            <Select.Option value={0}>积分规则</Select.Option>
+            <Select.Option value={1}>成长值规则</Select.Option>
+          </Select>
         </FormItem>
         <FormItem
           name="status"
