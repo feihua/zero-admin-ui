@@ -1,15 +1,22 @@
 import {DeleteOutlined, EditOutlined, ExclamationCircleOutlined, PlusOutlined} from '@ant-design/icons';
-import {Button, Divider, Drawer, message, Modal, Select, Space, Switch, Tag} from 'antd';
+import {Button, Divider, Drawer, message, Modal, Select, Switch} from 'antd';
 import React, {useRef, useState} from 'react';
 import {PageContainer} from '@ant-design/pro-layout';
 import type {ActionType, ProColumns} from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
 import type {ProDescriptionsItemProps} from '@ant-design/pro-descriptions';
 import ProDescriptions from '@ant-design/pro-descriptions';
-import CreateForm from './components/CreateForm';
-import UpdateForm from './components/UpdateForm';
-import type { IntegrationConsumeSettingListItem} from './data.d';
-import {addIntegrationConsumeSetting, queryIntegrationConsumeSettingList, removeIntegrationConsumeSetting, updateIntegrationConsumeSetting, updateIntegrationConsumeSettingStatus} from './service';
+import AddModal from './components/AddModal';
+import UpdateModal from './components/UpdateModal';
+import type {MemberConsumeSettingListItem} from './data.d';
+import {
+  addMemberConsumeSetting,
+  queryMemberConsumeSettingList,
+  removeMemberConsumeSetting,
+  updateCouponStatus,
+  updateMemberConsumeSetting,
+  updateStatus
+} from './service';
 
 const {confirm} = Modal;
 
@@ -17,10 +24,10 @@ const {confirm} = Modal;
  * 添加积分消费设置
  * @param fields
  */
-const handleAdd = async (fields: IntegrationConsumeSettingListItem) => {
+const handleAdd = async (fields: MemberConsumeSettingListItem) => {
   const hide = message.loading('正在添加');
   try {
-    await addIntegrationConsumeSetting({...fields});
+    await addMemberConsumeSetting({...fields});
     hide();
     message.success('添加成功');
     return true;
@@ -34,10 +41,10 @@ const handleAdd = async (fields: IntegrationConsumeSettingListItem) => {
  * 更新积分消费设置
  * @param fields
  */
-const handleUpdate = async (fields: IntegrationConsumeSettingListItem) => {
+const handleUpdate = async (fields: MemberConsumeSettingListItem) => {
   const hide = message.loading('正在更新');
   try {
-    await updateIntegrationConsumeSetting(fields);
+    await updateMemberConsumeSetting(fields);
     hide();
 
     message.success('更新成功');
@@ -50,13 +57,13 @@ const handleUpdate = async (fields: IntegrationConsumeSettingListItem) => {
 
 /**
  *  删除积分消费设置
- * @param ids
+ * @param id
  */
-const handleRemove = async (ids: number[]) => {
+const handleRemove = async (id: number) => {
   const hide = message.loading('正在删除');
-  if (ids.length === 0) return true;
+
   try {
-    await removeIntegrationConsumeSetting(ids);
+    await removeMemberConsumeSetting(id);
     hide();
     message.success('删除成功，即将刷新');
     return true;
@@ -70,12 +77,17 @@ const handleRemove = async (ids: number[]) => {
  * 更新积分消费设置状态
  * @param id
  * @param status
+ * @param t
  */
-const handleStatus = async (id: number, status: number) => {
+const handleStatus = async (id: number, status: number, t: number) => {
   const hide = message.loading('正在更新状态');
 
   try {
-    await updateIntegrationConsumeSettingStatus({ integrationConsumeSettingId: id, integrationConsumeSettingStatus: status});
+    if (t == 1) {
+      await updateStatus({id: id, status: status});
+    } else {
+      await updateCouponStatus({id: id, couponStatus: status});
+    }
     hide();
     message.success('更新状态成功');
     return true;
@@ -85,20 +97,20 @@ const handleStatus = async (id: number, status: number) => {
   }
 };
 
-const IntegrationConsumeSettingList: React.FC = () => {
-  const [createModalVisible, handleModalVisible] = useState<boolean>(false);
-  const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
+const MemberConsumeSettingList: React.FC = () => {
+  const [addVisible, handleAddVisible] = useState<boolean>(false);
+  const [updateVisible, handleUpdateVisible] = useState<boolean>(false);
   const [showDetail, setShowDetail] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
-  const [currentRow, setCurrentRow] = useState<IntegrationConsumeSettingListItem>();
+  const [currentRow, setCurrentRow] = useState<MemberConsumeSettingListItem>();
 
-  const showDeleteConfirm = (ids: number[]) => {
+  const showDeleteConfirm = (id: number) => {
     confirm({
       title: '是否删除记录?',
       icon: <ExclamationCircleOutlined/>,
       content: '删除的记录不能恢复,请确认!',
       onOk() {
-        handleRemove(ids).then(() => {
+        handleRemove(id).then(() => {
           actionRef.current?.reloadAndRest?.();
         });
       },
@@ -107,12 +119,13 @@ const IntegrationConsumeSettingList: React.FC = () => {
     });
   };
 
-  const showStatusConfirm = (ids: number, status: number) => {
+  const showStatusConfirm = (id: number, status: number, t: number) => {
     confirm({
-      title: `确定${status == 1 ? "默认" : "不是默认"}吗？`,
+      title: `确定${status == 1 ? "启用" : "禁用"}吗？`,
       icon: <ExclamationCircleOutlined/>,
       async onOk() {
-        await handleStatus(ids, status)
+        await handleStatus(id, status, t)
+        actionRef.current?.clearSelected?.();
         actionRef.current?.reload?.();
       },
       onCancel() {
@@ -120,10 +133,16 @@ const IntegrationConsumeSettingList: React.FC = () => {
     });
   };
 
-  const columns: ProColumns<IntegrationConsumeSettingListItem>[] = [
+  const columns: ProColumns<MemberConsumeSettingListItem>[] = [
+
     {
-      title: 'id',
+      title: '主键',
       dataIndex: 'id',
+      hideInSearch: true,
+    },
+    {
+      title: '每一元需要抵扣的积分数量',
+      dataIndex: 'deductionPerAmount',
       hideInSearch: true,
     },
     {
@@ -137,57 +156,71 @@ const IntegrationConsumeSettingList: React.FC = () => {
       hideInSearch: true,
     },
     {
-      title: '是否可以和优惠券同用',
+      title: '和优惠券同用',
       dataIndex: 'couponStatus',
-      renderFormItem: (text, row, index) => {
-          return <Select
-            value={row.value}
-            options={ [
-              {value: '1', label: '可以'},
-              {value: '0', label: '不可以'},
-            ]}
-          />
-
-    },
-    render: (dom, entity) => {
-      switch (entity.couponStatus) {
-        case 1:
-          return <Tag color={'success'}>可以</Tag>;
-        case 0:
-          return <Tag>不可以</Tag>;
-      }
-      return <>未知{entity.couponStatus}</>;
-    },
-    },
-    {
-      title: '每一元需要抵扣的积分数量',
-      dataIndex: 'deductionPerAmount',
-      hideInSearch: true,
-    },
-
-    {
-      title: '是否默认',
-      dataIndex: 'isDefault',
-      hideInSearch: true,
       renderFormItem: (text, row, index) => {
         return <Select
           value={row.value}
-          options={ [
-            {value: '1', label: '是'},
-            {value: '0', label: '否'},
+          options={[
+            {value: '1', label: '可以'},
+            {value: '0', label: '不可以'},
           ]}
         />
 
       },
       render: (dom, entity) => {
         return (
-          <Switch checked={entity.isDefault == 1} onChange={(flag) => {
-            showStatusConfirm( entity.id, flag ? 1 : 0)
+          <Switch checked={entity.couponStatus == 1} onChange={(flag) => {
+            showStatusConfirm(entity.id, flag ? 1 : 0, 2)
+          }}/>
+        );
+      },
+    },
+    {
+      title: '状态',
+      dataIndex: 'status',
+      renderFormItem: (text, row, index) => {
+        return <Select
+          value={row.value}
+          options={[
+            {value: '1', label: '正常'},
+            {value: '0', label: '禁用'},
+          ]}
+        />
+
+      },
+      render: (dom, entity) => {
+        return (
+          <Switch checked={entity.status == 1} onChange={(flag) => {
+            showStatusConfirm(entity.id, flag ? 1 : 0, 1)
           }}/>
         );
       },
     },
 
+    {
+      title: '创建人ID',
+      dataIndex: 'createBy',
+      hideInSearch: true,
+      hideInTable: true,
+    },
+    {
+      title: '创建时间',
+      dataIndex: 'createTime',
+      hideInSearch: true,
+    },
+    {
+      title: '更新人ID',
+      dataIndex: 'updateBy',
+      hideInSearch: true,
+      hideInTable: true,
+    },
+    {
+      title: '更新时间',
+      dataIndex: 'updateTime',
+      hideInSearch: true,
+      hideInTable: true,
+    },
 
     {
       title: '操作',
@@ -199,9 +232,9 @@ const IntegrationConsumeSettingList: React.FC = () => {
           <a
             key="sort"
             onClick={() => {
-              handleUpdateModalVisible(true);
+              handleUpdateVisible(true);
               setCurrentRow(record);
-              }
+            }
             }
           >
             <EditOutlined/> 编辑
@@ -209,9 +242,9 @@ const IntegrationConsumeSettingList: React.FC = () => {
           <Divider type="vertical"/>
           <a
             key="delete"
-            style={ {color: '#ff4d4f'} }
+            style={{color: '#ff4d4f'}}
             onClick={() => {
-              showDeleteConfirm( [record.id]);
+              showDeleteConfirm(record.id);
             }}
           >
             <DeleteOutlined/> 删除
@@ -221,52 +254,34 @@ const IntegrationConsumeSettingList: React.FC = () => {
     },
   ];
 
-return (
+  return (
     <PageContainer>
-      <ProTable<IntegrationConsumeSettingListItem>
+      <ProTable<MemberConsumeSettingListItem>
         headerTitle="积分消费设置管理"
         actionRef={actionRef}
         rowKey="id"
-        search={ {
+        search={{
           labelWidth: 120,
-        } }
+        }}
         toolBarRender={() => [
-          <Button type="primary" key="primary" onClick={() => handleModalVisible(true)}>
+          <Button type="primary" key="primary" onClick={() => handleAddVisible(true)}>
             <PlusOutlined/> 新增
           </Button>,
         ]}
-        request={queryIntegrationConsumeSettingList}
+        request={queryMemberConsumeSettingList}
         columns={columns}
-        rowSelection={ {} }
-        pagination={ {pageSize: 10}}
-        tableAlertRender={ ({
-                             selectedRowKeys,
-                             selectedRows,
-                           }) => {
-          const ids = selectedRows.map((row) => row.id);
-          return (
-            <Space size={16}>
-              <span>已选 {selectedRowKeys.length} 项</span>
-              <Button
-                icon={<DeleteOutlined/>}
-                danger
-                style={ {borderRadius: '5px'} }
-                onClick={async () => {
-                  showDeleteConfirm(ids);
-                }}
-              >批量删除</Button>
-            </Space>
-          );
-        }}
+        rowSelection={{}}
+        pagination={{pageSize: 10}}
+        tableAlertRender={false}
       />
 
 
-      <CreateForm
-        key={'CreateForm'}
+      <AddModal
+        key={'AddModal'}
         onSubmit={async (value) => {
           const success = await handleAdd(value);
           if (success) {
-            handleModalVisible(false);
+            handleAddVisible(false);
             setCurrentRow(undefined);
             if (actionRef.current) {
               actionRef.current.reload();
@@ -274,20 +289,20 @@ return (
           }
         }}
         onCancel={() => {
-          handleModalVisible(false);
+          handleAddVisible(false);
           if (!showDetail) {
             setCurrentRow(undefined);
           }
         }}
-        createModalVisible={createModalVisible}
+        addVisible={addVisible}
       />
 
-      <UpdateForm
-        key={'UpdateForm'}
+      <UpdateModal
+        key={'UpdateModal'}
         onSubmit={async (value) => {
           const success = await handleUpdate(value);
           if (success) {
-            handleUpdateModalVisible(false);
+            handleUpdateVisible(false);
             setCurrentRow(undefined);
             if (actionRef.current) {
               actionRef.current.reload();
@@ -295,13 +310,13 @@ return (
           }
         }}
         onCancel={() => {
-          handleUpdateModalVisible(false);
+          handleUpdateVisible(false);
           if (!showDetail) {
             setCurrentRow(undefined);
           }
         }}
-        updateModalVisible={updateModalVisible}
-        currentData={currentRow || {} }
+        updateVisible={updateVisible}
+        currentData={currentRow || {}}
       />
 
       <Drawer
@@ -314,16 +329,16 @@ return (
         closable={false}
       >
         {currentRow?.id && (
-          <ProDescriptions<IntegrationConsumeSettingListItem>
+          <ProDescriptions<MemberConsumeSettingListItem>
             column={2}
             title={"积分消费设置详情"}
             request={async () => ({
               data: currentRow || {},
             })}
-            params={ {
+            params={{
               id: currentRow?.id,
             }}
-            columns={columns as ProDescriptionsItemProps<IntegrationConsumeSettingListItem>[]}
+            columns={columns as ProDescriptionsItemProps<MemberConsumeSettingListItem>[]}
           />
         )}
       </Drawer>
@@ -331,4 +346,4 @@ return (
   );
 };
 
-export default IntegrationConsumeSettingList;
+export default MemberConsumeSettingList;

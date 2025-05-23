@@ -1,78 +1,51 @@
 import React, {useEffect} from 'react';
-import {Form, Input, InputNumber, Modal, Radio} from 'antd';
+import {Form, InputNumber, Modal, Radio} from 'antd';
 import type {MemberRuleSettingListItem} from '../data.d';
 
-export interface UpdateFormProps {
+export interface AddModalProps {
   onCancel: () => void;
   onSubmit: (values: MemberRuleSettingListItem) => void;
-  updateModalVisible: boolean;
-  currentData: Partial<MemberRuleSettingListItem>;
+  addVisible: boolean;
 }
 
 const FormItem = Form.Item;
 
 const formLayout = {
-  labelCol: {span: 9},
-  wrapperCol: {span: 11},
+  labelCol: {span: 7},
+  wrapperCol: {span: 13},
 };
 
-const UpdateForm: React.FC<UpdateFormProps> = (props) => {
+const AddModal: React.FC<AddModalProps> = (props) => {
   const [form] = Form.useForm();
 
   const {
     onSubmit,
     onCancel,
-    updateModalVisible,
-    currentData,
+    addVisible,
   } = props;
 
   useEffect(() => {
-    if (form && !updateModalVisible) {
+    if (form && !addVisible) {
       form.resetFields();
     }
-  }, [props.updateModalVisible]);
+  }, [props.addVisible]);
 
-  useEffect(() => {
-    if (currentData) {
-      form.setFieldsValue({
-        ...currentData,
-      });
-    }
-  }, [props.currentData]);
 
   const handleSubmit = () => {
     if (!form) return;
     form.submit();
   };
 
-  const handleFinish = (values: Record<string, any>) => {
+  const handleFinish = (values: MemberRuleSettingListItem) => {
     if (onSubmit) {
-      onSubmit(values as MemberRuleSettingListItem);
+      onSubmit(values);
     }
   };
 
   const renderContent = () => {
     return (
       <>
-        <FormItem
-          name="id"
-          label="主键"
-          hidden
-        >
-          <Input id="update-id"/>
-        </FormItem>
 
-
-        <FormItem
-          name="ruleType"
-          label="规则类型"
-          rules={[{required: true, message: '请输入类型!'}]}
-        >
-          <Radio.Group>
-            <Radio value={0}>积分规则</Radio>
-            <Radio value={1}>成长值规则</Radio>
-          </Radio.Group>
-        </FormItem>
         <FormItem
           name="consumePerPoint"
           label="每消费多少元获取1个点"
@@ -80,21 +53,6 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
         >
           <InputNumber id="create-consumePerPoint" placeholder={'请输入每消费多少元获取1个点!'} style={{width: 255}}/>
         </FormItem>
-        <FormItem
-          name="continueSignDay"
-          label="连续签到天数"
-          rules={[{required: true, message: '请输入连续签到天数!'}]}
-        >
-          <InputNumber id="create-continueSignDay" placeholder={'请输入连续签到天数!'} style={{width: 255}}/>
-        </FormItem>
-        <FormItem
-          name="continueSignPoint"
-          label="连续签到赠送数量"
-          rules={[{required: true, message: '请输入连续签到赠送数量!'}]}
-        >
-          <InputNumber id="create-continueSignPoint" placeholder={'请输入连续签到赠送数量!'} style={{width: 255}}/>
-        </FormItem>
-
         <FormItem
           name="lowOrderAmount"
           label="最低获取点数的订单金额"
@@ -109,6 +67,27 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
         >
           <InputNumber id="create-maxPointPerOrder" placeholder={'请输入每笔订单最高获取点数!'} style={{width: 255}}/>
         </FormItem>
+        <FormItem
+          name="ruleType"
+          label="类型"
+          rules={[{required: true, message: '请输入类型!'}]}
+        >
+          <Radio.Group>
+            <Radio value={0}>积分规则</Radio>
+            <Radio value={1}>成长值规则</Radio>
+          </Radio.Group>
+        </FormItem>
+        <FormItem
+          name="status"
+          label="状态"
+          rules={[{required: true, message: '请输入状态!'}]}
+        >
+          <Radio.Group>
+            <Radio value={1}>正常</Radio>
+            <Radio value={0}>禁用</Radio>
+          </Radio.Group>
+        </FormItem>
+
       </>
     );
   };
@@ -120,8 +99,8 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
     <Modal
       forceRender
       destroyOnClose
-      title="编辑"
-      open={updateModalVisible}
+      title="新增"
+      open={addVisible}
       {...modalFooter}
     >
       <Form
@@ -135,4 +114,4 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
   );
 };
 
-export default UpdateForm;
+export default AddModal;

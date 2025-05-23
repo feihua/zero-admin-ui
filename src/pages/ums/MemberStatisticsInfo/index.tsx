@@ -16,6 +16,7 @@ const MemberStatisticsInfoList: React.FC = () => {
   const [currentRow, setCurrentRow] = useState<MemberStatisticsInfoListItem>();
 
   const columns: ProColumns<MemberStatisticsInfoListItem>[] = [
+
     {
       title: 'id',
       dataIndex: 'id',
@@ -23,69 +24,12 @@ const MemberStatisticsInfoList: React.FC = () => {
       hideInTable: true,
     },
     {
-      title: '关注数量',
-      dataIndex: 'attendCount',
-      hideInSearch: true,
-    },
-    {
-      title: 'collectCommentCount',
-      dataIndex: 'collectCommentCount',
-      hideInSearch: true,
-      hideInTable: true,
-    },
-    {
-      title: 'collectProductCount',
-      dataIndex: 'collectProductCount',
-      hideInSearch: true,
-      hideInTable: true,
-    },
-    {
-      title: 'collectSubjectCount',
-      dataIndex: 'collectSubjectCount',
-      hideInSearch: true,
-      hideInTable: true,
-    },
-    {
-      title: 'collectTopicCount',
-      dataIndex: 'collectTopicCount',
-      hideInSearch: true,
-      hideInTable: true,
-    },
-    {
-      title: '评价数',
-      dataIndex: 'commentCount',
-      hideInSearch: true,
+      title: '会员id',
+      dataIndex: 'memberId',
     },
     {
       title: '累计消费金额',
       dataIndex: 'consumeAmount',
-      hideInSearch: true,
-    },
-    {
-      title: '优惠券数量',
-      dataIndex: 'couponCount',
-      hideInSearch: true,
-    },
-    {
-      title: '粉丝数量',
-      dataIndex: 'fansCount',
-      hideInSearch: true,
-    },
-
-    {
-      title: 'inviteFriendCount',
-      dataIndex: 'inviteFriendCount',
-      hideInSearch: true,
-      hideInTable: true,
-    },
-    {
-      title: '登录次数',
-      dataIndex: 'loginCount',
-      hideInSearch: true,
-    },
-    {
-      title: 'memberId',
-      dataIndex: 'memberId',
       hideInSearch: true,
     },
     {
@@ -94,8 +38,13 @@ const MemberStatisticsInfoList: React.FC = () => {
       hideInSearch: true,
     },
     {
-      title: '最后一次下订单时间',
-      dataIndex: 'recentOrderTime',
+      title: '优惠券数量',
+      dataIndex: 'couponCount',
+      hideInSearch: true,
+    },
+    {
+      title: '评价数',
+      dataIndex: 'commentCount',
       hideInSearch: true,
     },
     {
@@ -103,7 +52,51 @@ const MemberStatisticsInfoList: React.FC = () => {
       dataIndex: 'returnOrderCount',
       hideInSearch: true,
     },
-
+    {
+      title: '登录次数',
+      dataIndex: 'loginCount',
+      hideInSearch: true,
+    },
+    {
+      title: '关注数量',
+      dataIndex: 'attendCount',
+      hideInSearch: true,
+    },
+    {
+      title: '粉丝数量',
+      dataIndex: 'fansCount',
+      hideInSearch: true,
+    },
+    {
+      title: '收藏的商品数量',
+      dataIndex: 'collectProductCount',
+      hideInSearch: true,
+    },
+    {
+      title: '收藏的专题活动数量',
+      dataIndex: 'collectSubjectCount',
+      hideInSearch: true,
+    },
+    {
+      title: '收藏的评论数量',
+      dataIndex: 'collectTopicCount',
+      hideInSearch: true,
+    },
+    {
+      title: '收藏的专题活动数量',
+      dataIndex: 'collectCommentCount',
+      hideInSearch: true,
+    },
+    {
+      title: '邀请好友数',
+      dataIndex: 'inviteFriendCount',
+      hideInSearch: true,
+    },
+    {
+      title: '最后一次下订单时间',
+      dataIndex: 'recentOrderTime',
+      hideInSearch: true,
+    },
     {
       title: '操作',
       dataIndex: 'option',
@@ -119,7 +112,7 @@ const MemberStatisticsInfoList: React.FC = () => {
             }
             }
           >
-            <EditOutlined/> 查看
+            <EditOutlined/> 查看详情
           </a>
           <Divider type="vertical"/>
         </>
@@ -130,16 +123,19 @@ const MemberStatisticsInfoList: React.FC = () => {
   return (
     <PageContainer>
       <ProTable<MemberStatisticsInfoListItem>
-        headerTitle="统计信息"
+        headerTitle="会员统计信息"
         actionRef={actionRef}
         rowKey="id"
-        search={false}
+        search={{
+          labelWidth: 120,
+        }}
+        toolBarRender={false}
         request={queryMemberStatisticsInfoList}
         columns={columns}
         rowSelection={{}}
         pagination={{pageSize: 10}}
+        tableAlertRender={false}
       />
-
 
       <Drawer
         width={600}
@@ -153,7 +149,7 @@ const MemberStatisticsInfoList: React.FC = () => {
         {currentRow?.id && (
           <ProDescriptions<MemberStatisticsInfoListItem>
             column={2}
-            title={"统计详情"}
+            title={"会员统计信息详情"}
             request={async () => ({
               data: currentRow || {},
             })}

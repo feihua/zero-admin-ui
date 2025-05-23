@@ -1,36 +1,36 @@
 import React, {useEffect} from 'react';
 import {Form, Input, InputNumber, Modal, Radio} from 'antd';
-import type { IntegrationConsumeSettingListItem} from '../data.d';
+import type { MemberConsumeSettingListItem} from '../data.d';
 
-export interface UpdateFormProps {
+export interface UpdateModalProps {
   onCancel: () => void;
-  onSubmit: (values: IntegrationConsumeSettingListItem) => void;
-  updateModalVisible: boolean;
-  currentData: Partial<IntegrationConsumeSettingListItem>;
+  onSubmit: (values: MemberConsumeSettingListItem) => void;
+  updateVisible: boolean;
+  currentData: Partial<MemberConsumeSettingListItem>;
 }
 
 const FormItem = Form.Item;
 
 const formLayout = {
-  labelCol: {span: 9},
-  wrapperCol: {span: 11},
+  labelCol: {span: 10},
+  wrapperCol: {span: 10},
 };
 
-const UpdateForm: React.FC<UpdateFormProps> = (props) => {
+const UpdateModal: React.FC<UpdateModalProps> = (props) => {
   const [form] = Form.useForm();
 
   const {
     onSubmit,
     onCancel,
-    updateModalVisible,
+    updateVisible,
     currentData,
   } = props;
 
   useEffect(() => {
-    if (form && !updateModalVisible) {
+    if (form && !updateVisible) {
       form.resetFields();
     }
-  }, [props.updateModalVisible]);
+  }, [props.updateVisible]);
 
   useEffect(() => {
     if (currentData) {
@@ -47,7 +47,7 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
 
   const handleFinish = (values: { [key: string]: any }) => {
     if (onSubmit) {
-      onSubmit(values as IntegrationConsumeSettingListItem);
+      onSubmit(values as MemberConsumeSettingListItem);
     }
   };
 
@@ -62,9 +62,33 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
           <Input id="update-id"/>
         </FormItem>
 
+
+        <FormItem
+          name="deductionPerAmount"
+          label="每一元需要抵扣的积分数量"
+          rules={[{required: true, message: '请输入每一元需要抵扣的积分数量!'}]}
+        >
+          <InputNumber id="update-deductionPerAmount" placeholder={'请输入每一元需要抵扣的积分数量!'}
+                       style={{width: 255}}/>
+        </FormItem>
+        <FormItem
+          name="maxPercentPerOrder"
+          label="每笔订单最高抵用百分比"
+          rules={[{required: true, message: '请输入每笔订单最高抵用百分比!'}]}
+        >
+          <InputNumber id="update-maxPercentPerOrder" placeholder={'请输入每笔订单最高抵用百分比!'}
+                       style={{width: 255}}/>
+        </FormItem>
+        <FormItem
+          name="useUnit"
+          label="每次使用积分最小单位100"
+          rules={[{required: true, message: '请输入每次使用积分最小单位100!'}]}
+        >
+          <InputNumber id="update-useUnit" placeholder={'请输入每次使用积分最小单位100!'} style={{width: 255}}/>
+        </FormItem>
         <FormItem
           name="couponStatus"
-          label="是否可以和优惠券同用"
+          label="和优惠券同用"
           rules={[{required: true, message: '请输入是否可以和优惠券同用!'}]}
         >
           <Radio.Group>
@@ -73,28 +97,14 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
           </Radio.Group>
         </FormItem>
         <FormItem
-          name="deductionPerAmount"
-          label="每一元需要抵扣的积分数量"
-          rules={[{required: true, message: '请输入每一元需要抵扣的积分数量!'}]}
+          name="status"
+          label="状态"
+          rules={[{required: true, message: '请输入状态!'}]}
         >
-          <InputNumber id="create-deductionPerAmount" placeholder={'请输入每一元需要抵扣的积分数量!'}
-                       style={{width: 255}}/>
-        </FormItem>
-
-        <FormItem
-          name="maxPercentPerOrder"
-          label="每笔订单最高抵用百分比"
-          rules={[{required: true, message: '请输入每笔订单最高抵用百分比!'}]}
-        >
-          <InputNumber id="create-maxPercentPerOrder" placeholder={'请输入每笔订单最高抵用百分比!'}
-                       style={{width: 255}}/>
-        </FormItem>
-        <FormItem
-          name="useUnit"
-          label="每次使用积分最小单位100"
-          rules={[{required: true, message: '请输入每次使用积分最小单位100!'}]}
-        >
-          <InputNumber id="create-useUnit" placeholder={'请输入每次使用积分最小单位100!'} style={{width: 255}}/>
+          <Radio.Group>
+            <Radio value={1}>正常</Radio>
+            <Radio value={0}>禁用</Radio>
+          </Radio.Group>
         </FormItem>
       </>
     );
@@ -108,7 +118,7 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
       forceRender
       destroyOnClose
       title="编辑"
-      open={updateModalVisible}
+      open={updateVisible}
       {...modalFooter}
       width={600}
     >
@@ -123,4 +133,4 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
   );
 };
 
-export default UpdateForm;
+export default UpdateModal;
