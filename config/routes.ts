@@ -42,12 +42,7 @@
       },
     ],
   },
-  {
-    name: 'list.table-list',
-    icon: 'table',
-    path: '/list',
-    component: './TableList',
-  },
+
   {
     path: '/',
     redirect: '/welcome',
@@ -153,7 +148,7 @@
         name: '积分消费设置',
         icon: 'table',
         path: '/ums/integrationConsumeSetting/list',
-        component: './ums/IntegrationConsumeSetting',
+        component: './ums/MemberConsumeSetting',
       },
       {
         name: '成长规则',
