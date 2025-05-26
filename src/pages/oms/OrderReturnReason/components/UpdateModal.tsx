@@ -62,73 +62,31 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
           <Input id="update-id"/>
         </FormItem>
 
-        
-        <FormItem
-          name="id"
-          label="主键ID"
-          rules={[{required: true, message: '请输入主键ID!'}]}
-        >
-            <Input id="update-id" placeholder={'请输入主键ID!'}/>
-         </FormItem>
+
         <FormItem
           name="name"
           label="退货类型"
           rules={[{required: true, message: '请输入退货类型!'}]}
         >
-            <Input id="update-name" placeholder={'请输入退货类型!'}/>
-         </FormItem>
+          <Input id="update-name" placeholder={'请输入退货类型!'}/>
+        </FormItem>
         <FormItem
           name="sort"
           label="排序"
           rules={[{required: true, message: '请输入排序!'}]}
         >
-            <InputNumber style={ {width: 255} }/>
+          <InputNumber style={ {width: 255} }/>
         </FormItem>
         <FormItem
           name="status"
-          label="状态：0->不启用；1->启用"
-          rules={[{required: true, message: '请输入状态：0->不启用；1->启用!'}]}
+          label="状态"
+          rules={[{required: true, message: '请输入状!'}]}
         >
-              <Radio.Group>
-                <Radio value={0}>禁用</Radio>
-                <Radio value={1}>正常</Radio>
-              </Radio.Group>
+          <Radio.Group>
+            <Radio value={0}>禁用</Radio>
+            <Radio value={1}>正常</Radio>
+          </Radio.Group>
         </FormItem>
-        <FormItem
-          name="createBy"
-          label="创建人ID"
-          rules={[{required: true, message: '请输入创建人ID!'}]}
-        >
-            <Input id="update-createBy" placeholder={'请输入创建人ID!'}/>
-         </FormItem>
-        <FormItem
-          name="createTime"
-          label="创建时间"
-          rules={[{required: true, message: '请输入创建时间!'}]}
-        >
-            <Input id="update-createTime" placeholder={'请输入创建时间!'}/>
-         </FormItem>
-        <FormItem
-          name="updateBy"
-          label="更新人ID"
-          rules={[{required: true, message: '请输入更新人ID!'}]}
-        >
-            <Input id="update-updateBy" placeholder={'请输入更新人ID!'}/>
-         </FormItem>
-        <FormItem
-          name="updateTime"
-          label="更新时间"
-          rules={[{required: true, message: '请输入更新时间!'}]}
-        >
-            <Input id="update-updateTime" placeholder={'请输入更新时间!'}/>
-         </FormItem>
-        <FormItem
-          name="isDeleted"
-          label="是否删除"
-          rules={[{required: true, message: '请输入是否删除!'}]}
-        >
-            <Input id="update-isDeleted" placeholder={'请输入是否删除!'}/>
-         </FormItem>
       </>
     );
   };

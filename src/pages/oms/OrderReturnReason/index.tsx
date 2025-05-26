@@ -78,7 +78,7 @@ const handleStatus = async (ids: number[], status: number) => {
     return true;
   }
   try {
-    await updateOrderReturnReasonStatus({ orderReturnReasonIds: ids, orderReturnReasonStatus: status});
+    await updateOrderReturnReasonStatus({ ids: ids, status: status});
     hide();
     message.success('更新状态成功');
     return true;
@@ -125,7 +125,7 @@ const OrderReturnReasonList: React.FC = () => {
   };
 
   const columns: ProColumns<OrderReturnReasonListItem>[] = [
-    
+
     {
       title: '主键ID',
       dataIndex: 'id',
@@ -141,14 +141,14 @@ const OrderReturnReasonList: React.FC = () => {
           }}>{dom}</a>;
         },
     },
-    
+
     {
       title: '排序',
       dataIndex: 'sort',
       hideInSearch: true,
     },
     {
-      title: '状态：0->不启用；1->启用',
+      title: '状态',
       dataIndex: 'status',
       renderFormItem: (text, row, index) => {
           return <Select
@@ -168,11 +168,12 @@ const OrderReturnReasonList: React.FC = () => {
       );
     },
     },
-    
+
     {
       title: '创建人ID',
       dataIndex: 'createBy',
       hideInSearch: true,
+      hideInTable: true,
     },
     {
       title: '创建时间',
@@ -183,15 +184,11 @@ const OrderReturnReasonList: React.FC = () => {
       title: '更新人ID',
       dataIndex: 'updateBy',
       hideInSearch: true,
+      hideInTable: true,
     },
     {
       title: '更新时间',
       dataIndex: 'updateTime',
-      hideInSearch: true,
-    },
-    {
-      title: '是否删除',
-      dataIndex: 'isDeleted',
       hideInSearch: true,
     },
 
