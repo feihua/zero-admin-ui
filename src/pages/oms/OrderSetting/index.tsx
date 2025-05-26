@@ -6,22 +6,15 @@ import type {ActionType, ProColumns} from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
 import type {ProDescriptionsItemProps} from '@ant-design/pro-descriptions';
 import ProDescriptions from '@ant-design/pro-descriptions';
-import CreateForm from './components/CreateForm';
-import UpdateForm from './components/UpdateForm';
+import AddModal from './components/AddModal';
+import UpdateModal from './components/UpdateModal';
 import type { OrderSettingListItem} from './data.d';
-import {
-  addOrderSetting,
-  queryOrderSettingList,
-  removeOrderSetting,
-  updateOrderSetting,
-  updateOrderSettingIsDefault,
-  updateOrderSettingStatus
-} from './service';
+import {addOrderSetting, queryOrderSettingList, removeOrderSetting, updateOrderSetting, updateOrderSettingStatus} from './service';
 
 const {confirm} = Modal;
 
 /**
- * 添加订单设置表
+ * 添加订单设置
  * @param fields
  */
 const handleAdd = async (fields: OrderSettingListItem) => {
@@ -38,7 +31,7 @@ const handleAdd = async (fields: OrderSettingListItem) => {
 };
 
 /**
- * 更新订单设置表
+ * 更新订单设置
  * @param fields
  */
 const handleUpdate = async (fields: OrderSettingListItem) => {
@@ -56,7 +49,7 @@ const handleUpdate = async (fields: OrderSettingListItem) => {
 };
 
 /**
- *  删除订单设置表
+ *  删除订单设置
  * @param ids
  */
 const handleRemove = async (ids: number[]) => {
@@ -74,7 +67,7 @@ const handleRemove = async (ids: number[]) => {
 };
 
 /**
- * 更新订单设置表状态
+ * 更新订单设置状态
  * @param ids
  * @param status
  */
@@ -94,26 +87,10 @@ const handleStatus = async (ids: number[], status: number) => {
     return false;
   }
 };
-/**
- * 更新订单设置表状态
- * @param id
- * @param status
- */
-const handleIsDefaultStatus = async (id: number, status: number) => {
-  const hide = message.loading('正在更新状态');
-  try {
-    await updateOrderSettingIsDefault({ id: id, isDefault: status});
-    hide();
-    message.success('更新状态成功');
-    return true;
-  } catch (error) {
-    hide();
-    return false;
-  }
-};
+
 const OrderSettingList: React.FC = () => {
-  const [createModalVisible, handleModalVisible] = useState<boolean>(false);
-  const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
+  const [addVisible, handleAddVisible] = useState<boolean>(false);
+  const [updateVisible, handleUpdateVisible] = useState<boolean>(false);
   const [showDetail, setShowDetail] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<OrderSettingListItem>();
@@ -146,38 +123,12 @@ const OrderSettingList: React.FC = () => {
       },
     });
   };
-  const showIsDefaultConfirm = (id: number, status: number) => {
-    confirm({
-      title: `确定${status == 1 ? "默认" : "不默认"}吗？`,
-      icon: <ExclamationCircleOutlined/>,
-      async onOk() {
-        await handleIsDefaultStatus(id, status)
-        actionRef.current?.clearSelected?.();
-        actionRef.current?.reload?.();
-      },
-      onCancel() {
-      },
-    });
-  };
+
   const columns: ProColumns<OrderSettingListItem>[] = [
+    
     {
-      title: 'id',
+      title: '主键ID',
       dataIndex: 'id',
-      hideInSearch: true,
-    },
-    {
-      title: '订单完成后自动好评时间（天）',
-      dataIndex: 'commentOvertime',
-      hideInSearch: true,
-    },
-    {
-      title: '发货后自动确认收货时间（天）',
-      dataIndex: 'confirmOvertime',
-      hideInSearch: true,
-    },
-    {
-      title: '自动完成交易时间，不能申请售后（天）',
-      dataIndex: 'finishOvertime',
       hideInSearch: true,
     },
     {
@@ -191,36 +142,23 @@ const OrderSettingList: React.FC = () => {
       hideInSearch: true,
     },
     {
-      title: '是否默认',
-      dataIndex: 'isDefault',
+      title: '发货后自动确认收货时间（天）',
+      dataIndex: 'confirmOvertime',
       hideInSearch: true,
-      renderFormItem: (text, row, index) => {
-        return <Select
-          value={row.value}
-          options={[
-            {value: '1', label: '是'},
-            {value: '0', label: '否'},
-          ]}
-        />
-
-      },
-      render: (dom, entity) => {
-        return (
-          <Switch checked={entity.isDefault == 1} onChange={(flag) => {
-            showIsDefaultConfirm(entity.id, flag ? 1 : 0)
-          }}/>
-        );
-      },
     },
-
     {
-      title: '状态',
+      title: '自动完成交易时间，不能申请售后（天）',
+      dataIndex: 'finishOvertime',
+      hideInSearch: true,
+    },
+    {
+      title: '状态：0->禁用；1->启用',
       dataIndex: 'status',
       renderFormItem: (text, row, index) => {
           return <Select
             value={row.value}
             options={ [
-              {value: '1', label: '启用'},
+              {value: '1', label: '正常'},
               {value: '0', label: '禁用'},
             ]}
           />
@@ -234,7 +172,42 @@ const OrderSettingList: React.FC = () => {
       );
     },
     },
-
+    
+    {
+      title: '是否默认：0->否；1->是',
+      dataIndex: 'isDefault',
+      hideInSearch: true,
+    },
+    {
+      title: '订单完成后自动好评时间（天）',
+      dataIndex: 'commentOvertime',
+      hideInSearch: true,
+    },
+    {
+      title: '创建人ID',
+      dataIndex: 'createBy',
+      hideInSearch: true,
+    },
+    {
+      title: '创建时间',
+      dataIndex: 'createTime',
+      hideInSearch: true,
+    },
+    {
+      title: '更新人ID',
+      dataIndex: 'updateBy',
+      hideInSearch: true,
+    },
+    {
+      title: '更新时间',
+      dataIndex: 'updateTime',
+      hideInSearch: true,
+    },
+    {
+      title: '是否删除',
+      dataIndex: 'isDeleted',
+      hideInSearch: true,
+    },
 
     {
       title: '操作',
@@ -246,7 +219,7 @@ const OrderSettingList: React.FC = () => {
           <a
             key="sort"
             onClick={() => {
-              handleUpdateModalVisible(true);
+              handleUpdateVisible(true);
               setCurrentRow(record);
               }
             }
@@ -271,14 +244,14 @@ const OrderSettingList: React.FC = () => {
 return (
     <PageContainer>
       <ProTable<OrderSettingListItem>
-        headerTitle="订单设置表管理"
+        headerTitle="订单设置管理"
         actionRef={actionRef}
         rowKey="id"
         search={ {
           labelWidth: 120,
         } }
         toolBarRender={() => [
-          <Button type="primary" key="primary" onClick={() => handleModalVisible(true)}>
+          <Button type="primary" key="primary" onClick={() => handleAddVisible(true)}>
             <PlusOutlined/> 新增
           </Button>,
         ]}
@@ -322,12 +295,12 @@ return (
       />
 
 
-      <CreateForm
-        key={'CreateForm'}
+      <AddModal
+        key={'AddModal'}
         onSubmit={async (value) => {
           const success = await handleAdd(value);
           if (success) {
-            handleModalVisible(false);
+            handleAddVisible(false);
             setCurrentRow(undefined);
             if (actionRef.current) {
               actionRef.current.reload();
@@ -335,20 +308,20 @@ return (
           }
         }}
         onCancel={() => {
-          handleModalVisible(false);
+          handleAddVisible(false);
           if (!showDetail) {
             setCurrentRow(undefined);
           }
         }}
-        createModalVisible={createModalVisible}
+        addVisible={addVisible}
       />
 
-      <UpdateForm
-        key={'UpdateForm'}
+      <UpdateModal
+        key={'UpdateModal'}
         onSubmit={async (value) => {
           const success = await handleUpdate(value);
           if (success) {
-            handleUpdateModalVisible(false);
+            handleUpdateVisible(false);
             setCurrentRow(undefined);
             if (actionRef.current) {
               actionRef.current.reload();
@@ -356,12 +329,12 @@ return (
           }
         }}
         onCancel={() => {
-          handleUpdateModalVisible(false);
+          handleUpdateVisible(false);
           if (!showDetail) {
             setCurrentRow(undefined);
           }
         }}
-        updateModalVisible={updateModalVisible}
+        updateVisible={updateVisible}
         currentData={currentRow || {} }
       />
 
@@ -377,7 +350,7 @@ return (
         {currentRow?.id && (
           <ProDescriptions<OrderSettingListItem>
             column={2}
-            title={"订单设置表详情"}
+            title={"订单设置详情"}
             request={async () => ({
               data: currentRow || {},
             })}

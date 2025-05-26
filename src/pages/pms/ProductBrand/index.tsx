@@ -8,19 +8,19 @@ import type {ProDescriptionsItemProps} from '@ant-design/pro-descriptions';
 import ProDescriptions from '@ant-design/pro-descriptions';
 import AddModal from './components/AddModal';
 import UpdateModal from './components/UpdateModal';
-import type { OrderReturnReasonListItem} from './data.d';
-import {addOrderReturnReason, queryOrderReturnReasonList, removeOrderReturnReason, updateOrderReturnReason, updateOrderReturnReasonStatus} from './service';
+import type { ProductBrandListItem} from './data.d';
+import {addProductBrand, queryProductBrandList, removeProductBrand, updateProductBrand, updateProductBrandStatus} from './service';
 
 const {confirm} = Modal;
 
 /**
- * 添加退货原因
+ * 添加商品品牌
  * @param fields
  */
-const handleAdd = async (fields: OrderReturnReasonListItem) => {
+const handleAdd = async (fields: ProductBrandListItem) => {
   const hide = message.loading('正在添加');
   try {
-    await addOrderReturnReason({...fields});
+    await addProductBrand({...fields});
     hide();
     message.success('添加成功');
     return true;
@@ -31,13 +31,13 @@ const handleAdd = async (fields: OrderReturnReasonListItem) => {
 };
 
 /**
- * 更新退货原因
+ * 更新商品品牌
  * @param fields
  */
-const handleUpdate = async (fields: OrderReturnReasonListItem) => {
+const handleUpdate = async (fields: ProductBrandListItem) => {
   const hide = message.loading('正在更新');
   try {
-    await updateOrderReturnReason(fields);
+    await updateProductBrand(fields);
     hide();
 
     message.success('更新成功');
@@ -49,14 +49,14 @@ const handleUpdate = async (fields: OrderReturnReasonListItem) => {
 };
 
 /**
- *  删除退货原因
+ *  删除商品品牌
  * @param ids
  */
 const handleRemove = async (ids: number[]) => {
   const hide = message.loading('正在删除');
   if (ids.length === 0) return true;
   try {
-    await removeOrderReturnReason(ids);
+    await removeProductBrand(ids);
     hide();
     message.success('删除成功，即将刷新');
     return true;
@@ -67,7 +67,7 @@ const handleRemove = async (ids: number[]) => {
 };
 
 /**
- * 更新退货原因状态
+ * 更新商品品牌状态
  * @param ids
  * @param status
  */
@@ -78,7 +78,7 @@ const handleStatus = async (ids: number[], status: number) => {
     return true;
   }
   try {
-    await updateOrderReturnReasonStatus({ orderReturnReasonIds: ids, orderReturnReasonStatus: status});
+    await updateProductBrandStatus({ productBrandIds: ids, productBrandStatus: status});
     hide();
     message.success('更新状态成功');
     return true;
@@ -88,12 +88,12 @@ const handleStatus = async (ids: number[], status: number) => {
   }
 };
 
-const OrderReturnReasonList: React.FC = () => {
+const ProductBrandList: React.FC = () => {
   const [addVisible, handleAddVisible] = useState<boolean>(false);
   const [updateVisible, handleUpdateVisible] = useState<boolean>(false);
   const [showDetail, setShowDetail] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
-  const [currentRow, setCurrentRow] = useState<OrderReturnReasonListItem>();
+  const [currentRow, setCurrentRow] = useState<ProductBrandListItem>();
 
   const showDeleteConfirm = (ids: number[]) => {
     confirm({
@@ -124,15 +124,15 @@ const OrderReturnReasonList: React.FC = () => {
     });
   };
 
-  const columns: ProColumns<OrderReturnReasonListItem>[] = [
+  const columns: ProColumns<ProductBrandListItem>[] = [
     
     {
-      title: '主键ID',
+      title: '',
       dataIndex: 'id',
       hideInSearch: true,
     },
     {
-      title: '退货类型',
+      title: '品牌名称',
       dataIndex: 'name',
       render: (dom, entity) => {
           return <a onClick={() => {
@@ -143,13 +143,33 @@ const OrderReturnReasonList: React.FC = () => {
     },
     
     {
+      title: '品牌logo',
+      dataIndex: 'logo',
+      hideInSearch: true,
+    },
+    {
+      title: '专区大图',
+      dataIndex: 'bigPic',
+      hideInSearch: true,
+    },
+    {
+      title: '描述',
+      dataIndex: 'description',
+      hideInSearch: true,
+    },
+    {
+      title: '首字母',
+      dataIndex: 'firstLetter',
+      hideInSearch: true,
+    },
+    {
       title: '排序',
       dataIndex: 'sort',
       hideInSearch: true,
     },
     {
-      title: '状态：0->不启用；1->启用',
-      dataIndex: 'status',
+      title: '推荐状态',
+      dataIndex: 'recommendStatus',
       renderFormItem: (text, row, index) => {
           return <Select
             value={row.value}
@@ -162,13 +182,27 @@ const OrderReturnReasonList: React.FC = () => {
     },
     render: (dom, entity) => {
       return (
-        <Switch checked={entity.status == 1} onChange={(flag) => {
+        <Switch checked={entity.recommendStatus == 1} onChange={(flag) => {
           showStatusConfirm( [entity.id], flag ? 1 : 0)
         }}/>
       );
     },
     },
-    
+    {
+      title: '产品数量',
+      dataIndex: 'productCount',
+      hideInSearch: true,
+    },
+    {
+      title: '产品评论数量',
+      dataIndex: 'productCommentCount',
+      hideInSearch: true,
+    },
+    {
+      title: '是否启用',
+      dataIndex: 'isEnabled',
+      hideInSearch: true,
+    },
     {
       title: '创建人ID',
       dataIndex: 'createBy',
@@ -229,8 +263,8 @@ const OrderReturnReasonList: React.FC = () => {
 
 return (
     <PageContainer>
-      <ProTable<OrderReturnReasonListItem>
-        headerTitle="退货原因管理"
+      <ProTable<ProductBrandListItem>
+        headerTitle="商品品牌管理"
         actionRef={actionRef}
         rowKey="id"
         search={ {
@@ -241,7 +275,7 @@ return (
             <PlusOutlined/> 新增
           </Button>,
         ]}
-        request={queryOrderReturnReasonList}
+        request={queryProductBrandList}
         columns={columns}
         rowSelection={ {} }
         pagination={ {pageSize: 10}}
@@ -334,16 +368,16 @@ return (
         closable={false}
       >
         {currentRow?.id && (
-          <ProDescriptions<OrderReturnReasonListItem>
+          <ProDescriptions<ProductBrandListItem>
             column={2}
-            title={"退货原因详情"}
+            title={"商品品牌详情"}
             request={async () => ({
               data: currentRow || {},
             })}
             params={ {
               id: currentRow?.id,
             }}
-            columns={columns as ProDescriptionsItemProps<OrderReturnReasonListItem>[]}
+            columns={columns as ProDescriptionsItemProps<ProductBrandListItem>[]}
           />
         )}
       </Drawer>
@@ -351,4 +385,4 @@ return (
   );
 };
 
-export default OrderReturnReasonList;
+export default ProductBrandList;

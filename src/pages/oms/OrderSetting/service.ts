@@ -1,7 +1,7 @@
 import {request} from 'umi';
-import type {OrderSettingListParams, OrderSettingListItem} from './data.d';
+import type { OrderSettingListParams, OrderSettingListItem } from './data.d';
 
-// 添加订单设置表
+// 添加订单设置
 export async function addOrderSetting(params: OrderSettingListItem) {
   return request('/api/oms/setting/addOrderSetting', {
     method: 'POST',
@@ -11,15 +11,15 @@ export async function addOrderSetting(params: OrderSettingListItem) {
   });
 }
 
-// 删除订单设置表
+// 删除订单设置
 export async function removeOrderSetting(ids: number[]) {
-  return request('/api/oms/setting/deleteOrderSetting?ids=' + ids.join(','), {
+  return request('/api/oms/setting/deleteOrderSetting?ids=[' + ids + "]", {
     method: 'GET',
   });
 }
 
 
-// 更新订单设置表
+// 更新订单设置
 export async function updateOrderSetting(params: OrderSettingListItem) {
   return request('/api/oms/setting/updateOrderSetting', {
     method: 'POST',
@@ -29,8 +29,19 @@ export async function updateOrderSetting(params: OrderSettingListItem) {
   });
 }
 
-// 更新订单设置表是否默认状态
-export async function updateOrderSettingIsDefault(params: { id: number, isDefault: number }) {
+// 更新订单设置状态
+export async function updateOrderSettingStatus(params: { id: number, status: number }) {
+  return request('/api/oms/setting/updateOrderSettingStatus', {
+    method: 'POST',
+    data: {
+      ...params,
+    },
+
+  });
+}
+
+// 更新订单设置是否默认状态
+export async function updateOrderSettingIsDefault(params: { id: number, status: number }) {
   return request('/api/oms/setting/updateOrderSettingIsDefault', {
     method: 'POST',
     data: {
@@ -40,26 +51,15 @@ export async function updateOrderSettingIsDefault(params: { id: number, isDefaul
   });
 }
 
-// 批量更新订单设置表状态
-export async function updateOrderSettingStatus(params: { orderSettingIds: number[], orderSettingStatus: number }) {
-  return request('/api/oms/setting/updateOrderSettingStatus', {
-    method: 'POST',
-    data: {
-      ids: params.orderSettingIds, status: params.orderSettingStatus
-    },
 
-  });
-}
-
-
-// 查询订单设置表详情
+// 查询订单设置详情
 export async function queryOrderSettingDetail(id: number) {
   return request('/api/oms/setting/queryOrderSettingDetail?id=' + id, {
     method: 'GET',
   });
 }
 
-// 分页查询订单设置表列表
+// 分页查询订单设置列表
 export async function queryOrderSettingList(params: OrderSettingListParams) {
 
   return request('/api/oms/setting/queryOrderSettingList', {

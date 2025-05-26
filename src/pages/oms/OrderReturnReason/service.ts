@@ -1,9 +1,9 @@
 import {request} from 'umi';
 import type { OrderReturnReasonListParams, OrderReturnReasonListItem } from './data.d';
 
-// 添加退货原因表
+// 添加退货原因
 export async function addOrderReturnReason(params: OrderReturnReasonListItem) {
-  return request('/api/oms/returnReason/addOrderReturnReason', {
+  return request('/api/oms/returnReason/addReturnReason', {
     method: 'POST',
     data: {
       ...params,
@@ -11,17 +11,17 @@ export async function addOrderReturnReason(params: OrderReturnReasonListItem) {
   });
 }
 
-// 删除退货原因表
+// 删除退货原因
 export async function removeOrderReturnReason(ids: number[]) {
-  return request('/api/oms/returnReason/deleteOrderReturnReason?ids=' + ids.join(','), {
+  return request('/api/oms/returnReason/deleteReturnReason?ids=[' + ids + "]", {
     method: 'GET',
   });
 }
 
 
-// 更新退货原因表
+// 更新退货原因
 export async function updateOrderReturnReason(params: OrderReturnReasonListItem) {
-  return request('/api/oms/returnReason/updateOrderReturnReason', {
+  return request('/api/oms/returnReason/updateReturnReason', {
     method: 'POST',
     data: {
       ...params,
@@ -29,29 +29,29 @@ export async function updateOrderReturnReason(params: OrderReturnReasonListItem)
   });
 }
 
-// 批量更新退货原因表状态
-export async function updateOrderReturnReasonStatus(params: { orderReturnReasonIds: number[], orderReturnReasonStatus: number }) {
-  return request('/api/oms/returnReason/updateOrderReturnReasonStatus', {
+// 批量更新退货原因状态
+export async function updateOrderReturnReasonStatus(params: { ids: number[], status: number }) {
+  return request('/api/oms/returnReason/updateReturnReasonStatus', {
     method: 'POST',
     data: {
-      ids: params.orderReturnReasonIds, status: params.orderReturnReasonStatus
+      ...params,
     },
 
   });
 }
 
 
-// 查询退货原因表详情
+// 查询退货原因详情
 export async function queryOrderReturnReasonDetail(id: number) {
-  return request('/api/oms/returnReason/queryOrderReturnReasonDetail?id=' + id, {
+  return request('/api/oms/returnReason/queryReturnReasonDetail?id=' + id, {
     method: 'GET',
   });
 }
 
-// 分页查询退货原因表列表
+// 分页查询退货原因列表
 export async function queryOrderReturnReasonList(params: OrderReturnReasonListParams) {
 
-  return request('/api/oms/returnReason/queryOrderReturnReasonList', {
+  return request('/api/oms/returnReason/queryReturnReasonList', {
     method: 'GET',
     params: {
       ...params,

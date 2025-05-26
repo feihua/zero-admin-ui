@@ -1,9 +1,13 @@
 export interface OrderReturnReasonListItem {
-    createTime: string; //创建时间
-    id: number; //
+    id: number; //主键ID
     name: string; //退货类型
     sort: number; //排序
     status: number; //状态：0->不启用；1->启用
+    createBy: number; //创建人ID
+    createTime: string; //创建时间
+    updateBy: number; //更新人ID
+    updateTime: string; //更新时间
+    isDeleted: number; //是否删除
 
 }
 
@@ -19,11 +23,15 @@ export interface OrderReturnReasonListData {
 }
 
 export interface OrderReturnReasonListParams {
-    createTime?: string; //创建时间
-    id?: number; //
+    id?: number; //主键ID
     name?: string; //退货类型
     sort?: number; //排序
     status?: number; //状态：0->不启用；1->启用
+    createBy?: number; //创建人ID
+    createTime?: string; //创建时间
+    updateBy?: number; //更新人ID
+    updateTime?: string; //更新时间
+    isDeleted?: number; //是否删除
 
     pageSize?: number;
     current?: number;

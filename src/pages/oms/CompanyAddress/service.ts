@@ -1,7 +1,7 @@
 import {request} from 'umi';
 import type { CompanyAddressListParams, CompanyAddressListItem } from './data.d';
 
-// 添加公司收发货地址表
+// 添加公司收发货地址
 export async function addCompanyAddress(params: CompanyAddressListItem) {
   return request('/api/oms/companyAddress/addCompanyAddress', {
     method: 'POST',
@@ -11,15 +11,15 @@ export async function addCompanyAddress(params: CompanyAddressListItem) {
   });
 }
 
-// 删除公司收发货地址表
+// 删除公司收发货地址
 export async function removeCompanyAddress(ids: number[]) {
-  return request('/api/oms/companyAddress/deleteCompanyAddress?ids=' + ids.join(','), {
+  return request('/api/oms/companyAddress/deleteCompanyAddress?ids=[' + ids + "]", {
     method: 'GET',
   });
 }
 
 
-// 更新公司收发货地址表
+// 更新公司收发货地址
 export async function updateCompanyAddress(params: CompanyAddressListItem) {
   return request('/api/oms/companyAddress/updateCompanyAddress', {
     method: 'POST',
@@ -30,34 +30,34 @@ export async function updateCompanyAddress(params: CompanyAddressListItem) {
 }
 
 // 更新公司收发货地址表收货状态
-export async function updateCompanyAddressReceiveStatus(params: { companyAddressId: number, companyAddressStatus: number }) {
+export async function updateCompanyAddressReceiveStatus(params: { id: number, status: number }) {
   return request('/api/oms/companyAddress/updateCompanyAddressReceiveStatus', {
     method: 'POST',
     data: {
-      id: params.companyAddressId, receiveStatus: params.companyAddressStatus
+      ...params
     },
 
   });
 }
 // 更新公司收发货地址表发货状态
-export async function updateCompanyAddressSendStatus(params: { companyAddressId: number, companyAddressStatus: number }) {
+export async function updateCompanyAddressSendStatus(params: { id: number, status: number }) {
   return request('/api/oms/companyAddress/updateCompanyAddressSendStatus', {
     method: 'POST',
     data: {
-      id: params.companyAddressId, sendStatus: params.companyAddressStatus
+      ...params
     },
 
   });
 }
 
-// 查询公司收发货地址表详情
+// 查询公司收发货地址详情
 export async function queryCompanyAddressDetail(id: number) {
   return request('/api/oms/companyAddress/queryCompanyAddressDetail?id=' + id, {
     method: 'GET',
   });
 }
 
-// 分页查询公司收发货地址表列表
+// 分页查询公司收发货地址列表
 export async function queryCompanyAddressList(params: CompanyAddressListParams) {
 
   return request('/api/oms/companyAddress/queryCompanyAddressList', {

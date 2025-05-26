@@ -1,18 +1,19 @@
 export interface CompanyAddressListItem {
+    id: number; //主键ID
     addressName: string; //地址名称
-    city: string; //市
-    createBy: string; //创建者
-    createTime: string; //创建时间
-    detailAddress: string; //详细地址
-    id: number; //
     name: string; //收发货人姓名
     phone: string; //收货人电话
     province: string; //省/直辖市
-    receiveStatus: number; //是否默认收货地址：0->否；1->是
+    city: string; //市
     region: string; //区
+    detailAddress: string; //详细地址
     sendStatus: number; //默认发货地址：0->否；1->是
-    updateBy: string; //更新者
+    receiveStatus: number; //默认收货地址：0->否；1->是
+    createBy: number; //创建人ID
+    createTime: string; //创建时间
+    updateBy: number; //更新人ID
     updateTime: string; //更新时间
+    isDeleted: number; //是否删除
 
 }
 
@@ -28,20 +29,21 @@ export interface CompanyAddressListData {
 }
 
 export interface CompanyAddressListParams {
+    id?: number; //主键ID
     addressName?: string; //地址名称
-    city?: string; //市
-    createBy?: string; //创建者
-    createTime?: string; //创建时间
-    detailAddress?: string; //详细地址
-    id?: number; //
     name?: string; //收发货人姓名
     phone?: string; //收货人电话
     province?: string; //省/直辖市
-    receiveStatus?: number; //是否默认收货地址：0->否；1->是
+    city?: string; //市
     region?: string; //区
+    detailAddress?: string; //详细地址
     sendStatus?: number; //默认发货地址：0->否；1->是
-    updateBy?: string; //更新者
+    receiveStatus?: number; //默认收货地址：0->否；1->是
+    createBy?: number; //创建人ID
+    createTime?: string; //创建时间
+    updateBy?: number; //更新人ID
     updateTime?: string; //更新时间
+    isDeleted?: number; //是否删除
 
     pageSize?: number;
     current?: number;
