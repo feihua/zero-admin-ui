@@ -13,7 +13,7 @@ export async function addOrderSetting(params: OrderSettingListItem) {
 
 // 删除订单设置
 export async function removeOrderSetting(ids: number[]) {
-  return request('/api/oms/setting/deleteOrderSetting?ids=[' + ids + "]", {
+  return request('/api/oms/setting/deleteOrderSetting?ids=' + ids.join(','), {
     method: 'GET',
   });
 }

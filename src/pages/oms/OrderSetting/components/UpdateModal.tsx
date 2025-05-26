@@ -12,8 +12,8 @@ export interface UpdateModalProps {
 const FormItem = Form.Item;
 
 const formLayout = {
-  labelCol: {span: 7},
-  wrapperCol: {span: 13},
+  labelCol: {span: 10},
+  wrapperCol: {span: 12},
 };
 
 const UpdateModal: React.FC<UpdateModalProps> = (props) => {
@@ -62,101 +62,79 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
           <Input id="update-id"/>
         </FormItem>
 
-        
-        <FormItem
-          name="id"
-          label="主键ID"
-          rules={[{required: true, message: '请输入主键ID!'}]}
-        >
-            <Input id="update-id" placeholder={'请输入主键ID!'}/>
-         </FormItem>
+
         <FormItem
           name="flashOrderOvertime"
           label="秒杀订单超时关闭时间(分)"
-          rules={[{required: true, message: '请输入秒杀订单超时关闭时间(分)!'}]}
+          rules={[{ required: true, message: '请输入秒杀订单超时关闭时间(分)!' }]}
         >
-            <Input id="update-flashOrderOvertime" placeholder={'请输入秒杀订单超时关闭时间(分)!'}/>
-         </FormItem>
+          <InputNumber
+            id="update-flashOrderOvertime"
+            placeholder={'请输入秒杀订单超时关闭时间(分)!'}
+            style={{ width: 275 }}
+          />
+        </FormItem>
         <FormItem
           name="normalOrderOvertime"
           label="正常订单超时时间(分)"
-          rules={[{required: true, message: '请输入正常订单超时时间(分)!'}]}
+          rules={[{ required: true, message: '请输入正常订单超时时间(分)!' }]}
         >
-            <Input id="update-normalOrderOvertime" placeholder={'请输入正常订单超时时间(分)!'}/>
-         </FormItem>
+          <InputNumber
+            id="update-normalOrderOvertime"
+            placeholder={'请输入正常订单超时时间(分)!'}
+            style={{ width: 275 }}
+          />
+        </FormItem>
         <FormItem
           name="confirmOvertime"
           label="发货后自动确认收货时间（天）"
-          rules={[{required: true, message: '请输入发货后自动确认收货时间（天）!'}]}
+          rules={[{ required: true, message: '请输入发货后自动确认收货时间（天）!' }]}
         >
-            <Input id="update-confirmOvertime" placeholder={'请输入发货后自动确认收货时间（天）!'}/>
-         </FormItem>
+          <InputNumber
+            id="update-confirmOvertime"
+            placeholder={'请输入发货后自动确认收货时间（天）!'}
+            style={{ width: 275 }}
+          />
+        </FormItem>
         <FormItem
           name="finishOvertime"
           label="自动完成交易时间，不能申请售后（天）"
-          rules={[{required: true, message: '请输入自动完成交易时间，不能申请售后（天）!'}]}
+          rules={[{ required: true, message: '请输入自动完成交易时间，不能申请售后（天）!' }]}
         >
-            <Input id="update-finishOvertime" placeholder={'请输入自动完成交易时间，不能申请售后（天）!'}/>
-         </FormItem>
-        <FormItem
-          name="status"
-          label="状态：0->禁用；1->启用"
-          rules={[{required: true, message: '请输入状态：0->禁用；1->启用!'}]}
-        >
-              <Radio.Group>
-                <Radio value={0}>禁用</Radio>
-                <Radio value={1}>正常</Radio>
-              </Radio.Group>
+          <InputNumber
+            id="update-finishOvertime"
+            placeholder={'请输入自动完成交易时间，不能申请售后（天）!'}
+            style={{ width: 275 }}
+          />
         </FormItem>
-        <FormItem
-          name="isDefault"
-          label="是否默认：0->否；1->是"
-          rules={[{required: true, message: '请输入是否默认：0->否；1->是!'}]}
-        >
-            <Input id="update-isDefault" placeholder={'请输入是否默认：0->否；1->是!'}/>
-         </FormItem>
+
         <FormItem
           name="commentOvertime"
           label="订单完成后自动好评时间（天）"
-          rules={[{required: true, message: '请输入订单完成后自动好评时间（天）!'}]}
+          rules={[{ required: true, message: '请输入订单完成后自动好评时间（天）!' }]}
         >
-            <Input id="update-commentOvertime" placeholder={'请输入订单完成后自动好评时间（天）!'}/>
-         </FormItem>
+          <InputNumber
+            id="update-commentOvertime"
+            placeholder={'请输入订单完成后自动好评时间（天）!'}
+            style={{ width: 275 }}
+          />
+        </FormItem>
+        <FormItem name="status" label="状态" rules={[{ required: true, message: '请输入状态!' }]}>
+          <Radio.Group>
+            <Radio value={0}>禁用</Radio>
+            <Radio value={1}>正常</Radio>
+          </Radio.Group>
+        </FormItem>
         <FormItem
-          name="createBy"
-          label="创建人ID"
-          rules={[{required: true, message: '请输入创建人ID!'}]}
+          name="isDefault"
+          label="是否默认"
+          rules={[{ required: true, message: '请输入是否默认!' }]}
         >
-            <Input id="update-createBy" placeholder={'请输入创建人ID!'}/>
-         </FormItem>
-        <FormItem
-          name="createTime"
-          label="创建时间"
-          rules={[{required: true, message: '请输入创建时间!'}]}
-        >
-            <Input id="update-createTime" placeholder={'请输入创建时间!'}/>
-         </FormItem>
-        <FormItem
-          name="updateBy"
-          label="更新人ID"
-          rules={[{required: true, message: '请输入更新人ID!'}]}
-        >
-            <Input id="update-updateBy" placeholder={'请输入更新人ID!'}/>
-         </FormItem>
-        <FormItem
-          name="updateTime"
-          label="更新时间"
-          rules={[{required: true, message: '请输入更新时间!'}]}
-        >
-            <Input id="update-updateTime" placeholder={'请输入更新时间!'}/>
-         </FormItem>
-        <FormItem
-          name="isDeleted"
-          label="是否删除"
-          rules={[{required: true, message: '请输入是否删除!'}]}
-        >
-            <Input id="update-isDeleted" placeholder={'请输入是否删除!'}/>
-         </FormItem>
+          <Radio.Group>
+            <Radio value={0}>否</Radio>
+            <Radio value={1}>是</Radio>
+          </Radio.Group>
+        </FormItem>
       </>
     );
   };
@@ -171,6 +149,7 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
       title="编辑"
       open={updateVisible}
       {...modalFooter}
+      width={700}
     >
       <Form
         {...formLayout}

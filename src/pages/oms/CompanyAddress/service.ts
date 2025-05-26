@@ -13,7 +13,7 @@ export async function addCompanyAddress(params: CompanyAddressListItem) {
 
 // 删除公司收发货地址
 export async function removeCompanyAddress(ids: number[]) {
-  return request('/api/oms/companyAddress/deleteCompanyAddress?ids=[' + ids + "]", {
+  return request('/api/oms/companyAddress/deleteCompanyAddress?ids=' + ids.join(','), {
     method: 'GET',
   });
 }
