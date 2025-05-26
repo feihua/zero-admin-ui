@@ -1,9 +1,9 @@
 import React, {useEffect, useState} from 'react';
 import {Cascader, Form, Input, InputNumber, message, Select} from 'antd';
-import type {CategoryListItem} from "@/pages/pms/product_category/data";
-import type {BrandListItem} from "@/pages/pms/Brand/data";
-import {queryBrandList} from "@/pages/pms/Brand/service";
-import {queryProductCategoryList} from "@/pages/pms/product_category/service";
+import type {ProductCategoryListItem} from "@/pages/pms/ProductCategory/data";
+import type {ProductBrandListItem} from "@/pages/pms/ProductBrand/data";
+import {queryProductBrandList} from "@/pages/pms/ProductBrand/service";
+import {queryProductCategoryList} from "@/pages/pms/ProductCategory/service";
 import {tree} from "@/utils/utils";
 
 export interface BaseInfoProps {
@@ -14,12 +14,12 @@ const FormItem = Form.Item;
 
 const ProductBaseInfo: React.FC<BaseInfoProps> = (props) => {
 
-  const [brandListItem, setBrandListItem] = useState<BrandListItem[]>([]);
-  const [categoryListItem, setCategoryListItem] = useState<CategoryListItem[]>([]);
+  const [brandListItem, setBrandListItem] = useState<ProductBrandListItem[]>([]);
+  const [categoryListItem, setCategoryListItem] = useState<ProductCategoryListItem[]>([]);
 
   useEffect(() => {
     if (props.visible) {
-      queryBrandList({pageSize: 100, current: 1}).then((res) => {
+      queryProductBrandList({pageSize: 100, current: 1}).then((res) => {
         if (res.code === '000000') {
           setBrandListItem(res.data)
         } else {
@@ -64,7 +64,7 @@ const ProductBaseInfo: React.FC<BaseInfoProps> = (props) => {
       </FormItem>
       <FormItem name="brandId" label="商品品牌" rules={[{required: true, message: '请选择商品分类!'}]}>
         <Select id="brandId" placeholder={'请选择商品品牌'}>
-          {brandListItem.map(r => <Select.Option key={r.id} value={r.id}>{r.brandName}</Select.Option>)}
+          {brandListItem.map(r => <Select.Option key={r.id} value={r.id}>{r.name}</Select.Option>)}
         </Select>
       </FormItem>
       <FormItem name="description" label="商品介绍" rules={[{required: true, message: '请输入商品介绍!'}]}>

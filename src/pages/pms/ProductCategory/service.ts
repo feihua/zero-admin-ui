@@ -13,7 +13,7 @@ export async function addProductCategory(params: ProductCategoryListItem) {
 
 // 删除产品分类
 export async function removeProductCategory(ids: number[]) {
-  return request('/api/pms/category/deleteProductCategory?ids=[' + ids + "]", {
+  return request('/api/pms/category/deleteProductCategory?ids=' + ids.join(','), {
     method: 'GET',
   });
 }

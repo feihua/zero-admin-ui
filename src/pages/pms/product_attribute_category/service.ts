@@ -52,7 +52,7 @@ export async function queryAttributeCategoryDetail(id: number ) {
 // 分页查询商品属性分类列表
 export async function queryAttributeCategoryList(params: AttributeCategoryListParams) {
 
-  return request('/api/pms/attributeCategory/queryAttributeCategoryList', {
+  return request('/api/pms/attributeCategory/queryCategoryWithAttrList', {
     method: 'GET',
     params: {
       ...params,

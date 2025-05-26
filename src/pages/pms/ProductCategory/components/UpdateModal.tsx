@@ -1,6 +1,7 @@
-import React, {useEffect} from 'react';
-import {Form, Input, InputNumber, Modal, Radio} from 'antd';
+import React, { useEffect, useState } from 'react';
+import { Form, Input, InputNumber, message, Modal, Radio, Select } from 'antd';
 import type { ProductCategoryListItem} from '../data.d';
+import { queryProductCategoryList } from '../service';
 
 export interface UpdateModalProps {
   onCancel: () => void;
@@ -18,7 +19,7 @@ const formLayout = {
 
 const UpdateModal: React.FC<UpdateModalProps> = (props) => {
   const [form] = Form.useForm();
-
+  const [parentIdMap, setParentIdMap] = useState([]);
   const {
     onSubmit,
     onCancel,
@@ -37,8 +38,24 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
       form.setFieldsValue({
         ...currentData,
       });
+      queryProductCategoryList({parentId: 0}).then((res) => {
+        if (res.code === '000000') {
+          const map = res.data.map((item: { id: any; name: any; }) => ({
+            value: item.id,
+            label: item.name,
+          }));
+          map.unshift({
+            value: 0,
+            label: '主分类',
+          })
+          setParentIdMap(map);
+        } else {
+          message.error(res.msg);
+        }
+      });
     }
   }, [props.currentData]);
+
 
   const handleSubmit = () => {
     if (!form) return;
@@ -62,129 +79,87 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
           <Input id="update-id"/>
         </FormItem>
 
-        
-        <FormItem
-          name="id"
-          label=""
-          rules={[{required: true, message: '请输入!'}]}
-        >
-            <Input id="update-id" placeholder={'请输入!'}/>
-         </FormItem>
+
         <FormItem
           name="parentId"
-          label="上级分类的编号：0表示一级分类"
-          rules={[{required: true, message: '请输入上级分类的编号：0表示一级分类!'}]}
+          label="上级分类"
+          rules={[{required: true, message: `请输入上级分类!`}]}
         >
-            <Input id="update-parentId" placeholder={'请输入上级分类的编号：0表示一级分类!'}/>
-         </FormItem>
+          <Select id="parentId" options={parentIdMap} placeholder={'请选择上级'}>
+          </Select>
+        </FormItem>
         <FormItem
           name="name"
           label="商品分类名称"
           rules={[{required: true, message: '请输入商品分类名称!'}]}
         >
-            <Input id="update-name" placeholder={'请输入商品分类名称!'}/>
-         </FormItem>
+          <Input id="create-name" placeholder={'请输入商品分类名称!'}/>
+        </FormItem>
         <FormItem
           name="level"
-          label="分类级别：0->1级；1->2级"
-          rules={[{required: true, message: '请输入分类级别：0->1级；1->2级!'}]}
+          label="分类级别"
+          rules={[{required: true, message: '请输入分类级别!'}]}
         >
-            <Input id="update-level" placeholder={'请输入分类级别：0->1级；1->2级!'}/>
-         </FormItem>
-        <FormItem
-          name="productCount"
-          label="商品数量"
-          rules={[{required: true, message: '请输入商品数量!'}]}
-        >
-            <Input id="update-productCount" placeholder={'请输入商品数量!'}/>
-         </FormItem>
+          <Select id="level" placeholder={'请选择分类级别'}>
+            <Select.Option value={0}>一级</Select.Option>
+            <Select.Option value={1}>二级</Select.Option>
+          </Select>
+        </FormItem>
         <FormItem
           name="productUnit"
           label="商品单位"
           rules={[{required: true, message: '请输入商品单位!'}]}
         >
-            <Input id="update-productUnit" placeholder={'请输入商品单位!'}/>
-         </FormItem>
+          <Input id="create-productUnit" placeholder={'请输入商品单位!'}/>
+        </FormItem>
         <FormItem
           name="navStatus"
-          label="是否显示在导航栏：0->不显示；1->显示"
-          rules={[{required: true, message: '请输入是否显示在导航栏：0->不显示；1->显示!'}]}
+          label="是否显示在导航栏"
+          rules={[{required: true, message: '请输入是否显示在导航栏!'}]}
         >
-              <Radio.Group>
-                <Radio value={0}>禁用</Radio>
-                <Radio value={1}>正常</Radio>
-              </Radio.Group>
-       </FormItem>
+          <Radio.Group>
+            <Radio value={0}>不显示</Radio>
+            <Radio value={1}>显示</Radio>
+          </Radio.Group>
+        </FormItem>
+        <FormItem
+          name="isEnabled"
+          label="是否启用"
+          rules={[{required: true, message: '请输入是否启用!'}]}
+        >
+          <Radio.Group>
+            <Radio value={0}>否</Radio>
+            <Radio value={1}>是</Radio>
+          </Radio.Group>
+        </FormItem>
         <FormItem
           name="sort"
           label="排序"
           rules={[{required: true, message: '请输入排序!'}]}
         >
-            <InputNumber style={ {width: 255} }/>
+          <InputNumber style={ {width: 255} }/>
         </FormItem>
         <FormItem
           name="icon"
           label="图标"
           rules={[{required: true, message: '请输入图标!'}]}
         >
-            <Input id="update-icon" placeholder={'请输入图标!'}/>
-         </FormItem>
+          <Input id="create-icon" placeholder={'请输入图标!'}/>
+        </FormItem>
         <FormItem
           name="keywords"
           label="关键字"
           rules={[{required: true, message: '请输入关键字!'}]}
         >
-            <Input id="update-keywords" placeholder={'请输入关键字!'}/>
-         </FormItem>
+          <Input id="create-keywords" placeholder={'请输入关键字!'}/>
+        </FormItem>
         <FormItem
           name="description"
           label="描述"
-          rules={[{required: true, message: '请输入描述!'}]}
         >
-            <Input id="update-description" placeholder={'请输入描述!'}/>
-         </FormItem>
-        <FormItem
-          name="isEnabled"
-          label="是否启用"
-          rules={[{required: true, message: '请输入是否启用!'}]}
-        >
-            <Input id="update-isEnabled" placeholder={'请输入是否启用!'}/>
-         </FormItem>
-        <FormItem
-          name="createBy"
-          label="创建人ID"
-          rules={[{required: true, message: '请输入创建人ID!'}]}
-        >
-            <Input id="update-createBy" placeholder={'请输入创建人ID!'}/>
-         </FormItem>
-        <FormItem
-          name="createTime"
-          label="创建时间"
-          rules={[{required: true, message: '请输入创建时间!'}]}
-        >
-            <Input id="update-createTime" placeholder={'请输入创建时间!'}/>
-         </FormItem>
-        <FormItem
-          name="updateBy"
-          label="更新人ID"
-          rules={[{required: true, message: '请输入更新人ID!'}]}
-        >
-            <Input id="update-updateBy" placeholder={'请输入更新人ID!'}/>
-         </FormItem>
-        <FormItem
-          name="updateTime"
-          label="更新时间"
-          rules={[{required: true, message: '请输入更新时间!'}]}
-        >
-            <Input id="update-updateTime" placeholder={'请输入更新时间!'}/>
-         </FormItem>
-        <FormItem
-          name="isDeleted"
-          label="是否删除"
-          rules={[{required: true, message: '请输入是否删除!'}]}
-        >
-            <Input id="update-isDeleted" placeholder={'请输入是否删除!'}/>
-         </FormItem>
+          <Input.TextArea rows={2} id="update-description" placeholder={'请输入描述'}/>
+        </FormItem>
+
       </>
     );
   };
