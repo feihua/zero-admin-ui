@@ -1,17 +1,29 @@
-import {DeleteOutlined, EditOutlined, ExclamationCircleOutlined, PlusOutlined} from '@ant-design/icons';
-import {Button, Divider, Drawer, message, Modal, Select, Space, Switch} from 'antd';
-import React, {useRef, useState} from 'react';
-import {PageContainer} from '@ant-design/pro-layout';
-import type {ActionType, ProColumns} from '@ant-design/pro-table';
+import {
+  DeleteOutlined,
+  EditOutlined,
+  ExclamationCircleOutlined,
+  PlusOutlined,
+} from '@ant-design/icons';
+import { Button, Divider, Drawer, message, Modal, Select, Space, Switch } from 'antd';
+import React, { useRef, useState } from 'react';
+import { PageContainer } from '@ant-design/pro-layout';
+import type { ActionType, ProColumns } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
-import type {ProDescriptionsItemProps} from '@ant-design/pro-descriptions';
+import type { ProDescriptionsItemProps } from '@ant-design/pro-descriptions';
 import ProDescriptions from '@ant-design/pro-descriptions';
 import AddModal from './components/AddModal';
 import UpdateModal from './components/UpdateModal';
-import type { ProductBrandListItem} from './data.d';
-import {addProductBrand, queryProductBrandList, removeProductBrand, updateProductBrand, updateProductBrandStatus} from './service';
+import type { ProductBrandListItem } from './data.d';
+import {
+  addProductBrand,
+  queryProductBrandList,
+  removeProductBrand,
+  updateProductBrand,
+  updateProductBrandRecommendStatus,
+  updateProductBrandStatus,
+} from './service';
 
-const {confirm} = Modal;
+const { confirm } = Modal;
 
 /**
  * 添加商品品牌
@@ -20,7 +32,7 @@ const {confirm} = Modal;
 const handleAdd = async (fields: ProductBrandListItem) => {
   const hide = message.loading('正在添加');
   try {
-    await addProductBrand({...fields});
+    await addProductBrand({ ...fields });
     hide();
     message.success('添加成功');
     return true;
@@ -70,15 +82,20 @@ const handleRemove = async (ids: number[]) => {
  * 更新商品品牌状态
  * @param ids
  * @param status
+ * @param t
  */
-const handleStatus = async (ids: number[], status: number) => {
+const handleStatus = async (ids: number[], status: number, t: number) => {
   const hide = message.loading('正在更新状态');
   if (ids.length == 0) {
     hide();
     return true;
   }
   try {
-    await updateProductBrandStatus({ productBrandIds: ids, productBrandStatus: status});
+    if (t == 1) {
+      await updateProductBrandStatus({ ids: ids, status: status });
+    } else {
+      await updateProductBrandRecommendStatus({ ids: ids, status: status });
+    }
     hide();
     message.success('更新状态成功');
     return true;
@@ -98,36 +115,33 @@ const ProductBrandList: React.FC = () => {
   const showDeleteConfirm = (ids: number[]) => {
     confirm({
       title: '是否删除记录?',
-      icon: <ExclamationCircleOutlined/>,
+      icon: <ExclamationCircleOutlined />,
       content: '删除的记录不能恢复,请确认!',
       onOk() {
         handleRemove(ids).then(() => {
           actionRef.current?.reloadAndRest?.();
         });
       },
-      onCancel() {
-      },
+      onCancel() {},
     });
   };
 
-  const showStatusConfirm = (ids: number[], status: number) => {
+  const showStatusConfirm = (ids: number[], status: number, t: number) => {
     confirm({
-      title: `确定${status == 1 ? "启用" : "禁用"}吗？`,
-      icon: <ExclamationCircleOutlined/>,
+      title: `确定${status == 1 ? '启用' : '禁用'}吗？`,
+      icon: <ExclamationCircleOutlined />,
       async onOk() {
-        await handleStatus(ids, status)
+        await handleStatus(ids, status, t);
         actionRef.current?.clearSelected?.();
         actionRef.current?.reload?.();
       },
-      onCancel() {
-      },
+      onCancel() {},
     });
   };
 
   const columns: ProColumns<ProductBrandListItem>[] = [
-    
     {
-      title: '',
+      title: '主键',
       dataIndex: 'id',
       hideInSearch: true,
     },
@@ -135,22 +149,32 @@ const ProductBrandList: React.FC = () => {
       title: '品牌名称',
       dataIndex: 'name',
       render: (dom, entity) => {
-          return <a onClick={() => {
-            setCurrentRow(entity);
-            setShowDetail(true);
-          }}>{dom}</a>;
-        },
+        return (
+          <a
+            onClick={() => {
+              setCurrentRow(entity);
+              setShowDetail(true);
+            }}
+          >
+            {dom}
+          </a>
+        );
+      },
     },
-    
+
     {
       title: '品牌logo',
       dataIndex: 'logo',
       hideInSearch: true,
+      valueType: 'image',
+      fieldProps: { width: 100, height: 80 },
     },
     {
       title: '专区大图',
       dataIndex: 'bigPic',
       hideInSearch: true,
+      valueType: 'image',
+      fieldProps: { width: 100, height: 80 },
     },
     {
       title: '描述',
@@ -171,22 +195,26 @@ const ProductBrandList: React.FC = () => {
       title: '推荐状态',
       dataIndex: 'recommendStatus',
       renderFormItem: (text, row, index) => {
-          return <Select
+        return (
+          <Select
             value={row.value}
-            options={ [
-              {value: '1', label: '正常'},
-              {value: '0', label: '禁用'},
+            options={[
+              { value: '1', label: '正常' },
+              { value: '0', label: '禁用' },
             ]}
           />
-
-    },
-    render: (dom, entity) => {
-      return (
-        <Switch checked={entity.recommendStatus == 1} onChange={(flag) => {
-          showStatusConfirm( [entity.id], flag ? 1 : 0)
-        }}/>
-      );
-    },
+        );
+      },
+      render: (dom, entity) => {
+        return (
+          <Switch
+            checked={entity.recommendStatus == 1}
+            onChange={(flag) => {
+              showStatusConfirm([entity.id], flag ? 1 : 0, 0);
+            }}
+          />
+        );
+      },
     },
     {
       title: '产品数量',
@@ -201,12 +229,33 @@ const ProductBrandList: React.FC = () => {
     {
       title: '是否启用',
       dataIndex: 'isEnabled',
-      hideInSearch: true,
+      renderFormItem: (text, row, index) => {
+        return (
+          <Select
+            value={row.value}
+            options={[
+              { value: '1', label: '是' },
+              { value: '0', label: '否' },
+            ]}
+          />
+        );
+      },
+      render: (dom, entity) => {
+        return (
+          <Switch
+            checked={entity.isEnabled == 1}
+            onChange={(flag) => {
+              showStatusConfirm([entity.id], flag ? 1 : 0, 1);
+            }}
+          />
+        );
+      },
     },
     {
       title: '创建人ID',
       dataIndex: 'createBy',
       hideInSearch: true,
+      hideInTable: true,
     },
     {
       title: '创建时间',
@@ -217,15 +266,11 @@ const ProductBrandList: React.FC = () => {
       title: '更新人ID',
       dataIndex: 'updateBy',
       hideInSearch: true,
+      hideInTable: true,
     },
     {
       title: '更新时间',
       dataIndex: 'updateTime',
-      hideInSearch: true,
-    },
-    {
-      title: '是否删除',
-      dataIndex: 'isDeleted',
       hideInSearch: true,
     },
 
@@ -241,79 +286,45 @@ const ProductBrandList: React.FC = () => {
             onClick={() => {
               handleUpdateVisible(true);
               setCurrentRow(record);
-              }
-            }
-          >
-            <EditOutlined/> 编辑
-          </a>
-          <Divider type="vertical"/>
-          <a
-            key="delete"
-            style={ {color: '#ff4d4f'} }
-            onClick={() => {
-              showDeleteConfirm( [record.id]);
             }}
           >
-            <DeleteOutlined/> 删除
+            <EditOutlined /> 编辑
+          </a>
+          <Divider type="vertical" />
+          <a
+            key="delete"
+            style={{ color: '#ff4d4f' }}
+            onClick={() => {
+              showDeleteConfirm([record.id]);
+            }}
+          >
+            <DeleteOutlined /> 删除
           </a>
         </>
       ),
     },
   ];
 
-return (
+  return (
     <PageContainer>
       <ProTable<ProductBrandListItem>
         headerTitle="商品品牌管理"
         actionRef={actionRef}
         rowKey="id"
-        search={ {
+        search={{
           labelWidth: 120,
-        } }
+        }}
         toolBarRender={() => [
           <Button type="primary" key="primary" onClick={() => handleAddVisible(true)}>
-            <PlusOutlined/> 新增
+            <PlusOutlined /> 新增
           </Button>,
         ]}
         request={queryProductBrandList}
         columns={columns}
-        rowSelection={ {} }
-        pagination={ {pageSize: 10}}
-        tableAlertRender={ ({
-                             selectedRowKeys,
-                             selectedRows,
-                           }) => {
-          const ids = selectedRows.map((row) => row.id);
-          return (
-            <Space size={16}>
-              <span>已选 {selectedRowKeys.length} 项</span>
-              <Button
-                icon={<EditOutlined/>}
-                style={ {borderRadius: '5px'}}
-                onClick={async () => {
-                  showStatusConfirm(ids, 1)
-                }}
-              >批量启用</Button>
-              <Button
-                icon={<EditOutlined/>}
-                style={ {borderRadius: '5px'} }
-                onClick={async () => {
-                  showStatusConfirm(ids, 0)
-                }}
-              >批量禁用</Button>
-              <Button
-                icon={<DeleteOutlined/>}
-                danger
-                style={ {borderRadius: '5px'} }
-                onClick={async () => {
-                  showDeleteConfirm(ids);
-                }}
-              >批量删除</Button>
-            </Space>
-          );
-        }}
+        rowSelection={{}}
+        pagination={{ pageSize: 10 }}
+        tableAlertRender={false}
       />
-
 
       <AddModal
         key={'AddModal'}
@@ -355,7 +366,7 @@ return (
           }
         }}
         updateVisible={updateVisible}
-        currentData={currentRow || {} }
+        currentData={currentRow || {}}
       />
 
       <Drawer
@@ -363,18 +374,18 @@ return (
         open={showDetail}
         onClose={() => {
           setCurrentRow(undefined);
-          setShowDetail(false)
+          setShowDetail(false);
         }}
         closable={false}
       >
         {currentRow?.id && (
           <ProDescriptions<ProductBrandListItem>
             column={2}
-            title={"商品品牌详情"}
+            title={'商品品牌详情'}
             request={async () => ({
               data: currentRow || {},
             })}
-            params={ {
+            params={{
               id: currentRow?.id,
             }}
             columns={columns as ProDescriptionsItemProps<ProductBrandListItem>[]}

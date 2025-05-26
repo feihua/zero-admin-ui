@@ -203,7 +203,7 @@
         name: '品牌管理',
         icon: 'table',
         path: '/pms/productBrand/list',
-        component: './pms/Brand',
+        component: './pms/ProductBrand',
       },
       {
         name: '商品属性',

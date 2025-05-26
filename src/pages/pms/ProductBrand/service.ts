@@ -13,7 +13,7 @@ export async function addProductBrand(params: ProductBrandListItem) {
 
 // 删除商品品牌
 export async function removeProductBrand(ids: number[]) {
-  return request('/api/pms/brand/deleteProductBrand?ids=[' + ids + "]", {
+  return request('/api/pms/brand/deleteProductBrand?ids=' + ids.join(','), {
     method: 'GET',
   });
 }
@@ -40,6 +40,16 @@ export async function updateProductBrandStatus(params: { ids: number[], status: 
   });
 }
 
+// 批量更新商品品牌状态
+export async function updateProductBrandRecommendStatus(params: { ids: number[], status: number }) {
+  return request('/api/pms/brand/updateProductBrandRecommendStatus', {
+    method: 'POST',
+    data: {
+      ...params,
+    },
+
+  });
+}
 
 // 查询商品品牌详情
 export async function queryProductBrandDetail(id: number) {
