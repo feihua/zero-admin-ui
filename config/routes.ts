@@ -191,7 +191,7 @@
         name: '商品分类',
         icon: 'table',
         path: '/pms/productCategory/list',
-        component: './pms/product_category',
+        component: './pms/ProductCategory',
       },
       {
         name: '属性分类',
