@@ -1,17 +1,29 @@
-import {DeleteOutlined, EditOutlined, ExclamationCircleOutlined, PlusOutlined} from '@ant-design/icons';
-import {Button, Divider, Drawer, message, Modal, Select, Space, Switch} from 'antd';
-import React, {useRef, useState} from 'react';
-import {PageContainer} from '@ant-design/pro-layout';
-import type {ActionType, ProColumns} from '@ant-design/pro-table';
+import {
+  DeleteOutlined,
+  EditOutlined,
+  ExclamationCircleOutlined,
+  PlusOutlined,
+} from '@ant-design/icons';
+import { Button, Divider, Drawer, message, Modal, Select, Switch } from 'antd';
+import React, { useRef, useState } from 'react';
+import { PageContainer } from '@ant-design/pro-layout';
+import type { ActionType, ProColumns } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
-import type {ProDescriptionsItemProps} from '@ant-design/pro-descriptions';
+import type { ProDescriptionsItemProps } from '@ant-design/pro-descriptions';
 import ProDescriptions from '@ant-design/pro-descriptions';
 import AddModal from './components/AddModal';
 import UpdateModal from './components/UpdateModal';
-import type { CompanyAddressListItem} from './data.d';
-import {addCompanyAddress, queryCompanyAddressList, removeCompanyAddress, updateCompanyAddress, updateCompanyAddressStatus} from './service';
+import type { CompanyAddressListItem } from './data.d';
+import {
+  addCompanyAddress,
+  queryCompanyAddressList,
+  removeCompanyAddress,
+  updateCompanyAddress,
+  updateCompanyAddressReceiveStatus,
+  updateCompanyAddressSendStatus,
+} from './service';
 
-const {confirm} = Modal;
+const { confirm } = Modal;
 
 /**
  * 添加公司收发货地址
@@ -20,7 +32,7 @@ const {confirm} = Modal;
 const handleAdd = async (fields: CompanyAddressListItem) => {
   const hide = message.loading('正在添加');
   try {
-    await addCompanyAddress({...fields});
+    await addCompanyAddress({ ...fields });
     hide();
     message.success('添加成功');
     return true;
@@ -68,17 +80,18 @@ const handleRemove = async (ids: number[]) => {
 
 /**
  * 更新公司收发货地址状态
- * @param ids
+ * @param id
  * @param status
+ * @param t
  */
-const handleStatus = async (ids: number[], status: number) => {
+const handleStatus = async (id: number, status: number, t: number) => {
   const hide = message.loading('正在更新状态');
-  if (ids.length == 0) {
-    hide();
-    return true;
-  }
   try {
-    await updateCompanyAddressStatus({ companyAddressIds: ids, companyAddressStatus: status});
+    if (t == 1) {
+      await updateCompanyAddressSendStatus({ id: id, status: status });
+    } else {
+      await updateCompanyAddressReceiveStatus({ id: id, status: status });
+    }
     hide();
     message.success('更新状态成功');
     return true;
@@ -98,34 +111,31 @@ const CompanyAddressList: React.FC = () => {
   const showDeleteConfirm = (ids: number[]) => {
     confirm({
       title: '是否删除记录?',
-      icon: <ExclamationCircleOutlined/>,
+      icon: <ExclamationCircleOutlined />,
       content: '删除的记录不能恢复,请确认!',
       onOk() {
         handleRemove(ids).then(() => {
           actionRef.current?.reloadAndRest?.();
         });
       },
-      onCancel() {
-      },
+      onCancel() {},
     });
   };
 
-  const showStatusConfirm = (ids: number[], status: number) => {
+  const showStatusConfirm = (id: number, status: number, t: number) => {
     confirm({
-      title: `确定${status == 1 ? "启用" : "禁用"}吗？`,
-      icon: <ExclamationCircleOutlined/>,
+      title: `确定${status == 1 ? '启用' : '禁用'}吗？`,
+      icon: <ExclamationCircleOutlined />,
       async onOk() {
-        await handleStatus(ids, status)
+        await handleStatus(id, status, t);
         actionRef.current?.clearSelected?.();
         actionRef.current?.reload?.();
       },
-      onCancel() {
-      },
+      onCancel() {},
     });
   };
 
   const columns: ProColumns<CompanyAddressListItem>[] = [
-    
     {
       title: '主键ID',
       dataIndex: 'id',
@@ -136,24 +146,36 @@ const CompanyAddressList: React.FC = () => {
       dataIndex: 'addressName',
       hideInSearch: true,
       render: (dom, entity) => {
-          return <a onClick={() => {
-            setCurrentRow(entity);
-            setShowDetail(true);
-          }}>{dom}</a>;
-        },
+        return (
+          <a
+            onClick={() => {
+              setCurrentRow(entity);
+              setShowDetail(true);
+            }}
+          >
+            {dom}
+          </a>
+        );
+      },
     },
-    
+
     {
       title: '收发货人姓名',
       dataIndex: 'name',
       render: (dom, entity) => {
-          return <a onClick={() => {
-            setCurrentRow(entity);
-            setShowDetail(true);
-          }}>{dom}</a>;
-        },
+        return (
+          <a
+            onClick={() => {
+              setCurrentRow(entity);
+              setShowDetail(true);
+            }}
+          >
+            {dom}
+          </a>
+        );
+      },
     },
-    
+
     {
       title: '收货人电话',
       dataIndex: 'phone',
@@ -180,51 +202,60 @@ const CompanyAddressList: React.FC = () => {
       hideInSearch: true,
     },
     {
-      title: '默认发货地址：0->否；1->是',
+      title: '默认发货地址',
       dataIndex: 'sendStatus',
       renderFormItem: (text, row, index) => {
-          return <Select
+        return (
+          <Select
             value={row.value}
-            options={ [
-              {value: '1', label: '正常'},
-              {value: '0', label: '禁用'},
+            options={[
+              { value: '1', label: '是' },
+              { value: '0', label: '否' },
             ]}
           />
-
-    },
-    render: (dom, entity) => {
-      return (
-        <Switch checked={entity.sendStatus == 1} onChange={(flag) => {
-          showStatusConfirm( [entity.id], flag ? 1 : 0)
-        }}/>
-      );
-    },
+        );
+      },
+      render: (dom, entity) => {
+        return (
+          <Switch
+            checked={entity.sendStatus == 1}
+            onChange={(flag) => {
+              showStatusConfirm(entity.id, flag ? 1 : 0, 1);
+            }}
+          />
+        );
+      },
     },
     {
-      title: '默认收货地址：0->否；1->是',
+      title: '默认收货地址',
       dataIndex: 'receiveStatus',
       renderFormItem: (text, row, index) => {
-          return <Select
+        return (
+          <Select
             value={row.value}
-            options={ [
-              {value: '1', label: '正常'},
-              {value: '0', label: '禁用'},
+            options={[
+              { value: '1', label: '是' },
+              { value: '0', label: '否' },
             ]}
           />
-
-    },
-    render: (dom, entity) => {
-      return (
-        <Switch checked={entity.receiveStatus == 1} onChange={(flag) => {
-          showStatusConfirm( [entity.id], flag ? 1 : 0)
-        }}/>
-      );
-    },
+        );
+      },
+      render: (dom, entity) => {
+        return (
+          <Switch
+            checked={entity.receiveStatus == 1}
+            onChange={(flag) => {
+              showStatusConfirm(entity.id, flag ? 1 : 0, 0);
+            }}
+          />
+        );
+      },
     },
     {
       title: '创建人ID',
       dataIndex: 'createBy',
       hideInSearch: true,
+      hideInTable: true,
     },
     {
       title: '创建时间',
@@ -235,16 +266,13 @@ const CompanyAddressList: React.FC = () => {
       title: '更新人ID',
       dataIndex: 'updateBy',
       hideInSearch: true,
+      hideInTable: true,
     },
     {
       title: '更新时间',
       dataIndex: 'updateTime',
       hideInSearch: true,
-    },
-    {
-      title: '是否删除',
-      dataIndex: 'isDeleted',
-      hideInSearch: true,
+      hideInTable: true,
     },
 
     {
@@ -259,79 +287,45 @@ const CompanyAddressList: React.FC = () => {
             onClick={() => {
               handleUpdateVisible(true);
               setCurrentRow(record);
-              }
-            }
-          >
-            <EditOutlined/> 编辑
-          </a>
-          <Divider type="vertical"/>
-          <a
-            key="delete"
-            style={ {color: '#ff4d4f'} }
-            onClick={() => {
-              showDeleteConfirm( [record.id]);
             }}
           >
-            <DeleteOutlined/> 删除
+            <EditOutlined /> 编辑
+          </a>
+          <Divider type="vertical" />
+          <a
+            key="delete"
+            style={{ color: '#ff4d4f' }}
+            onClick={() => {
+              showDeleteConfirm([record.id]);
+            }}
+          >
+            <DeleteOutlined /> 删除
           </a>
         </>
       ),
     },
   ];
 
-return (
+  return (
     <PageContainer>
       <ProTable<CompanyAddressListItem>
-        headerTitle="公司收发货地址管理"
+        headerTitle="公司收发货地址"
         actionRef={actionRef}
         rowKey="id"
-        search={ {
+        search={{
           labelWidth: 120,
-        } }
+        }}
         toolBarRender={() => [
           <Button type="primary" key="primary" onClick={() => handleAddVisible(true)}>
-            <PlusOutlined/> 新增
+            <PlusOutlined /> 新增
           </Button>,
         ]}
         request={queryCompanyAddressList}
         columns={columns}
-        rowSelection={ {} }
-        pagination={ {pageSize: 10}}
-        tableAlertRender={ ({
-                             selectedRowKeys,
-                             selectedRows,
-                           }) => {
-          const ids = selectedRows.map((row) => row.id);
-          return (
-            <Space size={16}>
-              <span>已选 {selectedRowKeys.length} 项</span>
-              <Button
-                icon={<EditOutlined/>}
-                style={ {borderRadius: '5px'}}
-                onClick={async () => {
-                  showStatusConfirm(ids, 1)
-                }}
-              >批量启用</Button>
-              <Button
-                icon={<EditOutlined/>}
-                style={ {borderRadius: '5px'} }
-                onClick={async () => {
-                  showStatusConfirm(ids, 0)
-                }}
-              >批量禁用</Button>
-              <Button
-                icon={<DeleteOutlined/>}
-                danger
-                style={ {borderRadius: '5px'} }
-                onClick={async () => {
-                  showDeleteConfirm(ids);
-                }}
-              >批量删除</Button>
-            </Space>
-          );
-        }}
+        rowSelection={{}}
+        pagination={{ pageSize: 10 }}
+        tableAlertRender={false}
       />
-
 
       <AddModal
         key={'AddModal'}
@@ -373,7 +367,7 @@ return (
           }
         }}
         updateVisible={updateVisible}
-        currentData={currentRow || {} }
+        currentData={currentRow || {}}
       />
 
       <Drawer
@@ -381,18 +375,18 @@ return (
         open={showDetail}
         onClose={() => {
           setCurrentRow(undefined);
-          setShowDetail(false)
+          setShowDetail(false);
         }}
         closable={false}
       >
         {currentRow?.id && (
           <ProDescriptions<CompanyAddressListItem>
             column={2}
-            title={"公司收发货地址详情"}
+            title={'公司收发货地址详情'}
             request={async () => ({
               data: currentRow || {},
             })}
-            params={ {
+            params={{
               id: currentRow?.id,
             }}
             columns={columns as ProDescriptionsItemProps<CompanyAddressListItem>[]}
