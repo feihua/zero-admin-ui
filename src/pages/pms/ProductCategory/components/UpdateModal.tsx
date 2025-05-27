@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Form, Input, InputNumber, message, Modal, Radio, Select } from 'antd';
 import type { ProductCategoryListItem} from '../data.d';
 import { queryProductCategoryList } from '../service';
+import UploadFileComponents from "@/components/common/UploadFileComponents";
 
 export interface UpdateModalProps {
   onCancel: () => void;
@@ -85,8 +86,7 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
           label="上级分类"
           rules={[{required: true, message: `请输入上级分类!`}]}
         >
-          <Select id="parentId" options={parentIdMap} placeholder={'请选择上级'}>
-          </Select>
+          <Select id="parentId" options={parentIdMap} placeholder={'请选择上级'} />
         </FormItem>
         <FormItem
           name="name"
@@ -144,7 +144,13 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
           label="图标"
           rules={[{required: true, message: '请输入图标!'}]}
         >
-          <Input id="create-icon" placeholder={'请输入图标!'}/>
+          <UploadFileComponents
+            backApi={'http://127.0.0.1:8000/api/sys/upload'}
+            count={1}
+            onSubmit={(url) => {
+              form.setFieldValue("icon",url);
+            }}
+            defaultImageUrl={currentData.icon}/>
         </FormItem>
         <FormItem
           name="keywords"

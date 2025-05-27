@@ -1,6 +1,7 @@
 import React, {useEffect} from 'react';
 import {Form, Input, InputNumber, Modal, Radio} from 'antd';
-import type { ProductBrandListItem} from '../data.d';
+import type {ProductBrandListItem} from '../data.d';
+import UploadFileComponents from "@/components/common/UploadFileComponents";
 
 export interface AddModalProps {
   onCancel: () => void;
@@ -17,7 +18,6 @@ const formLayout = {
 
 const AddModal: React.FC<AddModalProps> = (props) => {
   const [form] = Form.useForm();
-
   const {
     onSubmit,
     onCancel,
@@ -52,47 +52,57 @@ const AddModal: React.FC<AddModalProps> = (props) => {
           label="品牌名称"
           rules={[{required: true, message: '请输入品牌名称!'}]}
         >
-            <Input id="create-name" placeholder={'请输入品牌名称!'}/>
-         </FormItem>
+          <Input id="create-name" placeholder={'请输入品牌名称!'}/>
+        </FormItem>
         <FormItem
           name="logo"
           label="品牌logo"
           rules={[{required: true, message: '请输入品牌logo!'}]}
         >
-            <Input id="create-logo" placeholder={'请输入品牌logo!'}/>
-         </FormItem>
+          <UploadFileComponents
+            backApi={'http://127.0.0.1:8000/api/sys/upload'}
+            count={1}
+            onSubmit={(url) => {
+              form.setFieldValue("logo", url);
+            }}/>
+        </FormItem>
         <FormItem
           name="bigPic"
           label="专区大图"
           rules={[{required: true, message: '请输入专区大图!'}]}
         >
-            <Input id="create-bigPic" placeholder={'请输入专区大图!'}/>
-         </FormItem>
+          <UploadFileComponents
+            backApi={'http://127.0.0.1:8000/api/sys/upload'}
+            count={1}
+            onSubmit={(url) => {
+              form.setFieldValue("bigPic", url);
+            }}/>
+        </FormItem>
 
         <FormItem
           name="firstLetter"
           label="首字母"
           rules={[{required: true, message: '请输入首字母!'}]}
         >
-            <Input id="create-firstLetter" placeholder={'请输入首字母!'}/>
-         </FormItem>
+          <Input id="create-firstLetter" placeholder={'请输入首字母!'}/>
+        </FormItem>
         <FormItem
           name="sort"
           label="排序"
           rules={[{required: true, message: '请输入排序!'}]}
         >
-            <InputNumber style={ {width: 255} } placeholder={'请输入排序!'}/>
+          <InputNumber style={{width: 255}} placeholder={'请输入排序!'}/>
         </FormItem>
         <FormItem
           name="recommendStatus"
           label="推荐状态"
           rules={[{required: true, message: '请输入推荐状态!'}]}
         >
-              <Radio.Group>
-                <Radio value={0}>不推荐</Radio>
-                <Radio value={1}>推荐</Radio>
-              </Radio.Group>
-       </FormItem>
+          <Radio.Group>
+            <Radio value={0}>不推荐</Radio>
+            <Radio value={1}>推荐</Radio>
+          </Radio.Group>
+        </FormItem>
         <FormItem
           name="isEnabled"
           label="是否启用"
@@ -102,7 +112,7 @@ const AddModal: React.FC<AddModalProps> = (props) => {
             <Radio value={0}>禁用</Radio>
             <Radio value={1}>正常</Radio>
           </Radio.Group>
-         </FormItem>
+        </FormItem>
         <FormItem
           name="description"
           label="描述"

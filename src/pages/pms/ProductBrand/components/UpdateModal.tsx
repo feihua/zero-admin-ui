@@ -1,6 +1,7 @@
 import React, {useEffect} from 'react';
 import {Form, Input, InputNumber, Modal, Radio} from 'antd';
-import type { ProductBrandListItem} from '../data.d';
+import type {ProductBrandListItem} from '../data.d';
+import UploadFileComponents from "@/components/common/UploadFileComponents";
 
 export interface UpdateModalProps {
   onCancel: () => void;
@@ -18,7 +19,6 @@ const formLayout = {
 
 const UpdateModal: React.FC<UpdateModalProps> = (props) => {
   const [form] = Form.useForm();
-
   const {
     onSubmit,
     onCancel,
@@ -75,6 +75,13 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
           label="品牌logo"
           rules={[{required: true, message: '请输入品牌logo!'}]}
         >
+          <UploadFileComponents
+            backApi={'http://127.0.0.1:8000/api/sys/upload'}
+            count={1}
+            onSubmit={(url) => {
+              form.setFieldValue("logo", url);
+            }}
+            defaultImageUrl={currentData.logo}/>
           <Input id="create-logo" placeholder={'请输入品牌logo!'}/>
         </FormItem>
         <FormItem
@@ -82,6 +89,13 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
           label="专区大图"
           rules={[{required: true, message: '请输入专区大图!'}]}
         >
+          <UploadFileComponents
+            backApi={'http://127.0.0.1:8000/api/sys/upload'}
+            count={1}
+            onSubmit={(url) => {
+              form.setFieldValue("bigPic", url);
+            }}
+            defaultImageUrl={currentData.bigPic}/>
           <Input id="create-bigPic" placeholder={'请输入专区大图!'}/>
         </FormItem>
 
@@ -97,7 +111,7 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
           label="排序"
           rules={[{required: true, message: '请输入排序!'}]}
         >
-          <InputNumber style={ {width: 255} } placeholder={'请输入排序!'}/>
+          <InputNumber style={{width: 255}} placeholder={'请输入排序!'}/>
         </FormItem>
         <FormItem
           name="recommendStatus"
