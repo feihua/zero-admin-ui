@@ -40,12 +40,3 @@ export async function queryReturnApplyList(params: ReturnApplyListParams) {
     },
   });
 }
-
-export async function queryCompanyAddress(params: ReturnApplyListParams) {
-  return request('/api/oms/compayaddress/list', {
-    method: 'GET',
-    params: {
-      ...params,
-    },
-  });
-}

@@ -97,7 +97,7 @@ const OrderList: React.FC = () => {
       render: (dom, entity) => {
         return <a onClick={() => {
           setCurrentRow(entity);
-          setShowDetail(true);
+          handleUpdateModalVisible(true);
         }}>{dom}</a>;
       },
     },

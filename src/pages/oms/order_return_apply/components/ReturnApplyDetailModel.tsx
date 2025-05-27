@@ -7,7 +7,7 @@ import ReturnApplyBase from "@/pages/oms/order_return_apply/components/ReturnApp
 import ReturnApplyHandler from "@/pages/oms/order_return_apply/components/ReturnApplyHandler";
 import ReturnApplyReceive from "@/pages/oms/order_return_apply/components/ReturnApplyReceive";
 import ReturnApplyInfo from "@/pages/oms/order_return_apply/components/ReturnApplyInfo";
-import {queryCompanyAddress} from "@/pages/oms/order_return_apply/service";
+import {queryCompanyAddressList} from "@/pages/oms/CompanyAddress/service";
 import ReturnApplyInfoSubmit from "@/pages/oms/order_return_apply/components/ReturnApplyInfoSubmit";
 import ReturnApplyHandlerSubmit from "@/pages/oms/order_return_apply/components/ReturnApplyHandlerSubmit";
 
@@ -36,7 +36,7 @@ const ReturnApplyDetailModel: React.FC<UpdateFormProps> = (props) => {
       form.resetFields();
 
     } else {
-      queryCompanyAddress({pageSize: 100, current: 1}).then((res) => {
+      queryCompanyAddressList({pageSize: 100, current: 1}).then((res) => {
         if (res.code === '000000') {
           setCompanyAddressListItem(res.data)
         } else {

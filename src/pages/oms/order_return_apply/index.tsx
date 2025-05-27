@@ -51,7 +51,7 @@ const ReturnApplyList: React.FC = () => {
       render: (dom, entity) => {
         return <a onClick={() => {
           setCurrentRow(entity);
-          setShowDetail(true);
+          handleDetailModalVisible(true);
         }}>{dom}</a>;
       },
     },
