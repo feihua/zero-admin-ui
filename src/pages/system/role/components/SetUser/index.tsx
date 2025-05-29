@@ -7,7 +7,7 @@ import {
   queryRoleUserList, cancelAuthorization,
 } from './service';
 import {Button, message, Modal} from "antd";
-import {DeleteOutlined, ExclamationCircleOutlined, PlusOutlined} from "@ant-design/icons";
+import {DeleteOutlined, EditOutlined, ExclamationCircleOutlined, PlusOutlined} from "@ant-design/icons";
 import AddUserModal from "@/pages/system/role/components/AddUserModal";
 
 
@@ -88,16 +88,15 @@ const SetUserList: React.FC<SetUserListProps> = (props) => {
       valueType: 'option',
       render: (_, record) => (
         <>
-          <Button
-            type="primary"
-            danger
-            icon={<DeleteOutlined/>}
+          <a
+            key="sort"
             onClick={() => {
               showDeleteConfirm({userIds: [record.id], roleId: props.roleId});
             }}
           >
-            取消授权
-          </Button>
+            <EditOutlined/> 取消授权
+          </a>
+          
         </>
       ),
     },

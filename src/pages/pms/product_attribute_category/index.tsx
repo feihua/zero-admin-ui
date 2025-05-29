@@ -127,17 +127,14 @@ const ProductAttrCateList: React.FC = () => {
       valueType: 'option',
       render: (_, record) => (
         <>
-          <Button
-            type="primary"
-            icon={<EditOutlined/>}
+        <a
+            key="sort"
             onClick={() => {
-              // handleUpdateModalVisible(true);
-              // setCurrentRow(record);
               history.push(`/pms/attribute/list?productAttributeCategoryId=` + record.id);
             }}
           >
-            属性列表/参数列表
-          </Button>
+            <EditOutlined/> 属性/参数
+          </a>
 
         </>
       ),
