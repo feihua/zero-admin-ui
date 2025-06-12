@@ -282,7 +282,7 @@ const RecommendSubjectList: React.FC = () => {
       />
 
       <SetSortForm
-        key={'SetSortForm'}
+        key={'SetSortModal'}
         onSubmit={async (value) => {
           const success = await handleUpdateSubjectSor(value);
           if (success) {

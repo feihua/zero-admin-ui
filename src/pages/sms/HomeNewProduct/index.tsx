@@ -1,22 +1,21 @@
-import {DeleteOutlined, EditOutlined, ExclamationCircleOutlined, PlusOutlined} from '@ant-design/icons';
-import {Button, Divider, Drawer, message, Modal, Select, Space, Switch} from 'antd';
-import React, {useRef, useState} from 'react';
-import {PageContainer} from '@ant-design/pro-layout';
-import type {ActionType, ProColumns} from '@ant-design/pro-table';
+import { EditOutlined, ExclamationCircleOutlined, PlusOutlined } from '@ant-design/icons';
+import { Button, Drawer, message, Modal, Select, Switch } from 'antd';
+import React, { useRef, useState } from 'react';
+import { PageContainer } from '@ant-design/pro-layout';
+import type { ActionType, ProColumns } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
-import ProDescriptions, {ProDescriptionsItemProps} from '@ant-design/pro-descriptions';
-import CreateHomeNewProductForm from './components/CreateHomeNewProductForm';
-import SetSortForm from './components/SetSortForm';
-import type {HomeNewProductListItem} from './data.d';
+import ProDescriptions, { ProDescriptionsItemProps } from '@ant-design/pro-descriptions';
+import AddNewProductModal from './components/AddNewProductModal';
+import SetSortModal from './components/SetSortModal';
+import type { HomeNewProductListItem } from './data.d';
 import {
   addHomeNewProduct,
   queryHomeNewProductList,
   removeHomeNewProduct,
-  updateHomeNewProductStatus,
   updateNewProductSort,
 } from './service';
 
-const {confirm} = Modal;
+const { confirm } = Modal;
 
 /**
  * 添加节点
@@ -57,39 +56,19 @@ const handleUpdate = async (fields: HomeNewProductListItem) => {
   }
 };
 
-/**
- *  删除节点
- * @param ids
- * @param productIds
- */
-const handleRemove = async (ids: number[], productIds: number[]) => {
-  const hide = message.loading('正在删除');
-  if (ids.length === 0) return true;
-  try {
-    await removeHomeNewProduct(ids, productIds);
-    hide();
-    message.success('删除成功，即将刷新');
-    return true;
-  } catch (error) {
-    hide();
-    return false;
-  }
-};
 
 /**
  * 更新推荐状态
- * @param ids
- * @param recommendStatus
  * @param productIds
  */
-const handleStatus = async (ids: number[], recommendStatus: number, productIds: number[]) => {
+const handleStatus = async (productIds: number[]) => {
   const hide = message.loading('正在更新新品推荐状态');
-  if (ids.length == 0) {
+  if (productIds.length == 0) {
     hide();
     return true;
   }
   try {
-    await updateHomeNewProductStatus({ids: ids, recommendStatus: recommendStatus, productIds: productIds});
+    await removeHomeNewProduct(productIds);
     hide();
     message.success('更新品牌推荐状态成功');
     return true;
@@ -106,27 +85,13 @@ const HomeNewProductList: React.FC = () => {
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<HomeNewProductListItem>();
 
-  const showDeleteConfirm = (ids: number[], productIds: number[]) => {
-    confirm({
-      title: '是否删除记录?',
-      icon: <ExclamationCircleOutlined/>,
-      content: '删除的记录不能恢复,请确认!',
-      onOk() {
-        handleRemove(ids, productIds).then(() => {
-          actionRef.current?.reloadAndRest?.();
-        });
-      },
-      onCancel() {
-      },
-    });
-  };
 
   const showStatusConfirm = (item: HomeNewProductListItem, status: number, productIds: number[]) => {
     confirm({
-      title: `确定${status == 1 ? "推荐" : "不推荐"}${item.productName}商品吗？`,
-      icon: <ExclamationCircleOutlined/>,
+      title: `确定${status == 1 ? '推荐' : '不推荐'}${item.name}商品吗？`,
+      icon: <ExclamationCircleOutlined />,
       async onOk() {
-        await handleStatus([item.id], status, productIds)
+        await handleStatus([item.id]);
         actionRef.current?.reload?.();
       },
       onCancel() {
@@ -142,38 +107,46 @@ const HomeNewProductList: React.FC = () => {
     },
     {
       title: '商品名称',
-      dataIndex: 'productName',
+      dataIndex: 'name',
       render: (dom, entity) => {
-        return (
-          <a
-            onClick={() => {
-              setCurrentRow(entity);
-              setShowDetail(true);
-            }}
-          >
-            {dom}
-          </a>
-        );
+        return <a onClick={() => {
+          setCurrentRow(entity);
+          setShowDetail(true);
+        }}>{dom}</a>;
       },
+    },
+
+    {
+      title: '商品图片',
+      dataIndex: 'pic',
+      hideInSearch: true,
+      valueType: 'image',
+      fieldProps: { width: 100, height: 80 },
+    },
+    {
+      title: '商品价格',
+      dataIndex: 'price',
+      hideInSearch: true,
     },
     {
       title: '推荐状态',
       dataIndex: 'recommendStatus',
+      hideInSearch: true,
       renderFormItem: (text, row) => {
         return <Select
           value={row.value}
           options={[
-            {value: '1', label: '推荐'},
-            {value: '0', label: '不推荐'},
+            { value: 1, label: '推荐' },
+            { value: 0, label: '不推荐' },
           ]}
-        />
+        />;
 
       },
       render: (dom, entity) => {
         return (
           <Switch checked={entity.recommendStatus == 1} onChange={(flag) => {
-            showStatusConfirm(entity, flag ? 1 : 0, [entity.productId])
-          }}/>
+            showStatusConfirm(entity, flag ? 1 : 0, [entity.productId]);
+          }} />
         );
       },
     },
@@ -196,18 +169,9 @@ const HomeNewProductList: React.FC = () => {
               setCurrentRow(record);
             }}
           >
-            <EditOutlined/> 设置排序
+            <EditOutlined /> 设置排序
           </a>
-          <Divider type="vertical"/>
-          <a
-            key="delete"
-            style={{color: '#ff4d4f'}}
-            onClick={() => {
-              showDeleteConfirm([record.id], [record.productId]);
-            }}
-          >
-            <DeleteOutlined/> 删除
-          </a>
+
         </>
       ),
     },
@@ -224,43 +188,18 @@ const HomeNewProductList: React.FC = () => {
         }}
         toolBarRender={() => [
           <Button type="primary" onClick={() => handleModalVisible(true)}>
-            <PlusOutlined/> 选择商品
+            <PlusOutlined /> 选择商品
           </Button>,
         ]}
         request={queryHomeNewProductList}
         columns={columns}
         rowSelection={{}}
-        pagination={{pageSize: 10}}
-        tableAlertRender={({
-                             selectedRowKeys,
-                             selectedRows,
-                             onCleanSelected,
-                           }) => {
-          const ids = selectedRows.map((row) => row.id);
-          const productIds = selectedRows.map((row) => row.productId);
-          return (
-            <Space size={16}>
-              <span>已选 {selectedRowKeys.length} 项</span>
-              <a onClick={async () => {
-                await handleStatus(ids, 1, productIds);
-                onCleanSelected()
-                actionRef.current?.reload?.();
-              }}>设为推荐</a>
-              <a onClick={async () => {
-                await handleStatus(ids, 0, productIds);
-                onCleanSelected()
-                actionRef.current?.reload?.();
-              }}>取消推荐</a>
-              <a onClick={async () => {
-                showDeleteConfirm(ids, productIds);
-              }} style={{color: '#ff4d4f'}}>批量删除</a>
-            </Space>
-          );
-        }}
+        pagination={{ pageSize: 10 }}
+        tableAlertRender={false}
       />
 
-      <CreateHomeNewProductForm
-        key={'CreateHomeNewProductForm'}
+      <AddNewProductModal
+        key={'AddNewProductModal'}
         onSubmit={async (value) => {
           const success = await handleAdd(value);
           if (success) {
@@ -280,7 +219,7 @@ const HomeNewProductList: React.FC = () => {
         createModalVisible={createModalVisible}
       />
 
-      <SetSortForm
+      <SetSortModal
         key={'UpdateHomeNewProductForm'}
         onSubmit={async (value) => {
           const success = await handleUpdate(value);
@@ -314,7 +253,7 @@ const HomeNewProductList: React.FC = () => {
         {currentRow?.id && (
           <ProDescriptions<HomeNewProductListItem>
             column={2}
-            title={currentRow?.productName}
+            title={currentRow?.name}
             request={async () => ({
               data: currentRow || {},
             })}

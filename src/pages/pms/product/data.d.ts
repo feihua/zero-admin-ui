@@ -74,6 +74,7 @@ export interface ProductListParams {
 
   pageSize?: number;
   current?: number;
+  newStatus?: number;
   filter?: { [key: string]: any[] };
   sorter?: { [key: string]: any };
 

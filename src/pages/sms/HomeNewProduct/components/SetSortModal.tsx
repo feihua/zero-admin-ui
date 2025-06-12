@@ -16,7 +16,7 @@ const formLayout = {
   wrapperCol: {span: 13},
 };
 
-const SetSortForm: React.FC<UpdateFormProps> = (props) => {
+const SetSortModal: React.FC<UpdateFormProps> = (props) => {
   const [form] = Form.useForm();
 
   const {onSubmit, onCancel, updateModalVisible, values} = props;
@@ -76,4 +76,4 @@ const SetSortForm: React.FC<UpdateFormProps> = (props) => {
   );
 };
 
-export default SetSortForm;
+export default SetSortModal;

@@ -2,7 +2,7 @@ export interface HomeNewProductListItem {
   id: number;
   productId: number;
   recommendStatus: number;
-  productName: string;
+  name: string;
 }
 
 export interface ProductListItem {

@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {Modal} from 'antd';
+import { message, Modal } from 'antd';
 import type {ProductListItem} from '../data.d';
 import {queryProduct} from '@/pages/sms/HomeNewProduct/service';
 import type {ActionType, ProColumns} from '@ant-design/pro-table';
@@ -11,7 +11,7 @@ export interface CreateFormProps {
   createModalVisible: boolean;
 }
 
-const CreateHomeNewProductForm: React.FC<CreateFormProps> = (props) => {
+const AddNewProductModal: React.FC<CreateFormProps> = (props) => {
   const actionRef = useRef<ActionType>();
   const [selectedRowsState, setSelectedRows] = useState<ProductListItem[]>([]);
 
@@ -36,6 +36,13 @@ const CreateHomeNewProductForm: React.FC<CreateFormProps> = (props) => {
     {
       title: '商品名',
       dataIndex: 'name',
+    },
+    {
+      title: '商品图片',
+      dataIndex: 'pic',
+      hideInSearch: true,
+      valueType: 'image',
+      fieldProps: { width: 100, height: 80 },
     },
     {
       title: '货号',
@@ -68,23 +75,48 @@ const CreateHomeNewProductForm: React.FC<CreateFormProps> = (props) => {
       open={createModalVisible}
       {...modalFooter}
       width={1000}
+      onCancel={onCancel}
     >
-      <ProTable<ProductListItem>
+      {createModalVisible&&<ProTable<ProductListItem>
         toolBarRender={false}
         actionRef={actionRef}
         rowKey="id"
         search={{
           labelWidth: 50,
         }}
-        request={queryProduct}
+        request={async (params) => {
+          if (!createModalVisible) {
+            return {
+              data: [],
+              success: true,
+              total: 0,
+            };
+          }
+          return queryProduct({
+            ...params,
+          }).then((res) => {
+            console.log(res)
+            if (res.code === '000000') {
+              return {
+                data: res.data,
+                total: res.total,
+                pageSize: res.pageSize,
+                current: res.current,
+              };
+            } else {
+              return message.error(res.msg);
+            }
+          });
+        }}
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows) => setSelectedRows(selectedRows),
         }}
         pagination={{pageSize: 6}}
-      />
+        tableAlertRender={false}
+      />}
     </Modal>
   );
 };
 
-export default CreateHomeNewProductForm;
+export default AddNewProductModal;

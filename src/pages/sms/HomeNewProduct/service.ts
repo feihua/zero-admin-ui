@@ -1,6 +1,6 @@
 import { request } from 'umi';
-import {ProductListParams} from "@/pages/pms/product/data";
-import type {HomeNewProductListParams, HomeNewProductListItem} from './data.d';
+import { ProductListParams } from '@/pages/pms/product/data';
+import type { HomeNewProductListItem, HomeNewProductListParams } from './data.d';
 
 // 添加新品推荐
 export async function addHomeNewProduct(params: number[]) {
@@ -15,15 +15,18 @@ export async function addHomeNewProduct(params: number[]) {
 //
 
 // 删除新品推荐
-export async function removeHomeNewProduct(ids: number[], productIds: number[]) {
-  return request('/api/sms/homeNewProduct/deleteHomeNewProduct?ids=' + ids.join(",") + '&productIds=' + productIds.join(","), {
-    method: 'GET',
-  });
+export async function removeHomeNewProduct(productIds: number[]) {
+  return request(
+    '/api/sms/homeNewProduct/deleteHomeNewProduct?&productIds=' + productIds.join(','),
+    {
+      method: 'GET',
+    },
+  );
 }
-
 
 // 更新新品推荐排序
 export async function updateNewProductSort(params: HomeNewProductListItem) {
+  params.productId = params.id;
   return request('/api/sms/homeNewProduct/updateNewProductSort', {
     method: 'POST',
     data: {
@@ -33,19 +36,21 @@ export async function updateNewProductSort(params: HomeNewProductListItem) {
 }
 
 // 批量更新新品推荐状态
-export async function updateHomeNewProductStatus(params: {ids: number[], recommendStatus: number, productIds: number[] }) {
+export async function updateHomeNewProductStatus(params: {
+  ids: number[];
+  recommendStatus: number;
+  productIds: number[];
+}) {
   return request('/api/sms/homeNewProduct/updateNewProductStatus', {
     method: 'POST',
     data: {
       ...params,
     },
-
   });
 }
 
-
 // 查询新品推荐详情
-export async function queryHomeNewProductDetail(id: number ) {
+export async function queryHomeNewProductDetail(id: number) {
   return request('/api/sms/homeNewProduct/queryHomeNewProductDetail', {
     method: 'GET',
   });
@@ -53,7 +58,6 @@ export async function queryHomeNewProductDetail(id: number ) {
 
 // 分页查询新品推荐列表
 export async function queryHomeNewProductList(params: HomeNewProductListParams) {
-
   return request('/api/sms/homeNewProduct/queryHomeNewProductList', {
     method: 'GET',
     params: {
@@ -62,8 +66,8 @@ export async function queryHomeNewProductList(params: HomeNewProductListParams) 
   });
 }
 
-
-export async function queryProduct(params?: ProductListParams) {
+export async function queryProduct(params: ProductListParams) {
+  params.newStatus = 0;
   return request('/api/pms/product/queryProductList', {
     method: 'GET',
     params: {
