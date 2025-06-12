@@ -130,7 +130,7 @@ const HomeNewProductList: React.FC = () => {
     },
     {
       title: '推荐状态',
-      dataIndex: 'recommendStatus',
+      dataIndex: 'newStatus',
       hideInSearch: true,
       renderFormItem: (text, row) => {
         return <Select
@@ -144,7 +144,7 @@ const HomeNewProductList: React.FC = () => {
       },
       render: (dom, entity) => {
         return (
-          <Switch checked={entity.recommendStatus == 1} onChange={(flag) => {
+          <Switch checked={entity.newStatus == 1} onChange={(flag) => {
             showStatusConfirm(entity, flag ? 1 : 0, [entity.productId]);
           }} />
         );

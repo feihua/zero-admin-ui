@@ -2,6 +2,7 @@ export interface HomeNewProductListItem {
   id: number;
   productId: number;
   recommendStatus: number;
+  newStatus: number;
   name: string;
 }
 
