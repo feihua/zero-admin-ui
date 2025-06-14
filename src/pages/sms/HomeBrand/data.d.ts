@@ -1,7 +1,7 @@
 export interface HomeBrandListItem {
   id: number;
   brandId: number;
-  brandName: string;
+  name: string;
   recommendStatus: number;
 }
 

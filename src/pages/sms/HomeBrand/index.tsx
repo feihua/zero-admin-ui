@@ -1,5 +1,5 @@
 import {ExclamationCircleOutlined, PlusOutlined,} from '@ant-design/icons';
-import {Button, Divider, Drawer, message, Modal, Select, Space, Switch} from 'antd';
+import {Button, Drawer, message, Modal, Select, Switch} from 'antd';
 import React, {useRef, useState} from 'react';
 import {PageContainer} from '@ant-design/pro-layout';
 import type {ActionType, ProColumns} from '@ant-design/pro-table';
@@ -8,7 +8,7 @@ import ProDescriptions, {ProDescriptionsItemProps} from '@ant-design/pro-descrip
 import CreateHomeBrandForm from './components/CreateHomeBrandForm';
 import SetSortForm from './components/SetSortForm';
 import type {HomeBrandListItem} from './data.d';
-import {addHomeBrand, queryHomeBrandList, removeHomeBrand, updateHomeBrandSort, updateHomeBrandStatus} from './service';
+import {addHomeBrand, queryHomeBrandList, removeHomeBrand, updateHomeBrandSort} from './service';
 
 const {confirm} = Modal;
 
@@ -51,39 +51,19 @@ const handleUpdate = async (fields: HomeBrandListItem) => {
   }
 };
 
-/**
- *  删除节点
- * @param ids
- * @param brandIds
- */
-const handleRemove = async (ids: number[], brandIds: number[]) => {
-  const hide = message.loading('正在删除');
-  if (ids.length === 0) return true;
-  try {
-    await removeHomeBrand(ids, brandIds);
-    hide();
-    message.success('删除成功，即将刷新');
-    return true;
-  } catch (error) {
-    hide();
-    return false;
-  }
-};
 
 /**
  * 更新推荐状态
- * @param ids
- * @param recommendStatus
  * @param brandIds
  */
-const handleStatus = async (ids: number[], recommendStatus: number, brandIds: number[]) => {
+const handleStatus = async (brandIds: number[]) => {
   const hide = message.loading('正在更新品牌推荐状态');
-  if (ids.length == 0) {
+  if (brandIds.length == 0) {
     hide();
     return true;
   }
   try {
-    await updateHomeBrandStatus({ids: ids, recommendStatus: recommendStatus, brandIds: brandIds});
+    await removeHomeBrand(brandIds);
     hide();
     message.success('更新品牌推荐状态成功');
     return true;
@@ -101,27 +81,12 @@ const HomeBrandList: React.FC = () => {
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<HomeBrandListItem>();
 
-  const showDeleteConfirm = (ids: number[], brandIds: number[]) => {
-    confirm({
-      title: '是否确认删除所选数据项?',
-      icon: <ExclamationCircleOutlined/>,
-      content: '请谨慎操作',
-      onOk() {
-        handleRemove(ids, brandIds).then(() => {
-          actionRef.current?.reloadAndRest?.();
-        });
-      },
-      onCancel() {
-      },
-    });
-  };
-
   const showStatusConfirm = (item: HomeBrandListItem, status: number, brandIds: number[]) => {
     confirm({
-      title: `确定${status == 1 ? "推荐" : "不推荐"}${item.brandName}品牌吗？`,
+      title: `确定${status == 1 ? "推荐" : "不推荐"}${item.name}品牌吗？`,
       icon: <ExclamationCircleOutlined/>,
       async onOk() {
-        await handleStatus([item.id], status, brandIds)
+        await handleStatus([item.id])
         actionRef.current?.reload?.();
       },
       onCancel() {
@@ -137,7 +102,7 @@ const HomeBrandList: React.FC = () => {
     },
     {
       title: '品牌名称',
-      dataIndex: 'brandName',
+      dataIndex: 'name',
       render: (dom, entity) => {
         return (
           <a
@@ -154,6 +119,7 @@ const HomeBrandList: React.FC = () => {
     {
       title: '推荐状态',
       dataIndex: 'recommendStatus',
+      hideInSearch: true,
       renderFormItem: (text, row) => {
         return <Select
           value={row.value}
@@ -193,16 +159,6 @@ const HomeBrandList: React.FC = () => {
           >
             设置排序
           </a>
-          <Divider type="vertical"/>
-          <a
-            key="delete"
-            style={{color: '#ff4d4f'}}
-            onClick={() => {
-              showDeleteConfirm([record.id], [record.brandId]);
-            }}
-          >
-            删除
-          </a>
         </>
       ),
     },
@@ -226,32 +182,7 @@ const HomeBrandList: React.FC = () => {
         columns={columns}
         rowSelection={{}}
         pagination={{pageSize: 10}}
-        tableAlertRender={({
-                             selectedRowKeys,
-                             selectedRows,
-                             onCleanSelected,
-                           }) => {
-          const ids = selectedRows.map((row) => row.id);
-          const brandIds = selectedRows.map((row) => row.brandId);
-          return (
-            <Space size={16}>
-              <span>已选 {selectedRowKeys.length} 项</span>
-              <a onClick={async () => {
-                await handleStatus(ids, 1, brandIds);
-                onCleanSelected()
-                actionRef.current?.reload?.();
-              }}>设为推荐</a>
-              <a onClick={async () => {
-                await handleStatus(ids, 0, brandIds);
-                onCleanSelected()
-                actionRef.current?.reload?.();
-              }}>取消推荐</a>
-              <a onClick={async () => {
-                showDeleteConfirm(ids, brandIds);
-              }} style={{color: '#ff4d4f'}}>批量删除</a>
-            </Space>
-          );
-        }}
+        tableAlertRender={false}
       />
 
       <CreateHomeBrandForm
@@ -309,7 +240,7 @@ const HomeBrandList: React.FC = () => {
         {currentRow?.id && (
           <ProDescriptions<HomeBrandListItem>
             column={2}
-            title={currentRow?.brandName}
+            title={currentRow?.name}
             request={async () => ({
               data: currentRow || {},
             })}

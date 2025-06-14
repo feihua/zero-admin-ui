@@ -35,7 +35,7 @@ const CreateHomeBrandForm: React.FC<CreateFormProps> = (props) => {
     },
     {
       title: '品牌名',
-      dataIndex: 'brandName',
+      dataIndex: 'name',
     },
     {
       title: '产品数量',
@@ -60,7 +60,7 @@ const CreateHomeBrandForm: React.FC<CreateFormProps> = (props) => {
       {...modalFooter}
       width={800}
     >
-      <ProTable<BrandListItem>
+      {createModalVisible&&<ProTable<BrandListItem>
         toolBarRender={false}
         actionRef={actionRef}
         rowKey="id"
@@ -73,7 +73,7 @@ const CreateHomeBrandForm: React.FC<CreateFormProps> = (props) => {
           onChange: (_, selectedRows) => setSelectedRows(selectedRows),
         }}
         pagination={{pageSize: 6}}
-      />
+      />}
     </Modal>
   );
 };

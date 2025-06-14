@@ -15,8 +15,8 @@ export async function addHomeBrand(params: number[]) {
 //
 
 // 删除品牌推荐
-export async function removeHomeBrand(ids: number[], brandIds: number[]) {
-  return request('/api/sms/homeBrand/deleteHomeBrand?ids=' + ids.join(",") + '&brandIds=' + brandIds.join(","), {
+export async function removeHomeBrand(brandIds: number[]) {
+  return request('/api/sms/homeBrand/deleteHomeBrand?brandIds=' + brandIds.join(","), {
     method: 'GET',
   });
 }
@@ -24,6 +24,7 @@ export async function removeHomeBrand(ids: number[], brandIds: number[]) {
 
 // 更新品牌推荐排序
 export async function updateHomeBrandSort(params: HomeBrandListItem) {
+  params.brandId=params.id
   return request('/api/sms/homeBrand/updateHomeBrandSort', {
     method: 'POST',
     data: {
@@ -63,7 +64,8 @@ export async function queryHomeBrandList(params: HomeBrandListParams) {
 }
 
 
-export async function queryProductBrandList(params?: BrandListParams) {
+export async function queryProductBrandList(params: BrandListParams) {
+  params.recommendStatus=0
   return request('/api/pms/brand/queryProductBrandList', {
     method: 'GET',
     params: {
