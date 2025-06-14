@@ -13,8 +13,8 @@ export async function addRecommendSubject(params: number[]) {
 }
 
 // 删除推荐专题
-export async function removeRecommendSubject(ids: number[], subjectIds: number[]) {
-  return request('/api/sms/homeRecommendSubject/deleteHomeRecommendSubject?ids=' + ids.join(",") + '&subjectIds=' + subjectIds.join(","), {
+export async function removeRecommendSubject(subjectIds: number[]) {
+  return request('/api/sms/homeRecommendSubject/deleteHomeRecommendSubject?subjectIds=' + subjectIds.join(","), {
     method: 'GET',
   });
 }
@@ -22,6 +22,7 @@ export async function removeRecommendSubject(ids: number[], subjectIds: number[]
 
 // 更新推荐专题排序
 export async function updateRecommendSubjectSort(params: RecommendSubjectListItem) {
+  params.subjectId = params.id;
   return request('/api/sms/homeRecommendSubject/updateRecommendSubjectSort', {
     method: 'POST',
     data: {

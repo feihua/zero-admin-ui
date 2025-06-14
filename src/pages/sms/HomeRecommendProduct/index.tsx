@@ -136,6 +136,7 @@ const RecommendProductList: React.FC = () => {
     {
       title: '推荐状态',
       dataIndex: 'recommendStatus',
+      hideInSearch: true,
       renderFormItem: (text, row) => {
         return <Select
           value={row.value}
