@@ -1,19 +1,18 @@
-import {DeleteOutlined, EditOutlined, ExclamationCircleOutlined, PlusOutlined} from '@ant-design/icons';
-import {Button, Divider, Drawer, message, Modal, Select, Space, Switch} from 'antd';
+import { EditOutlined, ExclamationCircleOutlined, PlusOutlined} from '@ant-design/icons';
+import {Button, Drawer, message, Modal, Select, Switch} from 'antd';
 import React, {useRef, useState} from 'react';
 import {PageContainer} from '@ant-design/pro-layout';
 import type {ActionType, ProColumns} from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
 import type {ProDescriptionsItemProps} from '@ant-design/pro-descriptions';
 import ProDescriptions from '@ant-design/pro-descriptions';
-import CreateRecommendProductForm from './components/CreateRecommendProductForm';
-import SetSortForm from './components/SetSortForm';
+import AddRecommendProductModal from './components/AddRecommendProductModal';
+import SetSortModal from './components/SetSortModal';
 import type {HomeRecommendProductListItem} from './data.d';
 import {
   addHomeRecommendProduct,
   queryHomeRecommendProductList,
   removeHomeRecommendProduct,
-  updateHomeRecommendProductStatus,
   updateRecommendProductSort,
 } from './service';
 
@@ -59,38 +58,17 @@ const handleUpdate = async (fields: HomeRecommendProductListItem) => {
 };
 
 /**
- *  删除节点
- * @param ids
- * @param productIds
- */
-const handleRemove = async (ids: number[], productIds: number[]) => {
-  const hide = message.loading('正在删除');
-  if (ids.length === 0) return true;
-  try {
-    await removeHomeRecommendProduct(ids, productIds);
-    hide();
-    message.success('删除成功，即将刷新');
-    return true;
-  } catch (error) {
-    hide();
-    return false;
-  }
-};
-
-/**
  * 更新推荐状态
- * @param ids
- * @param recommendStatus
  * @param productIds
  */
-const handleStatus = async (ids: number[], recommendStatus: number, productIds: number[]) => {
+const handleStatus = async (productIds: number[]) => {
   const hide = message.loading('正在更人气推荐状态');
-  if (ids.length == 0) {
+  if (productIds.length == 0) {
     hide();
     return true;
   }
   try {
-    await updateHomeRecommendProductStatus({ids: ids, recommendStatus: recommendStatus, productIds: productIds});
+    await removeHomeRecommendProduct(productIds);
     hide();
     message.success('更新品牌推荐状态成功');
     return true;
@@ -108,27 +86,13 @@ const RecommendProductList: React.FC = () => {
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<HomeRecommendProductListItem>();
 
-  const showDeleteConfirm = (ids: number[], productIds: number[]) => {
-    confirm({
-      title: '是否删除记录?',
-      icon: <ExclamationCircleOutlined/>,
-      content: '删除的记录不能恢复,请确认!',
-      onOk() {
-        handleRemove(ids, productIds).then(() => {
-          actionRef.current?.reloadAndRest?.();
-        });
-      },
-      onCancel() {
-      },
-    });
-  };
 
   const showStatusConfirm = (item: HomeRecommendProductListItem, status: number, productIds: number[]) => {
     confirm({
       title: `确定${status == 1 ? "推荐" : "不推荐"}${item.productName}商品吗？`,
       icon: <ExclamationCircleOutlined/>,
       async onOk() {
-        await handleStatus([item.id], status, productIds)
+        await handleStatus([item.id])
         actionRef.current?.reload?.();
       },
       onCancel() {
@@ -143,7 +107,7 @@ const RecommendProductList: React.FC = () => {
     },
     {
       title: '商品名称',
-      dataIndex: 'productName',
+      dataIndex: 'name',
       render: (dom, entity) => {
         return (
           <a
@@ -156,6 +120,18 @@ const RecommendProductList: React.FC = () => {
           </a>
         );
       },
+    },
+    {
+      title: '商品图片',
+      dataIndex: 'pic',
+      hideInSearch: true,
+      valueType: 'image',
+      fieldProps: { width: 100, height: 80 },
+    },
+    {
+      title: '商品价格',
+      dataIndex: 'price',
+      hideInSearch: true,
     },
     {
       title: '推荐状态',
@@ -199,16 +175,6 @@ const RecommendProductList: React.FC = () => {
           >
             <EditOutlined/> 设置排序
           </a>
-          <Divider type="vertical"/>
-          <a
-            key="delete"
-            style={{color: '#ff4d4f'}}
-            onClick={() => {
-              showDeleteConfirm([record.id], [record.productId]);
-            }}
-          >
-            <DeleteOutlined/> 删除
-          </a>
         </>
       ),
     },
@@ -232,36 +198,11 @@ const RecommendProductList: React.FC = () => {
         columns={columns}
         rowSelection={{}}
         pagination={{pageSize: 10}}
-        tableAlertRender={({
-                             selectedRowKeys,
-                             selectedRows,
-                             onCleanSelected,
-                           }) => {
-          const ids = selectedRows.map((row) => row.id);
-          const productIds = selectedRows.map((row) => row.productId);
-          return (
-            <Space size={16}>
-              <span>已选 {selectedRowKeys.length} 项</span>
-              <a onClick={async () => {
-                await handleStatus(ids, 1, productIds);
-                onCleanSelected()
-                actionRef.current?.reload?.();
-              }}>设为推荐</a>
-              <a onClick={async () => {
-                await handleStatus(ids, 0, productIds);
-                onCleanSelected()
-                actionRef.current?.reload?.();
-              }}>取消推荐</a>
-              <a onClick={async () => {
-                showDeleteConfirm(ids, productIds);
-              }} style={{color: '#ff4d4f'}}>批量删除</a>
-            </Space>
-          );
-        }}
+        tableAlertRender={false}
       />
 
-      <CreateRecommendProductForm
-        key={'CreateRecommendProductForm'}
+      <AddRecommendProductModal
+        key={'AddRecommendProductModal'}
         onSubmit={async (value) => {
           const success = await handleAdd(value);
           if (success) {
@@ -281,7 +222,7 @@ const RecommendProductList: React.FC = () => {
         createModalVisible={createModalVisible}
       />
 
-      <SetSortForm
+      <SetSortModal
         key={'UpdateRecommendProductForm'}
         onSubmit={async (value) => {
           const success = await handleUpdate(value);

@@ -11,7 +11,7 @@ export interface CreateFormProps {
   createModalVisible: boolean;
 }
 
-const CreateRecommendProductForm: React.FC<CreateFormProps> = (props) => {
+const AddRecommendProductModal: React.FC<CreateFormProps> = (props) => {
   const actionRef = useRef<ActionType>();
   const [selectedRowsState, setSelectedRows] = useState<ProductListItem[]>([]);
 
@@ -36,6 +36,13 @@ const CreateRecommendProductForm: React.FC<CreateFormProps> = (props) => {
     {
       title: '商品名',
       dataIndex: 'name',
+    },
+    {
+      title: '商品图片',
+      dataIndex: 'pic',
+      hideInSearch: true,
+      valueType: 'image',
+      fieldProps: { width: 100, height: 80 },
     },
     {
       title: '货号',
@@ -69,6 +76,7 @@ const CreateRecommendProductForm: React.FC<CreateFormProps> = (props) => {
       {...modalFooter}
       width={1000}
     >
+      {createModalVisible&&
       <ProTable<ProductListItem>
         toolBarRender={false}
         actionRef={actionRef}
@@ -82,9 +90,9 @@ const CreateRecommendProductForm: React.FC<CreateFormProps> = (props) => {
           onChange: (_, selectedRows) => setSelectedRows(selectedRows),
         }}
         pagination={{pageSize: 6}}
-      />
+      />}
     </Modal>
   );
 };
 
-export default CreateRecommendProductForm;
+export default AddRecommendProductModal;

@@ -15,8 +15,8 @@ export async function addHomeRecommendProduct(params: number[]) {
 //
 
 // 删除人气推荐
-export async function removeHomeRecommendProduct(ids: number[], productIds: number[]) {
-  return request('/api/sms/homeRecommendProduct/deleteHomeRecommendProduct?ids=' + ids.join(",") + '&productIds=' + productIds.join(","), {
+export async function removeHomeRecommendProduct(productIds: number[]) {
+  return request('/api/sms/homeRecommendProduct/deleteHomeRecommendProduct?productIds=' + productIds.join(","), {
     method: 'GET',
   });
 }
@@ -24,6 +24,7 @@ export async function removeHomeRecommendProduct(ids: number[], productIds: numb
 
 // 更新人气推荐排序
 export async function updateRecommendProductSort(params: HomeRecommendProductListItem) {
+  params.productId = params.id;
   return request('/api/sms/homeRecommendProduct/updateRecommendProductSort', {
     method: 'POST',
     data: {
@@ -63,7 +64,8 @@ export async function queryHomeRecommendProductList(params: HomeRecommendProduct
 }
 
 
-export async function queryProduct(params?: ProductListParams) {
+export async function queryProduct(params: ProductListParams) {
+  params.recommendStatus = 0;
   return request('/api/pms/product/queryProductList', {
     method: 'GET',
     params: {
