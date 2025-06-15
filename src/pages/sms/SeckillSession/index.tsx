@@ -1,28 +1,25 @@
 import {DeleteOutlined, EditOutlined, ExclamationCircleOutlined, PlusOutlined} from '@ant-design/icons';
 import {Button, Divider, Drawer, message, Modal, Select, Switch} from 'antd';
 import React, {useRef, useState} from 'react';
-import {PageContainer} from '@ant-design/pro-layout';
 import type {ActionType, ProColumns} from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
 import type {ProDescriptionsItemProps} from '@ant-design/pro-descriptions';
 import ProDescriptions from '@ant-design/pro-descriptions';
 import AddModal from './components/AddModal';
 import UpdateModal from './components/UpdateModal';
-import type { SeckillActivityListItem} from './data.d';
-import {addSeckillActivity, querySeckillActivityList, removeSeckillActivity, updateSeckillActivity, updateSeckillActivityStatus} from './service';
-import moment from 'moment/moment';
-import SessionModal from '@/pages/sms/SeckillActivity/components/SessionModal';
+import type { SeckillSessionListItem} from './data.d';
+import {addSeckillSession, querySeckillSessionList, removeSeckillSession, updateSeckillSession, updateSeckillSessionStatus} from './service';
 
 const {confirm} = Modal;
 
 /**
- * 添加秒杀活动
+ * 添加秒杀场次
  * @param fields
  */
-const handleAdd = async (fields: SeckillActivityListItem) => {
+const handleAdd = async (fields: SeckillSessionListItem) => {
   const hide = message.loading('正在添加');
   try {
-    await addSeckillActivity({...fields});
+    await addSeckillSession({...fields});
     hide();
     message.success('添加成功');
     return true;
@@ -33,13 +30,13 @@ const handleAdd = async (fields: SeckillActivityListItem) => {
 };
 
 /**
- * 更新秒杀活动
+ * 更新秒杀场次
  * @param fields
  */
-const handleUpdate = async (fields: SeckillActivityListItem) => {
+const handleUpdate = async (fields: SeckillSessionListItem) => {
   const hide = message.loading('正在更新');
   try {
-    await updateSeckillActivity(fields);
+    await updateSeckillSession(fields);
     hide();
 
     message.success('更新成功');
@@ -51,14 +48,14 @@ const handleUpdate = async (fields: SeckillActivityListItem) => {
 };
 
 /**
- *  删除秒杀活动
+ *  删除秒杀场次
  * @param ids
  */
 const handleRemove = async (ids: number[]) => {
   const hide = message.loading('正在删除');
   if (ids.length === 0) return true;
   try {
-    await removeSeckillActivity(ids);
+    await removeSeckillSession(ids);
     hide();
     message.success('删除成功，即将刷新');
     return true;
@@ -69,7 +66,7 @@ const handleRemove = async (ids: number[]) => {
 };
 
 /**
- * 更新秒杀活动状态
+ * 更新秒杀场次状态
  * @param ids
  * @param status
  */
@@ -80,7 +77,7 @@ const handleStatus = async (ids: number[], status: number) => {
     return true;
   }
   try {
-    await updateSeckillActivityStatus({ ids: ids, status: status});
+    await updateSeckillSessionStatus({ ids: ids, status: status});
     hide();
     message.success('更新状态成功');
     return true;
@@ -90,13 +87,12 @@ const handleStatus = async (ids: number[], status: number) => {
   }
 };
 
-const SeckillActivityList: React.FC = () => {
+const SeckillSessionList: React.FC = () => {
   const [addVisible, handleAddVisible] = useState<boolean>(false);
   const [updateVisible, handleUpdateVisible] = useState<boolean>(false);
   const [showDetail, setShowDetail] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
-  const [currentRow, setCurrentRow] = useState<SeckillActivityListItem>();
-  const [sessionModalVisible, handleSessionModalVisible] = useState<boolean>(false);
+  const [currentRow, setCurrentRow] = useState<SeckillSessionListItem>();
 
   const showDeleteConfirm = (ids: number[]) => {
     confirm({
@@ -127,29 +123,24 @@ const SeckillActivityList: React.FC = () => {
     });
   };
 
-  const columns: ProColumns<SeckillActivityListItem>[] = [
+  const columns: ProColumns<SeckillSessionListItem>[] = [
 
     {
-      title: '编号',
+      title: '秒杀场次ID',
       dataIndex: 'id',
       hideInSearch: true,
     },
     {
-      title: '活动名称',
+      title: '场次名称',
       dataIndex: 'name',
       render: (dom, entity) => {
-          return <a onClick={() => {
-            setCurrentRow(entity);
-            setShowDetail(true);
-          }}>{dom}</a>;
-        },
+        return <a onClick={() => {
+          setCurrentRow(entity);
+          setShowDetail(true);
+        }}>{dom}</a>;
+      },
     },
 
-    {
-      title: '活动描述',
-      dataIndex: 'description',
-      hideInSearch: true,
-    },
     {
       title: '开始时间',
       dataIndex: 'startTime',
@@ -161,34 +152,12 @@ const SeckillActivityList: React.FC = () => {
       hideInSearch: true,
     },
     {
-      title: '活动状态',
+      title: '状态',
       dataIndex: 'status',
-      hideInSearch: true,
-      render: (dom, entity) => {
-        let now = moment().format('YYYY-MM-DD')
-        let startDate = moment(entity.startTime).format('YYYY-MM-DD')
-        let endDate = moment(entity.endTime).format('YYYY-MM-DD')
-
-        let status
-        if (now < startDate) {
-          status = '活动未开始'
-        } else if (now > endDate) {
-          status = '活动已结束'
-        } else {
-          status = '活动进行中'
-        }
-        return <>
-          {status}
-        </>;
-      },
-    },
-    {
-      title: '上线/下线',
-      dataIndex: 'status',
-      renderFormItem: (text, row) => {
+      renderFormItem: (text, row, index) => {
         return <Select
           value={row.value}
-          options={[
+          options={ [
             {value: 1, label: '上线'},
             {value: 0, label: '下线'},
           ]}
@@ -198,10 +167,16 @@ const SeckillActivityList: React.FC = () => {
       render: (dom, entity) => {
         return (
           <Switch checked={entity.status == 1} onChange={(flag) => {
-            showStatusConfirm([entity.id], flag ? 1 : 0)
+            showStatusConfirm( [entity.id], flag ? 1 : 0)
           }}/>
         );
       },
+    },
+
+    {
+      title: '排序',
+      dataIndex: 'sort',
+      hideInSearch: true,
     },
     {
       title: '创建人ID',
@@ -227,6 +202,7 @@ const SeckillActivityList: React.FC = () => {
       hideInTable: true,
     },
 
+
     {
       title: '操作',
       dataIndex: 'option',
@@ -239,7 +215,7 @@ const SeckillActivityList: React.FC = () => {
             onClick={() => {
               handleUpdateVisible(true);
               setCurrentRow(record);
-              }
+            }
             }
           >
             <EditOutlined/> 编辑
@@ -259,26 +235,19 @@ const SeckillActivityList: React.FC = () => {
     },
   ];
 
-return (
-    <PageContainer>
-      <ProTable<SeckillActivityListItem>
-        headerTitle="秒杀活动管理"
+  return (
+    <>
+      <ProTable<SeckillSessionListItem>
+        headerTitle="秒杀场次管理"
         actionRef={actionRef}
         rowKey="id"
-        search={ {
-          labelWidth: 120,
-        } }
+        search={false}
         toolBarRender={() => [
-          <Button onClick={() => handleSessionModalVisible(true)}>
-            秒杀时间段列表
-          </Button>,
-          <Divider type="horizontal"/>,
-          <Button type="primary" onClick={() => handleAddVisible(true)}>
-            <PlusOutlined/> 新建
+          <Button type="primary" key="primary" onClick={() => handleAddVisible(true)}>
+            <PlusOutlined/> 新增
           </Button>,
         ]}
-
-        request={querySeckillActivityList}
+        request={querySeckillSessionList}
         columns={columns}
         rowSelection={ {} }
         pagination={ {pageSize: 10}}
@@ -328,16 +297,7 @@ return (
         updateVisible={updateVisible}
         currentData={currentRow || {} }
       />
-      <SessionModal
-        key={'DictItemModal'}
-        onCancel={() => {
-          handleSessionModalVisible(false);
-          if (!showDetail) {
-            setCurrentRow(undefined);
-          }
-        }}
-        sessionModalVisible={sessionModalVisible}
-      />
+
       <Drawer
         width={600}
         open={showDetail}
@@ -348,21 +308,21 @@ return (
         closable={false}
       >
         {currentRow?.id && (
-          <ProDescriptions<SeckillActivityListItem>
+          <ProDescriptions<SeckillSessionListItem>
             column={2}
-            title={"秒杀活动详情"}
+            title={"秒杀场次详情"}
             request={async () => ({
               data: currentRow || {},
             })}
             params={ {
               id: currentRow?.id,
             }}
-            columns={columns as ProDescriptionsItemProps<SeckillActivityListItem>[]}
+            columns={columns as ProDescriptionsItemProps<SeckillSessionListItem>[]}
           />
         )}
       </Drawer>
-    </PageContainer>
+    </>
   );
 };
 
-export default SeckillActivityList;
+export default SeckillSessionList;
