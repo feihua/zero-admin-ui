@@ -300,8 +300,8 @@
       {
         name: '限时购场次',
         icon: 'table',
-        path: '/sms/flashPromotionSession/list',
-        component: './sms/FlashPromotionSession',
+        path: '/sms/seckillActivity/list',
+        component: './sms/SeckillActivity',
       },
     ],
   },
