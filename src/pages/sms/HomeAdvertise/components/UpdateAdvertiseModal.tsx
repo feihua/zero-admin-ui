@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import {DatePicker, Form, Input, InputNumber, Modal, Radio} from 'antd';
 import type {HomeAdvertiseListItem} from '../data.d';
 import moment from "moment/moment";
@@ -18,9 +18,8 @@ const formLayout = {
   wrapperCol: {span: 13},
 };
 
-const UpdateHomeAdvertiseForm: React.FC<UpdateFormProps> = (props) => {
+const UpdateAdvertiseModal: React.FC<UpdateFormProps> = (props) => {
   const [form] = Form.useForm();
-  const [imageUrl, setImageUrl] = useState('');
   const {onSubmit, onCancel, updateModalVisible, values} = props;
 
   useEffect(() => {
@@ -31,7 +30,6 @@ const UpdateHomeAdvertiseForm: React.FC<UpdateFormProps> = (props) => {
 
   useEffect(() => {
     if (values) {
-      setImageUrl(values.pic || "")
       form.setFieldsValue({
         ...values,
         startTime: moment(values.startTime, 'YYYY-MM-DD HH:mm:ss'),
@@ -101,9 +99,9 @@ const UpdateHomeAdvertiseForm: React.FC<UpdateFormProps> = (props) => {
           <UploadFileComponents
             backApi={'http://127.0.0.1:8000/api/sys/upload'} count={1}
             onSubmit={(url) => {
-              setImageUrl(url)
+              form.setFieldValue("pic", url);
             }}
-            defaultImageUrl={imageUrl}/>
+            defaultImageUrl={values.pic}/>
         </FormItem>
         <FormItem
           name="sort"
@@ -143,4 +141,4 @@ const UpdateHomeAdvertiseForm: React.FC<UpdateFormProps> = (props) => {
   );
 };
 
-export default UpdateHomeAdvertiseForm;
+export default UpdateAdvertiseModal;

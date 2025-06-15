@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import {DatePicker, Form, Input, InputNumber, Modal, Radio} from 'antd';
 import type {HomeAdvertiseListItem} from '../data.d';
 import UploadFileComponents from "@/components/common/UploadFileComponents";
@@ -16,9 +16,8 @@ const formLayout = {
   wrapperCol: {span: 13},
 };
 
-const CreateHomeAdvertiseForm: React.FC<CreateFormProps> = (props) => {
+const AddAdvertiseModal: React.FC<CreateFormProps> = (props) => {
   const [form] = Form.useForm();
-  const [imageUrl, setImageUrl] = useState('');
   const {onSubmit, onCancel, createModalVisible} = props;
 
   useEffect(() => {
@@ -34,7 +33,7 @@ const CreateHomeAdvertiseForm: React.FC<CreateFormProps> = (props) => {
 
   const handleFinish = (values: HomeAdvertiseListItem) => {
     if (onSubmit) {
-      onSubmit({...values, pic: imageUrl});
+      onSubmit({...values});
     }
   };
 
@@ -77,7 +76,7 @@ const CreateHomeAdvertiseForm: React.FC<CreateFormProps> = (props) => {
             backApi={'http://127.0.0.1:8000/api/sys/upload'}
             count={1}
             onSubmit={(url) => {
-              setImageUrl(url)
+              form.setFieldValue("pic", url);
             }}/>
         </FormItem>
         <FormItem
@@ -121,4 +120,4 @@ const CreateHomeAdvertiseForm: React.FC<CreateFormProps> = (props) => {
   );
 };
 
-export default CreateHomeAdvertiseForm;
+export default AddAdvertiseModal;

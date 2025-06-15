@@ -11,8 +11,8 @@ import ProTable from '@ant-design/pro-table';
 import type {ProColumns, ActionType} from '@ant-design/pro-table';
 import ProDescriptions from '@ant-design/pro-descriptions';
 import type {ProDescriptionsItemProps} from '@ant-design/pro-descriptions';
-import CreateHomeAdvertiseForm from './components/CreateHomeAdvertiseForm';
-import UpdateHomeAdvertiseForm from './components/UpdateHomeAdvertiseForm';
+import AddAdvertiseModal from './components/AddAdvertiseModal';
+import UpdateAdvertiseModal from './components/UpdateAdvertiseModal';
 import type {HomeAdvertiseListItem} from './data.d';
 import {
   queryHomeAdvertiseList,
@@ -184,22 +184,26 @@ const HomeAdvertiseList: React.FC = () => {
     {
       title: '开始时间',
       dataIndex: 'startTime',
-      valueType: "dateTime"
+      valueType: "dateTime",
+      hideInSearch: true,
     },
     {
       title: '结束时间',
       dataIndex: 'endTime',
-      valueType: "dateTime"
+      valueType: "dateTime",
+      hideInSearch: true,
     },
     {
       title: '链接地址',
       dataIndex: 'url',
       hideInSearch: true,
+      hideInTable: true,
     },
     {
       title: '备注',
-      dataIndex: 'note',
+      dataIndex: 'remark',
       hideInSearch: true,
+      hideInTable: true,
     },
     {
       title: '排序',
@@ -221,6 +225,17 @@ const HomeAdvertiseList: React.FC = () => {
           }}/>
         );
       },
+    },
+    {
+      title: '创建时间',
+      dataIndex: 'createTime',
+      hideInSearch: true,
+    },
+    {
+      title: '更新时间',
+      dataIndex: 'updateTime',
+      hideInSearch: true,
+      hideInTable: true,
     },
     {
       title: '操作',
@@ -317,8 +332,8 @@ const HomeAdvertiseList: React.FC = () => {
         </FooterToolbar>
       )}
 
-      <CreateHomeAdvertiseForm
-        key={'CreateHomeAdvertiseForm'}
+      <AddAdvertiseModal
+        key={'AddAdvertiseModal'}
         onSubmit={async (value) => {
           const success = await handleAdd(value);
           if (success) {
@@ -338,8 +353,8 @@ const HomeAdvertiseList: React.FC = () => {
         createModalVisible={createModalVisible}
       />
 
-      <UpdateHomeAdvertiseForm
-        key={'UpdateHomeAdvertiseForm'}
+      <UpdateAdvertiseModal
+        key={'UpdateAdvertiseModal'}
         onSubmit={async (value) => {
           const success = await handleUpdate(value);
           if (success) {
