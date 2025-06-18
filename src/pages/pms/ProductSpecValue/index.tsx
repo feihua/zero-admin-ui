@@ -139,7 +139,6 @@ const ProductSpecValueList: React.FC = () => {
     {
       title: '规格值',
       dataIndex: 'value',
-      hideInSearch: true,
     },
     {
       title: '排序',

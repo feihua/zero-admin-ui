@@ -75,7 +75,7 @@ const AddModal: React.FC<AddModalProps> = (props) => {
           <TreeSelect
             style={{width: '100%'}}
             treeData={categoryListItem}
-            placeholder="请选择部门"
+            placeholder="请选择商品分类"
             treeDefaultExpandAll
           />
          </FormItem>
