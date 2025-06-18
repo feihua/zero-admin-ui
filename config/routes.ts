@@ -194,22 +194,23 @@
         component: './pms/ProductCategory',
       },
       {
-        name: '属性分类',
-        icon: 'table',
-        path: '/pms/attributecategory/list',
-        component: './pms/product_attribute_category',
-      },
-      {
         name: '品牌管理',
         icon: 'table',
         path: '/pms/productBrand/list',
         component: './pms/ProductBrand',
       },
       {
+        name: '属性分组',
+        icon: 'table',
+        path: '/pms/attributeGroup/list',
+        component: './pms/ProductAttributeGroup',
+      },
+
+      {
         name: '商品属性',
         icon: 'table',
         path: '/pms/attribute/list',
-        component: './pms/product_attribute',
+        component: './pms/ProductAttribute',
       },
     ],
   },

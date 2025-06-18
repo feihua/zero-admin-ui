@@ -1,6 +1,8 @@
-import React, {useEffect} from 'react';
-import {Form, Input, InputNumber, Modal, Radio} from 'antd';
+import React, { useEffect, useState } from 'react';
+import { Form, Input, InputNumber, Modal, Radio, Select } from 'antd';
 import type { ProductAttributeListItem} from '../data.d';
+import { ProductAttributeGroupListItem } from '@/pages/pms/ProductAttributeGroup/data';
+import { queryProductAttributeGroupList } from '@/pages/pms/ProductAttributeGroup/service';
 
 export interface AddModalProps {
   onCancel: () => void;
@@ -17,7 +19,7 @@ const formLayout = {
 
 const AddModal: React.FC<AddModalProps> = (props) => {
   const [form] = Form.useForm();
-
+  const [categoryListItems, setCategoryListItems] = useState<ProductAttributeGroupListItem[]>([]);
   const {
     onSubmit,
     onCancel,
@@ -27,6 +29,10 @@ const AddModal: React.FC<AddModalProps> = (props) => {
   useEffect(() => {
     if (form && !addVisible) {
       form.resetFields();
+    }else {
+      queryProductAttributeGroupList({pageSize: 100, current: 1}).then((res) => {
+        setCategoryListItems(res.data)
+      });
     }
   }, [props.addVisible]);
 
@@ -45,20 +51,15 @@ const AddModal: React.FC<AddModalProps> = (props) => {
   const renderContent = () => {
     return (
       <>
-        
-        <FormItem
-          name="id"
-          label="主键id"
-          rules={[{required: true, message: '请输入主键id!'}]}
-        >
-            <Input id="create-id" placeholder={'请输入主键id!'}/>
-         </FormItem>
+
         <FormItem
           name="groupId"
-          label="属性分组ID"
-          rules={[{required: true, message: '请输入属性分组ID!'}]}
+          label="属性分组"
+          rules={[{required: true, message: '请输入属性分组!'}]}
         >
-            <Input id="create-groupId" placeholder={'请输入属性分组ID!'}/>
+          <Select id="groupId" placeholder={'请输入属性分组'}>
+            {categoryListItems.map(r => <Select.Option value={r.id}>{r.name}</Select.Option>)}
+          </Select>
          </FormItem>
         <FormItem
           name="name"
@@ -69,27 +70,29 @@ const AddModal: React.FC<AddModalProps> = (props) => {
          </FormItem>
         <FormItem
           name="inputType"
-          label="输入类型：1-手动输入，2-单选，3-多选"
-          rules={[{required: true, message: '请输入输入类型：1-手动输入，2-单选，3-多选!'}]}
+          label="输入类型"
+          rules={[{required: true, message: '请选择输入类型!'}]}
         >
                 <Radio.Group>
-                  <Radio value={0}>禁用</Radio>
-                  <Radio value={1}>正常</Radio>
+                  <Radio value={1}>手动输入</Radio>
+                  <Radio value={2}>单选</Radio>
+                  <Radio value={3}>多选</Radio>
                 </Radio.Group>
          </FormItem>
         <FormItem
           name="valueType"
-          label="值类型：1-文本，2-数字，3-日期"
-          rules={[{required: true, message: '请输入值类型：1-文本，2-数字，3-日期!'}]}
+          label="值类型"
+          rules={[{required: true, message: '请输入值类型!'}]}
         >
                 <Radio.Group>
-                  <Radio value={0}>禁用</Radio>
-                  <Radio value={1}>正常</Radio>
+                  <Radio value={1}>文本</Radio>
+                  <Radio value={2}>数字</Radio>
+                  <Radio value={3}>日期</Radio>
                 </Radio.Group>
          </FormItem>
         <FormItem
           name="inputList"
-          label="可选值列表，用逗号分隔"
+          label="可选值列表"
           rules={[{required: true, message: '请输入可选值列表，用逗号分隔!'}]}
         >
             <Input id="create-inputList" placeholder={'请输入可选值列表，用逗号分隔!'}/>
@@ -106,21 +109,30 @@ const AddModal: React.FC<AddModalProps> = (props) => {
           label="是否必填"
           rules={[{required: true, message: '请输入是否必填!'}]}
         >
-            <Input id="create-isRequired" placeholder={'请输入是否必填!'}/>
+          <Radio.Group>
+            <Radio value={0}>否</Radio>
+            <Radio value={1}>是</Radio>
+          </Radio.Group>
          </FormItem>
         <FormItem
           name="isSearchable"
           label="是否支持搜索"
           rules={[{required: true, message: '请输入是否支持搜索!'}]}
         >
-            <Input id="create-isSearchable" placeholder={'请输入是否支持搜索!'}/>
+          <Radio.Group>
+            <Radio value={0}>否</Radio>
+            <Radio value={1}>是</Radio>
+          </Radio.Group>
          </FormItem>
         <FormItem
           name="isShow"
           label="是否显示"
           rules={[{required: true, message: '请输入是否显示!'}]}
         >
-            <Input id="create-isShow" placeholder={'请输入是否显示!'}/>
+          <Radio.Group>
+            <Radio value={0}>否</Radio>
+            <Radio value={1}>是</Radio>
+          </Radio.Group>
          </FormItem>
         <FormItem
           name="sort"
@@ -131,49 +143,15 @@ const AddModal: React.FC<AddModalProps> = (props) => {
         </FormItem>
         <FormItem
           name="status"
-          label="状态：0->禁用；1->启用"
-          rules={[{required: true, message: '请输入状态：0->禁用；1->启用!'}]}
+          label="状态"
+          rules={[{required: true, message: '请输入状态!'}]}
         >
               <Radio.Group>
                 <Radio value={0}>禁用</Radio>
                 <Radio value={1}>正常</Radio>
               </Radio.Group>
         </FormItem>
-        <FormItem
-          name="createBy"
-          label="创建人ID"
-          rules={[{required: true, message: '请输入创建人ID!'}]}
-        >
-            <Input id="create-createBy" placeholder={'请输入创建人ID!'}/>
-         </FormItem>
-        <FormItem
-          name="createTime"
-          label="创建时间"
-          rules={[{required: true, message: '请输入创建时间!'}]}
-        >
-            <Input id="create-createTime" placeholder={'请输入创建时间!'}/>
-         </FormItem>
-        <FormItem
-          name="updateBy"
-          label="更新人ID"
-          rules={[{required: true, message: '请输入更新人ID!'}]}
-        >
-            <Input id="create-updateBy" placeholder={'请输入更新人ID!'}/>
-         </FormItem>
-        <FormItem
-          name="updateTime"
-          label="更新时间"
-          rules={[{required: true, message: '请输入更新时间!'}]}
-        >
-            <Input id="create-updateTime" placeholder={'请输入更新时间!'}/>
-         </FormItem>
-        <FormItem
-          name="isDeleted"
-          label="是否删除"
-          rules={[{required: true, message: '请输入是否删除!'}]}
-        >
-            <Input id="create-isDeleted" placeholder={'请输入是否删除!'}/>
-         </FormItem>
+
       </>
     );
   };

@@ -148,14 +148,15 @@ const ProductAttributeList: React.FC = () => {
     },
 
     {
-      title: '输入类型：1-手动输入，2-单选，3-多选',
+      title: '输入类型',
       dataIndex: 'inputType',
       renderFormItem: (text, row, index) => {
           return <Select
             value={row.value}
             options={ [
-              {value: '1', label: '正常'},
-              {value: '0', label: '禁用'},
+              {value: 1, label: '手动输入'},
+              {value: 2, label: '单选'},
+              {value: 3, label: '多选'},
             ]}
           />
 
@@ -163,23 +164,26 @@ const ProductAttributeList: React.FC = () => {
     render: (dom, entity) => {
         switch (entity.inputType) {
           case 1:
-            return <Tag color={'success'}>正常</Tag>;
-          case 0:
-            return <Tag>禁用</Tag>;
+            return <Tag color={'success'}>手动输入</Tag>;
+          case 2:
+            return <Tag color={'success'}>单选</Tag>;
+          case 3:
+            return <Tag>多选</Tag>;
         }
         return <>未知{entity.inputType}</>;
       },
     },
 
     {
-      title: '值类型：1-文本，2-数字，3-日期',
+      title: '值类型',
       dataIndex: 'valueType',
       renderFormItem: (text, row, index) => {
           return <Select
             value={row.value}
             options={ [
-              {value: '1', label: '正常'},
-              {value: '0', label: '禁用'},
+              {value: 1, label: '文本'},
+              {value: 2, label: '数字'},
+              {value: 3, label: '日期'},
             ]}
           />
 
@@ -187,16 +191,18 @@ const ProductAttributeList: React.FC = () => {
     render: (dom, entity) => {
         switch (entity.valueType) {
           case 1:
-            return <Tag color={'success'}>正常</Tag>;
-          case 0:
-            return <Tag>禁用</Tag>;
+            return <Tag color={'success'}>文本</Tag>;
+          case 2:
+            return <Tag color={'success'}>数字</Tag>;
+          case 3:
+            return <Tag>日期</Tag>;
         }
         return <>未知{entity.valueType}</>;
       },
     },
 
     {
-      title: '可选值列表，用逗号分隔',
+      title: '可选值列表',
       dataIndex: 'inputList',
       hideInSearch: true,
     },
@@ -226,14 +232,14 @@ const ProductAttributeList: React.FC = () => {
       hideInSearch: true,
     },
     {
-      title: '状态：0->禁用；1->启用',
+      title: '状态',
       dataIndex: 'status',
       renderFormItem: (text, row, index) => {
           return <Select
             value={row.value}
             options={ [
-              {value: '1', label: '正常'},
-              {value: '0', label: '禁用'},
+              {value: 1, label: '正常'},
+              {value: 0, label: '禁用'},
             ]}
           />
 
@@ -251,6 +257,7 @@ const ProductAttributeList: React.FC = () => {
       title: '创建人ID',
       dataIndex: 'createBy',
       hideInSearch: true,
+      hideInTable: true,
     },
     {
       title: '创建时间',
@@ -261,16 +268,13 @@ const ProductAttributeList: React.FC = () => {
       title: '更新人ID',
       dataIndex: 'updateBy',
       hideInSearch: true,
+      hideInTable: true,
     },
     {
       title: '更新时间',
       dataIndex: 'updateTime',
       hideInSearch: true,
-    },
-    {
-      title: '是否删除',
-      dataIndex: 'isDeleted',
-      hideInSearch: true,
+      hideInTable: true,
     },
 
     {
