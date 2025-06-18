@@ -1,6 +1,9 @@
-import React, {useEffect} from 'react';
-import {Form, Input, InputNumber, Modal, Radio} from 'antd';
+import React, { useEffect, useState } from 'react';
+import { Form, Input, InputNumber, message, Modal, Radio, TreeSelect } from 'antd';
 import type { ProductAttributeGroupListItem} from '../data.d';
+import { queryProductCategoryList } from '@/pages/pms/ProductCategory/service';
+import { tree } from '@/utils/utils';
+import { ProductCategoryListItem } from '@/pages/pms/ProductCategory/data';
 
 export interface AddModalProps {
   onCancel: () => void;
@@ -17,6 +20,7 @@ const formLayout = {
 
 const AddModal: React.FC<AddModalProps> = (props) => {
   const [form] = Form.useForm();
+  const [categoryListItem, setCategoryListItem] = useState<ProductCategoryListItem[]>([]);
 
   const {
     onSubmit,
@@ -27,6 +31,22 @@ const AddModal: React.FC<AddModalProps> = (props) => {
   useEffect(() => {
     if (form && !addVisible) {
       form.resetFields();
+    }else {
+      queryProductCategoryList({}).then((res) => {
+        if (res.code === '000000') {
+          const map = res.data.map((item: { id: any; name: any; title: any; parentId: any }) => ({
+            value: item.id,
+            id: item.id,
+            label: item.name,
+            title: item.name,
+            parentId: item.parentId,
+          }));
+
+          setCategoryListItem(tree(map, 0, 'parentId'));
+        } else {
+          message.error(res.msg);
+        }
+      });
     }
   }, [props.addVisible]);
 
@@ -45,20 +65,19 @@ const AddModal: React.FC<AddModalProps> = (props) => {
   const renderContent = () => {
     return (
       <>
-        
-        <FormItem
-          name="id"
-          label="主键id"
-          rules={[{required: true, message: '请输入主键id!'}]}
-        >
-            <Input id="create-id" placeholder={'请输入主键id!'}/>
-         </FormItem>
+
+
         <FormItem
           name="categoryId"
-          label="分类ID"
-          rules={[{required: true, message: '请输入分类ID!'}]}
+          label="商品分类"
+          rules={[{required: true, message: '请选择商品分类!'}]}
         >
-            <Input id="create-categoryId" placeholder={'请输入分类ID!'}/>
+          <TreeSelect
+            style={{width: '100%'}}
+            treeData={categoryListItem}
+            placeholder="请选择部门"
+            treeDefaultExpandAll
+          />
          </FormItem>
         <FormItem
           name="name"
@@ -76,49 +95,15 @@ const AddModal: React.FC<AddModalProps> = (props) => {
         </FormItem>
         <FormItem
           name="status"
-          label="状态：0->禁用；1->启用"
-          rules={[{required: true, message: '请输入状态：0->禁用；1->启用!'}]}
+          label="状态"
+          rules={[{required: true, message: '请输入状态!'}]}
         >
               <Radio.Group>
                 <Radio value={0}>禁用</Radio>
                 <Radio value={1}>正常</Radio>
               </Radio.Group>
         </FormItem>
-        <FormItem
-          name="createBy"
-          label="创建人ID"
-          rules={[{required: true, message: '请输入创建人ID!'}]}
-        >
-            <Input id="create-createBy" placeholder={'请输入创建人ID!'}/>
-         </FormItem>
-        <FormItem
-          name="createTime"
-          label="创建时间"
-          rules={[{required: true, message: '请输入创建时间!'}]}
-        >
-            <Input id="create-createTime" placeholder={'请输入创建时间!'}/>
-         </FormItem>
-        <FormItem
-          name="updateBy"
-          label="更新人ID"
-          rules={[{required: true, message: '请输入更新人ID!'}]}
-        >
-            <Input id="create-updateBy" placeholder={'请输入更新人ID!'}/>
-         </FormItem>
-        <FormItem
-          name="updateTime"
-          label="更新时间"
-          rules={[{required: true, message: '请输入更新时间!'}]}
-        >
-            <Input id="create-updateTime" placeholder={'请输入更新时间!'}/>
-         </FormItem>
-        <FormItem
-          name="isDeleted"
-          label="是否删除"
-          rules={[{required: true, message: '请输入是否删除!'}]}
-        >
-            <Input id="create-isDeleted" placeholder={'请输入是否删除!'}/>
-         </FormItem>
+
       </>
     );
   };
