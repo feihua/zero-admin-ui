@@ -78,7 +78,7 @@ const handleStatus = async (ids: number[], status: number) => {
     return true;
   }
   try {
-    await updateProductSpecValueStatus({ productSpecValueIds: ids, productSpecValueStatus: status});
+    await updateProductSpecValueStatus({ ids: ids, status: status});
     hide();
     message.success('更新状态成功');
     return true;
@@ -125,7 +125,7 @@ const ProductSpecValueList: React.FC = () => {
   };
 
   const columns: ProColumns<ProductSpecValueListItem>[] = [
-    
+
     {
       title: '',
       dataIndex: 'id',
@@ -167,7 +167,7 @@ const ProductSpecValueList: React.FC = () => {
       );
     },
     },
-    
+
     {
       title: '创建人ID',
       dataIndex: 'createBy',

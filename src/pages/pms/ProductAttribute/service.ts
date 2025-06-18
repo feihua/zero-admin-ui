@@ -30,7 +30,7 @@ export async function updateProductAttribute(params: ProductAttributeListItem) {
 }
 
 // 批量更新商品属性状态
-export async function updateProductAttributeStatus(params: { productAttributeIds: number[], productAttributeStatus: number }) {
+export async function updateProductAttributeStatus(params: { ids: number[], status: number }) {
   return request('/api/pms/attribute/updateAttributeStatus', {
     method: 'POST',
     data: {

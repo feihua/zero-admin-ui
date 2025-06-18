@@ -78,7 +78,7 @@ const handleStatus = async (ids: number[], status: number) => {
     return true;
   }
   try {
-    await updateProductAttributeGroupStatus({ productAttributeGroupIds: ids, productAttributeGroupStatus: status});
+    await updateProductAttributeGroupStatus({ ids: ids, status: status});
     hide();
     message.success('更新状态成功');
     return true;
@@ -125,7 +125,7 @@ const ProductAttributeGroupList: React.FC = () => {
   };
 
   const columns: ProColumns<ProductAttributeGroupListItem>[] = [
-    
+
     {
       title: '主键id',
       dataIndex: 'id',
@@ -146,7 +146,7 @@ const ProductAttributeGroupList: React.FC = () => {
           }}>{dom}</a>;
         },
     },
-    
+
     {
       title: '排序',
       dataIndex: 'sort',
@@ -173,7 +173,7 @@ const ProductAttributeGroupList: React.FC = () => {
       );
     },
     },
-    
+
     {
       title: '创建人ID',
       dataIndex: 'createBy',

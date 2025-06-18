@@ -30,7 +30,7 @@ export async function updateProductAttributeGroup(params: ProductAttributeGroupL
 }
 
 // 批量更新商品属性分组状态
-export async function updateProductAttributeGroupStatus(params: { productAttributeGroupIds: number[], productAttributeGroupStatus: number }) {
+export async function updateProductAttributeGroupStatus(params: { ids: number[], status: number }) {
   return request('/api/pms/attributeGroup/updateAttributeGroupStatus', {
     method: 'POST',
     data: {

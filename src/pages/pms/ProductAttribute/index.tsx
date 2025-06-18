@@ -1,5 +1,5 @@
 import {DeleteOutlined, EditOutlined, ExclamationCircleOutlined, PlusOutlined} from '@ant-design/icons';
-import {Button, Divider, Drawer, message, Modal, Select, Space, Switch} from 'antd';
+import {Button, Divider, Drawer, message, Modal, Select, Space, Switch, Tag} from 'antd';
 import React, {useRef, useState} from 'react';
 import {PageContainer} from '@ant-design/pro-layout';
 import type {ActionType, ProColumns} from '@ant-design/pro-table';
@@ -78,7 +78,7 @@ const handleStatus = async (ids: number[], status: number) => {
     return true;
   }
   try {
-    await updateProductAttributeStatus({ productAttributeIds: ids, productAttributeStatus: status});
+    await updateProductAttributeStatus({ ids: ids, status: status});
     hide();
     message.success('更新状态成功');
     return true;
@@ -125,7 +125,7 @@ const ProductAttributeList: React.FC = () => {
   };
 
   const columns: ProColumns<ProductAttributeListItem>[] = [
-    
+
     {
       title: '主键id',
       dataIndex: 'id',
@@ -146,7 +146,7 @@ const ProductAttributeList: React.FC = () => {
           }}>{dom}</a>;
         },
     },
-    
+
     {
       title: '输入类型：1-手动输入，2-单选，3-多选',
       dataIndex: 'inputType',
@@ -170,7 +170,7 @@ const ProductAttributeList: React.FC = () => {
         return <>未知{entity.inputType}</>;
       },
     },
-    
+
     {
       title: '值类型：1-文本，2-数字，3-日期',
       dataIndex: 'valueType',
@@ -194,7 +194,7 @@ const ProductAttributeList: React.FC = () => {
         return <>未知{entity.valueType}</>;
       },
     },
-    
+
     {
       title: '可选值列表，用逗号分隔',
       dataIndex: 'inputList',
@@ -246,7 +246,7 @@ const ProductAttributeList: React.FC = () => {
       );
     },
     },
-    
+
     {
       title: '创建人ID',
       dataIndex: 'createBy',

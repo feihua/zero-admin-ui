@@ -30,7 +30,7 @@ export async function updateProductSpec(params: ProductSpecListItem) {
 }
 
 // 批量更新商品规格状态
-export async function updateProductSpecStatus(params: { productSpecIds: number[], productSpecStatus: number }) {
+export async function updateProductSpecStatus(params: { ids: number[], status: number }) {
   return request('/api/pms/productSpec/updateSpecStatus', {
     method: 'POST',
     data: {
