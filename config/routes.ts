@@ -212,6 +212,19 @@
         path: '/pms/attribute/list',
         component: './pms/ProductAttribute',
       },
+      {
+        name: '属性规格',
+        icon: 'table',
+        path: '/pms/productSpec/list',
+        component: './pms/ProductSpec',
+      },
+
+      {
+        name: '属性规格值',
+        icon: 'table',
+        path: '/pms/productSpecValue/list',
+        component: './pms/ProductSpecValue',
+      },
     ],
   },
   {

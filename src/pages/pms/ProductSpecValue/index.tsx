@@ -127,7 +127,7 @@ const ProductSpecValueList: React.FC = () => {
   const columns: ProColumns<ProductSpecValueListItem>[] = [
 
     {
-      title: '',
+      title: '规格值id',
       dataIndex: 'id',
       hideInSearch: true,
     },
@@ -147,14 +147,14 @@ const ProductSpecValueList: React.FC = () => {
       hideInSearch: true,
     },
     {
-      title: '状态：0->禁用；1->启用',
+      title: '状态',
       dataIndex: 'status',
       renderFormItem: (text, row, index) => {
           return <Select
             value={row.value}
             options={ [
-              {value: '1', label: '正常'},
-              {value: '0', label: '禁用'},
+              {value: 1, label: '正常'},
+              {value: 0, label: '禁用'},
             ]}
           />
 
@@ -172,6 +172,7 @@ const ProductSpecValueList: React.FC = () => {
       title: '创建人ID',
       dataIndex: 'createBy',
       hideInSearch: true,
+      hideInTable: true,
     },
     {
       title: '创建时间',
@@ -182,18 +183,13 @@ const ProductSpecValueList: React.FC = () => {
       title: '更新人ID',
       dataIndex: 'updateBy',
       hideInSearch: true,
+      hideInTable: true,
     },
     {
       title: '更新时间',
       dataIndex: 'updateTime',
       hideInSearch: true,
     },
-    {
-      title: '是否删除',
-      dataIndex: 'isDeleted',
-      hideInSearch: true,
-    },
-
     {
       title: '操作',
       dataIndex: 'option',
