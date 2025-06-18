@@ -3,7 +3,7 @@ import type { ProductSpecValueListParams, ProductSpecValueListItem } from './dat
 
 // 添加商品规格值
 export async function addProductSpecValue(params: ProductSpecValueListItem) {
-  return request('/api/demo/productSpecValue/addProductSpecValue', {
+  return request('/api/pms/productSpecValue/addSpecValue', {
     method: 'POST',
     data: {
       ...params,
@@ -13,7 +13,7 @@ export async function addProductSpecValue(params: ProductSpecValueListItem) {
 
 // 删除商品规格值
 export async function removeProductSpecValue(ids: number[]) {
-  return request('/api/demo/productSpecValue/deleteProductSpecValue?ids=[' + ids + "]", {
+  return request('/api/pms/productSpecValue/deleteSpecValue?ids=' + ids.join(','), {
     method: 'GET',
   });
 }
@@ -21,7 +21,7 @@ export async function removeProductSpecValue(ids: number[]) {
 
 // 更新商品规格值
 export async function updateProductSpecValue(params: ProductSpecValueListItem) {
-  return request('/api/demo/productSpecValue/updateProductSpecValue', {
+  return request('/api/pms/productSpecValue/updateSpecValue', {
     method: 'POST',
     data: {
       ...params,
@@ -31,7 +31,7 @@ export async function updateProductSpecValue(params: ProductSpecValueListItem) {
 
 // 批量更新商品规格值状态
 export async function updateProductSpecValueStatus(params: { productSpecValueIds: number[], productSpecValueStatus: number }) {
-  return request('/api/demo/productSpecValue/updateProductSpecValueStatus', {
+  return request('/api/pms/productSpecValue/updateSpecValueStatus', {
     method: 'POST',
     data: {
       ...params,
@@ -43,7 +43,7 @@ export async function updateProductSpecValueStatus(params: { productSpecValueIds
 
 // 查询商品规格值详情
 export async function queryProductSpecValueDetail(id: number) {
-  return request('/api/demo/productSpecValue/queryProductSpecValueDetail?id=' + id, {
+  return request('/api/pms/productSpecValue/querySpecValueDetail?id=' + id, {
     method: 'GET',
   });
 }
@@ -51,7 +51,7 @@ export async function queryProductSpecValueDetail(id: number) {
 // 分页查询商品规格值列表
 export async function queryProductSpecValueList(params: ProductSpecValueListParams) {
 
-  return request('/api/demo/productSpecValue/queryProductSpecValueList', {
+  return request('/api/pms/productSpecValue/querySpecValueList', {
     method: 'GET',
     params: {
       ...params,

@@ -3,7 +3,7 @@ import type { ProductSkuListParams, ProductSkuListItem } from './data.d';
 
 // 添加商品SKU
 export async function addProductSku(params: ProductSkuListItem) {
-  return request('/api/demo/productSku/addProductSku', {
+  return request('/api/pms/product/addProductSku', {
     method: 'POST',
     data: {
       ...params,
@@ -13,7 +13,7 @@ export async function addProductSku(params: ProductSkuListItem) {
 
 // 删除商品SKU
 export async function removeProductSku(ids: number[]) {
-  return request('/api/demo/productSku/deleteProductSku?ids=[' + ids + "]", {
+  return request('/api/pms/product/deleteProductSku?ids=' + ids.join(','), {
     method: 'GET',
   });
 }
@@ -21,7 +21,7 @@ export async function removeProductSku(ids: number[]) {
 
 // 更新商品SKU
 export async function updateProductSku(params: ProductSkuListItem) {
-  return request('/api/demo/productSku/updateProductSku', {
+  return request('/api/pms/product/updateProductSku', {
     method: 'POST',
     data: {
       ...params,
@@ -31,7 +31,7 @@ export async function updateProductSku(params: ProductSkuListItem) {
 
 // 批量更新商品SKU状态
 export async function updateProductSkuStatus(params: { productSkuIds: number[], productSkuStatus: number }) {
-  return request('/api/demo/productSku/updateProductSkuStatus', {
+  return request('/api/pms/product/updateProductSkuStatus', {
     method: 'POST',
     data: {
       ...params,
@@ -43,7 +43,7 @@ export async function updateProductSkuStatus(params: { productSkuIds: number[], 
 
 // 查询商品SKU详情
 export async function queryProductSkuDetail(id: number) {
-  return request('/api/demo/productSku/queryProductSkuDetail?id=' + id, {
+  return request('/api/pms/product/queryProductSkuDetail?id=' + id, {
     method: 'GET',
   });
 }
@@ -51,7 +51,7 @@ export async function queryProductSkuDetail(id: number) {
 // 分页查询商品SKU列表
 export async function queryProductSkuList(params: ProductSkuListParams) {
 
-  return request('/api/demo/productSku/queryProductSkuList', {
+  return request('/api/pms/product/queryProductSkuList', {
     method: 'GET',
     params: {
       ...params,

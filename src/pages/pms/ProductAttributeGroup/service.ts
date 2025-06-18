@@ -3,7 +3,7 @@ import type { ProductAttributeGroupListParams, ProductAttributeGroupListItem } f
 
 // 添加商品属性分组
 export async function addProductAttributeGroup(params: ProductAttributeGroupListItem) {
-  return request('/api/demo/productAttributeGroup/addProductAttributeGroup', {
+  return request('/api/pms/attributeGroup/addAttributeGroup', {
     method: 'POST',
     data: {
       ...params,
@@ -13,7 +13,7 @@ export async function addProductAttributeGroup(params: ProductAttributeGroupList
 
 // 删除商品属性分组
 export async function removeProductAttributeGroup(ids: number[]) {
-  return request('/api/demo/productAttributeGroup/deleteProductAttributeGroup?ids=[' + ids + "]", {
+  return request('/api/pms/attributeGroup/deleteAttributeGroup?ids=' + ids.join(','), {
     method: 'GET',
   });
 }
@@ -21,7 +21,7 @@ export async function removeProductAttributeGroup(ids: number[]) {
 
 // 更新商品属性分组
 export async function updateProductAttributeGroup(params: ProductAttributeGroupListItem) {
-  return request('/api/demo/productAttributeGroup/updateProductAttributeGroup', {
+  return request('/api/pms/attributeGroup/updateAttributeGroup', {
     method: 'POST',
     data: {
       ...params,
@@ -31,7 +31,7 @@ export async function updateProductAttributeGroup(params: ProductAttributeGroupL
 
 // 批量更新商品属性分组状态
 export async function updateProductAttributeGroupStatus(params: { productAttributeGroupIds: number[], productAttributeGroupStatus: number }) {
-  return request('/api/demo/productAttributeGroup/updateProductAttributeGroupStatus', {
+  return request('/api/pms/attributeGroup/updateAttributeGroupStatus', {
     method: 'POST',
     data: {
       ...params,
@@ -43,7 +43,7 @@ export async function updateProductAttributeGroupStatus(params: { productAttribu
 
 // 查询商品属性分组详情
 export async function queryProductAttributeGroupDetail(id: number) {
-  return request('/api/demo/productAttributeGroup/queryProductAttributeGroupDetail?id=' + id, {
+  return request('/api/pms/attributeGroup/queryAttributeGroupDetail?id=' + id, {
     method: 'GET',
   });
 }
@@ -51,7 +51,7 @@ export async function queryProductAttributeGroupDetail(id: number) {
 // 分页查询商品属性分组列表
 export async function queryProductAttributeGroupList(params: ProductAttributeGroupListParams) {
 
-  return request('/api/demo/productAttributeGroup/queryProductAttributeGroupList', {
+  return request('/api/pms/attributeGroup/queryAttributeGroupList', {
     method: 'GET',
     params: {
       ...params,

@@ -13,7 +13,7 @@ export async function addProductAttributeValue(params: ProductAttributeValueList
 
 // 删除商品属性值
 export async function removeProductAttributeValue(ids: number[]) {
-  return request('/api/demo/productAttributeValue/deleteProductAttributeValue?ids=[' + ids + "]", {
+  return request('/api/demo/productAttributeValue/deleteProductAttributeValue?ids=' + ids.join(','), {
     method: 'GET',
   });
 }

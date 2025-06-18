@@ -3,7 +3,7 @@ import type { ProductAttributeListParams, ProductAttributeListItem } from './dat
 
 // 添加商品属性
 export async function addProductAttribute(params: ProductAttributeListItem) {
-  return request('/api/demo/productAttribute/addProductAttribute', {
+  return request('/api/pms/attribute/addAttribute', {
     method: 'POST',
     data: {
       ...params,
@@ -13,7 +13,7 @@ export async function addProductAttribute(params: ProductAttributeListItem) {
 
 // 删除商品属性
 export async function removeProductAttribute(ids: number[]) {
-  return request('/api/demo/productAttribute/deleteProductAttribute?ids=[' + ids + "]", {
+  return request('/api/pms/attribute/deleteAttribute?ids=' + ids.join(','), {
     method: 'GET',
   });
 }
@@ -21,7 +21,7 @@ export async function removeProductAttribute(ids: number[]) {
 
 // 更新商品属性
 export async function updateProductAttribute(params: ProductAttributeListItem) {
-  return request('/api/demo/productAttribute/updateProductAttribute', {
+  return request('/api/pms/attribute/updateAttribute', {
     method: 'POST',
     data: {
       ...params,
@@ -31,7 +31,7 @@ export async function updateProductAttribute(params: ProductAttributeListItem) {
 
 // 批量更新商品属性状态
 export async function updateProductAttributeStatus(params: { productAttributeIds: number[], productAttributeStatus: number }) {
-  return request('/api/demo/productAttribute/updateProductAttributeStatus', {
+  return request('/api/pms/attribute/updateAttributeStatus', {
     method: 'POST',
     data: {
       ...params,
@@ -43,7 +43,7 @@ export async function updateProductAttributeStatus(params: { productAttributeIds
 
 // 查询商品属性详情
 export async function queryProductAttributeDetail(id: number) {
-  return request('/api/demo/productAttribute/queryProductAttributeDetail?id=' + id, {
+  return request('/api/pms/attribute/queryAttributeDetail?id=' + id, {
     method: 'GET',
   });
 }
@@ -51,7 +51,7 @@ export async function queryProductAttributeDetail(id: number) {
 // 分页查询商品属性列表
 export async function queryProductAttributeList(params: ProductAttributeListParams) {
 
-  return request('/api/demo/productAttribute/queryProductAttributeList', {
+  return request('/api/pms/attribute/queryAttributeList', {
     method: 'GET',
     params: {
       ...params,

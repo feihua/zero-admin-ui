@@ -3,7 +3,7 @@ import type { ProductSpecListParams, ProductSpecListItem } from './data.d';
 
 // 添加商品规格
 export async function addProductSpec(params: ProductSpecListItem) {
-  return request('/api/demo/productSpec/addProductSpec', {
+  return request('/api/pms/productSpec/addSpec', {
     method: 'POST',
     data: {
       ...params,
@@ -13,7 +13,7 @@ export async function addProductSpec(params: ProductSpecListItem) {
 
 // 删除商品规格
 export async function removeProductSpec(ids: number[]) {
-  return request('/api/demo/productSpec/deleteProductSpec?ids=[' + ids + "]", {
+  return request('/api/pms/productSpec/deleteSpec?ids=' + ids.join(','), {
     method: 'GET',
   });
 }
@@ -21,7 +21,7 @@ export async function removeProductSpec(ids: number[]) {
 
 // 更新商品规格
 export async function updateProductSpec(params: ProductSpecListItem) {
-  return request('/api/demo/productSpec/updateProductSpec', {
+  return request('/api/pms/productSpec/updateSpec', {
     method: 'POST',
     data: {
       ...params,
@@ -31,7 +31,7 @@ export async function updateProductSpec(params: ProductSpecListItem) {
 
 // 批量更新商品规格状态
 export async function updateProductSpecStatus(params: { productSpecIds: number[], productSpecStatus: number }) {
-  return request('/api/demo/productSpec/updateProductSpecStatus', {
+  return request('/api/pms/productSpec/updateSpecStatus', {
     method: 'POST',
     data: {
       ...params,
@@ -43,7 +43,7 @@ export async function updateProductSpecStatus(params: { productSpecIds: number[]
 
 // 查询商品规格详情
 export async function queryProductSpecDetail(id: number) {
-  return request('/api/demo/productSpec/queryProductSpecDetail?id=' + id, {
+  return request('/api/pms/productSpec/querySpecDetail?id=' + id, {
     method: 'GET',
   });
 }
@@ -51,7 +51,7 @@ export async function queryProductSpecDetail(id: number) {
 // 分页查询商品规格列表
 export async function queryProductSpecList(params: ProductSpecListParams) {
 
-  return request('/api/demo/productSpec/queryProductSpecList', {
+  return request('/api/pms/productSpec/querySpecList', {
     method: 'GET',
     params: {
       ...params,
