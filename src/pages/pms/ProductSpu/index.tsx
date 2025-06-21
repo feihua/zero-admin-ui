@@ -1,5 +1,5 @@
 import {DeleteOutlined, EditOutlined, ExclamationCircleOutlined, PlusOutlined} from '@ant-design/icons';
-import {Button, Divider, Drawer, message, Modal, Select, Space, Switch} from 'antd';
+import { Button, Divider, Drawer, message, Modal, Select, Space, Switch, Tag } from 'antd';
 import React, {useRef, useState} from 'react';
 import {PageContainer} from '@ant-design/pro-layout';
 import type {ActionType, ProColumns} from '@ant-design/pro-table';
@@ -125,9 +125,8 @@ const ProductSpuList: React.FC = () => {
   };
 
   const columns: ProColumns<ProductSpuListItem>[] = [
-    
     {
-      title: '商品SpuId',
+      title: '编号',
       dataIndex: 'id',
       hideInSearch: true,
     },
@@ -135,86 +134,117 @@ const ProductSpuList: React.FC = () => {
       title: '商品名称',
       dataIndex: 'name',
       render: (dom, entity) => {
-          return <a onClick={() => {
-            setCurrentRow(entity);
-            setShowDetail(true);
-          }}>{dom}</a>;
-        },
+        return (
+          <a
+            onClick={() => {
+              setCurrentRow(entity);
+              setShowDetail(true);
+            }}
+          >
+            {dom}
+          </a>
+        );
+      },
     },
-    
+
     {
       title: '商品分类ID',
       dataIndex: 'categoryId',
       hideInSearch: true,
+      hideInTable: true,
     },
     {
       title: '商品分类ID集合',
       dataIndex: 'categoryIds',
       hideInSearch: true,
+      hideInTable: true,
     },
     {
       title: '商品分类名称',
       dataIndex: 'categoryName',
       hideInSearch: true,
+      hideInTable: true,
       render: (dom, entity) => {
-          return <a onClick={() => {
-            setCurrentRow(entity);
-            setShowDetail(true);
-          }}>{dom}</a>;
-        },
+        return (
+          <a
+            onClick={() => {
+              setCurrentRow(entity);
+              setShowDetail(true);
+            }}
+          >
+            {dom}
+          </a>
+        );
+      },
     },
-    
+
     {
       title: '品牌ID',
       dataIndex: 'brandId',
       hideInSearch: true,
+      hideInTable: true,
     },
     {
       title: '品牌名称',
       dataIndex: 'brandName',
       hideInSearch: true,
+      hideInTable: true,
       render: (dom, entity) => {
-          return <a onClick={() => {
-            setCurrentRow(entity);
-            setShowDetail(true);
-          }}>{dom}</a>;
-        },
+        return (
+          <a
+            onClick={() => {
+              setCurrentRow(entity);
+              setShowDetail(true);
+            }}
+          >
+            {dom}
+          </a>
+        );
+      },
     },
-    
+
     {
       title: '单位',
       dataIndex: 'unit',
       hideInSearch: true,
+      hideInTable: true,
     },
     {
       title: '重量(kg)',
       dataIndex: 'weight',
       hideInSearch: true,
+      hideInTable: true,
     },
     {
       title: '关键词',
       dataIndex: 'keywords',
       hideInSearch: true,
+      hideInTable: true,
     },
     {
       title: '简介',
       dataIndex: 'brief',
       hideInSearch: true,
+      hideInTable: true,
     },
     {
       title: '详细描述',
       dataIndex: 'description',
       hideInSearch: true,
+      hideInTable: true,
     },
     {
       title: '画册图片，最多8张，以逗号分割',
       dataIndex: 'albumPics',
       hideInSearch: true,
+      hideInTable: true,
     },
     {
       title: '主图',
       dataIndex: 'mainPic',
       hideInSearch: true,
+      valueType: 'image',
+      fieldProps: { width: 100, height: 80 },
     },
     {
       title: '价格区间',
@@ -222,109 +252,132 @@ const ProductSpuList: React.FC = () => {
       hideInSearch: true,
     },
     {
-      title: '上架状态：0-下架，1-上架',
+      title: '上架状态',
       dataIndex: 'publishStatus',
       renderFormItem: (text, row, index) => {
-          return <Select
+        return (
+          <Select
             value={row.value}
-            options={ [
-              {value: '1', label: '正常'},
-              {value: '0', label: '禁用'},
+            options={[
+              { value: 1, label: '上架' },
+              { value: 0, label: '下架' },
             ]}
           />
-
-    },
-    render: (dom, entity) => {
-      return (
-        <Switch checked={entity.publishStatus == 1} onChange={(flag) => {
-          showStatusConfirm( [entity.id], flag ? 1 : 0)
-        }}/>
-      );
-    },
+        );
+      },
+      render: (dom, entity) => {
+        return (
+          <Switch
+            checked={entity.publishStatus == 1}
+            onChange={(flag) => {
+              showStatusConfirm([entity.id], flag ? 1 : 0);
+            }}
+          />
+        );
+      },
     },
     {
-      title: '新品状态:0->不是新品；1->新品',
+      title: '是否新品',
       dataIndex: 'newStatus',
+      hideInTable: true,
       renderFormItem: (text, row, index) => {
-          return <Select
+        return (
+          <Select
             value={row.value}
-            options={ [
-              {value: '1', label: '正常'},
-              {value: '0', label: '禁用'},
+            options={[
+              { value: 1, label: '是' },
+              { value: 0, label: '不是' },
             ]}
           />
-
-    },
-    render: (dom, entity) => {
-      return (
-        <Switch checked={entity.newStatus == 1} onChange={(flag) => {
-          showStatusConfirm( [entity.id], flag ? 1 : 0)
-        }}/>
-      );
-    },
+        );
+      },
+      render: (dom, entity) => {
+        return (
+          <Switch
+            checked={entity.newStatus == 1}
+            onChange={(flag) => {
+              showStatusConfirm([entity.id], flag ? 1 : 0);
+            }}
+          />
+        );
+      },
     },
     {
-      title: '推荐状态；0->不推荐；1->推荐',
+      title: '是否推荐',
       dataIndex: 'recommendStatus',
+      hideInTable: true,
       renderFormItem: (text, row, index) => {
-          return <Select
+        return (
+          <Select
             value={row.value}
-            options={ [
-              {value: '1', label: '正常'},
-              {value: '0', label: '禁用'},
+            options={[
+              { value: 1, label: '推荐' },
+              { value: 0, label: '不推荐' },
             ]}
           />
-
-    },
-    render: (dom, entity) => {
-      return (
-        <Switch checked={entity.recommendStatus == 1} onChange={(flag) => {
-          showStatusConfirm( [entity.id], flag ? 1 : 0)
-        }}/>
-      );
-    },
+        );
+      },
+      render: (dom, entity) => {
+        return (
+          <Switch
+            checked={entity.recommendStatus == 1}
+            onChange={(flag) => {
+              showStatusConfirm([entity.id], flag ? 1 : 0);
+            }}
+          />
+        );
+      },
     },
     {
-      title: '审核状态：0->未审核；1->审核通过',
+      title: '审核状态',
       dataIndex: 'verifyStatus',
       renderFormItem: (text, row, index) => {
-          return <Select
+        return (
+          <Select
             value={row.value}
-            options={ [
-              {value: '1', label: '正常'},
-              {value: '0', label: '禁用'},
+            options={[
+              { value: 1, label: '审核通过' },
+              { value: 0, label: '未审核' },
             ]}
           />
-
-    },
-    render: (dom, entity) => {
-      return (
-        <Switch checked={entity.verifyStatus == 1} onChange={(flag) => {
-          showStatusConfirm( [entity.id], flag ? 1 : 0)
-        }}/>
-      );
-    },
+        );
+      },
+      render: (dom, entity) => {
+        return (
+          <Switch
+            checked={entity.verifyStatus == 1}
+            onChange={(flag) => {
+              showStatusConfirm([entity.id], flag ? 1 : 0);
+            }}
+          />
+        );
+      },
     },
     {
-      title: '是否为预告商品：0->不是；1->是',
+      title: '预告商品',
       dataIndex: 'previewStatus',
+      hideInTable: true,
       renderFormItem: (text, row, index) => {
-          return <Select
+        return (
+          <Select
             value={row.value}
-            options={ [
-              {value: '1', label: '正常'},
-              {value: '0', label: '禁用'},
+            options={[
+              { value: 1, label: '是' },
+              { value: 0, label: '不是' },
             ]}
           />
-
-    },
-    render: (dom, entity) => {
-      return (
-        <Switch checked={entity.previewStatus == 1} onChange={(flag) => {
-          showStatusConfirm( [entity.id], flag ? 1 : 0)
-        }}/>
-      );
-    },
+        );
+      },
+      render: (dom, entity) => {
+        return (
+          <Switch
+            checked={entity.previewStatus == 1}
+            onChange={(flag) => {
+              showStatusConfirm([entity.id], flag ? 1 : 0);
+            }}
+          />
+        );
+      },
     },
     {
       title: '排序',
@@ -334,44 +387,14 @@ const ProductSpuList: React.FC = () => {
     {
       title: '新品排序',
       dataIndex: 'newStatusSort',
-      renderFormItem: (text, row, index) => {
-          return <Select
-            value={row.value}
-            options={ [
-              {value: '1', label: '正常'},
-              {value: '0', label: '禁用'},
-            ]}
-          />
-
-    },
-    render: (dom, entity) => {
-      return (
-        <Switch checked={entity.newStatusSort == 1} onChange={(flag) => {
-          showStatusConfirm( [entity.id], flag ? 1 : 0)
-        }}/>
-      );
-    },
+      hideInSearch: true,
+      hideInTable: true,
     },
     {
       title: '推荐排序',
       dataIndex: 'recommendStatusSort',
-      renderFormItem: (text, row, index) => {
-          return <Select
-            value={row.value}
-            options={ [
-              {value: '1', label: '正常'},
-              {value: '0', label: '禁用'},
-            ]}
-          />
-
-    },
-    render: (dom, entity) => {
-      return (
-        <Switch checked={entity.recommendStatusSort == 1} onChange={(flag) => {
-          showStatusConfirm( [entity.id], flag ? 1 : 0)
-        }}/>
-      );
-    },
+      hideInSearch: true,
+      hideInTable: true,
     },
     {
       title: '销量',
@@ -387,75 +410,93 @@ const ProductSpuList: React.FC = () => {
       title: '预警库存',
       dataIndex: 'lowStock',
       hideInSearch: true,
+      hideInTable: true,
     },
     {
-      title: '促销类型：0->没有促销使用原价;1->使用促销价；2->使用会员价；3->使用阶梯价格；4->使用满减价格；5->秒杀',
+      title:
+        '促销类型',
       dataIndex: 'promotionType',
       renderFormItem: (text, row, index) => {
-          return <Select
+        return (
+          <Select
             value={row.value}
-            options={ [
-              {value: '1', label: '正常'},
-              {value: '0', label: '禁用'},
+            options={[
+              { value: '0', label: '原价' },
+              { value: '1', label: '促销价' },
+              { value: '2', label: '会员价' },
+              { value: '3', label: '阶梯价格' },
+              { value: '4', label: '满减价格' },
+              { value: '5', label: '秒杀价格' },
             ]}
           />
-
-    },
-    render: (dom, entity) => {
+        );
+      },
+      render: (dom, entity) => {
         switch (entity.promotionType) {
           case 1:
-            return <Tag color={'success'}>正常</Tag>;
+            return <Tag color={'success'}>使用原价</Tag>;
           case 0:
-            return <Tag>禁用</Tag>;
+            return <Tag color={'success'}>使用促销价</Tag>;
+          case 2:
+            return <Tag color={'success'}>使用会员价</Tag>;
+          case 3:
+            return <Tag color={'success'}>使用阶梯价格</Tag>;
+          case 4:
+            return <Tag color={'success'}>使用满减价格</Tag>;
+          case 5:
+            return <Tag color={'success'}>秒杀</Tag>;
         }
         return <>未知{entity.promotionType}</>;
       },
     },
-    
+
     {
       title: '详情标题',
       dataIndex: 'detailTitle',
       hideInSearch: true,
+      hideInTable: true,
     },
     {
       title: '详情描述',
       dataIndex: 'detailDesc',
       hideInSearch: true,
+      hideInTable: true,
     },
     {
       title: '产品详情网页内容',
       dataIndex: 'detailHtml',
       hideInSearch: true,
+      hideInTable: true,
     },
     {
       title: '移动端网页详情',
       dataIndex: 'detailMobileHtml',
       hideInSearch: true,
+      hideInTable: true,
     },
     {
       title: '创建人ID',
       dataIndex: 'createBy',
       hideInSearch: true,
+      hideInTable: true,
     },
     {
       title: '创建时间',
       dataIndex: 'createTime',
       hideInSearch: true,
+      hideInTable: true,
     },
     {
       title: '更新人ID',
       dataIndex: 'updateBy',
       hideInSearch: true,
+      hideInTable: true,
     },
     {
       title: '更新时间',
       dataIndex: 'updateTime',
       hideInSearch: true,
-    },
-    {
-      title: '是否删除',
-      dataIndex: 'isDeleted',
-      hideInSearch: true,
+      hideInTable: true,
     },
 
     {
@@ -470,20 +511,19 @@ const ProductSpuList: React.FC = () => {
             onClick={() => {
               handleUpdateVisible(true);
               setCurrentRow(record);
-              }
-            }
-          >
-            <EditOutlined/> 编辑
-          </a>
-          <Divider type="vertical"/>
-          <a
-            key="delete"
-            style={ {color: '#ff4d4f'} }
-            onClick={() => {
-              showDeleteConfirm( [record.id]);
             }}
           >
-            <DeleteOutlined/> 删除
+            <EditOutlined /> 编辑
+          </a>
+          <Divider type="vertical" />
+          <a
+            key="delete"
+            style={{ color: '#ff4d4f' }}
+            onClick={() => {
+              showDeleteConfirm([record.id]);
+            }}
+          >
+            <DeleteOutlined /> 删除
           </a>
         </>
       ),
