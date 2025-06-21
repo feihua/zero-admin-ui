@@ -225,6 +225,19 @@
         path: '/pms/productSpecValue/list',
         component: './pms/ProductSpecValue',
       },
+      {
+        name: '商品spu',
+        icon: 'table',
+        path: '/pms/productSpu/list',
+        component: './pms/ProductSpu',
+      },
+
+      {
+        name: '商品sku',
+        icon: 'table',
+        path: '/pms/productSku/list',
+        component: './pms/ProductSku',
+      },
     ],
   },
   {

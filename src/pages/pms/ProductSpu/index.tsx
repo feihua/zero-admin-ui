@@ -10,6 +10,7 @@ import AddModal from './components/AddModal';
 import UpdateModal from './components/UpdateModal';
 import type { ProductSpuListItem} from './data.d';
 import {addProductSpu, queryProductSpuList, removeProductSpu, updateProductSpu, updateProductSpuStatus} from './service';
+import SkuModal from '@/pages/pms/ProductSpu/components/SkuModal';
 
 const {confirm} = Modal;
 
@@ -94,7 +95,7 @@ const ProductSpuList: React.FC = () => {
   const [showDetail, setShowDetail] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<ProductSpuListItem>();
-
+  const [skuVisible, handleSkuVisible] = useState<boolean>(false);
   const showDeleteConfirm = (ids: number[]) => {
     confirm({
       title: '是否删除记录?',
@@ -498,7 +499,26 @@ const ProductSpuList: React.FC = () => {
       hideInSearch: true,
       hideInTable: true,
     },
+    {
+      title: '设置',
+      dataIndex: 'option',
+      valueType: 'option',
+      render: (_, record) => (
+        <>
+          <a
+            key="sort"
+            onClick={() => {
+              handleSkuVisible(true);
+              setCurrentRow(record);
+            }
+            }
+          >
+            <EditOutlined/> 规格
+          </a>
 
+        </>
+      ),
+    },
     {
       title: '操作',
       dataIndex: 'option',
@@ -626,7 +646,17 @@ return (
         updateVisible={updateVisible}
         currentData={currentRow || {} }
       />
-
+      <SkuModal
+        key={'SkuModal'}
+        onCancel={() => {
+          handleSkuVisible(false);
+          if (!showDetail) {
+            setCurrentRow(undefined);
+          }
+        }}
+        modalVisible={skuVisible}
+        spuId={currentRow?.id || 0 }
+      />
       <Drawer
         width={600}
         open={showDetail}

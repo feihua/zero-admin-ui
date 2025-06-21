@@ -1,7 +1,6 @@
 import {DeleteOutlined, EditOutlined, ExclamationCircleOutlined, PlusOutlined} from '@ant-design/icons';
 import {Button, Divider, Drawer, message, Modal, Select, Space, Switch} from 'antd';
 import React, {useRef, useState} from 'react';
-import {PageContainer} from '@ant-design/pro-layout';
 import type {ActionType, ProColumns} from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
 import type {ProDescriptionsItemProps} from '@ant-design/pro-descriptions';
@@ -88,7 +87,10 @@ const handleStatus = async (ids: number[], status: number) => {
   }
 };
 
-const ProductSkuList: React.FC = () => {
+export interface SignProps {
+  spuId: number;
+}
+const ProductSkuList: React.FC<SignProps> = (props) => {
   const [addVisible, handleAddVisible] = useState<boolean>(false);
   const [updateVisible, handleUpdateVisible] = useState<boolean>(false);
   const [showDetail, setShowDetail] = useState<boolean>(false);
@@ -125,9 +127,8 @@ const ProductSkuList: React.FC = () => {
   };
 
   const columns: ProColumns<ProductSkuListItem>[] = [
-    
     {
-      title: '商品SpuId',
+      title: '编号',
       dataIndex: 'id',
       hideInSearch: true,
     },
@@ -135,18 +136,25 @@ const ProductSkuList: React.FC = () => {
       title: '商品SpuId',
       dataIndex: 'spuId',
       hideInSearch: true,
+      hideInTable: true,
     },
     {
       title: 'SKU名称',
       dataIndex: 'name',
       render: (dom, entity) => {
-          return <a onClick={() => {
-            setCurrentRow(entity);
-            setShowDetail(true);
-          }}>{dom}</a>;
-        },
+        return (
+          <a
+            onClick={() => {
+              setCurrentRow(entity);
+              setShowDetail(true);
+            }}
+          >
+            {dom}
+          </a>
+        );
+      },
     },
-    
+
     {
       title: 'SKU编码',
       dataIndex: 'skuCode',
@@ -156,11 +164,14 @@ const ProductSkuList: React.FC = () => {
       title: '主图',
       dataIndex: 'mainPic',
       hideInSearch: true,
+      valueType: 'image',
+      fieldProps: { width: 100, height: 80 },
     },
     {
       title: '图片集',
       dataIndex: 'albumPics',
       hideInSearch: true,
+      hideInTable: true,
     },
     {
       title: '价格',
@@ -173,14 +184,12 @@ const ProductSkuList: React.FC = () => {
       hideInSearch: true,
     },
     {
-      title: '促销开始时间',
+      title: '促销时间',
       dataIndex: 'promotionStartTime',
       hideInSearch: true,
-    },
-    {
-      title: '促销结束时间',
-      dataIndex: 'promotionEndTime',
-      hideInSearch: true,
+      render: (dom, entity) => {
+        return <>{entity.promotionStartTime}至{entity.promotionEndTime}</>;
+      },
     },
     {
       title: '库存',
@@ -203,46 +212,55 @@ const ProductSkuList: React.FC = () => {
       hideInSearch: true,
     },
     {
-      title: '上架状态：0-下架，1-上架',
+      title: '上架状态',
       dataIndex: 'publishStatus',
       renderFormItem: (text, row, index) => {
-          return <Select
+        return (
+          <Select
             value={row.value}
-            options={ [
-              {value: '1', label: '正常'},
-              {value: '0', label: '禁用'},
+            options={[
+              { value: 0, label: '下架' },
+              { value: 1, label: '上架' },
             ]}
           />
-
-    },
-    render: (dom, entity) => {
-      return (
-        <Switch checked={entity.publishStatus == 1} onChange={(flag) => {
-          showStatusConfirm( [entity.id], flag ? 1 : 0)
-        }}/>
-      );
-    },
+        );
+      },
+      render: (dom, entity) => {
+        return (
+          <Switch
+            checked={entity.publishStatus == 1}
+            onChange={(flag) => {
+              showStatusConfirm([entity.id], flag ? 1 : 0);
+            }}
+          />
+        );
+      },
     },
     {
-      title: '审核状态：0-未审核，1-审核通过，2-审核不通过',
+      title: '审核状态',
       dataIndex: 'verifyStatus',
       renderFormItem: (text, row, index) => {
-          return <Select
+        return (
+          <Select
             value={row.value}
-            options={ [
-              {value: '1', label: '正常'},
-              {value: '0', label: '禁用'},
+            options={[
+              { value: 0, label: '未审核' },
+              { value: 1, label: '审核通过' },
+              { value: 2, label: '审核不通过' },
             ]}
           />
-
-    },
-    render: (dom, entity) => {
-      return (
-        <Switch checked={entity.verifyStatus == 1} onChange={(flag) => {
-          showStatusConfirm( [entity.id], flag ? 1 : 0)
-        }}/>
-      );
-    },
+        );
+      },
+      render: (dom, entity) => {
+        return (
+          <Switch
+            checked={entity.verifyStatus == 1}
+            onChange={(flag) => {
+              showStatusConfirm([entity.id], flag ? 1 : 0);
+            }}
+          />
+        );
+      },
     },
     {
       title: '排序',
@@ -258,26 +276,25 @@ const ProductSkuList: React.FC = () => {
       title: '创建人ID',
       dataIndex: 'createBy',
       hideInSearch: true,
+      hideInTable: true,
     },
     {
       title: '创建时间',
       dataIndex: 'createTime',
       hideInSearch: true,
+      hideInTable: true,
     },
     {
       title: '更新人ID',
       dataIndex: 'updateBy',
       hideInSearch: true,
+      hideInTable: true,
     },
     {
       title: '更新时间',
       dataIndex: 'updateTime',
       hideInSearch: true,
-    },
-    {
-      title: '是否删除',
-      dataIndex: 'isDeleted',
-      hideInSearch: true,
+      hideInTable: true,
     },
 
     {
@@ -292,20 +309,19 @@ const ProductSkuList: React.FC = () => {
             onClick={() => {
               handleUpdateVisible(true);
               setCurrentRow(record);
-              }
-            }
-          >
-            <EditOutlined/> 编辑
-          </a>
-          <Divider type="vertical"/>
-          <a
-            key="delete"
-            style={ {color: '#ff4d4f'} }
-            onClick={() => {
-              showDeleteConfirm( [record.id]);
             }}
           >
-            <DeleteOutlined/> 删除
+            <EditOutlined /> 编辑
+          </a>
+          <Divider type="vertical" />
+          <a
+            key="delete"
+            style={{ color: '#ff4d4f' }}
+            onClick={() => {
+              showDeleteConfirm([record.id]);
+            }}
+          >
+            <DeleteOutlined /> 删除
           </a>
         </>
       ),
@@ -313,7 +329,7 @@ const ProductSkuList: React.FC = () => {
   ];
 
 return (
-    <PageContainer>
+    <>
       <ProTable<ProductSkuListItem>
         headerTitle="商品SKU管理"
         actionRef={actionRef}
@@ -326,7 +342,23 @@ return (
             <PlusOutlined/> 新增
           </Button>,
         ]}
-        request={queryProductSkuList}
+        request={async (params) => {
+          return queryProductSkuList({
+            ...params,
+            spuId: props.spuId,
+          }).then((res) => {
+            if (res.code === '000000') {
+              return {
+                data: res.data,
+                total: res.total,
+                pageSize: res.pageSize,
+                current: res.current,
+              };
+            } else {
+              return message.error(res.msg);
+            }
+          });
+        }}
         columns={columns}
         rowSelection={ {} }
         pagination={ {pageSize: 10}}
@@ -432,7 +464,7 @@ return (
           />
         )}
       </Drawer>
-    </PageContainer>
+    </>
   );
 };
 
