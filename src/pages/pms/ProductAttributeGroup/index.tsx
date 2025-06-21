@@ -10,6 +10,7 @@ import AddModal from './components/AddModal';
 import UpdateModal from './components/UpdateModal';
 import type { ProductAttributeGroupListItem} from './data.d';
 import {addProductAttributeGroup, queryProductAttributeGroupList, removeProductAttributeGroup, updateProductAttributeGroup, updateProductAttributeGroupStatus} from './service';
+import AttributeModal from '@/pages/pms/ProductAttributeGroup/components/AttributeModal';
 
 const {confirm} = Modal;
 
@@ -94,6 +95,7 @@ const ProductAttributeGroupList: React.FC = () => {
   const [showDetail, setShowDetail] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<ProductAttributeGroupListItem>();
+  const [attributeVisible, handleAttributeVisible] = useState<boolean>(false);
 
   const showDeleteConfirm = (ids: number[]) => {
     confirm({
@@ -196,7 +198,26 @@ const ProductAttributeGroupList: React.FC = () => {
       dataIndex: 'updateTime',
       hideInSearch: true,
     },
+    {
+      title: '设置',
+      dataIndex: 'option',
+      valueType: 'option',
+      render: (_, record) => (
+        <>
+          <a
+            key="sort"
+            onClick={() => {
+              handleAttributeVisible(true);
+              setCurrentRow(record);
+            }
+            }
+          >
+            <EditOutlined/> 设置属性
+          </a>
 
+        </>
+      ),
+    },
     {
       title: '操作',
       dataIndex: 'option',
@@ -324,6 +345,19 @@ return (
         }}
         updateVisible={updateVisible}
         currentData={currentRow || {} }
+      />
+
+
+      <AttributeModal
+        key={'AttributeModal'}
+        onCancel={() => {
+          handleAttributeVisible(false);
+          if (!showDetail) {
+            setCurrentRow(undefined);
+          }
+        }}
+        modalVisible={attributeVisible}
+        groupId={currentRow?.id || 0 }
       />
 
       <Drawer

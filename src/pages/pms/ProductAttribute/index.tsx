@@ -1,17 +1,27 @@
-import {DeleteOutlined, EditOutlined, ExclamationCircleOutlined, PlusOutlined} from '@ant-design/icons';
-import {Button, Divider, Drawer, message, Modal, Select, Space, Switch, Tag} from 'antd';
-import React, {useRef, useState} from 'react';
-import {PageContainer} from '@ant-design/pro-layout';
-import type {ActionType, ProColumns} from '@ant-design/pro-table';
+import {
+  DeleteOutlined,
+  EditOutlined,
+  ExclamationCircleOutlined,
+  PlusOutlined,
+} from '@ant-design/icons';
+import { Button, Divider, Drawer, message, Modal, Select, Space, Switch, Tag } from 'antd';
+import React, { useRef, useState } from 'react';
+import type { ActionType, ProColumns } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
-import type {ProDescriptionsItemProps} from '@ant-design/pro-descriptions';
+import type { ProDescriptionsItemProps } from '@ant-design/pro-descriptions';
 import ProDescriptions from '@ant-design/pro-descriptions';
 import AddModal from './components/AddModal';
 import UpdateModal from './components/UpdateModal';
-import type { ProductAttributeListItem} from './data.d';
-import {addProductAttribute, queryProductAttributeList, removeProductAttribute, updateProductAttribute, updateProductAttributeStatus} from './service';
+import type { ProductAttributeListItem } from './data.d';
+import {
+  addProductAttribute,
+  queryProductAttributeList,
+  removeProductAttribute,
+  updateProductAttribute,
+  updateProductAttributeStatus,
+} from './service';
 
-const {confirm} = Modal;
+const { confirm } = Modal;
 
 /**
  * 添加商品属性
@@ -20,7 +30,7 @@ const {confirm} = Modal;
 const handleAdd = async (fields: ProductAttributeListItem) => {
   const hide = message.loading('正在添加');
   try {
-    await addProductAttribute({...fields});
+    await addProductAttribute({ ...fields });
     hide();
     message.success('添加成功');
     return true;
@@ -78,7 +88,7 @@ const handleStatus = async (ids: number[], status: number) => {
     return true;
   }
   try {
-    await updateProductAttributeStatus({ ids: ids, status: status});
+    await updateProductAttributeStatus({ ids: ids, status: status });
     hide();
     message.success('更新状态成功');
     return true;
@@ -88,7 +98,11 @@ const handleStatus = async (ids: number[], status: number) => {
   }
 };
 
-const ProductAttributeList: React.FC = () => {
+export interface SignProps {
+  groupId: number;
+}
+
+const ProductAttributeList: React.FC<SignProps> = (props) => {
   const [addVisible, handleAddVisible] = useState<boolean>(false);
   const [updateVisible, handleUpdateVisible] = useState<boolean>(false);
   const [showDetail, setShowDetail] = useState<boolean>(false);
@@ -98,34 +112,31 @@ const ProductAttributeList: React.FC = () => {
   const showDeleteConfirm = (ids: number[]) => {
     confirm({
       title: '是否删除记录?',
-      icon: <ExclamationCircleOutlined/>,
+      icon: <ExclamationCircleOutlined />,
       content: '删除的记录不能恢复,请确认!',
       onOk() {
         handleRemove(ids).then(() => {
           actionRef.current?.reloadAndRest?.();
         });
       },
-      onCancel() {
-      },
+      onCancel() {},
     });
   };
 
   const showStatusConfirm = (ids: number[], status: number) => {
     confirm({
-      title: `确定${status == 1 ? "启用" : "禁用"}吗？`,
-      icon: <ExclamationCircleOutlined/>,
+      title: `确定${status == 1 ? '启用' : '禁用'}吗？`,
+      icon: <ExclamationCircleOutlined />,
       async onOk() {
-        await handleStatus(ids, status)
+        await handleStatus(ids, status);
         actionRef.current?.clearSelected?.();
         actionRef.current?.reload?.();
       },
-      onCancel() {
-      },
+      onCancel() {},
     });
   };
 
   const columns: ProColumns<ProductAttributeListItem>[] = [
-
     {
       title: '主键id',
       dataIndex: 'id',
@@ -140,28 +151,35 @@ const ProductAttributeList: React.FC = () => {
       title: '属性名称',
       dataIndex: 'name',
       render: (dom, entity) => {
-          return <a onClick={() => {
-            setCurrentRow(entity);
-            setShowDetail(true);
-          }}>{dom}</a>;
-        },
+        return (
+          <a
+            onClick={() => {
+              setCurrentRow(entity);
+              setShowDetail(true);
+            }}
+          >
+            {dom}
+          </a>
+        );
+      },
     },
 
     {
       title: '输入类型',
       dataIndex: 'inputType',
       renderFormItem: (text, row, index) => {
-          return <Select
+        return (
+          <Select
             value={row.value}
-            options={ [
-              {value: 1, label: '手动输入'},
-              {value: 2, label: '单选'},
-              {value: 3, label: '多选'},
+            options={[
+              { value: 1, label: '手动输入' },
+              { value: 2, label: '单选' },
+              { value: 3, label: '多选' },
             ]}
           />
-
-    },
-    render: (dom, entity) => {
+        );
+      },
+      render: (dom, entity) => {
         switch (entity.inputType) {
           case 1:
             return <Tag color={'success'}>手动输入</Tag>;
@@ -178,17 +196,18 @@ const ProductAttributeList: React.FC = () => {
       title: '值类型',
       dataIndex: 'valueType',
       renderFormItem: (text, row, index) => {
-          return <Select
+        return (
+          <Select
             value={row.value}
-            options={ [
-              {value: 1, label: '文本'},
-              {value: 2, label: '数字'},
-              {value: 3, label: '日期'},
+            options={[
+              { value: 1, label: '文本' },
+              { value: 2, label: '数字' },
+              { value: 3, label: '日期' },
             ]}
           />
-
-    },
-    render: (dom, entity) => {
+        );
+      },
+      render: (dom, entity) => {
         switch (entity.valueType) {
           case 1:
             return <Tag color={'success'}>文本</Tag>;
@@ -235,22 +254,26 @@ const ProductAttributeList: React.FC = () => {
       title: '状态',
       dataIndex: 'status',
       renderFormItem: (text, row, index) => {
-          return <Select
+        return (
+          <Select
             value={row.value}
-            options={ [
-              {value: 1, label: '正常'},
-              {value: 0, label: '禁用'},
+            options={[
+              { value: 1, label: '正常' },
+              { value: 0, label: '禁用' },
             ]}
           />
-
-    },
-    render: (dom, entity) => {
-      return (
-        <Switch checked={entity.status == 1} onChange={(flag) => {
-          showStatusConfirm( [entity.id], flag ? 1 : 0)
-        }}/>
-      );
-    },
+        );
+      },
+      render: (dom, entity) => {
+        return (
+          <Switch
+            checked={entity.status == 1}
+            onChange={(flag) => {
+              showStatusConfirm([entity.id], flag ? 1 : 0);
+            }}
+          />
+        );
+      },
     },
 
     {
@@ -289,79 +312,96 @@ const ProductAttributeList: React.FC = () => {
             onClick={() => {
               handleUpdateVisible(true);
               setCurrentRow(record);
-              }
-            }
-          >
-            <EditOutlined/> 编辑
-          </a>
-          <Divider type="vertical"/>
-          <a
-            key="delete"
-            style={ {color: '#ff4d4f'} }
-            onClick={() => {
-              showDeleteConfirm( [record.id]);
             }}
           >
-            <DeleteOutlined/> 删除
+            <EditOutlined /> 编辑
+          </a>
+          <Divider type="vertical" />
+          <a
+            key="delete"
+            style={{ color: '#ff4d4f' }}
+            onClick={() => {
+              showDeleteConfirm([record.id]);
+            }}
+          >
+            <DeleteOutlined /> 删除
           </a>
         </>
       ),
     },
   ];
 
-return (
-    <PageContainer>
+  return (
+    <>
       <ProTable<ProductAttributeListItem>
         headerTitle="商品属性管理"
         actionRef={actionRef}
         rowKey="id"
-        search={ {
+        search={{
           labelWidth: 120,
-        } }
+        }}
         toolBarRender={() => [
           <Button type="primary" key="primary" onClick={() => handleAddVisible(true)}>
-            <PlusOutlined/> 新增
+            <PlusOutlined /> 新增
           </Button>,
         ]}
-        request={queryProductAttributeList}
+        request={async (params) => {
+          return queryProductAttributeList({
+            ...params,
+            groupId: props.groupId,
+          }).then((res) => {
+            if (res.code === '000000') {
+              return {
+                data: res.data,
+                total: res.total,
+                pageSize: res.pageSize,
+                current: res.current,
+              };
+            } else {
+              return message.error(res.msg);
+            }
+          });
+        }}
         columns={columns}
-        rowSelection={ {} }
-        pagination={ {pageSize: 10}}
-        tableAlertRender={ ({
-                             selectedRowKeys,
-                             selectedRows,
-                           }) => {
+        rowSelection={{}}
+        pagination={{ pageSize: 10 }}
+        tableAlertRender={({ selectedRowKeys, selectedRows }) => {
           const ids = selectedRows.map((row) => row.id);
           return (
             <Space size={16}>
               <span>已选 {selectedRowKeys.length} 项</span>
               <Button
-                icon={<EditOutlined/>}
-                style={ {borderRadius: '5px'}}
+                icon={<EditOutlined />}
+                style={{ borderRadius: '5px' }}
                 onClick={async () => {
-                  showStatusConfirm(ids, 1)
+                  showStatusConfirm(ids, 1);
                 }}
-              >批量启用</Button>
+              >
+                批量启用
+              </Button>
               <Button
-                icon={<EditOutlined/>}
-                style={ {borderRadius: '5px'} }
+                icon={<EditOutlined />}
+                style={{ borderRadius: '5px' }}
                 onClick={async () => {
-                  showStatusConfirm(ids, 0)
+                  showStatusConfirm(ids, 0);
                 }}
-              >批量禁用</Button>
+              >
+                批量禁用
+              </Button>
               <Button
-                icon={<DeleteOutlined/>}
+                icon={<DeleteOutlined />}
                 danger
-                style={ {borderRadius: '5px'} }
+                style={{ borderRadius: '5px' }}
                 onClick={async () => {
                   showDeleteConfirm(ids);
                 }}
-              >批量删除</Button>
+              >
+                批量删除
+              </Button>
             </Space>
           );
         }}
       />
-
 
       <AddModal
         key={'AddModal'}
@@ -403,7 +443,7 @@ return (
           }
         }}
         updateVisible={updateVisible}
-        currentData={currentRow || {} }
+        currentData={currentRow || {}}
       />
 
       <Drawer
@@ -411,25 +451,25 @@ return (
         open={showDetail}
         onClose={() => {
           setCurrentRow(undefined);
-          setShowDetail(false)
+          setShowDetail(false);
         }}
         closable={false}
       >
         {currentRow?.id && (
           <ProDescriptions<ProductAttributeListItem>
             column={2}
-            title={"商品属性详情"}
+            title={'商品属性详情'}
             request={async () => ({
               data: currentRow || {},
             })}
-            params={ {
+            params={{
               id: currentRow?.id,
             }}
             columns={columns as ProDescriptionsItemProps<ProductAttributeListItem>[]}
           />
         )}
       </Drawer>
-    </PageContainer>
+    </>
   );
 };
 

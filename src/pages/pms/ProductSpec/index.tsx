@@ -1,17 +1,29 @@
-import {DeleteOutlined, EditOutlined, ExclamationCircleOutlined, PlusOutlined} from '@ant-design/icons';
-import {Button, Divider, Drawer, message, Modal, Select, Space, Switch} from 'antd';
-import React, {useRef, useState} from 'react';
-import {PageContainer} from '@ant-design/pro-layout';
-import type {ActionType, ProColumns} from '@ant-design/pro-table';
+import {
+  DeleteOutlined,
+  EditOutlined,
+  ExclamationCircleOutlined,
+  PlusOutlined,
+} from '@ant-design/icons';
+import { Button, Divider, Drawer, message, Modal, Select, Space, Switch } from 'antd';
+import React, { useRef, useState } from 'react';
+import { PageContainer } from '@ant-design/pro-layout';
+import type { ActionType, ProColumns } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
-import type {ProDescriptionsItemProps} from '@ant-design/pro-descriptions';
+import type { ProDescriptionsItemProps } from '@ant-design/pro-descriptions';
 import ProDescriptions from '@ant-design/pro-descriptions';
 import AddModal from './components/AddModal';
 import UpdateModal from './components/UpdateModal';
-import type { ProductSpecListItem} from './data.d';
-import {addProductSpec, queryProductSpecList, removeProductSpec, updateProductSpec, updateProductSpecStatus} from './service';
+import type { ProductSpecListItem } from './data.d';
+import {
+  addProductSpec,
+  queryProductSpecList,
+  removeProductSpec,
+  updateProductSpec,
+  updateProductSpecStatus,
+} from './service';
+import SpecValueModal from '@/pages/pms/ProductSpec/components/SpecValueModal';
 
-const {confirm} = Modal;
+const { confirm } = Modal;
 
 /**
  * 添加商品规格
@@ -20,7 +32,7 @@ const {confirm} = Modal;
 const handleAdd = async (fields: ProductSpecListItem) => {
   const hide = message.loading('正在添加');
   try {
-    await addProductSpec({...fields});
+    await addProductSpec({ ...fields });
     hide();
     message.success('添加成功');
     return true;
@@ -78,7 +90,7 @@ const handleStatus = async (ids: number[], status: number) => {
     return true;
   }
   try {
-    await updateProductSpecStatus({ ids: ids, status: status});
+    await updateProductSpecStatus({ ids: ids, status: status });
     hide();
     message.success('更新状态成功');
     return true;
@@ -94,38 +106,35 @@ const ProductSpecList: React.FC = () => {
   const [showDetail, setShowDetail] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<ProductSpecListItem>();
-
+  const [specVisible, handleSpecVisible] = useState<boolean>(false);
   const showDeleteConfirm = (ids: number[]) => {
     confirm({
       title: '是否删除记录?',
-      icon: <ExclamationCircleOutlined/>,
+      icon: <ExclamationCircleOutlined />,
       content: '删除的记录不能恢复,请确认!',
       onOk() {
         handleRemove(ids).then(() => {
           actionRef.current?.reloadAndRest?.();
         });
       },
-      onCancel() {
-      },
+      onCancel() {},
     });
   };
 
   const showStatusConfirm = (ids: number[], status: number) => {
     confirm({
-      title: `确定${status == 1 ? "启用" : "禁用"}吗？`,
-      icon: <ExclamationCircleOutlined/>,
+      title: `确定${status == 1 ? '启用' : '禁用'}吗？`,
+      icon: <ExclamationCircleOutlined />,
       async onOk() {
-        await handleStatus(ids, status)
+        await handleStatus(ids, status);
         actionRef.current?.clearSelected?.();
         actionRef.current?.reload?.();
       },
-      onCancel() {
-      },
+      onCancel() {},
     });
   };
 
   const columns: ProColumns<ProductSpecListItem>[] = [
-
     {
       title: '',
       dataIndex: 'id',
@@ -140,11 +149,17 @@ const ProductSpecList: React.FC = () => {
       title: '规格名称',
       dataIndex: 'name',
       render: (dom, entity) => {
-          return <a onClick={() => {
-            setCurrentRow(entity);
-            setShowDetail(true);
-          }}>{dom}</a>;
-        },
+        return (
+          <a
+            onClick={() => {
+              setCurrentRow(entity);
+              setShowDetail(true);
+            }}
+          >
+            {dom}
+          </a>
+        );
+      },
     },
 
     {
@@ -156,22 +171,26 @@ const ProductSpecList: React.FC = () => {
       title: '状态',
       dataIndex: 'status',
       renderFormItem: (text, row, index) => {
-          return <Select
+        return (
+          <Select
             value={row.value}
-            options={ [
-              {value: 1, label: '正常'},
-              {value: 0, label: '禁用'},
+            options={[
+              { value: 1, label: '正常' },
+              { value: 0, label: '禁用' },
             ]}
           />
-
-    },
-    render: (dom, entity) => {
-      return (
-        <Switch checked={entity.status == 1} onChange={(flag) => {
-          showStatusConfirm( [entity.id], flag ? 1 : 0)
-        }}/>
-      );
-    },
+        );
+      },
+      render: (dom, entity) => {
+        return (
+          <Switch
+            checked={entity.status == 1}
+            onChange={(flag) => {
+              showStatusConfirm([entity.id], flag ? 1 : 0);
+            }}
+          />
+        );
+      },
     },
 
     {
@@ -196,7 +215,24 @@ const ProductSpecList: React.FC = () => {
       dataIndex: 'updateTime',
       hideInSearch: true,
     },
-
+    {
+      title: '设置',
+      dataIndex: 'option',
+      valueType: 'option',
+      render: (_, record) => (
+        <>
+          <a
+            key="sort"
+            onClick={() => {
+              handleSpecVisible(true);
+              setCurrentRow(record);
+            }}
+          >
+            <EditOutlined /> 设置规格值
+          </a>
+        </>
+      ),
+    },
     {
       title: '操作',
       dataIndex: 'option',
@@ -209,79 +245,80 @@ const ProductSpecList: React.FC = () => {
             onClick={() => {
               handleUpdateVisible(true);
               setCurrentRow(record);
-              }
-            }
-          >
-            <EditOutlined/> 编辑
-          </a>
-          <Divider type="vertical"/>
-          <a
-            key="delete"
-            style={ {color: '#ff4d4f'} }
-            onClick={() => {
-              showDeleteConfirm( [record.id]);
             }}
           >
-            <DeleteOutlined/> 删除
+            <EditOutlined /> 编辑
+          </a>
+          <Divider type="vertical" />
+          <a
+            key="delete"
+            style={{ color: '#ff4d4f' }}
+            onClick={() => {
+              showDeleteConfirm([record.id]);
+            }}
+          >
+            <DeleteOutlined /> 删除
           </a>
         </>
       ),
     },
   ];
 
-return (
+  return (
     <PageContainer>
       <ProTable<ProductSpecListItem>
         headerTitle="商品规格管理"
         actionRef={actionRef}
         rowKey="id"
-        search={ {
+        search={{
           labelWidth: 120,
-        } }
+        }}
         toolBarRender={() => [
           <Button type="primary" key="primary" onClick={() => handleAddVisible(true)}>
-            <PlusOutlined/> 新增
+            <PlusOutlined /> 新增
           </Button>,
         ]}
         request={queryProductSpecList}
         columns={columns}
-        rowSelection={ {} }
-        pagination={ {pageSize: 10}}
-        tableAlertRender={ ({
-                             selectedRowKeys,
-                             selectedRows,
-                           }) => {
+        rowSelection={{}}
+        pagination={{ pageSize: 10 }}
+        tableAlertRender={({ selectedRowKeys, selectedRows }) => {
           const ids = selectedRows.map((row) => row.id);
           return (
             <Space size={16}>
               <span>已选 {selectedRowKeys.length} 项</span>
               <Button
-                icon={<EditOutlined/>}
-                style={ {borderRadius: '5px'}}
+                icon={<EditOutlined />}
+                style={{ borderRadius: '5px' }}
                 onClick={async () => {
-                  showStatusConfirm(ids, 1)
+                  showStatusConfirm(ids, 1);
                 }}
-              >批量启用</Button>
+              >
+                批量启用
+              </Button>
               <Button
-                icon={<EditOutlined/>}
-                style={ {borderRadius: '5px'} }
+                icon={<EditOutlined />}
+                style={{ borderRadius: '5px' }}
                 onClick={async () => {
-                  showStatusConfirm(ids, 0)
+                  showStatusConfirm(ids, 0);
                 }}
-              >批量禁用</Button>
+              >
+                批量禁用
+              </Button>
               <Button
-                icon={<DeleteOutlined/>}
+                icon={<DeleteOutlined />}
                 danger
-                style={ {borderRadius: '5px'} }
+                style={{ borderRadius: '5px' }}
                 onClick={async () => {
                   showDeleteConfirm(ids);
                 }}
-              >批量删除</Button>
+              >
+                批量删除
+              </Button>
             </Space>
           );
         }}
       />
-
 
       <AddModal
         key={'AddModal'}
@@ -323,26 +360,36 @@ return (
           }
         }}
         updateVisible={updateVisible}
-        currentData={currentRow || {} }
+        currentData={currentRow || {}}
       />
-
+      <SpecValueModal
+        key={'AttributeModal'}
+        onCancel={() => {
+          handleSpecVisible(false);
+          if (!showDetail) {
+            setCurrentRow(undefined);
+          }
+        }}
+        modalVisible={specVisible}
+        specId={currentRow?.id || 0}
+      />
       <Drawer
         width={600}
         open={showDetail}
         onClose={() => {
           setCurrentRow(undefined);
-          setShowDetail(false)
+          setShowDetail(false);
         }}
         closable={false}
       >
         {currentRow?.id && (
           <ProDescriptions<ProductSpecListItem>
             column={2}
-            title={"商品规格详情"}
+            title={'商品规格详情'}
             request={async () => ({
               data: currentRow || {},
             })}
-            params={ {
+            params={{
               id: currentRow?.id,
             }}
             columns={columns as ProDescriptionsItemProps<ProductSpecListItem>[]}
