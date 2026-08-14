@@ -122,9 +122,9 @@ export const layout: RunTimeLayoutConfig = ({initialState, setInitialState}) => 
 };
 
 const menuDataRender: any = () => {
-  let item = localStorage.getItem('menuTree') + '';
+  const item = localStorage.getItem('menuTree') + '';
 
-  return loopMenuItem(tree(JSON.parse(item), 0, 'parentId'));
+  return loopMenuItem(tree(JSON.parse(item), 1, 'parentId'));
 
   // return tree(JSON.parse(item), 0, "parent_id");
 };
