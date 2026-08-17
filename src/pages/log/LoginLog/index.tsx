@@ -60,7 +60,6 @@ const LoginLogList: React.FC = () => {
     {
       title: '登录地址',
       dataIndex: 'ipAddr',
-      hideInSearch: true,
     },
     {
       title: '其它信息',
@@ -75,8 +74,8 @@ const LoginLogList: React.FC = () => {
           placeholder={'请选择登录状态'}
           value={row.value}
           options={[
-            {value: 'success', label: '成功'},
-            {value: 'error', label: '失败'},
+            {value: '1', label: '成功'},
+            {value: '0', label: '失败'},
           ]}
         />
 
