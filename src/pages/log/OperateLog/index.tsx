@@ -49,7 +49,6 @@ const SysLogList: React.FC = () => {
     });
   };
 
-
   const columns: ProColumns<SysLogListItem>[] = [
     {
       title: '编号',
@@ -68,95 +67,35 @@ const SysLogList: React.FC = () => {
 
       hideInSearch: true
     },
-
     {
-      title: '操作类型',
-      dataIndex: 'operationType',
-      hideInTable: true,
-      hideInSearch: true
+      title: '操作人员',
+      dataIndex: 'operateName',
     },
     {
-      title: '浏览器',
-      dataIndex: 'browser',
-      renderFormItem: (text, row, index) => {
-        return <Select
-          value={row.value}
-          placeholder={'请选择浏览器'}
-          options={[
-            {value: 'Chrome', label: 'Chrome'},
-            {value: 'Firefox', label: 'Firefox'},
-            {value: 'Edge', label: 'Edge'},
-          ]}
-        />
-
-      },
-    },
-    {
-      title: '操作系统',
-      dataIndex: 'os',
-      renderFormItem: (text, row, index) => {
-        return <Select
-          value={row.value}
-          placeholder={'请选择操作系统'}
-          options={[
-            {value: 'Windows', label: 'Windows'},
-            {value: 'macos', label: 'macos'},
-            {value: 'iphone', label: 'iphone'},
-            {value: 'android', label: 'android'},
-          ]}
-        />
-
-      },
-    },
-    {
-      title: '请求方式',
-      dataIndex: 'requestMethod',
-      renderFormItem: (text, row, index) => {
-        return <Select
-          placeholder={'请选择请求方式'}
-          value={row.value}
-          options={[
-            {value: 'POST', label: 'POST'},
-            {value: 'GET', label: 'GET'},
-            {value: 'DELETE', label: 'DELETE'},
-            {value: 'PUT', label: 'PUT'},
-          ]}
-        />
-
-      },
+      title: '操作地址',
+      dataIndex: 'operateIp',
     },
     {
       title: '操作方法',
-      dataIndex: 'operationUrl',
-      hideInTable: true,
+      dataIndex: 'operateUrl',
     },
     {
       title: '请求参数',
-      dataIndex: 'operationParams',
+      dataIndex: 'operateParam',
       hideInTable: true,
       hideInSearch: true
     },
     {
       title: '响应参数',
-      dataIndex: 'operationResponse',
+      dataIndex: 'jsonResult',
       hideInTable: true,
       hideInSearch: true
     },
-    {
-      title: '操作人员',
-      dataIndex: 'operationName',
-    },
-    {
-      title: '部门名称',
-      dataIndex: 'deptName',
-    },
-    {
-      title: '操作地址',
-      dataIndex: 'operationIp',
-    },
+
+
     {
       title: '操作状态',
-      dataIndex: 'operationStatus',
+      dataIndex: 'status',
       renderFormItem: (text, row, index) => {
         return <Select
           placeholder={'请选择登录状态'}
@@ -169,24 +108,24 @@ const SysLogList: React.FC = () => {
 
       },
       render: (dom, entity) => {
-        switch (entity.operationStatus) {
+        switch (entity.status) {
           case 1:
             return <Tag color={'success'}>成功</Tag>;
           case 0:
             return <Tag  color={'error'}>失败</Tag>;
         }
-        return <>未知{entity.operationStatus }</>;
+        return <>未知{entity.status }</>;
       },
     },
     {
       title: '执行时间(毫秒)',
-      dataIndex: 'useTime',
+      dataIndex: 'costTime',
       hideInSearch: true
     },
 
     {
       title: '操作时间',
-      dataIndex: 'operationTime',
+      dataIndex: 'operateTime',
       sorter: true,
       valueType: 'dateTime',
       hideInSearch: true
@@ -267,15 +206,15 @@ const SysLogList: React.FC = () => {
       >
         <div>
           <Paragraph>请求方法:</Paragraph>
-          <Paragraph copyable>{currentRow?.operationUrl}</Paragraph>
+          <Paragraph copyable>{currentRow?.operateUrl}</Paragraph>
         </div>
         <div>
           <Paragraph>请求参数:</Paragraph>
-          <Paragraph copyable>{currentRow?.operationParams}</Paragraph>
+          <Paragraph copyable>{currentRow?.operateParam}</Paragraph>
         </div>
         <div>
           <Paragraph>响应参数:</Paragraph>
-          <Paragraph copyable>{currentRow?.operationResponse}</Paragraph>
+          <Paragraph copyable>{currentRow?.jsonResult}</Paragraph>
         </div>
       </Drawer>
     </PageContainer>

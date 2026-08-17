@@ -1,9 +1,9 @@
 export interface SysLogListItem {
   id: number;
-  operationStatus: number;
-  operationParams: string;
-  operationResponse: string;
-  operationUrl: string;
+  status: number;
+  operateParam: string;
+  jsonResult: string;
+  operateUrl: string;
 
 }
 

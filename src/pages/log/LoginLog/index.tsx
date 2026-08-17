@@ -55,49 +55,21 @@ const LoginLogList: React.FC = () => {
     },
     {
       title: '用户名称',
-      dataIndex: 'userName',
+      dataIndex: 'loginName',
     },
     {
       title: '登录地址',
-      dataIndex: 'ipAddress',
+      dataIndex: 'ipAddr',
       hideInSearch: true,
     },
     {
-      title: '浏览器',
-      dataIndex: 'browser',
-      renderFormItem: (text, row, index) => {
-        return <Select
-          value={row.value}
-          placeholder={'请选择浏览器'}
-          options={[
-            {value: 'Chrome', label: 'Chrome'},
-            {value: 'Firefox', label: 'Firefox'},
-            {value: 'Edge', label: 'Edge'},
-          ]}
-        />
-
-      },
-    },
-    {
-      title: '操作系统',
-      dataIndex: 'os',
-      renderFormItem: (text, row, index) => {
-        return <Select
-          value={row.value}
-          placeholder={'请选择操作系统'}
-          options={[
-            {value: 'Windows', label: 'Windows'},
-            {value: 'macos', label: 'macos'},
-            {value: 'iphone', label: 'iphone'},
-            {value: 'android', label: 'android'},
-          ]}
-        />
-
-      },
+      title: '其它信息',
+      dataIndex: 'extra',
+      hideInSearch: true,
     },
     {
       title: '登录状态',
-      dataIndex: 'loginStatus',
+      dataIndex: 'status',
       renderFormItem: (text, row, index) => {
         return <Select
           placeholder={'请选择登录状态'}
@@ -110,18 +82,18 @@ const LoginLogList: React.FC = () => {
 
       },
       render: (dom, entity) => {
-        switch (entity.loginStatus) {
-          case 'success':
+        switch (entity.status) {
+          case 1:
             return <Tag color={'success'}>成功</Tag>;
-          case 'error':
+          case 0:
             return <Tag color={'error'}>失败</Tag>;
         }
-        return <>未知{entity.loginStatus}</>;
+        return <>未知{entity.status}</>;
       },
     },
     {
       title: '操作信息',
-      dataIndex: 'errorMsg',
+      dataIndex: 'msg',
       hideInSearch: true,
     },
     {
