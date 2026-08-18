@@ -65,7 +65,6 @@ const SysLogList: React.FC = () => {
         }}>{dom}</a>;
       },
 
-      hideInSearch: true
     },
     {
       title: '操作人员',
@@ -101,7 +100,7 @@ const SysLogList: React.FC = () => {
           placeholder={'请选择登录状态'}
           value={row.value}
           options={[
-            {value: 1, label: '成功'},
+            {value: 200, label: '成功'},
             {value: 0, label: '失败'},
           ]}
         />
@@ -109,7 +108,7 @@ const SysLogList: React.FC = () => {
       },
       render: (dom, entity) => {
         switch (entity.status) {
-          case 1:
+          case 200:
             return <Tag color={'success'}>成功</Tag>;
           case 0:
             return <Tag  color={'error'}>失败</Tag>;
