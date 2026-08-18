@@ -88,6 +88,12 @@
         path: '/system/post/list',
         component: './system/post',
       },
+      {
+        name: '通知公告',
+        icon: 'table',
+        path: '/system/notice/list',
+        component: './system/Notice',
+      },
       // {
       //   name: '参数管理',
       //   icon: 'table',
