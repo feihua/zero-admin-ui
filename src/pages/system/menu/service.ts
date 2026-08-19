@@ -4,9 +4,6 @@ import type {MenuListItem, MenuListParams} from './data.d';
 // 添加菜单信息
 export async function addMenu(params: MenuListItem) {
   params.menuType = params.parentId === 1 ? 1 : 2
-  if (params.menuIcon === '') {
-    params.menuIcon = " menuIcon: string; //菜单图标"
-  }
   return request('/api/sys/menu/addMenu', {
     method: 'POST',
     data: {
@@ -26,9 +23,6 @@ export async function removeMenu(id: number) {
 // 更新菜单信息
 export async function updateMenu(params: MenuListItem) {
   params.menuType = params.parentId === 1 ? 1 : 2
-  if (params.menuIcon === '') {
-    params.menuIcon = " menuIcon: string; //菜单图标"
-  }
   return request('/api/sys/menu/updateMenu', {
     method: 'POST',
     data: {

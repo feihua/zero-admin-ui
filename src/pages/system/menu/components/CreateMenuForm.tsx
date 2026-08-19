@@ -94,7 +94,6 @@ const CreateMenuForm: React.FC<CreateFormProps> = (props) => {
         <FormItem
           label="菜单图标"
           name="menuIcon"
-          initialValue={"Setting"}
         >
           <Input/>
         </FormItem>
