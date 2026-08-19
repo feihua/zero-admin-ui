@@ -15,7 +15,7 @@ export async function addMenu(params: MenuListItem) {
 
 // 删除菜单信息
 export async function removeMenu(ids: number[]) {
-  return request('/api/sys/menu/deleteMenu?ids=[' + ids + "]", {
+  return request('/api/sys/menu/deleteMenu?ids=' + ids.join(','), {
     method: 'GET',
   });
 }

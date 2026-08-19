@@ -1,8 +1,12 @@
 import {request} from 'umi';
-import type {MenuListParams, MenuListItem} from './data.d';
+import type {MenuListItem, MenuListParams} from './data.d';
 
 // 添加菜单信息
 export async function addMenu(params: MenuListItem) {
+  params.menuType = params.parentId === 1 ? 1 : 2
+  if (params.menuIcon === '') {
+    params.menuIcon = " menuIcon: string; //菜单图标"
+  }
   return request('/api/sys/menu/addMenu', {
     method: 'POST',
     data: {
@@ -11,11 +15,9 @@ export async function addMenu(params: MenuListItem) {
   });
 }
 
-//
-
 // 删除菜单信息
 export async function removeMenu(id: number) {
-  return request('/api/sys/menu/deleteMenu?id=' + id, {
+  return request('/api/sys/menu/deleteMenu?ids=' + id, {
     method: 'GET',
   });
 }
@@ -23,6 +25,10 @@ export async function removeMenu(id: number) {
 
 // 更新菜单信息
 export async function updateMenu(params: MenuListItem) {
+  params.menuType = params.parentId === 1 ? 1 : 2
+  if (params.menuIcon === '') {
+    params.menuIcon = " menuIcon: string; //菜单图标"
+  }
   return request('/api/sys/menu/updateMenu', {
     method: 'POST',
     data: {
@@ -32,7 +38,7 @@ export async function updateMenu(params: MenuListItem) {
 }
 
 // 批量更新菜单信息状态
-export async function updateMenuStatus(params: { menuIds: number[], postStatus: number }) {
+export async function updateMenuStatus(params: { menuId: number, menuStatus: number }) {
   return request('/api/sys/menu/updateMenuStatus', {
     method: 'POST',
     data: {
@@ -45,7 +51,7 @@ export async function updateMenuStatus(params: { menuIds: number[], postStatus: 
 
 // 查询菜单信息详情
 export async function queryMenuDetail(menuId: number) {
-  return request('/api/sys/menu/queryMenuDetail?id='+menuId, {
+  return request('/api/sys/menu/queryMenuDetail?id=' + menuId, {
     method: 'GET',
 
   });

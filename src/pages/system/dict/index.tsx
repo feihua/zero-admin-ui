@@ -229,7 +229,7 @@ const DictList: React.FC = () => {
               setCurrentRow(record);
             }}
           >
-            <EditOutlined/> 配置字典数据
+            <EditOutlined/> 字典数据
           </a>
           <Divider type="vertical"/>
           <a

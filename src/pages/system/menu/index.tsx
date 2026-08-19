@@ -1,5 +1,5 @@
-import {DeleteOutlined, EditOutlined, ExclamationCircleOutlined, PlusOutlined} from '@ant-design/icons';
-import {Button, Divider, Drawer, message, Modal, Tag} from 'antd';
+import {DeleteOutlined, EditOutlined, ExclamationCircleOutlined, PlusOutlined, SettingOutlined} from '@ant-design/icons';
+import {Button, Divider, Drawer, message, Modal, Switch, Tag} from 'antd';
 import React, {useRef, useState} from 'react';
 import {PageContainer} from '@ant-design/pro-layout';
 import type {ActionType, ProColumns} from '@ant-design/pro-table';
@@ -8,9 +8,10 @@ import type {ProDescriptionsItemProps} from '@ant-design/pro-descriptions';
 import ProDescriptions from '@ant-design/pro-descriptions';
 import UpdateMenuForm from './components/UpdateMenuForm';
 import type {MenuListItem} from './data.d';
-import {addMenu, queryMenuList, removeMenu, updateMenu} from './service';
+import {addMenu, queryMenuList, removeMenu, updateMenu, updateMenuStatus} from './service';
 import {tree} from '@/utils/utils';
 import CreateMenuForm from '@/pages/system/menu/components/CreateMenuForm';
+import ResourceModal from "@/pages/system/menu/components/ResourceModal";
 
 const {confirm} = Modal;
 
@@ -67,9 +68,26 @@ const handleRemove = async (selectedRows: MenuListItem) => {
     return false;
   }
 };
-
+/**
+ * 更新菜单信息状态
+ * @param id
+ * @param status
+ */
+const handleStatus = async (id: number, status: number) => {
+  const hide = message.loading('正在更新状态');
+  try {
+    await updateMenuStatus({menuId: id, menuStatus: status});
+    hide();
+    message.success('更新状态成功');
+    return true;
+  } catch (error) {
+    hide();
+    return false;
+  }
+};
 const MenuList: React.FC = () => {
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
+  const [resourceVisible, handleResourceVisible] = useState<boolean>(false);
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
   const [showDetail, setShowDetail] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
@@ -89,7 +107,19 @@ const MenuList: React.FC = () => {
       },
     });
   };
-
+  const showStatusConfirm = (id: number, status: number) => {
+    confirm({
+      title: `确定${status == 1 ? "启用" : "禁用"}吗？`,
+      icon: <ExclamationCircleOutlined/>,
+      async onOk() {
+        await handleStatus(id, status)
+        actionRef.current?.clearSelected?.();
+        actionRef.current?.reload?.();
+      },
+      onCancel() {
+      },
+    });
+  };
   const columns: ProColumns<MenuListItem>[] = [
     {
       title: '菜单名称',
@@ -115,7 +145,7 @@ const MenuList: React.FC = () => {
     },
     {
       title: '组件路径',
-      dataIndex: 'menuPath',
+      dataIndex: 'menuUrl',
     },
     {
       title: '接口地址',
@@ -127,10 +157,10 @@ const MenuList: React.FC = () => {
       dataIndex: 'menuType',
       hideInSearch: true,
       valueEnum: {
-        0: {text: '目录', status: 'Success'},
-        1: {text: '菜单', status: 'Error'},
-        2: {text: '按钮', status: 'Success'},
-        3: {text: '外链', status: 'Success'},
+        1: {text: '目录', status: 'Success'},
+        2: {text: '菜单', status: 'Error'},
+        3: {text: '按钮', status: 'Success'},
+        4: {text: '外链', status: 'Success'},
       },
     },
     {
@@ -151,28 +181,26 @@ const MenuList: React.FC = () => {
     },
     {
       title: '菜单状态',
-      dataIndex: 'menuStatus',
+      dataIndex: 'status',
       render: (dom, entity) => {
-        switch (entity.menuStatus) {
-          case 1:
-            return <Tag color={'success'}>正常</Tag>;
-          case 0:
-            return <Tag>禁用</Tag>;
-        }
-        return <>未知{entity.menuStatus}</>;
+        return (
+          <Switch checked={entity.status == 1} onChange={(flag) => {
+            showStatusConfirm(entity.id, flag ? 1 : 0)
+          }}/>
+        );
       },
     },
     {
       title: '显示状态',
-      dataIndex: 'isVisible',
+      dataIndex: 'visible',
       render: (dom, entity) => {
-        switch (entity.isVisible) {
+        switch (entity.visible) {
           case 1:
             return <Tag color={'success'}>显示</Tag>;
           case 0:
             return <Tag>隐藏</Tag>;
         }
-        return <>未知{entity.menuStatus}</>;
+        return <>未知{entity.visible}</>;
       },
     },
     {
@@ -250,13 +278,17 @@ const MenuList: React.FC = () => {
           <Button type="primary" key="primary" onClick={() => handleModalVisible(true)}>
             <PlusOutlined/> 新建菜单
           </Button>,
+          <Button type="primary" key="primary" onClick={() => handleResourceVisible(true)}>
+            <SettingOutlined/> 配置资源
+          </Button>,
         ]}
         request={queryMenuList}
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows) => console.log(selectedRows),
         }}
-        postData={(data) => tree(data, 0, 'parentId')}
+        postData={(data) => tree(data, 1, 'parentId')
+        }
         pagination={false}
         tableAlertRender={false}
       />
@@ -327,6 +359,14 @@ const MenuList: React.FC = () => {
           />
         )}
       </Drawer>
+
+      <ResourceModal
+        key={'resourceModal'}
+        onCancel={() => {
+          handleResourceVisible(false);
+        }}
+        open={resourceVisible}
+      />
     </PageContainer>
   );
 };
