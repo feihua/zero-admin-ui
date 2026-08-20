@@ -74,6 +74,22 @@ export async function getInitialState(): Promise<{
   };
 }
 
+const loopMenuItem = (menus: any[]): MenuDataItem[] =>
+  menus.map(({icon, children, ...item}) => {
+    return {
+      ...item,
+      icon: icon && IconMap[icon as string],
+      children: children && loopMenuItem(children),
+    };
+  });
+
+const menuDataRender: any = () => {
+  const item = localStorage.getItem('menuTree') + '';
+
+  return loopMenuItem(tree(JSON.parse(item), 1, 'parentId'));
+
+  // return tree(JSON.parse(item), 0, "parent_id");
+};
 // ProLayout 支持的api https://procomponents.ant.design/components/layout
 export const layout: RunTimeLayoutConfig = ({initialState, setInitialState}) => {
   return {
@@ -121,22 +137,6 @@ export const layout: RunTimeLayoutConfig = ({initialState, setInitialState}) => 
   };
 };
 
-const menuDataRender: any = () => {
-  const item = localStorage.getItem('menuTree') + '';
-
-  return loopMenuItem(tree(JSON.parse(item), 1, 'parentId'));
-
-  // return tree(JSON.parse(item), 0, "parent_id");
-};
-
-const loopMenuItem = (menus: any[]): MenuDataItem[] =>
-  menus.map(({icon, children, ...item}) => {
-    return {
-      ...item,
-      icon: icon && IconMap[icon as string],
-      children: children && loopMenuItem(children),
-    };
-  });
 
 const codeMessage = {
   200: '服务器成功返回请求的数据。',
