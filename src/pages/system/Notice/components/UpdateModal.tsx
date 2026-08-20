@@ -74,8 +74,8 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
           rules={[{required: true, message: '请输入公告类型!'}]}
         >
             <Radio.Group>
-              <Radio value={0}>通知</Radio>
-              <Radio value={1}>公告</Radio>
+              <Radio value={1}>通知</Radio>
+              <Radio value={2}>公告</Radio>
             </Radio.Group>
         </FormItem>
         <FormItem
