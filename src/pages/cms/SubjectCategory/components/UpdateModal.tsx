@@ -54,52 +54,43 @@ const UpdateModal: React.FC<UpdateFormProps> = (props) => {
   const renderContent = () => {
     return (
       <>
-        <FormItem
-          name="id"
-          label="主键"
-          hidden
-        >
-          <Input id="update-id"/>
+        <FormItem name="id" label="主键" hidden>
+          <Input id="update-id" />
         </FormItem>
         <FormItem
           name="name"
           label="专题分类名称"
-          rules={[{required: true, message: '请输入专题分类名称!'}]}
+          rules={[{ required: true, message: '请输入专题分类名称!' }]}
         >
-            <Input id="update-name" placeholder={'请输入专题分类名称!'}/>
+          <Input id="update-name" placeholder={'请输入专题分类名称!'} />
         </FormItem>
         <FormItem
           name="icon"
           label="分类图标"
-          rules={[{required: true, message: '请输入分类图标!'}]}
+          rules={[{ required: true, message: '请输入分类图标!' }]}
         >
-            <Input id="update-icon" placeholder={'请输入分类图标!'}/>
+          <Input id="update-icon" placeholder={'请输入分类图标!'} />
         </FormItem>
         <FormItem
           name="subjectCount"
           label="专题数量"
-          rules={[{required: true, message: '请输入专题数量!'}]}
+          rules={[{ required: true, message: '请输入专题数量!' }]}
         >
-            <Input id="update-subjectCount" placeholder={'请输入专题数量!'}/>
+          <Input id="update-subjectCount" placeholder={'请输入专题数量!'} />
         </FormItem>
         <FormItem
           name="showStatus"
-          label="显示状态：0->不显示；1->显示"
-          rules={[{required: true, message: '请输入显示状态：0->不显示；1->显示!'}]}
+          label="显示状态"
+          rules={[{ required: true, message: '请输入显示状态!' }]}
         >
-            <Radio.Group>
-              <Radio value={0}>禁用</Radio>
-              <Radio value={1}>正常</Radio>
-            </Radio.Group>
+          <Radio.Group>
+            <Radio value={1}>正常</Radio>
+            <Radio value={0}>禁用</Radio>
+          </Radio.Group>
         </FormItem>
-        <FormItem
-          name="sort"
-          label="排序"
-          rules={[{required: true, message: '请输入排序!'}]}
-        >
-            <InputNumber style={{width: 255}}/>
-         </FormItem>
-
+        <FormItem name="sort" label="排序" rules={[{ required: true, message: '请输入排序!' }]}>
+          <InputNumber style={{ width: 255 }} />
+        </FormItem>
       </>
     );
   };

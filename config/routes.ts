@@ -344,6 +344,12 @@
     icon: 'crown',
     routes: [
       {
+        name: '专题分类',
+        icon: 'table',
+        path: '/cms/subjectCategory',
+        component: './cms/SubjectCategory',
+      },
+      {
         name: '商品专题',
         icon: 'table',
         path: '/cms/subject/list',

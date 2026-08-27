@@ -133,7 +133,6 @@ const SubjectCategoryList: React.FC = () => {
     {
       title: '专题分类名称',
       dataIndex: 'name',
-      hideInSearch: true,
       render: (dom, entity) => {
           return <a onClick={() => {
             setCurrentRow(entity);
@@ -152,7 +151,7 @@ const SubjectCategoryList: React.FC = () => {
       hideInSearch: true,
     },
     {
-      title: '显示状态：0->不显示；1->显示',
+      title: '显示状态',
       dataIndex: 'showStatus',
       renderFormItem: (text, row, index) => {
           return <Select
@@ -233,7 +232,7 @@ const SubjectCategoryList: React.FC = () => {
 return (
     <PageContainer>
       <ProTable<SubjectCategoryListItem>
-        headerTitle="专题分类管理"
+        headerTitle="专题分类"
         actionRef={actionRef}
         rowKey="id"
         search={{

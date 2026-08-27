@@ -29,7 +29,5 @@ export interface SubjectCategoryListParams {
   filter?: { [key: string]: any[] };
   sorter?: { [key: string]: any };
   name?: string; //专题分类名称
-  icon?: string; //分类图标
-  subjectCount?: number; //专题数量
   showStatus?: number; //显示状态：0->不显示；1->显示
 }
