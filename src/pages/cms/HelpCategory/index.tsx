@@ -8,19 +8,19 @@ import type {ProDescriptionsItemProps} from '@ant-design/pro-descriptions';
 import ProDescriptions from '@ant-design/pro-descriptions';
 import AddModal from './components/AddModal';
 import UpdateModal from './components/UpdateModal';
-import type { SubjectListItem} from './data.d';
-import {addSubject, querySubjectList, removeSubject, updateSubject, updateSubjectStatus} from './service';
+import type { HelpCategoryListItem} from './data.d';
+import {addHelpCategory, queryHelpCategoryList, removeHelpCategory, updateHelpCategory, updateHelpCategoryStatus} from './service';
 
 const {confirm} = Modal;
 
 /**
- * 添加专题
+ * 添加帮助分类
  * @param fields
  */
-const handleAdd = async (fields: SubjectListItem) => {
+const handleAdd = async (fields: HelpCategoryListItem) => {
   const hide = message.loading('正在添加');
   try {
-    await addSubject({...fields});
+    await addHelpCategory({...fields});
     hide();
     message.success('添加成功');
     return true;
@@ -31,13 +31,13 @@ const handleAdd = async (fields: SubjectListItem) => {
 };
 
 /**
- * 更新专题
+ * 更新帮助分类
  * @param fields
  */
-const handleUpdate = async (fields: SubjectListItem) => {
+const handleUpdate = async (fields: HelpCategoryListItem) => {
   const hide = message.loading('正在更新');
   try {
-    await updateSubject(fields);
+    await updateHelpCategory(fields);
     hide();
 
     message.success('更新成功');
@@ -49,14 +49,14 @@ const handleUpdate = async (fields: SubjectListItem) => {
 };
 
 /**
- *  删除专题
+ *  删除帮助分类
  * @param ids
  */
 const handleRemove = async (ids: number[]) => {
   const hide = message.loading('正在删除');
   if (ids.length === 0) return true;
   try {
-    await removeSubject(ids);
+    await removeHelpCategory(ids);
     hide();
     message.success('删除成功，即将刷新');
     return true;
@@ -67,7 +67,7 @@ const handleRemove = async (ids: number[]) => {
 };
 
 /**
- * 更新专题状态
+ * 更新帮助分类状态
  * @param ids
  * @param status
  */
@@ -78,7 +78,7 @@ const handleStatus = async (ids: number[], status: number) => {
     return true;
   }
   try {
-    await updateSubjectStatus({ids, status});
+    await updateHelpCategoryStatus({ids, status});
     hide();
     message.success('更新状态成功');
     return true;
@@ -88,12 +88,12 @@ const handleStatus = async (ids: number[], status: number) => {
   }
 };
 
-const SubjectList: React.FC = () => {
+const HelpCategoryList: React.FC = () => {
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
   const [showDetail, setShowDetail] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
-  const [currentRow, setCurrentRow] = useState<SubjectListItem>();
+  const [currentRow, setCurrentRow] = useState<HelpCategoryListItem>();
 
   const showDeleteConfirm = (ids: number[]) => {
     confirm({
@@ -124,76 +124,31 @@ const SubjectList: React.FC = () => {
     });
   };
 
-  const columns: ProColumns<SubjectListItem>[] = [
+  const columns: ProColumns<HelpCategoryListItem>[] = [
     {
-      title: '专题id',
+      title: '主键id',
       dataIndex: 'id',
       hideInSearch: true,
     },
     {
-      title: '专题分类id',
-      dataIndex: 'categoryId',
+      title: '分类名称',
+      dataIndex: 'name',
+      hideInSearch: true,
+      render: (dom, entity) => {
+          return <a onClick={() => {
+            setCurrentRow(entity);
+            setShowDetail(true);
+          }}>{dom}</a>;
+        },
+    },
+    {
+      title: '分类图标',
+      dataIndex: 'icon',
       hideInSearch: true,
     },
     {
-      title: '专题标题',
-      dataIndex: 'title',
-      hideInSearch: true,
-    },
-    {
-      title: '专题主图',
-      dataIndex: 'pic',
-      hideInSearch: true,
-    },
-    {
-      title: '关联产品数量',
-      dataIndex: 'productCount',
-      hideInSearch: true,
-    },
-    {
-      title: '推荐状态：0->不推荐；1->推荐',
-      dataIndex: 'recommendStatus',
-      renderFormItem: (text, row, index) => {
-          return <Select
-            value={row.value}
-            options={ [
-              {value: '1', label: '正常'},
-              {value: '0', label: '禁用'},
-            ]}
-          />
-
-    },
-    render: (dom, entity) => {
-      return (
-        <Switch checked={entity.recommendStatus == 1} onChange={(flag) => {
-          showStatusConfirm( [entity.id], flag ? 1 : 0)
-        }}/>
-      );
-    },
-    },
-    {
-      title: '收藏数',
-      dataIndex: 'collectCount',
-      hideInSearch: true,
-    },
-    {
-      title: '阅读数',
-      dataIndex: 'readCount',
-      hideInSearch: true,
-    },
-    {
-      title: '评论数',
-      dataIndex: 'commentCount',
-      hideInSearch: true,
-    },
-    {
-      title: '画册图片用逗号分割',
-      dataIndex: 'albumPics',
-      hideInSearch: true,
-    },
-    {
-      title: '专题内容',
-      dataIndex: 'description',
+      title: '专题数量',
+      dataIndex: 'helpCount',
       hideInSearch: true,
     },
     {
@@ -216,27 +171,6 @@ const SubjectList: React.FC = () => {
         }}/>
       );
     },
-    },
-    {
-      title: '专题内容',
-      dataIndex: 'content',
-      hideInSearch: true,
-    },
-    {
-      title: '转发数',
-      dataIndex: 'forwardCount',
-      hideInSearch: true,
-    },
-    {
-      title: '专题分类名称',
-      dataIndex: 'categoryName',
-      hideInSearch: true,
-      render: (dom, entity) => {
-          return <a onClick={() => {
-            setCurrentRow(entity);
-            setShowDetail(true);
-          }}>{dom}</a>;
-        },
     },
     {
       title: '排序',
@@ -298,8 +232,8 @@ const SubjectList: React.FC = () => {
 
 return (
     <PageContainer>
-      <ProTable<SubjectListItem>
-        headerTitle="专题管理"
+      <ProTable<HelpCategoryListItem>
+        headerTitle="帮助分类管理"
         actionRef={actionRef}
         rowKey="id"
         search={{
@@ -310,7 +244,7 @@ return (
             <PlusOutlined/> 新增
           </Button>,
         ]}
-        request={querySubjectList}
+        request={queryHelpCategoryList}
         columns={columns}
         rowSelection={ {} }
         pagination={{pageSize: 10}}
@@ -403,16 +337,16 @@ return (
         closable={false}
       >
         {currentRow?.id && (
-          <ProDescriptions<SubjectListItem>
+          <ProDescriptions<HelpCategoryListItem>
             column={2}
-            title={"专题详情"}
+            title={"帮助分类详情"}
             request={async () => ({
               data: currentRow || {},
             })}
             params={{
               id: currentRow?.id,
             }}
-            columns={columns as ProDescriptionsItemProps<SubjectListItem>[]}
+            columns={columns as ProDescriptionsItemProps<HelpCategoryListItem>[]}
           />
         )}
       </Drawer>
@@ -420,4 +354,4 @@ return (
   );
 };
 
-export default SubjectList;
+export default HelpCategoryList;

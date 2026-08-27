@@ -8,19 +8,19 @@ import type {ProDescriptionsItemProps} from '@ant-design/pro-descriptions';
 import ProDescriptions from '@ant-design/pro-descriptions';
 import AddModal from './components/AddModal';
 import UpdateModal from './components/UpdateModal';
-import type { SubjectListItem} from './data.d';
-import {addSubject, querySubjectList, removeSubject, updateSubject, updateSubjectStatus} from './service';
+import type { TopicListItem} from './data.d';
+import {addTopic, queryTopicList, removeTopic, updateTopic, updateTopicStatus} from './service';
 
 const {confirm} = Modal;
 
 /**
- * 添加专题
+ * 添加话题
  * @param fields
  */
-const handleAdd = async (fields: SubjectListItem) => {
+const handleAdd = async (fields: TopicListItem) => {
   const hide = message.loading('正在添加');
   try {
-    await addSubject({...fields});
+    await addTopic({...fields});
     hide();
     message.success('添加成功');
     return true;
@@ -31,13 +31,13 @@ const handleAdd = async (fields: SubjectListItem) => {
 };
 
 /**
- * 更新专题
+ * 更新话题
  * @param fields
  */
-const handleUpdate = async (fields: SubjectListItem) => {
+const handleUpdate = async (fields: TopicListItem) => {
   const hide = message.loading('正在更新');
   try {
-    await updateSubject(fields);
+    await updateTopic(fields);
     hide();
 
     message.success('更新成功');
@@ -49,14 +49,14 @@ const handleUpdate = async (fields: SubjectListItem) => {
 };
 
 /**
- *  删除专题
+ *  删除话题
  * @param ids
  */
 const handleRemove = async (ids: number[]) => {
   const hide = message.loading('正在删除');
   if (ids.length === 0) return true;
   try {
-    await removeSubject(ids);
+    await removeTopic(ids);
     hide();
     message.success('删除成功，即将刷新');
     return true;
@@ -67,7 +67,7 @@ const handleRemove = async (ids: number[]) => {
 };
 
 /**
- * 更新专题状态
+ * 更新话题状态
  * @param ids
  * @param status
  */
@@ -78,7 +78,7 @@ const handleStatus = async (ids: number[], status: number) => {
     return true;
   }
   try {
-    await updateSubjectStatus({ids, status});
+    await updateTopicStatus({ids, status});
     hide();
     message.success('更新状态成功');
     return true;
@@ -88,12 +88,12 @@ const handleStatus = async (ids: number[], status: number) => {
   }
 };
 
-const SubjectList: React.FC = () => {
+const TopicList: React.FC = () => {
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
   const [showDetail, setShowDetail] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
-  const [currentRow, setCurrentRow] = useState<SubjectListItem>();
+  const [currentRow, setCurrentRow] = useState<TopicListItem>();
 
   const showDeleteConfirm = (ids: number[]) => {
     confirm({
@@ -124,112 +124,20 @@ const SubjectList: React.FC = () => {
     });
   };
 
-  const columns: ProColumns<SubjectListItem>[] = [
+  const columns: ProColumns<TopicListItem>[] = [
     {
-      title: '专题id',
+      title: '主键id',
       dataIndex: 'id',
       hideInSearch: true,
     },
     {
-      title: '专题分类id',
+      title: '关联分类id',
       dataIndex: 'categoryId',
       hideInSearch: true,
     },
     {
-      title: '专题标题',
-      dataIndex: 'title',
-      hideInSearch: true,
-    },
-    {
-      title: '专题主图',
-      dataIndex: 'pic',
-      hideInSearch: true,
-    },
-    {
-      title: '关联产品数量',
-      dataIndex: 'productCount',
-      hideInSearch: true,
-    },
-    {
-      title: '推荐状态：0->不推荐；1->推荐',
-      dataIndex: 'recommendStatus',
-      renderFormItem: (text, row, index) => {
-          return <Select
-            value={row.value}
-            options={ [
-              {value: '1', label: '正常'},
-              {value: '0', label: '禁用'},
-            ]}
-          />
-
-    },
-    render: (dom, entity) => {
-      return (
-        <Switch checked={entity.recommendStatus == 1} onChange={(flag) => {
-          showStatusConfirm( [entity.id], flag ? 1 : 0)
-        }}/>
-      );
-    },
-    },
-    {
-      title: '收藏数',
-      dataIndex: 'collectCount',
-      hideInSearch: true,
-    },
-    {
-      title: '阅读数',
-      dataIndex: 'readCount',
-      hideInSearch: true,
-    },
-    {
-      title: '评论数',
-      dataIndex: 'commentCount',
-      hideInSearch: true,
-    },
-    {
-      title: '画册图片用逗号分割',
-      dataIndex: 'albumPics',
-      hideInSearch: true,
-    },
-    {
-      title: '专题内容',
-      dataIndex: 'description',
-      hideInSearch: true,
-    },
-    {
-      title: '显示状态：0->不显示；1->显示',
-      dataIndex: 'showStatus',
-      renderFormItem: (text, row, index) => {
-          return <Select
-            value={row.value}
-            options={ [
-              {value: '1', label: '正常'},
-              {value: '0', label: '禁用'},
-            ]}
-          />
-
-    },
-    render: (dom, entity) => {
-      return (
-        <Switch checked={entity.showStatus == 1} onChange={(flag) => {
-          showStatusConfirm( [entity.id], flag ? 1 : 0)
-        }}/>
-      );
-    },
-    },
-    {
-      title: '专题内容',
-      dataIndex: 'content',
-      hideInSearch: true,
-    },
-    {
-      title: '转发数',
-      dataIndex: 'forwardCount',
-      hideInSearch: true,
-    },
-    {
-      title: '专题分类名称',
-      dataIndex: 'categoryName',
+      title: '话题名称',
+      dataIndex: 'name',
       hideInSearch: true,
       render: (dom, entity) => {
           return <a onClick={() => {
@@ -239,8 +147,67 @@ const SubjectList: React.FC = () => {
         },
     },
     {
-      title: '排序',
-      dataIndex: 'sort',
+      title: '话题开始时间',
+      dataIndex: 'startTime',
+      hideInSearch: true,
+    },
+    {
+      title: '话题结束时间',
+      dataIndex: 'endTime',
+      hideInSearch: true,
+    },
+    {
+      title: '参与人数',
+      dataIndex: 'attendCount',
+      hideInSearch: true,
+    },
+    {
+      title: '关注人数',
+      dataIndex: 'attentionCount',
+      hideInSearch: true,
+    },
+    {
+      title: '阅读数',
+      dataIndex: 'readCount',
+      hideInSearch: true,
+    },
+    {
+      title: '奖品名称',
+      dataIndex: 'awardName',
+      hideInSearch: true,
+      render: (dom, entity) => {
+          return <a onClick={() => {
+            setCurrentRow(entity);
+            setShowDetail(true);
+          }}>{dom}</a>;
+        },
+    },
+    {
+      title: '参与方式',
+      dataIndex: 'attendType',
+      renderFormItem: (text, row, index) => {
+          return <Select
+            value={row.value}
+            options={ [
+              {value: '1', label: '正常'},
+              {value: '0', label: '禁用'},
+            ]}
+          />
+
+    },
+    render: (dom, entity) => {
+        switch (entity.attendType) {
+          case 1:
+            return <Tag color={'success'}>正常</Tag>;
+          case 0:
+            return <Tag>禁用</Tag>;
+        }
+        return <>未知{entity.attendType}</>;
+      },
+    },
+    {
+      title: '话题内容',
+      dataIndex: 'content',
       hideInSearch: true,
     },
     {
@@ -298,8 +265,8 @@ const SubjectList: React.FC = () => {
 
 return (
     <PageContainer>
-      <ProTable<SubjectListItem>
-        headerTitle="专题管理"
+      <ProTable<TopicListItem>
+        headerTitle="话题管理"
         actionRef={actionRef}
         rowKey="id"
         search={{
@@ -310,7 +277,7 @@ return (
             <PlusOutlined/> 新增
           </Button>,
         ]}
-        request={querySubjectList}
+        request={queryTopicList}
         columns={columns}
         rowSelection={ {} }
         pagination={{pageSize: 10}}
@@ -403,16 +370,16 @@ return (
         closable={false}
       >
         {currentRow?.id && (
-          <ProDescriptions<SubjectListItem>
+          <ProDescriptions<TopicListItem>
             column={2}
-            title={"专题详情"}
+            title={"话题详情"}
             request={async () => ({
               data: currentRow || {},
             })}
             params={{
               id: currentRow?.id,
             }}
-            columns={columns as ProDescriptionsItemProps<SubjectListItem>[]}
+            columns={columns as ProDescriptionsItemProps<TopicListItem>[]}
           />
         )}
       </Drawer>
@@ -420,4 +387,4 @@ return (
   );
 };
 
-export default SubjectList;
+export default TopicList;
