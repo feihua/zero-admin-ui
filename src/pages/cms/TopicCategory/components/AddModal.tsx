@@ -45,47 +45,41 @@ const AddModal: React.FC<CreateFormProps> = (props) => {
   const renderContent = () => {
     return (
       <>
-            <FormItem
-              name="name"
-              label="分类名称"
-              rules={[{required: true, message: '请输入分类名称!'}]}
-            >
-              <Input id="create-name" placeholder={'请输入分类名称!'}/>
-            </FormItem>
-            <FormItem
-              name="icon"
-              label="分类图标"
-              rules={[{required: true, message: '请输入分类图标!'}]}
-            >
-              <Input id="create-icon" placeholder={'请输入分类图标!'}/>
-            </FormItem>
-            <FormItem
-              name="subjectCount"
-              label="专题数量"
-              rules={[{required: true, message: '请输入专题数量!'}]}
-            >
-              <Input id="create-subjectCount" placeholder={'请输入专题数量!'}/>
-            </FormItem>
-            <FormItem
-              name="showStatus"
-              label="显示状态：0->不显示；1->显示"
-              rules={[{required: true, message: '请输入显示状态：0->不显示；1->显示!'}]}
-            >
-              <Radio.Group>
-                <Radio value={0}>禁用</Radio>
-                <Radio value={1}>正常</Radio>
-              </Radio.Group>
-            </FormItem>
-            <FormItem
-              name="sort"
-              label="排序"
-              rules={[{required: true, message: '请输入排序!'}]}
-            >
-              <InputNumber style={{width: 255}}/>
-            </FormItem>
-
-
-
+        <FormItem
+          name="name"
+          label="分类名称"
+          rules={[{ required: true, message: '请输入分类名称!' }]}
+        >
+          <Input id="create-name" placeholder={'请输入分类名称!'} />
+        </FormItem>
+        <FormItem
+          name="icon"
+          label="分类图标"
+          rules={[{ required: true, message: '请输入分类图标!' }]}
+        >
+          <Input id="create-icon" placeholder={'请输入分类图标!'} />
+        </FormItem>
+        <FormItem
+          name="subjectCount"
+          label="专题数量"
+          rules={[{ required: true, message: '请输入专题数量!' }]}
+        >
+          <Input id="create-subjectCount" placeholder={'请输入专题数量!'} />
+        </FormItem>
+        <FormItem
+          name="showStatus"
+          label="显示状态"
+          initialValue={1}
+          rules={[{ required: true, message: '请输入显示状态!' }]}
+        >
+          <Radio.Group>
+            <Radio value={1}>显示</Radio>
+            <Radio value={0}>不显示</Radio>
+          </Radio.Group>
+        </FormItem>
+        <FormItem name="sort" label="排序" rules={[{ required: true, message: '请输入排序!' }]}>
+          <InputNumber style={{ width: 255 }} />
+        </FormItem>
       </>
     );
   };

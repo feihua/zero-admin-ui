@@ -133,7 +133,6 @@ const HelpCategoryList: React.FC = () => {
     {
       title: '分类名称',
       dataIndex: 'name',
-      hideInSearch: true,
       render: (dom, entity) => {
           return <a onClick={() => {
             setCurrentRow(entity);
@@ -152,7 +151,7 @@ const HelpCategoryList: React.FC = () => {
       hideInSearch: true,
     },
     {
-      title: '显示状态：0->不显示；1->显示',
+      title: '显示状态',
       dataIndex: 'showStatus',
       renderFormItem: (text, row, index) => {
           return <Select
@@ -233,7 +232,7 @@ const HelpCategoryList: React.FC = () => {
 return (
     <PageContainer>
       <ProTable<HelpCategoryListItem>
-        headerTitle="帮助分类管理"
+        headerTitle="帮助分类"
         actionRef={actionRef}
         rowKey="id"
         search={{

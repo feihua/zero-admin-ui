@@ -135,11 +135,17 @@ const PreferredAreaList: React.FC = () => {
       dataIndex: 'name',
       hideInSearch: true,
       render: (dom, entity) => {
-          return <a onClick={() => {
-            setCurrentRow(entity);
-            setShowDetail(true);
-          }}>{dom}</a>;
-        },
+        return (
+          <a
+            onClick={() => {
+              setCurrentRow(entity);
+              setShowDetail(true);
+            }}
+          >
+            {dom}
+          </a>
+        );
+      },
     },
     {
       title: '子标题',
@@ -157,25 +163,29 @@ const PreferredAreaList: React.FC = () => {
       hideInSearch: true,
     },
     {
-      title: '显示状态：0->不显示；1->显示',
+      title: '显示状态',
       dataIndex: 'showStatus',
       renderFormItem: (text, row, index) => {
-          return <Select
+        return (
+          <Select
             value={row.value}
-            options={ [
-              {value: '1', label: '正常'},
-              {value: '0', label: '禁用'},
+            options={[
+              { value: '1', label: '显示' },
+              { value: '0', label: '不显示' },
             ]}
           />
-
-    },
-    render: (dom, entity) => {
-      return (
-        <Switch checked={entity.showStatus == 1} onChange={(flag) => {
-          showStatusConfirm( [entity.id], flag ? 1 : 0)
-        }}/>
-      );
-    },
+        );
+      },
+      render: (dom, entity) => {
+        return (
+          <Switch
+            checked={entity.showStatus == 1}
+            onChange={(flag) => {
+              showStatusConfirm([entity.id], flag ? 1 : 0);
+            }}
+          />
+        );
+      },
     },
     {
       title: '创建者',
@@ -210,20 +220,19 @@ const PreferredAreaList: React.FC = () => {
             onClick={() => {
               handleUpdateModalVisible(true);
               setCurrentRow(record);
-              }
-            }
-          >
-            <EditOutlined/> 编辑
-          </a>
-          <Divider type="vertical"/>
-          <a
-            key="delete"
-            style={{color: '#ff4d4f'}}
-            onClick={() => {
-              showDeleteConfirm( [record.id]);
             }}
           >
-            <DeleteOutlined/> 删除
+            <EditOutlined /> 编辑
+          </a>
+          <Divider type="vertical" />
+          <a
+            key="delete"
+            style={{ color: '#ff4d4f' }}
+            onClick={() => {
+              showDeleteConfirm([record.id]);
+            }}
+          >
+            <DeleteOutlined /> 删除
           </a>
         </>
       ),

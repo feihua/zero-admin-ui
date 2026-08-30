@@ -134,6 +134,7 @@ const SubjectList: React.FC = () => {
       title: '专题分类id',
       dataIndex: 'categoryId',
       hideInSearch: true,
+      hideInTable: true,
     },
     {
       title: '专题标题',
@@ -151,25 +152,29 @@ const SubjectList: React.FC = () => {
       hideInSearch: true,
     },
     {
-      title: '推荐状态：0->不推荐；1->推荐',
+      title: '推荐状态',
       dataIndex: 'recommendStatus',
       renderFormItem: (text, row, index) => {
-          return <Select
+        return (
+          <Select
             value={row.value}
-            options={ [
-              {value: '1', label: '正常'},
-              {value: '0', label: '禁用'},
+            options={[
+              { value: '1', label: '推荐' },
+              { value: '0', label: '不推荐' },
             ]}
           />
-
-    },
-    render: (dom, entity) => {
-      return (
-        <Switch checked={entity.recommendStatus == 1} onChange={(flag) => {
-          showStatusConfirm( [entity.id], flag ? 1 : 0)
-        }}/>
-      );
-    },
+        );
+      },
+      render: (dom, entity) => {
+        return (
+          <Switch
+            checked={entity.recommendStatus == 1}
+            onChange={(flag) => {
+              showStatusConfirm([entity.id], flag ? 1 : 0);
+            }}
+          />
+        );
+      },
     },
     {
       title: '收藏数',
@@ -195,32 +200,38 @@ const SubjectList: React.FC = () => {
       title: '专题内容',
       dataIndex: 'description',
       hideInSearch: true,
+      hideInTable: true,
     },
     {
-      title: '显示状态：0->不显示；1->显示',
+      title: '显示状态',
       dataIndex: 'showStatus',
       renderFormItem: (text, row, index) => {
-          return <Select
+        return (
+          <Select
             value={row.value}
-            options={ [
-              {value: '1', label: '正常'},
-              {value: '0', label: '禁用'},
+            options={[
+              { value: '1', label: '显示' },
+              { value: '0', label: '不显示' },
             ]}
           />
-
-    },
-    render: (dom, entity) => {
-      return (
-        <Switch checked={entity.showStatus == 1} onChange={(flag) => {
-          showStatusConfirm( [entity.id], flag ? 1 : 0)
-        }}/>
-      );
-    },
+        );
+      },
+      render: (dom, entity) => {
+        return (
+          <Switch
+            checked={entity.showStatus == 1}
+            onChange={(flag) => {
+              showStatusConfirm([entity.id], flag ? 1 : 0);
+            }}
+          />
+        );
+      },
     },
     {
       title: '专题内容',
       dataIndex: 'content',
       hideInSearch: true,
+      hideInTable: true,
     },
     {
       title: '转发数',
@@ -232,11 +243,17 @@ const SubjectList: React.FC = () => {
       dataIndex: 'categoryName',
       hideInSearch: true,
       render: (dom, entity) => {
-          return <a onClick={() => {
-            setCurrentRow(entity);
-            setShowDetail(true);
-          }}>{dom}</a>;
-        },
+        return (
+          <a
+            onClick={() => {
+              setCurrentRow(entity);
+              setShowDetail(true);
+            }}
+          >
+            {dom}
+          </a>
+        );
+      },
     },
     {
       title: '排序',
@@ -247,6 +264,7 @@ const SubjectList: React.FC = () => {
       title: '创建者',
       dataIndex: 'createBy',
       hideInSearch: true,
+      hideInTable: true,
     },
     {
       title: '创建时间',
@@ -257,11 +275,13 @@ const SubjectList: React.FC = () => {
       title: '更新者',
       dataIndex: 'updateBy',
       hideInSearch: true,
+      hideInTable: true,
     },
     {
       title: '更新时间',
       dataIndex: 'updateTime',
       hideInSearch: true,
+      hideInTable: true,
     },
 
     {
@@ -276,20 +296,19 @@ const SubjectList: React.FC = () => {
             onClick={() => {
               handleUpdateModalVisible(true);
               setCurrentRow(record);
-              }
-            }
-          >
-            <EditOutlined/> 编辑
-          </a>
-          <Divider type="vertical"/>
-          <a
-            key="delete"
-            style={{color: '#ff4d4f'}}
-            onClick={() => {
-              showDeleteConfirm( [record.id]);
             }}
           >
-            <DeleteOutlined/> 删除
+            <EditOutlined /> 编辑
+          </a>
+          <Divider type="vertical" />
+          <a
+            key="delete"
+            style={{ color: '#ff4d4f' }}
+            onClick={() => {
+              showDeleteConfirm([record.id]);
+            }}
+          >
+            <DeleteOutlined /> 删除
           </a>
         </>
       ),

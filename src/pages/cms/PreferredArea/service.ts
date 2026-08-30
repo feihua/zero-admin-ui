@@ -3,7 +3,7 @@ import type { PreferredAreaListParams, PreferredAreaListItem } from './data.d';
 
 // 添加优选专区
 export async function addPreferredArea(params: PreferredAreaListItem) {
-  return request('/api/cms/preferredArea/addPreferredArea', {
+  return request('/api/cms/prefrenceArea/addPreferredArea', {
     method: 'POST',
     data: {
       ...params,
@@ -13,7 +13,7 @@ export async function addPreferredArea(params: PreferredAreaListItem) {
 
 // 删除优选专区
 export async function removePreferredArea(ids: number[]) {
-  return request('/api/cms/preferredArea/deletePreferredArea?ids=' + ids.join(','), {
+  return request('/api/cms/prefrenceArea/deletePreferredArea?ids=' + ids.join(','), {
     method: 'GET',
   });
 }
@@ -21,7 +21,7 @@ export async function removePreferredArea(ids: number[]) {
 
 // 更新优选专区
 export async function updatePreferredArea(params: PreferredAreaListItem) {
-  return request('/api/cms/preferredArea/updatePreferredArea', {
+  return request('/api/cms/prefrenceArea/updatePreferredArea', {
     method: 'POST',
     data: {
       ...params,
@@ -31,7 +31,7 @@ export async function updatePreferredArea(params: PreferredAreaListItem) {
 
 // 批量更新优选专区状态
 export async function updatePreferredAreaStatus(params: { ids: number[], status: number }) {
-  return request('/api/cms/preferredArea/updatePreferredAreaStatus', {
+  return request('/api/cms/prefrenceArea/updatePreferredAreaStatus', {
     method: 'POST',
     data: {
       ...params,
@@ -43,15 +43,14 @@ export async function updatePreferredAreaStatus(params: { ids: number[], status:
 
 // 查询优选专区详情
 export async function queryPreferredAreaDetail(id: number) {
-  return request('/api/cms/preferredArea/queryPreferredAreaDetail?id=' + id, {
+  return request('/api/cms/prefrenceArea/queryPreferredAreaDetail?id=' + id, {
     method: 'GET',
   });
 }
 
 // 分页查询优选专区列表
 export async function queryPreferredAreaList(params: PreferredAreaListParams) {
-
-  return request('/api/cms/preferredArea/queryPreferredAreaList', {
+  return request('/api/cms/prefrenceArea/queryPreferredAreaList', {
     method: 'GET',
     params: {
       ...params,

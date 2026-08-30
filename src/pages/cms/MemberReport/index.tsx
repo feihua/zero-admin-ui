@@ -1,5 +1,5 @@
-import {DeleteOutlined, EditOutlined, ExclamationCircleOutlined, PlusOutlined} from '@ant-design/icons';
-import {Button, Divider, Drawer, message, Modal, Select, Space, Switch} from 'antd';
+import {DeleteOutlined, EditOutlined, ExclamationCircleOutlined} from '@ant-design/icons';
+import { Divider, Drawer, message, Modal, Select, Switch, Tag } from 'antd';
 import React, {useRef, useState} from 'react';
 import {PageContainer} from '@ant-design/pro-layout';
 import type {ActionType, ProColumns} from '@ant-design/pro-table';
@@ -131,24 +131,28 @@ const MemberReportList: React.FC = () => {
       hideInSearch: true,
     },
     {
-      title: '举报类型：0->商品评价；1->话题内容；2->用户评论',
+      title: '举报类型',
       dataIndex: 'reportType',
       renderFormItem: (text, row, index) => {
-          return <Select
+        return (
+          <Select
             value={row.value}
-            options={ [
-              {value: '1', label: '正常'},
-              {value: '0', label: '禁用'},
+            options={[
+              { value: '0', label: '商品评价' },
+              { value: '1', label: '话题内容' },
+              { value: '2', label: '用户评论' },
             ]}
           />
-
-    },
-    render: (dom, entity) => {
+        );
+      },
+      render: (dom, entity) => {
         switch (entity.reportType) {
-          case 1:
-            return <Tag color={'success'}>正常</Tag>;
           case 0:
-            return <Tag>禁用</Tag>;
+            return <Tag color={'success'}>商品评价</Tag>;
+          case 1:
+            return <Tag>话题内容</Tag>;
+          case 2:
+            return <Tag>用户评论</Tag>;
         }
         return <>未知{entity.reportType}</>;
       },
@@ -158,11 +162,17 @@ const MemberReportList: React.FC = () => {
       dataIndex: 'reportMemberName',
       hideInSearch: true,
       render: (dom, entity) => {
-          return <a onClick={() => {
-            setCurrentRow(entity);
-            setShowDetail(true);
-          }}>{dom}</a>;
-        },
+        return (
+          <a
+            onClick={() => {
+              setCurrentRow(entity);
+              setShowDetail(true);
+            }}
+          >
+            {dom}
+          </a>
+        );
+      },
     },
     {
       title: '被举报对象',
@@ -170,46 +180,55 @@ const MemberReportList: React.FC = () => {
       hideInSearch: true,
     },
     {
-      title: '举报状态：0->未处理；1->已处理',
+      title: '举报状态',
       dataIndex: 'reportStatus',
       renderFormItem: (text, row, index) => {
-          return <Select
+        return (
+          <Select
             value={row.value}
-            options={ [
-              {value: '1', label: '正常'},
-              {value: '0', label: '禁用'},
+            options={[
+              { value: '1', label: '已处理' },
+              { value: '0', label: '未处理' },
             ]}
           />
-
-    },
-    render: (dom, entity) => {
-      return (
-        <Switch checked={entity.reportStatus == 1} onChange={(flag) => {
-          showStatusConfirm( [entity.id], flag ? 1 : 0)
-        }}/>
-      );
-    },
+        );
+      },
+      render: (dom, entity) => {
+        return (
+          <Switch
+            checked={entity.reportStatus == 1}
+            onChange={(flag) => {
+              showStatusConfirm([entity.id], flag ? 1 : 0);
+            }}
+          />
+        );
+      },
     },
     {
-      title: '处理结果：0->无效；1->有效；2->恶意',
+      title: '处理结果',
       dataIndex: 'handleStatus',
       renderFormItem: (text, row, index) => {
-          return <Select
+        return (
+          <Select
             value={row.value}
-            options={ [
-              {value: '1', label: '正常'},
-              {value: '0', label: '禁用'},
+            options={[
+              { value: '0', label: '无效' },
+              { value: '1', label: '有效' },
+              { value: '2', label: '恶意' },
             ]}
           />
-
-    },
-    render: (dom, entity) => {
-      return (
-        <Switch checked={entity.handleStatus == 1} onChange={(flag) => {
-          showStatusConfirm( [entity.id], flag ? 1 : 0)
-        }}/>
-      );
-    },
+        );
+      },
+      render: (dom, entity) => {
+        return (
+          <Switch
+            checked={entity.handleStatus == 1}
+            onChange={(flag) => {
+              showStatusConfirm([entity.id], flag ? 1 : 0);
+            }}
+          />
+        );
+      },
     },
     {
       title: '备注',
@@ -234,20 +253,19 @@ const MemberReportList: React.FC = () => {
             onClick={() => {
               handleUpdateModalVisible(true);
               setCurrentRow(record);
-              }
-            }
-          >
-            <EditOutlined/> 编辑
-          </a>
-          <Divider type="vertical"/>
-          <a
-            key="delete"
-            style={{color: '#ff4d4f'}}
-            onClick={() => {
-              showDeleteConfirm( [record.id]);
             }}
           >
-            <DeleteOutlined/> 删除
+            <EditOutlined /> 编辑
+          </a>
+          <Divider type="vertical" />
+          <a
+            key="delete"
+            style={{ color: '#ff4d4f' }}
+            onClick={() => {
+              showDeleteConfirm([record.id]);
+            }}
+          >
+            <DeleteOutlined /> 删除
           </a>
         </>
       ),
@@ -257,54 +275,18 @@ const MemberReportList: React.FC = () => {
 return (
     <PageContainer>
       <ProTable<MemberReportListItem>
-        headerTitle="用户举报管理"
+        headerTitle="用户举报"
         actionRef={actionRef}
         rowKey="id"
         search={{
           labelWidth: 120,
         }}
-        toolBarRender={() => [
-          <Button type="primary" key="primary" onClick={() => handleModalVisible(true)}>
-            <PlusOutlined/> 新增
-          </Button>,
-        ]}
+        toolBarRender={false}
         request={queryMemberReportList}
         columns={columns}
         rowSelection={ {} }
         pagination={{pageSize: 10}}
-        tableAlertRender={ ({
-                             selectedRowKeys,
-                             selectedRows,
-                           }) => {
-          const ids = selectedRows.map((row) => row.id);
-          return (
-            <Space size={16}>
-              <span>已选 {selectedRowKeys.length} 项</span>
-              <Button
-                icon={<EditOutlined/>}
-                style={{borderRadius: '5px'}}
-                onClick={async () => {
-                  showStatusConfirm(ids, 1)
-                }}
-              >批量启用</Button>
-              <Button
-                icon={<EditOutlined/>}
-                style={{borderRadius: '5px'}}
-                onClick={async () => {
-                  showStatusConfirm(ids, 0)
-                }}
-              >批量禁用</Button>
-              <Button
-                icon={<DeleteOutlined/>}
-                danger
-                style={{borderRadius: '5px'}}
-                onClick={async () => {
-                  showDeleteConfirm(ids);
-                }}
-              >批量删除</Button>
-            </Space>
-          );
-        }}
+        tableAlertRender={false}
       />
 
 
