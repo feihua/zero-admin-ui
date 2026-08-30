@@ -133,7 +133,6 @@ const PreferredAreaList: React.FC = () => {
     {
       title: '专区名称',
       dataIndex: 'name',
-      hideInSearch: true,
       render: (dom, entity) => {
         return (
           <a
@@ -150,7 +149,6 @@ const PreferredAreaList: React.FC = () => {
     {
       title: '子标题',
       dataIndex: 'subTitle',
-      hideInSearch: true,
     },
     {
       title: '展示图片',

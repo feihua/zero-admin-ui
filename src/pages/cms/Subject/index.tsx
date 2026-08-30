@@ -139,7 +139,6 @@ const SubjectList: React.FC = () => {
     {
       title: '专题标题',
       dataIndex: 'title',
-      hideInSearch: true,
     },
     {
       title: '专题主图',
