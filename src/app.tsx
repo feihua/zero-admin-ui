@@ -180,6 +180,8 @@ const addToken: RequestInterceptor = (url: string, options: RequestOptionsInit) 
   const {data} = options
   options.headers = {
     Authorization: 'Bearer ' + localStorage.getItem('token'),
+    channelId: "antd-pro-v5",
+    appId: "202609210001",
   };
 
   // if (data && data.current) {

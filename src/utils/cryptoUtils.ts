@@ -103,7 +103,7 @@ export function encryptWithAesAndSign(data: any): BaseReqVo {
     const sign=encryptor.signSha256(cipherText)
 
     return {
-        channelId: "antd pro v5",
+        channelId: "antd-pro-v5",
         appId: "202609210001",
         nonce: stringToBase64(iv1),
         data: cipherText,
