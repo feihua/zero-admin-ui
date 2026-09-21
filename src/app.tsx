@@ -1,25 +1,16 @@
-import {Settings as LayoutSettings, MenuDataItem} from '@ant-design/pro-layout';
-import {SettingDrawer} from '@ant-design/pro-layout';
-import {PageLoading} from '@ant-design/pro-layout';
-import {RunTimeLayoutConfig} from 'umi';
+import type {MenuDataItem,Settings as LayoutSettings} from '@ant-design/pro-layout';
+import {PageLoading, SettingDrawer} from '@ant-design/pro-layout';
 import {history} from 'umi';
+import type {RunTimeLayoutConfig} from 'umi';
 import RightContent from '@/components/RightContent';
 import {currentUser as queryCurrentUser} from './services/ant-design-pro/api';
 import defaultSettings from '../config/defaultSettings';
 import {tree} from "@/utils/utils";
-import {
-  SmileOutlined,
-  HeartOutlined,
-  SettingOutlined,
-  DeleteOutlined,
-  FrownOutlined,
-  GiftOutlined,
-  DollarCircleOutlined,
-  AlertOutlined,
-} from '@ant-design/icons';
-import {RequestConfig,} from "@@/plugin-request/request";
-import {RequestInterceptor, RequestOptionsInit} from 'umi-request';
+import {AlertOutlined, DeleteOutlined, DollarCircleOutlined, FrownOutlined, GiftOutlined, HeartOutlined, SettingOutlined, SmileOutlined,} from '@ant-design/icons';
+import type {RequestConfig,} from "@@/plugin-request/request";
+import type {RequestInterceptor, RequestOptionsInit} from 'umi-request';
 import {message, notification} from "antd";
+import {decryptWithAesVerify, encryptWithAesAndSign} from "@/utils/cryptoUtils";
 
 const IconMap = {
   SmileOutlined: <SmileOutlined/>,
@@ -34,6 +25,7 @@ const IconMap = {
 
 
 const loginPath = '/user/login';
+const isAesRes = false;
 
 /** 获取用户信息比较慢的时候会展示一个 loading */
 export const initialStateConfig = {
@@ -161,8 +153,8 @@ const codeMessage = {
  * 异常处理程序
  */
 const errorHandler = (error: any) => {
-  console.log("error：", error)
   const {response} = error;
+
   if (response && response.status) {
     const errorText = codeMessage[response.status] || response.statusText;
     const {status, url} = response;
@@ -185,7 +177,7 @@ const errorHandler = (error: any) => {
 
 // 请求拦截
 const addToken: RequestInterceptor = (url: string, options: RequestOptionsInit) => {
-  const {method, data, params} = options
+  const {data} = options
   options.headers = {
     Authorization: 'Bearer ' + localStorage.getItem('token'),
   };
@@ -196,12 +188,8 @@ const addToken: RequestInterceptor = (url: string, options: RequestOptionsInit) 
   //   options.data = data
   // }
 
-  console.log("请求地址：" + method + ': ' + url)
-  if (JSON.stringify(data) != undefined) {
-    console.log("请求参数：" + JSON.stringify(data))
-  }
-  if (JSON.stringify(params) != undefined) {
-    console.log("请求参数：" + JSON.stringify(params))
+  if (JSON.stringify(data) != undefined && isAesRes) {
+    options.data = encryptWithAesAndSign(data);
   }
   return {url, options};
 };
@@ -215,10 +203,18 @@ const res: ResponseInterceptor = async (response: Response) => {
     return response;
   }
   const resp = await response.clone().json();
-  console.log('响应数据: ' + JSON.stringify(resp));
+  if (!isAesRes) {
+    if (resp.code === '111111') {
+      message.error(resp.message);
+      return {success: false};
+    }
+    return response;
+  }
 
-  if (resp.code === '111111') {
-    message.error(resp.message);
+  const result = decryptWithAesVerify(resp.data, resp.nonce, resp.sign);
+  const decrypt = JSON.parse(result);
+  if (decrypt.code !== '000000') {
+    message.error(decrypt.message);
     return {success: false};
   }
 
@@ -232,7 +228,7 @@ const res: ResponseInterceptor = async (response: Response) => {
   //   return response;
   // }
 
-  return response;
+  return decrypt;
 }
 
 export const request: RequestConfig = {
